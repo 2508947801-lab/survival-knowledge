@@ -1,0 +1,7 @@
+.DS_Store
+.workbuddy/
+*.py
+*.json
+*.md
+!index.html
+生存知识日报.html

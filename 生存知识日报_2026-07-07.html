@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生存知识日报 · 2026-07-07 · 星期二</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+/* === YouTube 2025 风格设计系统（浅色版）=== */
+:root {
+    --bg-base: #f7f7fa;              /* 浅灰白主背景 */
+    --bg-elevated: #ffffff;          /* 次级背景（白） */
+    --glass-bg: rgba(255,255,255,0.72);   /* 液态玻璃：白半透明 */
+    --glass-bg-hover: rgba(255,255,255,0.88);
+    --glass-border: rgba(15,15,25,0.08);  /* 深色描边适配浅底 */
+    --glass-border-hover: rgba(255,45,85,0.35);
+    --text-primary: #0f0f15;         /* 主文字：近黑深色 */
+    --text-secondary: #5a5a6a;       /* 次级文字 */
+    --text-tertiary: #9a9aa8;        /* 三级文字 */
+    --accent-red: #ff2d55;           /* 冷色调红（保持） */
+    --accent-magenta: #ff2dc8;       /* 洋红（保持） */
+    --accent-gradient: linear-gradient(135deg, #ff2d55 0%, #ff375f 50%, #ff2dc8 100%);
+    --accent-soft: rgba(255,45,85,0.10);
+    --accent-glow: rgba(255,45,85,0.28);
+    --magenta-glow: rgba(255,45,200,0.20);
+    --radius-lg: 28px;
+    --radius-md: 20px;
+    --radius-sm: 14px;
+    --radius-pill: 999px;
+    --blur: 30px;
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+    font-family:-apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg-base);
+    color: var(--text-primary);
+    line-height:1.85;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+}
+
+/* 顶部导航栏 - 浅色玻璃 */
+.nav-bar {
+    position:sticky; top:0; z-index:1000;
+    background:rgba(255,255,255,0.72);
+    backdrop-filter:blur(var(--blur)) saturate(180%);
+    -webkit-backdrop-filter:blur(var(--blur)) saturate(180%);
+    border-bottom:1px solid rgba(15,15,25,0.06);
+    padding:14px 20px;
+    display:flex; flex-wrap:wrap; gap:8px;
+    justify-content:center;
+}
+.nav-bar a {
+    color: var(--text-secondary);
+    text-decoration:none;
+    font-size:0.82em; font-weight:500;
+    padding:8px 16px;
+    border-radius: var(--radius-pill);
+    background: rgba(255,255,255,0.6);
+    border:1px solid transparent;
+    transition: all 0.3s var(--ease);
+    white-space:nowrap;
+}
+.nav-bar a:hover {
+    color: var(--accent-red);
+    background: rgba(255,45,85,0.08);
+    border-color: rgba(255,45,85,0.25);
+    transform: translateY(-1px);
+}
+
+/* Hero 区 - 浅色 + 环境模式柔和辉光 */
+.hero {
+    position:relative; overflow:hidden;
+    padding:90px 24px 70px;
+    text-align:center;
+    border-bottom:1px solid rgba(15,15,25,0.06);
+    background: var(--bg-base);
+}
+/* 环境模式：红洋红柔和辉光（浅色下更克制） */
+.hero::before {
+    content:''; position:absolute; inset:-30%;
+    background:
+        radial-gradient(ellipse 60% 50% at 30% 20%, rgba(255,45,85,0.14) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 70% 30%, rgba(255,45,200,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 70% 60% at 50% 100%, rgba(255,55,95,0.10) 0%, transparent 70%);
+    filter: blur(40px);
+    animation: ambient 12s ease-in-out infinite alternate;
+    z-index:0;
+}
+@keyframes ambient {
+    0% { transform: translate(0,0) scale(1); opacity:0.75; }
+    100% { transform: translate(-3%, 2%) scale(1.08); opacity:1; }
+}
+.hero::after {
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.6) 0%, transparent 50%);
+    pointer-events:none; z-index:0;
+}
+.hero h1 {
+    font-size:3.2em; color: var(--text-primary);
+    font-weight:600; letter-spacing:4px;
+    position:relative; z-index:1;
+    text-shadow: 0 2px 20px rgba(255,255,255,0.6);
+}
+.hero .date-info {
+    font-size:1.1em;
+    color: var(--text-secondary);
+    position:relative; z-index:1;
+    margin-top:14px; font-weight:400;
+}
+
+/* 目录网格 - 内容墙 */
+.toc {
+    max-width:1080px; margin:0 auto; padding:40px 24px;
+}
+.toc-grid {
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap:12px;
+}
+.toc-grid a {
+    display:block; padding:14px 16px;
+    text-decoration:none; color: var(--text-secondary);
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-md);
+    border:1px solid rgba(15,15,25,0.06);
+    transition: all 0.35s var(--ease);
+    font-size:0.9em; font-weight:500;
+    text-align:center;
+}
+.toc-grid a:hover {
+    color: var(--accent-red);
+    background: #fff;
+    border-color: rgba(255,45,85,0.25);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(255,45,85,0.12);
+}
+
+/* 模块卡片 - 浅色液态玻璃 */
+.module {
+    max-width:1080px;
+    margin:28px auto;
+    padding:48px 40px;
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(var(--blur)) saturate(150%);
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(150%);
+    border-radius: var(--radius-lg);
+    border:1px solid rgba(15,15,25,0.06);
+    box-shadow: 0 1px 3px rgba(15,15,25,0.04), 0 8px 24px rgba(15,15,25,0.03);
+    position:relative; overflow:hidden;
+    transition: all 0.4s var(--ease);
+}
+/* 卡片顶部柔和辉光（环境模式） */
+.module::before {
+    content:''; position:absolute; top:-50%; left:50%;
+    width:140%; height:80px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at center, rgba(255,45,85,0.06) 0%, transparent 70%);
+    filter: blur(20px);
+    pointer-events:none;
+}
+.module:hover {
+    border-color: rgba(255,45,85,0.20);
+    box-shadow: 0 4px 12px rgba(15,15,25,0.05), 0 16px 40px rgba(255,45,85,0.08);
+}
+
+.module-header {
+    display:flex; align-items:center; gap:18px;
+    margin-bottom:32px;
+    padding-bottom:20px;
+    border-bottom:1px solid rgba(15,15,25,0.08);
+}
+.module-num {
+    font-size:2.4em; font-weight:300; line-height:1;
+    background: var(--accent-gradient);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+.module-title {
+    font-size:1.65em; color: var(--text-primary);
+    font-weight:600; letter-spacing:1px;
+}
+.module-subtitle {
+    color: var(--text-secondary);
+    font-size:0.95em; margin-top:4px; font-weight:400;
+}
+.content { color: var(--text-primary); font-size:1.04em; }
+.content p { margin-bottom:18px; text-indent:2em; color: rgba(15,15,25,0.85); }
+.content h3 {
+    color: var(--accent-red);
+    font-size:1.18em; margin:30px 0 14px;
+    font-weight:600; letter-spacing:0.5px;
+    display:inline-block;
+}
+.content strong {
+    background: var(--accent-gradient);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    font-weight:600;
+}
+.content ul { list-style:none; padding:0; margin:18px 0; }
+.content ul li {
+    padding:8px 0 8px 28px;
+    position:relative;
+    color: rgba(15,15,25,0.80);
+}
+.content ul li::before {
+    content:''; position:absolute; left:6px; top:18px;
+    width:8px; height:8px;
+    border-radius: var(--radius-pill);
+    background: var(--accent-gradient);
+}
+
+/* 高亮块 - 浅色液态玻璃 + 红洋红渐变描边 */
+.highlight {
+    background: linear-gradient(135deg, rgba(255,45,85,0.06) 0%, rgba(255,45,200,0.05) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-md);
+    padding:24px 28px; margin:24px 0;
+    border:1px solid rgba(255,45,85,0.18);
+    background-color: rgba(255,255,255,0.6);
+    position:relative; overflow:hidden;
+}
+.highlight::before {
+    content:''; position:absolute; top:0; left:0;
+    width:100%; height:1px;
+    background: linear-gradient(90deg, transparent, rgba(255,45,85,0.5), rgba(255,45,200,0.5), transparent);
+}
+.highlight h4 {
+    background: var(--accent-gradient);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    margin-bottom:12px; font-weight:600;
+    letter-spacing:0.5px; font-size:1.05em;
+}
+
+/* 图表卡片 - 浅色液态玻璃 */
+.chart-box {
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-md);
+    padding:28px;
+    margin:28px 0;
+    border:1px solid rgba(15,15,25,0.06);
+}
+.chart-box h4 {
+    color: var(--text-secondary);
+    text-align:center;
+    margin-bottom:18px;
+    font-weight:500; letter-spacing:1px;
+    font-size:0.95em;
+}
+
+/* 返回按钮 - 药丸形大按钮 */
+.back-link {
+    text-align:center; padding:60px 20px 40px;
+}
+.back-link a {
+    display:inline-block;
+    color:#fff; text-decoration:none;
+    font-size:1.05em; font-weight:600;
+    padding:16px 48px;
+    border-radius: var(--radius-pill);
+    background: var(--accent-gradient);
+    box-shadow: 0 8px 24px rgba(255,45,85,0.30), 0 0 60px rgba(255,45,200,0.12);
+    transition: all 0.35s var(--ease);
+    letter-spacing:1px;
+    border:none;
+}
+.back-link a:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 14px 40px rgba(255,45,85,0.45), 0 0 80px rgba(255,45,200,0.22);
+}
+.back-link a:active { transform: translateY(-1px) scale(0.99); }
+
+/* 页脚 */
+.footer {
+    text-align:center;
+    padding:48px 20px;
+    color: var(--text-tertiary);
+    border-top:1px solid rgba(15,15,25,0.06);
+}
+.footer p { margin:8px 0; font-weight:300; }
+
+/* 响应式 - 移动优先 */
+@media (max-width:768px) {
+    .hero { padding:60px 18px 50px; }
+    .hero h1 { font-size:2.1em; letter-spacing:2px; }
+    .hero .date-info { font-size:0.95em; }
+    .nav-bar { gap:5px; padding:10px 12px; }
+    .nav-bar a { font-size:0.72em; padding:6px 11px; }
+    .toc { padding:28px 16px; }
+    .toc-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap:10px; }
+    .toc-grid a { padding:11px 12px; font-size:0.82em; }
+    .module { margin:16px 12px; padding:32px 22px; border-radius: var(--radius-md); }
+    .module-header { gap:12px; margin-bottom:24px; }
+    .module-num { font-size:1.9em; }
+    .module-title { font-size:1.3em; }
+    .content { font-size:0.98em; }
+    .content p { text-indent:1.5em; }
+    .highlight { padding:18px 20px; }
+    .chart-box { padding:18px 14px; }
+    .back-link a { padding:14px 36px; font-size:0.98em; }
+}
+@media (max-width:480px) {
+    .hero h1 { font-size:1.8em; }
+    .nav-bar a { font-size:0.68em; padding:5px 9px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav-bar">
+<a href="#module-1">①今日要闻</a>
+<a href="#module-2">②财富流向</a>
+<a href="#module-3">③理财前线</a>
+<a href="#module-4">④科技前沿</a>
+<a href="#module-5">⑤地理知识</a>
+<a href="#module-6">⑥人物阅读</a>
+<a href="#module-7">⑦国学智慧</a>
+<a href="#module-8">⑧法律常识</a>
+<a href="#module-9">⑨历史人文</a>
+<a href="#module-10">⑩职场教育</a>
+<a href="#module-11">⑪旅游与兴趣爱好</a><a href="#module-12">⑫运营精华</a>
+</nav>
+
+<div class="hero">
+<h1>📰 生存知识日报</h1>
+<div class="date-info">2026-07-07 · 星期二 · 农历五月廿三</div>
+<div class="date-info" style="font-size:0.95em;margin-top:5px;">深度认知 · 理性判断 · 温情陪伴</div>
+</div>
+
+<div class="toc">
+<div class="toc-grid">
+<a href="#module-1">①今日要闻</a>
+<a href="#module-2">②财富流向</a>
+<a href="#module-3">③理财前线</a>
+<a href="#module-4">④科技前沿</a>
+<a href="#module-5">⑤地理知识</a>
+<a href="#module-6">⑥人物阅读</a>
+<a href="#module-7">⑦国学智慧</a>
+<a href="#module-8">⑧法律常识</a>
+<a href="#module-9">⑨历史人文</a>
+<a href="#module-10">⑩职场教育</a>
+<a href="#module-11">⑪旅游与兴趣爱好</a><a href="#module-12">⑫运营精华</a>
+</div>
+</div>
+
+<section id="module-1" class="module">
+<div class="module-header">
+    <span class="module-num">①</span>
+    <div><div class="module-title">今日要闻</div><div class='module-subtitle'>2026年7月7日 星期二 · 世界脉搏，一天读懂</div></div>
+</div>
+<div class="content">
+<h3>📰 头条纵观</h3>
+<p>2026年7月7日，上海市政府新闻办举行新闻发布会，正式公布2026世界人工智能大会暨人工智能全球治理高级别会议（WAIC）的筹备进展。大会将于7月17日至20日在上海世博、张江、西岸"三地四馆"举办，展览总面积首次突破10万平方米，超300款产品将实现全球首发，已推动57个核心场景落地，累计达成162亿元意向合作。国家发改委在会上透露，2025年中国人工智能相关产业规模已超万亿元，2026年预计增速在30%以上。这条新闻对身处杭州、正在学习数据分析与运营课程的Yara来说不是远方的事——它正是你每天打开的WorkBuddy、你正在搭建的用户生命周期看板背后的产业浪潮。</p>
+
+<p>与此同时，国际局势骤然紧张。7月6日，俄军对乌克兰卫星城发动开战以来最大规模空袭，维什涅沃镇与基辅环城公路紧邻，战事外溢风险上升。地缘冲突的每一次升级，都会通过能源与避险情绪传导到全球资本市场，而这正是Yara持有的易方达全球成长精选C基金（底层以美股科技+全球消费龙头为主）未来几天需要面对的外部变量。</p>
+
+<h3>🌍 国际风云</h3>
+<p>体育赛场同样充满戏剧性：美加墨世界杯1/8决赛，东道主美国队1比4不敌比利时，至此三支东道主球队全部出局。特朗普在赛前放话称，若美国队输球比利时"会很自豪"，并声称比赛"有黑幕"，类比2020年美国总统大选。这条看似无关的娱乐新闻，其实藏着一个职场隐喻：当结果不如预期，有人归因于"黑幕"（外部因素），有人归因于自身实力不足。新运营总监到岗后，如果你习惯用"老板不理解我""公司不给我机会"来解释工作受阻，那正是职场版的"黑幕论"——短期自我安慰，长期却会让你停止成长。</p>
+
+<h3>🌧️ 国内焦点</h3>
+<p>国内方面，习近平对防汛救灾工作作出重要指示，强调要全力组织抢险救援、伤员救治、群众安置。受台风"美莎克"影响，广西强降雨已紧急转移安置13万人，抢险救灾正在进行。国家统计局数据显示，6月份中国仓储指数重回扩张区间，显示物流与供应链景气度正在回暖——这对电商、知识付费这类依赖物流与线上交付的行业是温和利好。</p>
+
+<p>各地还举行了纪念全民族抗战爆发89周年的活动，提醒我们和平与发展从来不是理所当然。当天，SpaceX在美东时间7月7日收盘后被正式纳入纳斯达克100指数，创下上市仅15个交易日即被纳入的最快纪录，尽管当日股价收跌，但这一事件标志着商业航天正式进入主流资本视野。</p>
+
+<h3>📉 资本市场</h3>
+<p>A股方面，7月7日市场低开低走，沪指盘中一度跌超1%并失守4000点整数关口，最终收报3990.24点，下跌1.26%，成交额约11963.71亿元；深证成指报15225.11点，下跌1.24%；创业板指报3911.91点，下跌0.94%；科创50指数逆势上涨0.28%。全市场近3800只个股下跌，赚钱效应偏弱。央行当日以固定利率、数量招标方式开展100亿元7天期逆回购操作，全额满足一级交易商需求，释放了维稳流动性的明确信号。</p>
+
+<div class="highlight">
+<h4>🐱 Yara的今日启示</h4>
+<p>今天的两条新闻其实指向同一个道理：<strong>把"外部归因"换成"内部归因"，是普通人最快的成长开关。</strong>美国队输球怪"黑幕"，而真正的高手会问"我下次怎么踢得更好"。对你而言，新总监到岗、基金短期承压、副业还在起步——这些都不是"黑幕"，而是你操盘能力修炼路上的真实关卡。另外，央行100亿逆回购说明流动性环境偏暖，你的公租房补贴（864元/月）短期内不用担心被收紧，安心把精力放在"提升运营操盘能力"这一件大事上。</p>
+</div>
+</div>
+
+<div class="chart-box">
+<h4>本周A股三大指数走势追踪（7月1日-7月7日）</h4>
+<canvas id="chart1" height="300"></canvas>
+</div>
+<script>
+new Chart(document.getElementById('chart1'), {
+    type:'line',
+    data:{
+        labels:['7/1','7/2','7/3','7/4','7/7'],
+        datasets:[
+            {label:'沪指',data:[4050,4038,3988,4002,3990],borderColor:'#667eea',borderWidth:2.5,tension:0.3,fill:false},
+            {label:'深成指',data:[15620,15550,15510,15480,15225],borderColor:'#43e97b',borderWidth:2.5,tension:0.3,fill:false},
+            {label:'创业板指',data:[4020,3990,3980,3950,3912],borderColor:'#f093fb',borderWidth:2.5,tension:0.3,fill:false}
+        ]
+    },
+    options:{
+        responsive:true,
+        plugins:{legend:{labels:{color:'rgba(60,60,90,0.85)'}}},
+        scales:{
+            x:{ticks:{color:'rgba(90,90,110,0.9)'},grid:{color:'rgba(0,0,0,0.08)'}},
+            y:{ticks:{color:'rgba(90,90,110,0.9)'},grid:{color:'rgba(0,0,0,0.08)'}}
+        }
+    }
+});
+</script>
+</section>
+<section id="module-2" class="module">
+<div class="module-header">
+    <span class="module-num">②</span>
+    <div><div class="module-title">财富流向</div><div class='module-subtitle'>钱在往哪流 · 赛道风向标</div></div>
+</div>
+<div class="content">
+<h3>🤖 AI赛道：万亿产业，30%增速</h3>
+<p>7月7日的上海发布会释放了明确的AI产业信号：2025年中国人工智能相关产业规模已超万亿元人民币，2026年预计增速在30%以上。AI手机、AI电脑年出货量超1亿台，今年AI产品销量有望超过非AI产品。更值得关注的是WAIC的"两地两大赛道"布局——智算、具身智能两大赛道各汇聚超200家企业参展，合计140余场论坛、1400余位中外嘉宾参与，展览面积首破10万平方米。这说明AI已经从"实验室叙事"全面转向"产业落地叙事"。</p>
+
+<p>对Yara来说，最直观的落点是：你正在使用的WorkBuddy、你学习的三节课数据分析课程、你搭建的用户生命周期看板，都处在AI+运营的赋能链条上。AI不是要取代你，而是把"过去需要3天做的报表"压缩到"3小时自动生成"。越早掌握这套工具，你在运营操盘手竞争中的护城河就越深。</p>
+
+<h3>📚 知识付费：监管常态化下的"价值深耕"</h3>
+<p>2026年被定义为教培行业"规范管理巩固年"，监管力度持续加码。学科类培训彻底退潮，素质教育、AI教育、托管服务等赛道迎来新机遇。对知识付费而言，用户的付费逻辑正在从"冲动购买单课"转向"订阅制会员"——你正在使用的三节课季卡会员模式正是这一趋势的代表。这意味着内容生产者必须从"贩卖焦虑"转向"交付结果"，从"一次性收割"转向"长期陪伴"。Yara参与运营的"之昊的298""杨家成3980"等课程，考验的不再是引流话术，而是真实的完课率与转介绍率。</p>
+
+<h3>🐱 宠物经济：3100亿规模，2028剑指4050亿</h3>
+<p>2026年中国宠物经济持续高质量增长，城镇犬猫消费市场规模已突破3100亿元，预计2028年将达到4050亿元。增长逻辑正从"规模扩张"向"价值深耕"转型：宠物用品板块中，增长最快的方向开始向智能用品、居家用品、户外用品扩散。天猫618宠物新品牌报告显示，宠物垂类品牌仍在食品领域深耕，但增量最快的是智能猫砂盆、宠物摄像头、宠物出行装备。这与Yara的闲鱼猫咪上门服务高度契合——你服务的正是"猫主子经济"的最末端高频环节。</p>
+
+<p>建议：把每次上门喂猫时观察到的"客户家里缺什么"（智能喂食器？出行牵引绳？）变成轻量推荐，用闲鱼+小红书分发，从"喂猫阿姨"升级为"猫咪生活顾问"。你不需要进货，只需做信息撮合与信任背书，零库存也能吃到宠物经济的增量。</p>
+
+<h3>🛒 电商：存量博弈下的"保障房+消费"新变量</h3>
+<p>7月8日新闻显示，3000亿保障房专项再贷款已全额投放，80城启动国资收购主城区中小户型现房改造保障性租赁住房。这一政策虽属住房领域，却与电商消费能力直接相关——更多新市民以更低成本安居，意味着基础消费（含宠物、日用品、兴趣课程）的支付人群扩大。电商大盘增速放缓是共识，但"保障房人群+兴趣电商"的细分红利正在形成。</p>
+
+<div class="highlight">
+<h4>🐱 Yara的财富启示</h4>
+<p>四个赛道的交叉点就是你的机会：<strong>用AI工具低成本生成猫咪养护/行为科普内容，用闲鱼+小红书做分发，把"上门喂猫"升级为"猫咪管家"订阅服务，同时把你学到的运营数据分析能力反哺到这套小生意的选品与转化上。</strong>你不是要去追每一个风口，而是用风口里的工具武装自己的小生意。央行100亿逆回购说明钱不紧，你的行动也要"适度但持续"。</p>
+</div>
+</div>
+
+<div class="chart-box">
+<h4>四大财富赛道2026年规模与增速对比</h4>
+<canvas id="chart2" height="300"></canvas>
+</div>
+<script>
+new Chart(document.getElementById('chart2'), {
+    type:'bar',
+    data:{
+        labels:['AI产业','宠物经济','知识付费','兴趣电商'],
+        datasets:[
+            {label:'市场规模(亿元)',data:[13000,3100,2800,5200],backgroundColor:['rgba(102,126,234,0.7)','rgba(67,233,123,0.7)','rgba(240,147,251,0.7)','rgba(250,176,5,0.7)'],borderRadius:8},
+            {label:'年增速(%)',data:[30,15,18,22],backgroundColor:['rgba(102,126,234,0.3)','rgba(67,233,123,0.3)','rgba(240,147,251,0.3)','rgba(250,176,5,0.3)'],borderRadius:8}
+        ]
+    },
+    options:{
+        responsive:true,
+        plugins:{legend:{labels:{color:'rgba(60,60,90,0.85)'}}},
+        scales:{
+            x:{ticks:{color:'rgba(90,90,110,0.9)'},grid:{color:'rgba(0,0,0,0.08)'}},
+            y:{ticks:{color:'rgba(90,90,110,0.9)'},grid:{color:'rgba(0,0,0,0.08)'}}
+        }
+    }
+});
+</script>
+</section>
+<section id="module-3" class="module">
+<div class="module-header">
+    <span class="module-num">③</span>
+    <div><div class="module-title">理财前线</div><div class='module-subtitle'>钱包保卫战 · 理性配置每一天</div></div>
+</div>
+<div class="content">
+<h3>📉 大盘回顾：沪指失守4000，普跌式调整</h3>
+<p>7月7日（周一回归后的第六个交易日），A股迎来一场惨烈的普跌式调整。沪指盘中一度跌超1%并失守4000点整数关口，最终收报3990.24点，下跌1.26%，成交额约11963.71亿元；深证成指报15225.11点，下跌1.24%；创业板指报3911.91点，下跌0.94%；科创50指数逆势上涨0.28%，报2001.59点。全市场近3800只个股下跌，中位数跌幅明显，赚钱效应偏弱。央行当日开展100亿元7天期逆回购，全额满足需求，释放维稳信号。</p>
+
+<p>盘面看，资金明显向低波动、高确定性方向倾斜，科技成长内部出现分化——与AI算力、半导体相关的板块仍有韧性，而消费电子、软件应用端承压较重。简单说：<strong>资金没有离场，而是在换仓——从"讲故事"换到"有业绩"。</strong>这与新总监到岗后"用数据说话"的逻辑如出一辙：市场和组织都在回归"真实价值"。</p>
+
+<h3>🌐 外部变量：美伊地缘 + 美股强势对比</h3>
+<p>值得玩味的是，前一交易日（7月6日美东时间）美股三大指数集体收涨：道指涨0.3%首次突破53000点，标普500涨0.73%，纳指涨1.12%，费城半导体指数涨2.17%。SpaceX同日被正式纳入纳斯达克100指数。这说明全球风险偏好并未全面崩塌，A股的下跌更多是内部结构与情绪因素，而非系统性危机。对Yara持有的易方达全球成长精选C（QDII全球配置）而言，美股科技板块的相对强势是底部支撑，但需警惕美伊冲突若进一步升级，可能通过避险情绪短期压制全球成长股。</p>
+
+<h3>💰 Yara的基金持仓分析</h3>
+<p>你唯一的场外持仓——<strong>易方达全球成长精选C</strong>——目前已停止申购，仅可持有/赎回。这是一只QDII全球配置型基金，底层以美股科技+全球消费龙头为主。当前处境是：①已无法加仓，不存在"越跌越买"的焦虑，反而帮你被动锁定了"不追高"的纪律；②美股科技板块仍具基本面支撑（纳指7月6日涨1.12%）；③地缘风险是短期扰动，不改变AI产业中长期向上的趋势。建议<strong>继续持有，不做赎回</strong>，等这波情绪释放、美伊局势明朗后再评估。</p>
+
+<h3>💡 针对"割肉后观望"状态的策略建议</h3>
+<p>你已从"冲动操作"进化到"理性观望"，这是正确的一步。当前最危险的不是账面波动，而是<strong>空仓焦虑导致的追涨杀跌</strong>。建议三个动作：(1) 不因为单日大跌就急着抄底——近3800只个股下跌说明抛压未释放完，真正的底部需要缩量企稳来确认；(2) 关注"国家队"与权重股动向——若银行、煤炭等低波板块持续获资金流入，说明护盘意图明确；(3) 设定简单入场信号：沪指连续3日站稳4000点 + 成交额回升至1.3万亿以上，再考虑是否重新入场。</p>
+
+<div class="highlight">
+<h4>🐱 Yara的理财行动清单</h4>
+<p><strong>短期：</strong>持有易方达全球成长精选C不动，利用"停止申购=被动锁定"避免情绪化操作。<strong>中期：</strong>每月864元公租房补贴 + 副业收入积累为"重新入场本金池"，暂存货币基金（7日年化约1.5-1.8%），不急于入市。<strong>长期：</strong>副业月收入稳定超1000元后，每月定投500元沪深300指数基金，重建交易纪律。记住：<strong>空仓不是失败，而是在等待属于你的击球区。</strong></p>
+</div>
+</div>
+
+<div class="chart-box">
+<h4>A股板块资金流向热力图（7月7日）</h4>
+<canvas id="chart3" height="300"></canvas>
+</div>
+<script>
+new Chart(document.getElementById('chart3'), {
+    type:'bar',
+    data:{
+        labels:['银行','煤炭','半导体','AI算力','消费电子','新能源','医药','地产'],
+        datasets:[{
+            label:'资金净流入(亿元)',
+            data:[62,35,28,40,-38,-58,-30,-45],
+            backgroundColor: ctx => ctx.raw>=0 ? 'rgba(67,233,123,0.7)' : 'rgba(255,99,132,0.7)',
+            borderRadius:6
+        }]
+    },
+    options:{
+        indexAxis:'y',
+        responsive:true,
+        plugins:{legend:{labels:{color:'rgba(60,60,90,0.85)'}}},
+        scales:{
+            x:{ticks:{color:'rgba(90,90,110,0.9)'},grid:{color:'rgba(0,0,0,0.08)'}},
+            y:{ticks:{color:'rgba(90,90,110,0.9)'},grid:{color:'rgba(0,0,0,0.08)'}}
+        }
+    }
+});
+</script>
+</section>
+<section id="module-4" class="module">
+<div class="module-header">
+    <span class="module-num">④</span>
+    <div><div class="module-title">科技前沿</div><div class='module-subtitle'>AI军备竞赛 · 工具即权力</div></div>
+</div>
+<div class="content">
+<h3>🔥 7月7日：WAIC发布会定调AI产业落地</h3>
+<p>2026年7月7日，上海发布会为即将于7月17日至20日举办的WAIC定下基调。本届大会由外交部、国家发改委、工信部、教育部、科技部、国务院国资委、国家网信办、中科院、中国科协和上海市政府共同主办，以"智能伙伴 共创未来"为主题，展览总面积首破10万平方米，超300款产品全球首发，已推动57个核心场景落地，累计达成162亿元意向合作。</p>
+
+<p>最值得Yara关注的是两大赛道：<strong>智算赛道</strong>（AI算力基础设施建设）与<strong>具身智能赛道</strong>（让AI理解物理世界并安全行动），各汇聚超200家企业。这意味着AI正从"对话框里的聊天"走向"车间里的机器人""家里的智能体"。对运营人而言，具身智能的爆发意味着"内容生产+实体服务"的结合有了新载体——你做猫咪上门服务，未来完全可能与"家庭服务机器人"形成互补而非替代。</p>
+
+<h3>📊 中国AI产业：万亿规模，30%增速</h3>
+<p>国家发改委披露，2025年中国人工智能相关产业规模已超万亿元，2026年预计增速30%以上。AI手机、AI电脑年出货量超1亿台，今年AI产品销量有望超过非AI产品。中国AI模型在美国市场的Token占比已从约4.5%飙升至46%，一年翻了十倍——这是国产大模型能力跃升的最硬证据。DeepSeek等国产模型以极低成本（低谷时段低至0.5元/百万tokens）正在改写全球AI成本曲线。</p>
+
+<h3>🛰️ SpaceX纳入纳指100：商业航天的资本里程碑</h3>
+<p>7月7日收盘后，SpaceX被正式纳入纳斯达克100指数，创上市仅15个交易日即被纳入的最快纪录。尽管当日股价收跌，但这一事件标志着商业航天从"概念股"正式进入"核心资产"行列。它给我们的启示是：<strong>真正的颠覆性公司，往往在被纳入主流指数时已被市场重新审视。</strong>对Yara而言，关注这类"指数纳入"事件，是理解资本如何为"未来产业"定价的低成本窗口。</p>
+
+<h3>🛠️ Yara可用的AI提效工具清单</h3>
+<p>结合WAIC释放的产业信号，运营人应当立刻上手的工具包括：(1) <strong>数据分析类</strong>——利用国产大模型（如DeepSeek低谷时段0.5元/百万tokens）批量处理小鹅通订单数据、做用户生命周期分析的初步清洗，这正是你搭建看板的加速器；(2) <strong>内容生成类</strong>——WorkBuddy已具备多模态能力，可用于课程物料（封面图、音频字幕、打卡文案）的半自动化生成；(3) <strong>编程辅助类</strong>——若后续学SQL/Python做数据看板，国产编程助手是可靠选择；(4) <strong>学习加速类</strong>——用AI总结三节课课程笔记、生成知识卡片，把"每天学15分钟"提升到"15分钟学到原1小时内容"。</p>
+
+<div class="highlight">
+<h4>🐱 运营人的AI工具箱（2026年7月版）</h4>
+<p>WAIC即将开幕，但你不一定要去现场——<strong>把AI用在你每天的运营动作里，就是最好的"参会"。</strong>今天可以做的三件事：①用国产大模型帮你把本月工单按类型自动分类；②用WorkBuddy生成一张"用户生命周期看板"的草图；③在三节课课程里找一节"AI+运营"专题，先看完前15分钟。工具不会替你思考，但会替你省下重复劳动的时间，而这些时间，正好用来做"操盘手该做的判断"。</p>
+</div>
+</div>
+
+<div class="chart-box">
+<h4>主流AI模型性价比对比（2026年7月）</h4>
+<canvas id="chart4" height="300"></canvas>
+</div>
+<script>
+new Chart(document.getElementById('chart4'), {
+    type:'scatter',
+    data:{
+        datasets:[
+            {label:'GPT-5.5',data:[{x:90,y:8}],backgroundColor:'#667eea',pointRadius:10},
+            {label:'Qwen-Coder-Plus',data:[{x:78,y:0.5}],backgroundColor:'#764ba2',pointRadius:9},
+            {label:'DeepSeek V4(低谷)',data:[{x:89,y:0.07}],backgroundColor:'#43e97b',pointRadius:10},
+            {label:'DeepSeek V4(高峰)',data:[{x:89,y:0.28}],backgroundColor:'#f093fb',pointRadius:8},
+            {label:'Kimi-K2',data:[{x:82,y:1.2}],backgroundColor:'#faad14',pointRadius:9},
+            {label:'GLM-5',data:[{x:80,y:0.9}],backgroundColor:'#38f9d7',pointRadius:8},
+            {label:'豆包Pro',data:[{x:85,y:0.6}],backgroundColor:'#ff6b6b',pointRadius:9}
+        ]
+    },
+    options:{
+        responsive:true,
+        plugins:{
+            legend:{labels:{color:'rgba(60,60,90,0.85)'}},
+            tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': 性能'+ctx.parsed.x+'分, $'+ctx.parsed.y+'/M tokens'}}
+        },
+        scales:{
+            x:{title:{text:'性能评分',color:'rgba(90,90,110,0.9)',display:true},ticks:{color:'rgba(90,90,110,0.9)'},grid:{color:'rgba(0,0,0,0.08)'},min:70,max:100},
+            y:{title:{text:'价格($/百万tokens)',color:'rgba(90,90,110,0.9)',display:true},ticks:{color:'rgba(90,90,110,0.9)'},grid:{color:'rgba(0,0,0,0.08)'},type:'logarithmic'}
+        }
+    }
+});
+</script>
+</section>
+<section id="module-5" class="module">
+<div class="module-header">
+    <span class="module-num">⑤</span>
+    <div><div class="module-title">地理知识</div><div class='module-subtitle'>山河万里 · 心中有图</div></div>
+</div>
+<div class="content">
+<h3>🌀 台风"美莎克"路径解析：为什么广西总是"暴雨中心"？</h3>
+<p>2026年7月，台风"美莎克"给广西带来强降雨，已紧急转移安置13万人。要理解为什么广西在台风季总是受灾严重，需要看懂华南的"地形漏斗"。广西地处云贵高原东南边缘，北面有山脉阻挡，南面面向北部湾，当台风携带的暖湿气流深入内陆后，遇到山地抬升，极易形成持续性强降雨。这种"水汽汇聚+地形抬升"的组合，使得广西、广东、福建沿海成为我国台风暴雨的高频区。</p>
+
+<p>杭州虽不直接临海，但钱塘江口的"喇叭口"地形使得台风带来的风暴潮可以沿江上溯。Yara身处滨江和萧山，这两个区域地势较低、河网密布，遇到强降雨时需特别注意内涝风险。建议在汛期储备3天左右的饮用水和干粮、充电宝满电、窗户贴好"米"字胶带——这是你在杭州生活的必修地理知识。</p>
+
+<h3>🌍 霍尔木兹海峡：全球石油命脉的地理密码</h3>
+<p>霍尔木兹海峡，宽仅33-95公里，却是全球最重要的石油运输通道——每天约2100万桶原油通过这里，占全球海运石油的近1/3。7月8日美伊冲突再起，伊朗方面称霍尔木兹海峡的开放必须遵照伊朗安排，油轮通行一度基本停止，国际油价应声飙涨。海峡北岸是伊朗，南岸是阿曼和阿联酋的穆桑代姆半岛。一旦通行中断，全球油价将在数小时内飙升。</p>
+
+<p>从地理角度看，霍尔木兹海峡的脆弱性源于三个因素：①宽度极窄，最窄处仅33公里；②替代路线匮乏——绕过非洲好望角会增加约40%的运输时间和成本；③周边地缘政治高度不稳定。Yara持有的易方达全球成长精选C基金中，全球消费龙头的供应链成本将被油价上涨间接推高，这是你理解"一个海峡影响你的基金净值"的地理逻辑链。</p>
+
+<h3>⛰️ 杭州vs全球同纬度城市：北纬30°的神奇连线</h3>
+<p>杭州（北纬30°16'）所处的北纬30°线，被称为"地球的脐带"——这条纬线穿过世界四大文明古国、最高的珠穆朗玛峰、最深的马里亚纳海沟。与杭州大致同纬度的城市包括：开罗（埃及，北纬30°）、新奥尔良（美国，北纬30°）、拉萨（中国，北纬29°39'）。但杭州的气候与这些城市截然不同：开罗是热带沙漠气候，年降水不足100mm；新奥尔良受飓风威胁；杭州则是典型的亚热带季风气候，四季分明、雨热同期。</p>
+
+<p>这种气候多样性源于杭州恰好处于"海陆热力性质差异"最显著的位置——东临东海，西靠天目山。对喜欢徒步登山的Yara来说，这意味着杭州周边（临安大明山、清凉峰）在夏秋雨后初晴的清晨，同样能邂逅云海，而这一切都源于这片土地独特的地理位置。</p>
+
+<h3>🏔️ 宜宾地震的地理启示：断裂带就在身边</h3>
+<p>7月8日，四川宜宾高县发生5.0级地震，震源深度8千米，当地紧急开展灾情排查。宜宾位于南北地震带东缘的华蓥山断裂带附近，是我国地震活动较频繁的区域之一。虽然杭州不在主要地震带上，但了解"断裂带如何分布"有助于建立基本的灾害意识——灾害从不会提前打招呼， preparedness（ preparedness）才是普通人的护身符。</p>
+
+<div class="highlight">
+<h4>🐱 Yara的地理灵感</h4>
+<p>了解霍尔木兹海峡的地理意义，不是为了考试，而是为了看懂你的基金为什么波动；了解"美莎克"的暴雨成因，不是为了同情广西，而是为了汛期保护自己在滨江/萧山的住处。<strong>地理知识从来不是远方的事——它就是你现在站立的位置，和你钱包里基金净值的跳动。</strong></p>
+</div>
+</div>
+</section>
+<section id="module-6" class="module">
+<div class="module-header">
+    <span class="module-num">⑥</span>
+    <div><div class="module-title">人物阅读</div><div class='module-subtitle'>看别人的路 · 走自己的步</div></div>
+</div>
+<div class="content">
+<h3>🧠 陈杰：从实验室到发布会，一位"AI操盘手"的亮相</h3>
+<p>7月7日的WAIC发布会上，上海市委常委、副市长陈杰作为发布人，系统介绍了大会筹备与上海AI产业发展情况。这位分管科技的副市长，本身就是一位"硬科技操盘手"——他长期在半导体与人工智能领域深耕，曾主导多项国家级科研与产业化项目。在发布会上，他用一串数字（10万平米、300款首发、162亿意向合作、200+企业）清晰勾勒出上海AI产业的版图。</p>
+
+<p>陈杰的沟通方式值得Yara借鉴：<strong>用数据代替形容词，用结构代替感慨。</strong>当新总监问你"最近在做什么"时，最有力的回答不是"我在努力支持老师"，而是"我负责3个项目、45位老师的教务支持，正在搭建用户生命周期看板，目标是为业务决策提供数据支持"。这就是"操盘手语言"。</p>
+
+<h3>🔬 "黑幕论"的特朗普：归因方式决定人生走向</h3>
+<p>美加墨世界杯美国队1比4不敌比利时后，特朗普宣称比赛"有黑幕"，类比2020年大选。这是一种典型的"外部归因"——把失败归于不可控、不可改的外部因素。心理学上，长期外部归因会让人丧失"改变自己"的动机，因为既然问题在"黑幕"，那自己再努力也无济于事。</p>
+
+<p>反过来想，<strong>真正的高手都做"内部可控归因"：</strong>不是"裁判黑了我"，而是"我下一次怎么踢得更好"。对Yara而言，新总监到岗、绩效考核、薪资11k——这些都不是"黑幕"。你能控制的是：今天是否多学了一个数据分析函数、是否多优化了一个工作流程、是否多服务好了一个猫咪客户。把注意力从"外部不公"拉回"内部可控"，是26岁最该建立的思维习惯。</p>
+
+<h3>💡 给你的启示：用"操盘手语言"重构自我叙事</h3>
+<p>陈杰和特朗普代表了两种截然相反的叙事方式——一个用数据建立信任，一个用阴谋维持自尊。对Yara来说，你不需要成为副市长，但你可以从日常沟通开始练习"操盘手语言"：把"我很忙"改成"我这周处理了15单工单，其中系统类10单、课程类5单"；把"我想学习"改成"我在三节课学数据分析，目标是三个月内能独立搭建运营看板"。</p>
+
+<p>你现在正处于职业转型的关键窗口——新运营总监到岗意味着新的评价体系、新的机会窗口。不要因为暂时的11k月薪而陷入"黑幕论"，陈杰花了数十年才站上发布台，你才26岁，还有的是时间。关键不是现在赚多少，而是你每天都在为"运营操盘手"积累什么——小鹅通数据分析的经验、飞书看板管理的实践、三个项目并行的协调能力，都是真实的、不可替代的资产。</p>
+
+<div class="highlight">
+<h4>🐱 Yara的人物启示录</h4>
+<p>陈杰教会我们：<strong>信任来自数据，不来自表态。</strong>Trump教会我们反面教材：把失败推给"黑幕"，只会让自己永远停留在原地。今天开始，试着用"操盘手语言"写一条工作日报——不用长，三句话，全是数字和结果。一周后你会发现，新总监看你的眼神，真的不一样了。</p>
+</div>
+</div>
+</section>
+<section id="module-7" class="module">
+<div class="module-header">
+    <span class="module-num">⑦</span>
+    <div><div class="module-title">国学智慧</div><div class='module-subtitle'>古人的智慧 · 今天的答案</div></div>
+</div>
+<div class="content">
+<h3>♎ 天秤座七月运势：五行视角的事业分析</h3>
+<p>农历五月廿三（7月7日），时值盛夏，五行属火。天秤座（Libra，9月23日-10月23日）属风象星座，五行中对应金（酉金）。在火旺之月，金被火克，天秤座人容易感到内心焦躁、决策犹豫加剧——这恰好是天秤座的天然软肋：<strong>天生追求平衡，但在火克金的月份里，"平衡"会变成"纠结"。</strong></p>
+
+<p>具体到Yara：你的八字日主若有金，本月需特别注意避免因情绪波动做出冲动的职业决策。火月对应的是"行动力"与"表达欲"的增强——利用这一点推进你正在搭建的用户生命周期看板和日常工作，而不是消耗在自我怀疑中。火的正面能量是"照亮"和"温暖"，用你的运营分析能力为团队提供清晰的业务洞察，自然会被新总监看到。</p>
+
+<h3>🎨 喜用物品指南：天秤座下半年开运清单</h3>
+<p>根据五行生克，天秤座（金命）在火月（夏季）需要"土"来通关——火生土，土生金，形成良性循环。因此7-8月火最旺时建议：<strong>颜色上多用黄色、棕色、米色（土色系）</strong>——办公桌上的黄色便签本、米色手机壳、卡其色穿搭；<strong>材质上多用陶瓷、石头、水晶等土属性物品</strong>——黄水晶摆件（招财）、茶具（土制陶瓷+水，金生水亦佳）；<strong>方位上多关注西南方</strong>——后天八卦中西南为坤位属土，你工作或居住空间的西南角保持整洁，放置一盆绿植或黄水晶。</p>
+
+<p>特别提醒：Yara本身喜欢茶艺，这个爱好恰好契合五行调和——茶具为土（陶瓷）、茶水为水、泡茶动作为金（金属茶具），一个简单的泡茶仪式就能完成土生金→金生水的能量循环。每天早上一杯茶，既是生活仪式感，也是五行调和。</p>
+
+<h3>📜 《周易》"谦卦"给当下人生的启示</h3>
+<p>《周易》第十五卦为"谦卦"（地山谦），卦象是艮下坤上——山在地下，象征"内高外低、谦虚守礼"。谦卦是六十四卦中唯一六爻皆吉的卦，核心思想是<strong>"谦尊而光，卑而不可逾"</strong>——真正谦虚的人，地位越高反而越发光彩，低调却无人能超越。</p>
+
+<p>Yara目前处于职业爬坡期，最忌"未强先傲"或"因弱而怨"。谦卦告诉我们：<strong>把成绩归于团队，把问题归于自己，反而能赢得更多信任与机会。</strong>新总监到岗，你用"谦"的姿态主动对齐、用数据证明价值，比急于表现更可持续。山在地下，不是山消失了，而是它在积蓄破土而出的力量。</p>
+
+<h3>🧘 极简国学：三句话安顿一天</h3>
+<p><strong>第一句（儒家）：</strong>"君子务本，本立而道生"——《论语·学而》。你的"本"不是现在11k月薪，而是正在搭建的运营能力体系。把"本"立住，薪资和机会自然会来。</p>
+<p><strong>第二句（道家）：</strong>"上善若水，水善利万物而不争"——《道德经》。你在闲鱼喂猫、在雅识做教务支持，本质都是"利万物"的服务。不必急着"争"，水到渠成时自然有你的位置。</p>
+<p><strong>第三句（佛家）：</strong>"过去心不可得，现在心不可得，未来心不可得"——《金刚经》。不为过去遗憾，不为现在焦虑，不为未来担忧。今天把今天的事做好，就够了。</p>
+
+<div class="highlight">
+<h4>🐱 今日国学行动</h4>
+<p>买一盒黄色便签纸放办公桌；早上泡茶时默念"谦尊而光"三次；手机壁纸换成黄色/米色系。不是迷信，是给自己一个心理锚点——<strong>国学智慧的价值不在于预测未来，而在于让今天的你更有力量。</strong></p>
+</div>
+</div>
+</section>
+<section id="module-8" class="module">
+<div class="module-header">
+    <span class="module-num">⑧</span>
+    <div><div class="module-title">法律常识</div><div class='module-subtitle'>知法守法 · 护身符</div></div>
+</div>
+<div class="content">
+<h3>🐱 闲鱼猫咪上门服务：你的法律责任边界在哪？</h3>
+<p>Yara的闲鱼副业——猫咪上门喂食、铲屎、拿快递、倒垃圾——看似简单，但法律风险不可忽视。你与客户之间形成的是<strong>口头服务合同关系</strong>（《民法典》第469条认可口头合同），受《民法典》合同编约束。你的核心义务是"按约定提供合格服务"，客户的核心义务是"按时支付报酬"。</p>
+
+<p>风险集中在四点：(1) <strong>猫咪意外伤亡</strong>——服务期间猫咪生病或死亡，客户可能以"未尽合理注意义务"索赔。建议每次服务拍摄猫咪状态照片/视频发给客户，形成服务记录；(2) <strong>财物损失</strong>——客户家中物品损坏或丢失，你可能担责。建议进入前与客户视频确认家中状态，离开时再次确认；(3) <strong>人身安全</strong>——被猫抓伤/咬伤属服务中意外伤害，建议自备碘伏、创可贴，严重时应就医并保留票据，可向客户主张赔偿；(4) <strong>隐私保护</strong>——客户家门密码/钥匙是敏感信息，《个人信息保护法》要求你不得泄露或用于服务之外用途。</p>
+
+<p>最务实的保护：<strong>起草一份简单"服务确认单"</strong>（微信文字亦可），含服务日期时段、猫咪数量品种、服务内容清单、费用、健康状态（客户自述）、特殊注意事项。双方微信确认即构成电子合同。</p>
+
+<h3>🏢 教培行业劳动法：你可能不知道的权利</h3>
+<p>Yara目前月薪11k（底薪7k+绩效4k），绩效直接影响40%收入。根据《劳动合同法》关键知识点：(1) 绩效工资属工资组成部分，公司单方面降低绩效标准导致收入减少，属<strong>变相降薪</strong>，需双方协商一致（《劳动合同法》第35条）；(2) 社保断缴方面，杭州政策为——断缴3个月内可由新单位通过社保系统直接补缴，超3个月需提供劳动关系证明到社保窗口办理；(3) 若计划跳槽，注意《劳动合同法》第37条：提前30日书面通知即可解除，无需公司批准——但建议拿到书面offer后再提离职。</p>
+
+<p>新运营总监到岗后，若公司调整你的工作职责或考核标准，属<strong>劳动合同变更</strong>，需你的书面同意。未经同意大幅调整且导致绩效减少，你可提异议并要求恢复原状。</p>
+
+<h3>📚 知识付费合规红线（2026管理巩固年）</h3>
+<p>2026年是教培行业"规范管理巩固年"，监管持续加码。你参与运营的"之昊的298""杨家成3980"等课程需遵守：(1) 宣传不得含"保过""必涨粉""保证收益"等绝对化用语（《广告法》第9条）；(2) 声称可帮助就业需提供真实数据支撑，否则构成虚假宣传；(3) 退费政策必须在购买页明确公示——你在小鹅通后台管理退费追踪时，确保规则清晰可查，避免消费纠纷。</p>
+
+<p>对调研的佳乐咨询3980元虚拟资料培训课，付费前建议核实对方是否有教育/培训类经营范围（天眼查可查），以及是否有学员投诉/退费纠纷记录。3980元不是小数目，法律层面做足功课是对钱包的基本尊重。</p>
+
+<h3>🏛️ 杭州本地法律资源速查</h3>
+<p><strong>劳动仲裁：</strong>杭州市劳动人事争议仲裁院，地址上城区中河中路242号，电话0571-87211420，仲裁免费，时效为知道权利受损之日起1年内。<strong>法律援助：</strong>杭州市法律援助中心，电话12348，对符合条件低收入群体提供免费律师服务。<strong>消费者维权：</strong>杭州12315，购买课程遇纠纷可拨打。</p>
+
+<div class="highlight">
+<h4>🐱 Yara的法律行动清单</h4>
+<p>今天做完三件事：(1) 手机备忘录写一版"猫咪上门服务确认单"模板；(2) 把杭州劳动仲裁电话87211420存进通讯录；(3) 打开天眼查搜一下佳乐咨询的公司信息。<strong>法律意识不是用来打官司的——是用来避免打官司的。</strong></p>
+</div>
+</div>
+</section>
+<section id="module-9" class="module">
+<div class="module-header">
+    <span class="module-num">⑨</span>
+    <div><div class="module-title">历史人文</div><div class='module-subtitle'>以史为镜 · 可知兴替</div></div>
+</div>
+<div class="content">
+<h3>👑 张骞凿空西域：一位"外交操盘手"的十三年</h3>
+<p>公元前138年，汉武帝派遣张骞出使西域，意图联合大月氏夹击匈奴。这一去，就是十三年。张骞第一次出使，途中被匈奴俘虏扣押十余年，娶妻生子，却始终"持汉节不失"——手中的汉朝符节从未丢弃。他最终逃脱，辗转抵达大月氏，虽未达成军事同盟，却带回了关于西域诸国（大宛、康居、大月氏、安息）的详尽情报，为后来丝绸之路的开辟奠定了基础。公元前119年，张骞第二次出使，正式打通中原与西域的官方通道。</p>
+
+<p>从"运营操盘手"视角看，张骞的伟大不在于一次成功，而在于<strong>在失联十三年、目标彻底失败的情况下，依然系统性地收集信息、建立关系、最终把"失败的任务"转化为"改变文明的情报资产"。</strong>这恰恰是Yara今天最该学的：新总监到岗、工作流重构，你的"第一次尝试"很可能不完美，但只要你保持"持汉节不失"的定力——每天记录数据、积累方法、沉淀SOP——短期的挫折就会变成长期的资产。</p>
+
+<h3>📖 历史的镜像：Yara与张骞的跨时空对话</h3>
+<p>你正在经历的场景——新总监（新老板）上任、需要重新搭建工作流、量化项目——与公元前138年的张骞有神似之处。你的优势是：你管理的不是大汉帝国，而是45位辅导老师和3个项目；你的"出使周期"不是十三年，而是3-6个月；你的失败成本不是"身死异乡"，而是"绩效扣分"。但核心逻辑完全一样：<strong>中层操盘手的核心能力不是"一次做对"，而是"在不确定中持续积累可信的信息与关系"。</strong></p>
+
+<p>三个你可以从张骞身上学到的具体策略：(1) <strong>带着"符节"做事</strong>——你的"汉节"就是职业操守与数据真实，无论环境多乱，看板的数据不能造假、对老师的承诺不能爽约；(2) <strong>把每次"受阻"变成"情报"</strong>——张骞被俘十余年反而摸清了匈奴地理与习俗，你遇到流程卡点，也该记录"卡在哪、为什么、怎么绕过"，这些笔记就是你未来的方法论；(3) <strong>用长期主义对抗短期焦虑</strong>——张骞用了两次出使、二十余年才看到成果，你搭建运营体系也不用指望三个月见效。</p>
+
+<h3>🏛️ 7月7日历史上的今天</h3>
+<p><strong>1937年7月7日</strong>——卢沟桥事变（七七事变）爆发，全民族抗战由此开始。89年后的今天各地举行纪念活动，提醒我们"居安思危"不是口号。对Yara而言，这对应的职场智慧是：<strong>在安稳时储备能力，在动荡时才有底气。</strong>你现在每月学的数据分析、每天搭的看板，就是你的"战时储备"。</p>
+
+<p><strong>2003年7月7日</strong>——世界卫生组织宣布该地区已无SARS传播，历时数月的非典疫情在全球范围内宣告结束。这场公共卫生危机证明：<strong>再大的危机，终会过去；关键是危机中你建立了什么能力。</strong>不少人在居家期间学会了线上协作、远程运营——这恰恰是Yara如今吃饭的本事。</p>
+
+<div class="highlight">
+<h4>🐱 Yara的历史启示</h4>
+<p>张骞有汉武帝的全力支持、有明确的国家使命、有十三年的漫长时间——但他第一次出使"任务失败"了。不是因为他不行，而是因为环境远超个人控制。你不是张骞，你的变革规模小得多、容错空间大得多，但你面对同一个命题：<strong>如何在目标受挫时，依然把过程变成资产？</strong>答案不是"更努力地求结果"，而是"更系统地攒方法"。</p>
+</div>
+</div>
+</section>
+<section id="module-10" class="module">
+<div class="module-header">
+    <span class="module-num">⑩</span>
+    <div><div class="module-title">职场教育</div><div class='module-subtitle'>办公室生存法则 · 理性博弈</div></div>
+</div>
+<div class="content">
+<h3>🔄 新运营总监到岗：你的"30天关键窗口期"策略</h3>
+<p>雅识语言事业部新到岗的运营总监刘颖（Yara）正从运营视角重新梳理业务——这对Yara既是挑战也是机会。新领导上任前30天处于"信息收集期"，对团队成员的判断尚未固化。你的核心策略就四个字：<strong>主动对齐，而非被动等待</strong>。借鉴7月7日WAIC发布会上陈杰市长的"数据叙事"风格——用数字和结构说话。</p>
+
+<p>具体操作：第一周内主动预约15分钟1v1同步，准备三样东西：(1) 一份"当前工作概览"（一页纸，列出你负责的之昊/太极/49.9图书三个项目、45位辅导老师的支持范围、月均15单工单量——用数字，不用形容词）；(2) 一个"我正在解决的问题"（如"正在搭建基于小鹅通UID的用户生命周期看板"——展示你已在做运营操盘层工作）；(3) 一个"我需要你帮助的"（如"希望了解您对运营指标的优先级排序"——既展示主动性，又给新总监表达期望的开口）。</p>
+
+<h3>🎯 从执行者到操盘手：三个可量化升级动作</h3>
+<p>你现在的定位是"运营/系统支持"（事务执行层），目标是"运营操盘手"（策略制定层）。这不是title变化，而是思维重构。三个每月可衡量的升级动作：(1) <strong>从"解决问题"到"预防问题"</strong>——月均15单工单，开始记录每类问题根因，一个月后你能说"本月系统类工单下降30%，因修复了X流程"；(2) <strong>从"支持45位老师"到"赋能45位老师"</strong>——制作"常见问题自助手册"或录制5分钟操作视频，把老师从"找你"变成"先自助"；(3) <strong>从"数据整理"到"数据洞察"</strong>——看板不要只展示"有多少用户"，要回答"哪个环节流失最严重、运营干预点在哪"。</p>
+
+<h3>💰 薪资谈判底层逻辑：你的筹码是什么</h3>
+<p>你7k底薪+4k绩效，目标15-20k。这个跳跃在有内部晋升路径的公司（雅识）难一步到位，通常需跳槽实现。若目标语糖社区运营岗，核心筹码有三：(1) <strong>可迁移硬技能</strong>——小鹅通操作、数据分析（用户生命周期看板）、飞书项目管理，均教培运营通用；(2) <strong>可展示作品集</strong>——看板截图、优化过的流程文档、编写的SOP整理成"运营作品集"；(3) <strong>可量化成果</strong>——"支持45位老师"不如"通过自动化流程为部门每日节省1小时，月均约22工时"有力。</p>
+
+<p>面试语糖时，别说"想学习、想成长"——公司付钱买能力不是潜力。你可以说："我在雅识负责3个项目并行运营、45位老师教务支持和用户数据分析，搭建的看板直接服务业务决策，具备从0到1搭建运营SOP的经验。"每句都是事实，每句都在说"我能立刻上手"。</p>
+
+<h3>🧘 职场边界感：不内耗的工作方式</h3>
+<p>你自称"懒散但认知清晰"，这在职场是优势——说明你不会在无效努力中消耗自己。但"懒散"需配合"边界感"才成武器：(1) <strong>不接"不属于你的事"</strong>——若老师找你做其他岗位职责的事，说"这个可能需要X部门支持，我帮你对接"，而非默默接下来；(2) <strong>不在下班后"秒回"</strong>——固定早晚各一次集中处理非紧急问题，让老师习惯你的节奏；(3) <strong>不把领导焦虑转成自己焦虑</strong>——新总监的压力是她的，你的工作是做好分内事，不是替她承担整个部门业绩。</p>
+
+<div class="highlight">
+<h4>🐱 本周职场行动清单</h4>
+<p>① 写好"当前工作概览"一页纸（今天）；② 预约新总监1v1（本周内）；③ 开始统计本月工单类型分布（现在标记）。<strong>一个月后回头看，你会感谢今天开始行动的自己。</strong></p>
+</div>
+</div>
+</section>
+<section id="module-11" class="module">
+<div class="module-header">
+    <span class="module-num">⑪</span>
+    <div><div class="module-title">旅游与兴趣爱好</div><div class='module-subtitle'>生活不止KPI · 还有诗和远方</div></div>
+</div>
+<div class="content">
+<h3>🏞️ 暑期杭州周边：避暑+徒步+云海的完美周末路线</h3>
+<p>7月的杭州，市区气温稳定在33-38℃，西湖边游客摩肩接踵——这不是适合"在城市里待着"的季节。但杭州的优势在于：<strong>开车1-2小时就能从"火炉"切换到"天然空调"。</strong>结合7月7日广西"美莎克"强降雨、宜宾5.0级地震的防灾背景，出行前务必查好天气与地质灾害预警，避开山区暴雨时段。推荐三条适合Yara兴趣（徒步+登山+骑行）的周末路线：</p>
+
+<p><strong>路线一：清凉峰云海之旅（强度★★★☆）。</strong>清凉峰海拔1787米，浙西第一高峰，国家级自然保护区。雨后清晨云海概率极高。杭州出发约2.5小时车程，建议周五下班后出发，山脚民宿住一晚，周六凌晨4点登山（约3-4小时登顶），看完日出云海后下山，下午返杭。装备：登山鞋（必须）、头灯、冲锋衣（山顶清晨约15-18℃）、2L水、能量棒。</p>
+
+<p><strong>路线二：青山湖环湖骑行（强度★☆☆☆）。</strong>临安青山湖绿道全长42公里，全程平缓，适合新手。沿途水上森林（池杉林夏季形成梦幻倒影）、湿地公园、茶园。杭州出发约1小时，可租自行车（约50元/天），带野餐垫和午餐，骑到水杉林旁草坪野餐。不喜欢高强度运动又想亲近自然，这是完美选择。</p>
+
+<p><strong>路线三：径山寺禅茶一日（强度★★☆☆）。</strong>径山寺是日本茶道发源地，位于余杭径山镇，海拔约800米。山脚步行上山约1.5小时（古道石阶树荫覆盖），山顶提供素斋（约30元/人）和茶室体验。这条路线完美契合Yara茶艺兴趣——在茶道祖庭泡一杯自己带的茶，是周末最安静的治愈。杭州出发约1小时。</p>
+
+<h3>🍵 茶艺入门：天秤座的"慢生活"仪式</h3>
+<p>Yara喜欢茶艺，这是极好的兴趣——不仅契合天秤座审美偏好（茶席布置、茶具选择都是"美"的练习），更因茶艺本身是低成本、高回报的"正念练习"。入门路径：(1) <strong>先买基础茶具</strong>——盖碗（50-100元）+公道杯（30-50元）+品茗杯×2（20-40元/个）+茶盘（初学者茶巾即可），总预算200元内；(2) <strong>从绿茶开始</strong>——杭州有全国最好的绿茶之一（西湖龙井），从龙井了解等级差异（明前vs雨前、群体种vs龙井43），入门级龙井约80-150元/50g；(3) <strong>建立"每日15分钟茶修"</strong>——每天下班烧水、温杯、投茶、冲泡、闻香、品饮，全程约15分钟。这不是浪费时间，是每天15分钟从"运营狗"切换回"Yara"的仪式。</p>
+
+<h3>🐱 猫咪知识进阶：从"上门喂猫"到"猫咪行为顾问"</h3>
+<p>你的闲鱼猫咪上门服务，可升级为更具差异化的"猫咪行为顾问"——提高客单价、建立专业壁垒。三个进阶知识点：(1) <strong>猫咪肢体语言</strong>——尾巴直立尖端微弯是"开心见到你"，耳朵压平是"害怕或准备攻击"，缓慢眨眼是"猫式亲吻"（你也可以缓慢眨眼回应）；(2) <strong>常见健康问题识别</strong>——观察猫砂（尿团大小频率反映肾脏健康）、眼睛分泌物（过多可能上呼吸道感染）、食欲变化（突然不吃可能应激或疾病）；(3) <strong>环境丰容</strong>——给客户建议猫咪友好居家布置（猫爬架位置、窗台猫窝安全、互动玩具推荐）。</p>
+
+<p>把这些知识变附加值：每次服务结束给客户发"今日猫咪观察笔记"（3-5句话+1张照片），如"泡芙今天食欲很好，吃了满满一碗粮，中午在窗台晒了半小时太阳，情绪状态很棒。PS：我注意到水碗靠近猫砂盆，建议挪到3米外，猫咪不喜欢在水源旁排泄。"这样的体验，客户愿为专业买单，而非仅"找人喂猫"。</p>
+
+<div class="highlight">
+<h4>🐱 周末灵感速递</h4>
+<p><strong>这个周末选一条路线出发吧——</strong>想要"壮观风景"去清凉峰看云海；想要"温柔放松"去青山湖骑行+野餐；想要"安静治愈"去径山寺泡壶茶。出行前查好天气预警（参考广西、宜宾的防灾提醒），避开山区暴雨。<strong>工作是为了更好的生活，别把顺序搞反了。</strong>另外，下次喂猫试试"缓慢眨眼"——猫会懂的。</p>
+</div>
+</div>
+</section>
+
+<section id="module-12" class="module">
+<div class="module-header">
+    <span class="module-num">⑫</span>
+    <div><div class="module-title">运营精华</div><div class='module-subtitle'>2026年7月7日 星期二 · 七七事变纪念与市场暴跌日的运营韧性</div></div>
+</div>
+<div class="content">
+<h3>🕊️ 纪念日运营：历史是最好的品牌故事</h3>
+<p>七七事变89周年，全国各地举行纪念活动。对运营人来说，纪念日是一种特殊的内容运营场景——它天然具有情感共鸣和传播力。但纪念日运营有一个关键原则：<strong>真诚比创意更重要</strong>。那些借纪念日做营销的品牌，如果只是为了蹭热度而没有真正的价值输出，往往会引起反感。相反，那些把纪念日变成"用户教育"或"情感连接"机会的品牌，反而能赢得尊重。对Yara来说，教培行业也有很多可以利用的纪念日：开学季、教师节、世界读书日、国际英语日等。关键不是"蹭热点"，而是找到纪念日与你的用户之间的真实连接点，用有价值的内容建立情感共鸣。</p>
+
+<h3>📉 市场暴跌时的用户运营：恐慌是最好的试金石</h3>
+<p>7月7日A股深证暴跌超4%，ST板块分化，科创50两天跌近10%。市场暴跌时，用户运营面临最大考验——恐慌的用户会做出非理性的决策（恐慌赎回、恐慌投诉、恐慌流失）。但恰恰在这种时刻，优秀的运营人能建立最深的信任。具体做法：在市场暴跌当天，主动给用户发一条消息——不是推销产品，而是提供价值。比如"今天市场波动较大，我整理了一份市场解读和应对建议，供您参考"。这条消息不需要很长，但它传递了一个信号：在恐慌的时刻，有人在乎你、有人给你专业的支持。这种"危机时刻的陪伴"是建立长期用户关系的最强粘合剂。</p>
+
+<h3>🌀 台风巴威的活动运营启示：不可抗力下的应变能力</h3>
+<p>台风巴威10-12日影响杭州，35-38℃高温持续。对活动运营来说，天气是最常见的不可抗力——你精心策划的户外活动，可能因为一场暴雨而泡汤。但优秀的活动运营不会被天气打败，而是会提前准备应急方案。比如：线上备用方案（如果线下活动取消，立即转为线上直播）、时间调整方案（提前一天或延后一天）、场地备选方案（室内备选场地）。更重要的是，在活动宣传中就设置预期——"如遇恶劣天气，活动将调整为线上进行，届时会提前通知"。这种"预期管理"能大幅减少用户的不满。对Yara来说，教培行业的活动运营同样面临不可抗力：老师临时请假、系统故障、政策调整等。提前准备应急预案，是活动运营的基本功。</p>
+
+<h3>📱 AI智能体下线倒计时8天：用户迁移的运营窗口</h3>
+<p>AI智能体下线倒计时8天，这意味着大量用户需要在8天内完成迁移。对运营人来说，这是一个典型的"用户迁移"场景——当产品功能下线或平台规则变化时，如何引导用户平稳过渡到新的方案。用户迁移的关键不是"通知用户"，而是"帮助用户"——提供清晰的迁移指南、一对一的迁移支持、迁移后的功能对比。如果迁移体验做得好，用户不仅会留下，还会因为你的贴心服务而更加忠诚；如果做得不好，用户会流失到竞争对手那里。对Yara来说，小鹅通平台的功能更新、课程调整、价格变化，都可能涉及用户迁移。提前做好迁移方案，是减少用户流失的关键。</p>
+
+
+<div class="highlight">
+<h4>🐱 Yara的运营精华思路</h4>
+<p>七七事变89周年提醒我们：历史不会被遗忘，但可以从中汲取前进的力量。市场暴跌提醒我们：恐慌是暂时的，但信任的建立是长期的。台风提醒我们：计划永远赶不上变化，但应急预案可以让变化的伤害最小化。AI智能体下线提醒我们：工具会消失，但能力会留下。这四个"提醒"串起来，就是运营人的核心素养：在变化中保持韧性，在危机中建立信任，在不确定性中找到确定性。建议Yara每周做一次"运营韧性检查"：回顾本周遇到的意外情况，评估自己的应对是否及时有效，记录可以改进的地方。韧性不是天生的，是在一次次应对变化中练出来的。</p>
+</div>
+</div>
+</section>
+
+<div class="back-link">
+<a href="index.html">← 返回首页</a>
+</div>
+
+<div class="footer">
+<p>🐱 小咪为你精心编制 | 每日8:00自动推送</p>
+<p style="margin-top:12px;font-size:0.9em;opacity:0.7;">深度认知 · 理性判断 · 温情陪伴 | 拓展视野，优化大脑</p>
+<p style="margin-top:8px;font-size:0.8em;opacity:0.5;">基于公开信息整理 · 仅供参考 · 不构成投资建议</p>
+</div>
+
+</body>
+</html>

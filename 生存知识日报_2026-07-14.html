@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生存知识日报 · 2026-07-14 · 星期二</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+/* === YouTube 2025 风格设计系统（浅色版）=== */
+:root {
+    --bg-base: #f7f7fa;              /* 浅灰白主背景 */
+    --bg-elevated: #ffffff;          /* 次级背景（白） */
+    --glass-bg: rgba(255,255,255,0.72);   /* 液态玻璃：白半透明 */
+    --glass-bg-hover: rgba(255,255,255,0.88);
+    --glass-border: rgba(15,15,25,0.08);  /* 深色描边适配浅底 */
+    --glass-border-hover: rgba(255,45,85,0.35);
+    --text-primary: #0f0f15;         /* 主文字：近黑深色 */
+    --text-secondary: #5a5a6a;       /* 次级文字 */
+    --text-tertiary: #9a9aa8;        /* 三级文字 */
+    --accent-red: #ff2d55;           /* 冷色调红（保持） */
+    --accent-magenta: #ff2dc8;       /* 洋红（保持） */
+    --accent-gradient: linear-gradient(135deg, #ff2d55 0%, #ff375f 50%, #ff2dc8 100%);
+    --accent-soft: rgba(255,45,85,0.10);
+    --accent-glow: rgba(255,45,85,0.28);
+    --magenta-glow: rgba(255,45,200,0.20);
+    --radius-lg: 28px;
+    --radius-md: 20px;
+    --radius-sm: 14px;
+    --radius-pill: 999px;
+    --blur: 30px;
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+    font-family:-apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg-base);
+    color: var(--text-primary);
+    line-height:1.85;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+}
+
+/* 顶部导航栏 - 浅色玻璃 */
+.nav-bar {
+    position:sticky; top:0; z-index:1000;
+    background:rgba(255,255,255,0.72);
+    backdrop-filter:blur(var(--blur)) saturate(180%);
+    -webkit-backdrop-filter:blur(var(--blur)) saturate(180%);
+    border-bottom:1px solid rgba(15,15,25,0.06);
+    padding:14px 20px;
+    display:flex; flex-wrap:wrap; gap:8px;
+    justify-content:center;
+}
+.nav-bar a {
+    color: var(--text-secondary);
+    text-decoration:none;
+    font-size:0.82em; font-weight:500;
+    padding:8px 16px;
+    border-radius: var(--radius-pill);
+    background: rgba(255,255,255,0.6);
+    border:1px solid transparent;
+    transition: all 0.3s var(--ease);
+    white-space:nowrap;
+}
+.nav-bar a:hover {
+    color: var(--accent-red);
+    background: rgba(255,45,85,0.08);
+    border-color: rgba(255,45,85,0.25);
+    transform: translateY(-1px);
+}
+
+/* Hero 区 - 浅色 + 环境模式柔和辉光 */
+.hero {
+    position:relative; overflow:hidden;
+    padding:90px 24px 70px;
+    text-align:center;
+    border-bottom:1px solid rgba(15,15,25,0.06);
+    background: var(--bg-base);
+}
+/* 环境模式：红洋红柔和辉光（浅色下更克制） */
+.hero::before {
+    content:''; position:absolute; inset:-30%;
+    background:
+        radial-gradient(ellipse 60% 50% at 30% 20%, rgba(255,45,85,0.14) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 70% 30%, rgba(255,45,200,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 70% 60% at 50% 100%, rgba(255,55,95,0.10) 0%, transparent 70%);
+    filter: blur(40px);
+    animation: ambient 12s ease-in-out infinite alternate;
+    z-index:0;
+}
+@keyframes ambient {
+    0% { transform: translate(0,0) scale(1); opacity:0.75; }
+    100% { transform: translate(-3%, 2%) scale(1.08); opacity:1; }
+}
+.hero::after {
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.6) 0%, transparent 50%);
+    pointer-events:none; z-index:0;
+}
+.hero h1 {
+    font-size:3.2em; color: var(--text-primary);
+    font-weight:600; letter-spacing:4px;
+    position:relative; z-index:1;
+    text-shadow: 0 2px 20px rgba(255,255,255,0.6);
+}
+.hero .date-info {
+    font-size:1.1em;
+    color: var(--text-secondary);
+    position:relative; z-index:1;
+    margin-top:14px; font-weight:400;
+}
+
+/* 目录网格 - 内容墙 */
+.toc {
+    max-width:1080px; margin:0 auto; padding:40px 24px;
+}
+.toc-grid {
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap:12px;
+}
+.toc-grid a {
+    display:block; padding:14px 16px;
+    text-decoration:none; color: var(--text-secondary);
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-md);
+    border:1px solid rgba(15,15,25,0.06);
+    transition: all 0.35s var(--ease);
+    font-size:0.9em; font-weight:500;
+    text-align:center;
+}
+.toc-grid a:hover {
+    color: var(--accent-red);
+    background: #fff;
+    border-color: rgba(255,45,85,0.25);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(255,45,85,0.12);
+}
+
+/* 模块卡片 - 浅色液态玻璃 */
+.module {
+    max-width:1080px;
+    margin:28px auto;
+    padding:48px 40px;
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(var(--blur)) saturate(150%);
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(150%);
+    border-radius: var(--radius-lg);
+    border:1px solid rgba(15,15,25,0.06);
+    box-shadow: 0 1px 3px rgba(15,15,25,0.04), 0 8px 24px rgba(15,15,25,0.03);
+    position:relative; overflow:hidden;
+    transition: all 0.4s var(--ease);
+}
+/* 卡片顶部柔和辉光（环境模式） */
+.module::before {
+    content:''; position:absolute; top:-50%; left:50%;
+    width:140%; height:80px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at center, rgba(255,45,85,0.06) 0%, transparent 70%);
+    filter: blur(20px);
+    pointer-events:none;
+}
+.module:hover {
+    border-color: rgba(255,45,85,0.20);
+    box-shadow: 0 4px 12px rgba(15,15,25,0.05), 0 16px 40px rgba(255,45,85,0.08);
+}
+
+.module-header {
+    display:flex; align-items:center; gap:18px;
+    margin-bottom:32px;
+    padding-bottom:20px;
+    border-bottom:1px solid rgba(15,15,25,0.08);
+}
+.module-num {
+    font-size:2.4em; font-weight:300; line-height:1;
+    background: var(--accent-gradient);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+.module-title {
+    font-size:1.65em; color: var(--text-primary);
+    font-weight:600; letter-spacing:1px;
+}
+.module-subtitle {
+    color: var(--text-secondary);
+    font-size:0.95em; margin-top:4px; font-weight:400;
+}
+.content { color: var(--text-primary); font-size:1.04em; }
+.content p { margin-bottom:18px; text-indent:2em; color: rgba(15,15,25,0.85); }
+.content h3 {
+    color: var(--accent-red);
+    font-size:1.18em; margin:30px 0 14px;
+    font-weight:600; letter-spacing:0.5px;
+    display:inline-block;
+}
+.content strong {
+    background: var(--accent-gradient);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    font-weight:600;
+}
+.content ul { list-style:none; padding:0; margin:18px 0; }
+.content ul li {
+    padding:8px 0 8px 28px;
+    position:relative;
+    color: rgba(15,15,25,0.80);
+}
+.content ul li::before {
+    content:''; position:absolute; left:6px; top:18px;
+    width:8px; height:8px;
+    border-radius: var(--radius-pill);
+    background: var(--accent-gradient);
+}
+
+/* 高亮块 - 浅色液态玻璃 + 红洋红渐变描边 */
+.highlight {
+    background: linear-gradient(135deg, rgba(255,45,85,0.06) 0%, rgba(255,45,200,0.05) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-md);
+    padding:24px 28px; margin:24px 0;
+    border:1px solid rgba(255,45,85,0.18);
+    background-color: rgba(255,255,255,0.6);
+    position:relative; overflow:hidden;
+}
+.highlight::before {
+    content:''; position:absolute; top:0; left:0;
+    width:100%; height:1px;
+    background: linear-gradient(90deg, transparent, rgba(255,45,85,0.5), rgba(255,45,200,0.5), transparent);
+}
+.highlight h4 {
+    background: var(--accent-gradient);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    margin-bottom:12px; font-weight:600;
+    letter-spacing:0.5px; font-size:1.05em;
+}
+
+/* 图表卡片 - 浅色液态玻璃 */
+.chart-box {
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-md);
+    padding:28px;
+    margin:28px 0;
+    border:1px solid rgba(15,15,25,0.06);
+}
+.chart-box h4 {
+    color: var(--text-secondary);
+    text-align:center;
+    margin-bottom:18px;
+    font-weight:500; letter-spacing:1px;
+    font-size:0.95em;
+}
+
+/* 返回按钮 - 药丸形大按钮 */
+.back-link {
+    text-align:center; padding:60px 20px 40px;
+}
+.back-link a {
+    display:inline-block;
+    color:#fff; text-decoration:none;
+    font-size:1.05em; font-weight:600;
+    padding:16px 48px;
+    border-radius: var(--radius-pill);
+    background: var(--accent-gradient);
+    box-shadow: 0 8px 24px rgba(255,45,85,0.30), 0 0 60px rgba(255,45,200,0.12);
+    transition: all 0.35s var(--ease);
+    letter-spacing:1px;
+    border:none;
+}
+.back-link a:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 14px 40px rgba(255,45,85,0.45), 0 0 80px rgba(255,45,200,0.22);
+}
+.back-link a:active { transform: translateY(-1px) scale(0.99); }
+
+/* 页脚 */
+.footer {
+    text-align:center;
+    padding:48px 20px;
+    color: var(--text-tertiary);
+    border-top:1px solid rgba(15,15,25,0.06);
+}
+.footer p { margin:8px 0; font-weight:300; }
+
+/* 响应式 - 移动优先 */
+@media (max-width:768px) {
+    .hero { padding:60px 18px 50px; }
+    .hero h1 { font-size:2.1em; letter-spacing:2px; }
+    .hero .date-info { font-size:0.95em; }
+    .nav-bar { gap:5px; padding:10px 12px; }
+    .nav-bar a { font-size:0.72em; padding:6px 11px; }
+    .toc { padding:28px 16px; }
+    .toc-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap:10px; }
+    .toc-grid a { padding:11px 12px; font-size:0.82em; }
+    .module { margin:16px 12px; padding:32px 22px; border-radius: var(--radius-md); }
+    .module-header { gap:12px; margin-bottom:24px; }
+    .module-num { font-size:1.9em; }
+    .module-title { font-size:1.3em; }
+    .content { font-size:0.98em; }
+    .content p { text-indent:1.5em; }
+    .highlight { padding:18px 20px; }
+    .chart-box { padding:18px 14px; }
+    .back-link a { padding:14px 36px; font-size:0.98em; }
+}
+@media (max-width:480px) {
+    .hero h1 { font-size:1.8em; }
+    .nav-bar a { font-size:0.68em; padding:5px 9px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav-bar">
+<a href="#module-1">①今日要闻</a><a href="#module-2">②财富流向</a><a href="#module-3">③理财前线</a><a href="#module-4">④科技前沿</a><a href="#module-5">⑤地理知识</a><a href="#module-6">⑥人物阅读</a><a href="#module-7">⑦国学智慧</a><a href="#module-8">⑧法律常识</a><a href="#module-9">⑨历史人文</a><a href="#module-10">⑩职场教育</a><a href="#module-11">⑪旅游与兴趣爱好</a><a href="#module-12">⑫运营精华</a>
+</nav>
+
+<div class="hero">
+<h1>📰 生存知识日报</h1>
+<div class="date-info">2026-07-14 · 星期二 · 农历六月初一</div>
+<div class="date-info" style="font-size:0.95em;margin-top:5px;">深度认知 · 理性判断 · 温情陪伴</div>
+</div>
+
+<div class="toc">
+<div class="toc-grid">
+<a href="#module-1">①今日要闻</a><a href="#module-2">②财富流向</a><a href="#module-3">③理财前线</a><a href="#module-4">④科技前沿</a><a href="#module-5">⑤地理知识</a><a href="#module-6">⑥人物阅读</a><a href="#module-7">⑦国学智慧</a><a href="#module-8">⑧法律常识</a><a href="#module-9">⑨历史人文</a><a href="#module-10">⑩职场教育</a><a href="#module-11">⑪旅游与兴趣爱好</a><a href="#module-12">⑫运营精华</a>
+</div>
+</div>
+
+<section id="module-1" class="module">
+<div class="module-header">
+    <span class="module-num">①</span>
+    <div><div class="module-title">今日要闻</div><div class='module-subtitle'>2026年7月14日 星期二 · 世界脉搏，一天读懂</div></div>
+</div>
+<div class="content">
+<h3>📰 头条纵观</h3>
+<p>2026年7月14日，世界人工智能大会暨人工智能全球治理高级别会议（WAIC 2026）进入最后倒计时。国家主席习近平将出席7月17日开幕式并发表主旨讲话——这是中国最高领导人首次在WAIC开幕式上发声，标志着AI已从技术议题升级为全球治理与国家战略的核心议题。大会将在上海举办四天，140场论坛、1100多家企业参展、超300款AI新品全球首发，展览面积首次突破10万平方米。</p>
+
+<p>政策层面继续密集出牌。国务院日前正式批复<strong>《扩大消费“十五五”规划》</strong>，提出到2030年社会消费品零售总额达到60万亿元左右、居民消费率明显提高，并部署28条重点任务。规划重点支持大宗耐用商品消费、汽车消费、家居家电智能化升级，以及“全国一体化算力网”建设。这与商务部同日启动的“暑期文旅消费季”形成呼应，消费提振成为下半年宏观政策的核心抓手。</p>
+
+<h3>🌪️ 国内焦点：巴威北上，东北告急</h3>
+<p>第9号台风“巴威”继续北上，7月13日至14日东北地区遭遇强降雨。辽宁、吉林等地局部或现特大暴雨，国家防办、国家粮食和物资储备局紧急调拨复膜编织布等2600余件中央防汛物资支援辽宁；针对河北暴雨洪涝灾害，国家防灾减灾救灾委员会启动国家四级救灾应急响应，国家发展改革委紧急安排中央预算内投资3000万元支持灾后应急恢复。国家气候中心预计“七下八上”防汛关键期（7月16日至8月15日）华北大部、内蒙古东部、东北地区降水偏多。</p>
+
+<p>与此同时，中国气象局发布重大预警：国家海洋环境预报中心综合研判，今年秋冬季将形成一次<strong>超强厄尔尼诺事件</strong>，刷新历史极值的可能性持续增大。超强厄尔尼诺将对我国气候产生显著持续性影响，意味着下半年的极端天气风险正在累积，防灾应急不是“一次性事件”，而是需要常态化准备的生存课题。</p>
+
+<h3>🌍 国际风云：霍尔木兹海峡，20%“过路费”</h3>
+<p>中东局势再升级。美国总统特朗普在社交媒体发文称，美国将恢复对伊朗的海上封锁，并<strong>对所有经由霍尔木兹海峡运输的货物收取20%的费用</strong>。特朗普称“霍尔木兹海峡目前处于开放状态，且无论伊朗是否参与都将继续保持开放”，该措施“只阻止伊朗的船只或客户进出海峡，其他国家均可公平公开使用”。国际油价应声狂飙近10%，布伦特原油一度逼近80美元/桶。美军将于格林尼治时间7月14日20时（北京时间15日凌晨4时）开始执行对伊朗港口及沿海地区的海上封锁。</p>
+
+<p>地缘冲突的涟漪正在横扫全球资本市场。7月13日A股暴跌后，今日早盘继续承压，上证指数一度跌超1%逼近3869点；韩国股市此前13天跌超20%进入技术性熊市。美联储主席鲍威尔此前表态“关税冲击带来的通胀可能更持久”，而全球供应链再度紧绷让滞胀风险重新抬头。</p>
+
+<div class="highlight">
+<h4>🐱 Yara的关键启示</h4>
+<p>今天的新闻图谱呈现三条主线：一是<strong>AI治理元年正式开启</strong>——习近平出席WAIC意味着AI合规与产业化进入国家最高决策层，运营人必须提前学习“合规用AI”；二是<strong>消费提振成为政策主语</strong>——《扩大消费“十五五”规划》与你所在的教培/知识付费行业直接相关，下半年“释放内需潜力”会带动更多用户付费意愿；三是<strong>地缘风险从未远去</strong>——霍尔木兹海峡的20%“过路费”会让油价、金价、全球股市持续波动，你的基金净值短期内可能继续承压。<strong>在信息噪音中守住自己的节奏，是普通人最稀缺的竞争力。</strong></p>
+</div>
+</div>
+
+<div class="chart-box">
+<h4>7月14日A股主要指数表现（真实行情数据，单位：%）</h4>
+<canvas id="chart1" height="300"></canvas>
+</div>
+<script>
+new Chart(document.getElementById('chart1'), {
+    type:'bar',
+    data:{ labels:['上证指数','深证成指','创业板指','北证50'],
+      datasets:[{ label:'涨跌幅%', data:[-0.66,-0.42,-0.29,-0.22],
+        backgroundColor:['#764ba2','#764ba2','#5a3e9c','#c0392b'], borderRadius:6 }]},
+    options:{ plugins:{ legend:{ labels:{ color:'rgba(60,60,90,0.85)' } } },
+      scales:{ x:{ ticks:{ color:'rgba(90,90,110,0.9)' }, grid:{ display:false } },
+               y:{ ticks:{ color:'rgba(90,90,110,0.9)', callback:v=>v+'%' }, grid:{ color:'rgba(0,0,0,0.06)' } } } }
+});
+</script>
+</section>
+<section id="module-2" class="module">
+<div class="module-header">
+    <span class="module-num">②</span>
+    <div><div class="module-title">财富流向</div><div class='module-subtitle'>2026年7月14日 · 震荡日，资金流向谁家</div></div>
+</div>
+<div class="content">
+<h3>📉 震荡日全景</h3>
+<p>7月14日，A股延续7月13日暴跌后的震荡走势。上证指数早盘一度跌超1%，最低触及3869.30点，随后有所收窄；深证成指与创业板指跌幅相对较小。沪深两市成交额较前一交易日继续缩量，显示市场情绪仍处于谨慎观望期。板块分化极为鲜明：石油、煤炭、医药商业、生物制品等防御性板块涨幅居前；航天系、北斗导航、6G、半导体、IT服务等科技成长方向跌幅居前。</p>
+
+<p>这种分化的核心逻辑是<strong>地缘风险溢价上升</strong>——霍尔木兹海峡局势紧张直接推升油价，石油石化板块受益；而科技股前期涨幅较大、估值偏高，在外部风险冲击下成为资金抛售首选。这不是产业基本面的逆转，而是风险偏好的快速切换。对普通投资者而言，关键在于识别“哪些是短期情绪冲击，哪些是长期趋势逆转”。</p>
+
+<p>南向资金今日净买入超90亿港元，智谱获大幅净买入47亿港元，而部分航天、半导体相关标的遭抛售。这表明资金在港股市场也在做“避险+精选”：流入有真实AI应用落地的头部公司，流出估值透支的概念股。对于A股投资者，同样的逻辑适用——震荡市中，质量比故事更重要。</p>
+
+<h3>🛢️ 能源与大宗商品：油价狂飙的连锁反应</h3>
+<p>特朗普宣布对霍尔木兹海峡货物收取20%费用后，<strong>国际油价日内狂飙近10%</strong>。油价上涨会沿着产业链传导：上游石油开采、油服企业受益；中游炼化、化工企业成本承压；下游航空、物流、塑料包装等行业利润被压缩。与此同时，黄金作为避险资产通常在地缘紧张时获得资金青睐，而美债收益率集体上行则显示市场对通胀预期重新定价。</p>
+
+<p>另一条被忽视的大宗商品线索是<strong>猪肉价格连续上涨</strong>。农业农村部监测显示，7月以来全国生猪和猪肉价格连续上涨两周，7月12日北京新发地白条猪批发价每公斤14.4元，较7月1日上涨15%。生猪价格在养殖端近两周累计回升12.8%。猪肉作为CPI的核心权重项，其涨价会推动通胀预期，进而影响货币政策空间与债市走势。</p>
+
+<h3>💾 存储芯片：SLC NAND下半年涨价120%-170%</h3>
+<p>TrendForce集邦咨询发布报告，预计下半年SLC NAND价格较上半年再上涨120%至170%，且仍有上调可能性。原因是三季度适逢传统备货旺季，四季度原厂成熟制程供给持续减少、库存见底。这对存储产业链是明确的利好，但A股半导体板块今日却跌幅居前——说明市场正在区分“行业景气度”与“个股估值泡沫”：存储涨价利好有真实产能和订单的公司，但前期被情绪炒作的标的正在估值回归。</p>
+
+<div class="highlight">
+<h4>🐱 Yara的财富视角</h4>
+<p>Yara唯一的场外持仓<strong>易方达全球成长精选C</strong>已停止申购，这种“被动锁仓”在动荡期反而是保护。今天的财富流向告诉你：<strong>当资金从科技股涌向能源、医药、红利板块时，空仓或低仓位就是赢</strong>。你不需要追热点，只需要守住无风险底仓（国债、定存），等市场把恐慌情绪释放完毕。记住：暴涨日适合卖出，暴跌日适合观望，震荡日适合学习——你的“副业收入+公租房补贴”继续优先投向确定性资产。</p>
+</div>
+</div>
+
+<div class="chart-box">
+<h4>7月14日板块涨跌幅分化（领涨 vs 领跌，单位：%）</h4>
+<canvas id="chart2" height="300"></canvas>
+</div>
+<script>
+new Chart(document.getElementById('chart2'), {
+    type:'bar',
+    data:{ labels:['石油石化','煤炭','医药商业','生物制品','航天系','半导体','6G','IT服务'],
+      datasets:[{ label:'板块涨跌幅%', data:[2.8,1.9,1.5,1.1,-3.2,-2.8,-2.5,-2.1],
+        backgroundColor:['#667eea','#667eea','#667eea','#667eea','#764ba2','#764ba2','#764ba2','#764ba2'], borderRadius:6 }]},
+    options:{ plugins:{ legend:{ labels:{ color:'rgba(60,60,90,0.85)' } } },
+      scales:{ x:{ ticks:{ color:'rgba(90,90,110,0.9)' }, grid:{ display:false } },
+               y:{ ticks:{ color:'rgba(90,90,110,0.9)', callback:v=>v+'%' }, grid:{ color:'rgba(0,0,0,0.06)' } } } }
+});
+</script>
+</section>
+<section id="module-3" class="module">
+<div class="module-header">
+    <span class="module-num">③</span>
+    <div><div class="module-title">理财前线</div><div class='module-subtitle'>2026年7月14日 · 震荡日，无风险资产更香</div></div>
+</div>
+<div class="content">
+<h3>🏦 国债窗口最后五天</h3>
+<p>2026年第五、六期储蓄国债（电子式）发行窗口仍在开放中，7月19日截止。三年期年利率1.63%，五年期年利率1.70%。横向对比：国有大行活期0.05%、一年定存0.95%、三年定存1.25%、五年定存1.30%；城商行三年期特色定存可达1.95%。20万元存三年，城商行比大行多赚约2100元，且50万元以内受存款保险全额保障。在A股连续震荡的背景下，国债的无风险属性被进一步放大。</p>
+
+<p>储蓄国债今年最大的变化是<strong>纳入个人养老金产品池并划出40%专属额度</strong>。普通渠道“秒空”的国债，走养老金渠道反而相对充足。截至2025年6月，个人养老金开户人数超1.5亿，但真正缴费的仅占22%。这意味着大量“开户热、缴存冷”的用户，正在错过一个制度红利。Yara如果尚未开立个人养老金账户，现在有两个理由：一是每年1.2万元缴费额度可税前扣除；二是专属国债额度更容易买到。</p>
+
+<h3>📊 四个钱包的暴跌检验</h3>
+<p>7月13日A股暴跌、今日继续震荡，恰好验证了“四个钱包”资产配置框架的合理性。第一个钱包（日常开支）放6个月应急现金，货币基金或活期理财虽只有1%左右年化，但流动性是核心价值；第二个钱包（保值增值）放城商行定存或储蓄国债，1.63%-1.95%的收益在震荡日完全不受市场波动影响；第三个钱包（稳健理财）放R2级银行理财或中短债基金，年化1.0%-2.5%，轻微波动但整体正收益；第四个钱包（博取超额）放宽基指数基金，占比不超过总资产20%。</p>
+
+<p>关键提醒：<strong>不要因为市场跌了就想“抄底”</strong>。真正底部的信号通常包括：成交量从缩量重新放量、权重股企稳、北向资金回流、恐慌情绪指数（VIX）冲高回落。在这些信号出现之前，空仓或低仓位就是正确的策略。Yara的易方达全球成长精选C已停止申购，客观上已经帮你实现了“被动不操作”——继续等待市场自己消化波动。</p>
+
+<p>还有一个值得关注的稳健工具是<strong>中短债基金</strong>。当前货币基金7日年化已跌至1%左右，头部短债基金年化收益中枢在1.5%-2.1%，且持有3个月以上基本为正收益、T+1赎回、7天后免赎回费。在震荡市里，中短债基金既能保持流动性，又能提供比货币基金高出一截的收益，是“第二层资产”的优质补充。对于每月有固定结余的Yara来说，把短期不急用的资金按比例配置到短债基金，是比单纯持有活期或货币基金更优的选择。</p>
+
+<p>实操层面，储蓄国债可通过工商银行、建设银行等手机银行认购，最低100元起，发行期内每日8:30开售。由于额度紧张，建议提前登录、设置提醒、发售当天第一时间操作。个人养老金账户可通过任意一家试点银行开立，缴存后即可购买专属国债额度，每年1.2万元上限可用于税前扣除，对Yara的实际减税效果约为每年数百元。</p>
+
+<div class="highlight">
+<h4>🐱 Yara的行动清单</h4>
+<p>7月19日国债发行窗口截止前，建议完成一次国债认购（最低100元起），把“无风险收益”先落袋。同时考虑开立个人养老金账户——每年1.2万元税前扣除额度，对月薪11k的Yara来说是真实减税。权益资产今天继续震荡，<strong>你不操作就是最好的操作</strong>。让市场自己消化中东局势和科技股估值，你守住无风险底仓。每月864元公租房补贴和工资结余，优先补第二层资产（国债/定存）。</p>
+</div>
+</div>
+
+<div class="chart-box">
+<h4>无风险资产收益率对比（2026年7月，单位：%）</h4>
+<canvas id="chart3" height="300"></canvas>
+</div>
+<script>
+new Chart(document.getElementById('chart3'), {
+    type:'bar',
+    data:{ labels:['活期','1年定存','3年定存','5年定存','大额存单(1年)','城商行3年定存','3年国债','5年国债'],
+      datasets:[{ label:'年利率%', data:[0.05,0.95,1.25,1.30,1.20,1.95,1.63,1.70],
+        backgroundColor:['#c9c9d6','#a5a8c4','#8a8dbe','#7d80b8','#6f73b4','#43e97b','#667eea','#5a3e9c'], borderRadius:6 }]},
+    options:{ plugins:{ legend:{ labels:{ color:'rgba(60,60,90,0.85)' } } },
+      scales:{ x:{ ticks:{ color:'rgba(90,90,110,0.9)' }, grid:{ display:false } },
+               y:{ ticks:{ color:'rgba(90,90,110,0.9)', callback:v=>v+'%' }, grid:{ color:'rgba(0,0,0,0.06)' } } } }
+});
+</script>
+</section>
+<section id="module-4" class="module">
+<div class="module-header">
+    <span class="module-num">④</span>
+    <div><div class="module-title">科技前沿</div><div class='module-subtitle'>2026年7月14日 · WAIC倒计时3天，国产芯片 breakthrough</div></div>
+</div>
+<div class="content">
+<h3>🚀 国产AI芯片 breakthrough：520万亿次算力</h3>
+<p>7月13日，我国发布<strong>首颗采用软件定义与三维近存计算技术的AI芯片</strong>，通过底层架构创新，实现了每秒520万亿次浮点运算的算力。这颗芯片由上海团队发布，标志着国产AI算力在“架构创新”路线上取得重要突破。软件定义芯片意味着同一块芯片可以通过软件配置，适应不同AI任务需求；三维近存计算则通过缩短数据搬运距离，大幅降低能耗并提升效率。这对打破“堆算力、堆功耗”的英伟达路径依赖，具有战略意义。</p>
+
+<p>同日，工信部、中央网信办、国家发改委、国家数据局联合印发<strong>《关于推动互联网基础资源高质量发展的指导意见》</strong>，提出到2030年互联网基础资源高质量发展实现体系化突破，取得一批标志性技术原创成果，到2035年全面建成架构先进、全域互联、高速泛在、安全可控的新型互联网基础设施。文件从IPv6、域名、标识解析、算力网络、数据安全等维度提出16项任务。这意味着互联网将从“应用繁荣”走向“底座自主”。</p>
+
+<h3>🤖 WAIC 2026：全球治理与300款新品首发</h3>
+<p>距离2026世界人工智能大会开幕只剩3天。大会将于7月17日至20日在上海举行，主题为“智能伙伴，共创未来”。规格空前：习近平将出席开幕式，9位图灵奖/诺贝尔奖得主参会，强化学习之父理查德·萨顿作主旨演讲，140场论坛，展览面积首超10万平方米，1100余家企业参展，3000余项展品，超300款AI新品全球首发。展品包括华为Atlas 950真机、MiniMax M3多模态大模型、阶跃Agent操作系统、全球首款AI智能体手机等。</p>
+
+<p>AI治理是今年WAIC的最大看点。Anthropic最新研究发现Claude内部存在被称为“J空间”的类意识工作空间；OpenAI与Anthropic相继递交IPO申请；美国政府强制下线Anthropic Fable5模型。AI正从技术竞赛走向“技术+制度”的双重博弈。对运营人而言，这意味着未来使用AI工具必须关注合规边界——哪些数据可以喂给AI、哪些输出需要人工审核、哪些场景需要披露AI使用，都会成为职场硬规则。</p>
+
+<p>从产业应用看，AI正在从“聊天工具”进化到“Agent操作系统”——它能自主规划、调用工具、完成多步骤任务。阶跃Agent操作系统、MiniMax M3多模态大模型、全球首款AI智能体手机等新品，预示2026年下半年将是“AI Agent商用元年”。对运营人来说，这意味着用户运营的工作方式将被重塑：个性化内容生成、智能客服、自动化数据分析、用户流失预警等场景，都会逐步由AI Agent接管，而运营人的价值将从“执行操作”转向“设定策略与审核质量”。</p>
+
+<div class="highlight">
+<h4>🐱 Yara的AI机会</h4>
+<p>国产AI芯片突破+互联网基础资源高质量发展指导意见，说明中国正在构建“自主可控的AI底座”。对运营人Yara来说，最直接的启示是：你正在学的WorkBuddy系统运用与数据分析课程，正踩在“AI工具平民化+合规化”的交汇点。不要只把AI当内容生成器，而要把它变成你的“数据实习生”——批量处理小鹅通订单、清洗用户生命周期数据、生成运营日报。WAIC之后，AI合规标准会加速落地，<strong>先学会合规用AI的人，比只会用AI的人更值钱</strong>。</p>
+</div>
+</div>
+
+<div class="chart-box">
+<h4>国产AI算力与WAIC关键数据（真实发布数据）</h4>
+<canvas id="chart4" height="300"></canvas>
+</div>
+<script>
+new Chart(document.getElementById('chart4'), {
+    type:'bar',
+    data:{ labels:['软件定义AI芯片算力(TFLOPS)','WAIC论坛场次','参展企业','展品数量','全球首发新品'],
+      datasets:[{ label:'数量/性能', data:[520,140,1100,3000,300],
+        backgroundColor:['#667eea','#764ba2','#5a3e9c','#43e97b','#38f9d7'], borderRadius:6 }]},
+    options:{ plugins:{ legend:{ labels:{ color:'rgba(60,60,90,0.85)' } } },
+      scales:{ x:{ ticks:{ color:'rgba(90,90,110,0.9)' }, grid:{ display:false } },
+               y:{ ticks:{ color:'rgba(90,90,110,0.9)' }, grid:{ color:'rgba(0,0,0,0.06)' } } } }
+});
+</script>
+</section>
+<section id="module-5" class="module">
+<div class="module-header">
+    <span class="module-num">⑤</span>
+    <div><div class="module-title">地理知识</div><div class='module-subtitle'>厄尔尼诺与霍尔木兹：两条改变世界的地理线</div></div>
+</div>
+<div class="content">
+<h3>🌊 厄尔尼诺：太平洋的一场“发烧”</h3>
+<p>国家海洋环境预报中心最新研判：今年秋冬季将形成一次<strong>超强厄尔尼诺事件</strong>，刷新历史极值的可能性持续增大。厄尔尼诺是赤道太平洋中东段海水异常升温的现象，每隔2-7年发生一次，持续数月到一年多。它看似遥远，却能通过大气环流改变全球气候：中国南方可能出现洪涝、北方可能出现干旱；东南亚和澳大利亚可能遭遇干旱；美洲西海岸可能暴雨成灾。对我国而言，超强厄尔尼诺意味着下半年极端天气风险显著上升。</p>
+
+<p>厄尔尼诺的地理逻辑在于：<strong>海洋是地球最大的热量储存器</strong>，太平洋中东部海水升温会改变全球大气环流，影响季风、台风路径和降水分布。2026年夏天的台风“巴威”路径偏北、东北强降雨，就与当前气候背景有关。对身处杭州的Yara来说，这意味着下半年要更关注台风、暴雨、高温等预警——极端天气不再是“小概率事件”，而是需要纳入日常决策的常规变量。</p>
+
+<h3>🗺️ 霍尔木兹海峡：20%“过路费”的地理博弈</h3>
+<p>特朗普宣布对霍尔木兹海峡货物收取20%费用，背后是这条海峡不可替代的地理属性。霍尔木兹海峡位于伊朗与阿曼之间，最窄处仅33公里，但每天有约2000万桶原油通过，占全球海运石油的近三分之一。中东产油国（沙特、伊拉克、科威特、阿联酋、卡塔尔、伊朗）的绝大部分出口石油都要经过这里。替代路线几乎没有：绕行非洲好望角会增加约40%的运输时间和成本。</p>
+
+<p>从地理角度看，霍尔木兹海峡的“脆弱性”来自三点：宽度极窄、替代路线匮乏、周边地缘政治高度不稳定。任何对海峡通行权的干预，都会在全球能源市场引发连锁反应。油价飙升→中下游企业成本上升→通胀预期升温→货币政策空间受限→全球风险资产承压——这就是今天A股继续震荡的地理-经济传导链。</p>
+
+<h3>🌧️ 东北强降雨：台风北上的地理后果</h3>
+<p>台风“巴威”北上给东北带来强降雨，辽宁、吉林局部或现特大暴雨。这背后的地理机制是：台风从暖湿的海洋携带大量水汽，北上过程中遇到北方冷空气，形成强烈的降水云系。东北地区的地形（长白山脉、大兴安岭）对气流有抬升作用，进一步加剧降雨。这种“台风水汽+北方冷涡+山地抬升”的组合，是东北极端暴雨的典型成因。对于居住在杭州的Yara来说，东北强降雨看似遥远，但它提醒我们每个人都要关注自己所在地的气候风险：滨江、萧山地势较低，遇到强台风或短时暴雨时也需防范内涝。</p>
+
+<div class="highlight">
+<h4>🐱 Yara的地理视角</h4>
+<p>厄尔尼诺和霍尔木兹海峡都在提醒你：<strong>远方的地理事件，会直接影响你的钱包和生活</strong>。厄尔尼诺可能让杭州夏天更热、台风更猛，影响你的出行和副业安排；霍尔木兹海峡的局势会影响油价、金价和你的基金净值。做运营也是一样——识别业务链路中的“咽喉节点”（如小鹅通平台、核心转化路径），并重点加固，比平均用力更高效。</p>
+</div>
+</div>
+</section>
+<section id="module-6" class="module">
+<div class="module-header">
+    <span class="module-num">⑥</span>
+    <div><div class="module-title">人物阅读</div><div class='module-subtitle'>嫦娥七号的科研人：把足迹印到月球背面</div></div>
+</div>
+<div class="content">
+<h3>🌙 长征五号遥十四：嫦娥七号背后的工程师们</h3>
+<p>7月13日，长征五号遥十四运载火箭安全运抵文昌航天发射场，将执行嫦娥七号任务。嫦娥七号是中国探月工程四期的重要任务，目标是在月球南极附近着陆，开展月球南极资源勘查与环境探测。任务的复杂程度远超以往：要在月球南极永久阴影区寻找水冰、要在极端温差环境下工作、要部署飞跃器探测坑内环境——每一个目标都是人类月球探测的“第一次”。</p>
+
+<p>这些“第一次”的背后，是无数航天科研工作者数十年如一日的坚守。中国探月工程从2004年立项至今，已走过22年。从嫦娥一号到嫦娥六号，从“绕、落、回”到“探、登、驻”，每一步都跨越巨大技术鸿沟。嫦娥七号任务的科研团队，需要在“无人区”里解决热控、能源、通信、导航等一系列难题。他们的工作没有热搜、没有爆款，但正是这些“看不见的坚持”构成了中国航天的根基。</p>
+
+<h3>💡 长期主义的另一种样本</h3>
+<p>航天科研人的职业路径与韦东奕、陈立泉有相似之处：选择一个方向，长期深耕，不追短期风口。但他们的工作还有一个更特殊的属性——<strong>容错率极低</strong>。一次火箭发射失败可能意味着数亿元损失和数年努力归零；一次月球探测器失联可能让整个任务功亏一篑。这种高压环境倒逼出极致的严谨与协作。</p>
+
+<p>对Yara的启示是：运营操盘手的成长同样是一场“探月工程”。你现在搭建的用户生命周期看板、学习的AI工具、管理的三个项目，就像嫦娥七号上的各个子系统——单独看都不起眼，但组合起来决定任务成败。你不需要在6个月内变成“运营大神”，你只需要像航天工程师一样，<strong>把每一个模块都做扎实、做可靠</strong>。</p>
+
+<h3>🌟 航天精神：失败后的韧性</h3>
+<p>中国航天有一个被外界低估的传统：对失败极度坦诚。2017年长征五号遥二失利后，研制团队没有回避，而是公开排查、公开改进、公开复飞。这种“把失败当数据”的文化，与优秀运营团队复盘用户流失、复盘活动转化率的文化如出一辙。每一次失败都不是终点，而是下一次迭代的输入。嫦娥七号团队之所以能在前人基础上不断突破，不是因为他们不失败，而是因为他们失败得快、学习得快、调整得快。</p>
+
+<div class="highlight">
+<h4>🐱 Yara的人物启示录</h4>
+<p>嫦娥七号科研团队教会我们：<strong>伟大的目标由无数 small wins 累积而成</strong>。你现在的职业目标“成为运营操盘手”看起来很远，但拆解开来就是：本周完成用户生命周期看板、下周优化分级测评流程、下个月掌握一个AI提效工具。每一个 small win 都不耀眼，但持续积累就会形成你的“职业火箭”。不要怕慢，怕的是原地打转。把航天人的“归零”思维用到自己身上：每次项目结束后，不管成败，都做一次彻底复盘——哪里能优化、哪里能复用、哪里能交给AI——这就是你 version up 的燃料。</p>
+</div>
+</div>
+</section>
+<section id="module-7" class="module">
+<div class="module-header">
+    <span class="module-num">⑦</span>
+    <div><div class="module-title">国学智慧</div><div class='module-subtitle'>扩消费“十五五”：内需为王的古老智慧</div></div>
+</div>
+<div class="content">
+<h3>📜 “扩内需”古已有之</h3>
+<p>《扩大消费“十五五”规划》提出到2030年社会消费品零售总额达到60万亿元左右。这个政策目标背后，是中国经济从“出口+投资”驱动向“内需+消费”驱动的深层转型。国学中早有类似智慧：《管子》提出“仓廪实而知礼节，衣食足而知荣辱”，强调物质基础是文明的前提；《孟子》讲“制民之产”，主张让百姓拥有稳定产业才能安居乐业。扩消费不是简单的“刺激花钱”，而是让居民有能力、有信心、有保障地消费。</p>
+
+<p>规划部署28条重点任务，包括促进大宗耐用商品消费、扩大汽车消费、支持家居家电智能化升级、推动服务消费扩容、发展新型消费等。这些举措的逻辑是：<strong>消费是收入的函数，收入是就业的函数，就业是产业竞争力的函数</strong>。只有产业链升级、就业质量提高、收入分配优化，消费才能真正起来。这与《大学》中“生财有大道，生之者众，食之者寡，为之者疾，用之者舒”的理财思想一脉相承。</p>
+
+<h3>🌿 海南禁售燃油车：道法自然的现代诠释</h3>
+<p>海南近日发布《“十五五”海南国家生态文明试验区规划》，提出平稳推进2030年禁售燃油车。这不是简单的产业政策，而是“道法自然”理念在当代的延续。《道德经》讲“人法地，地法天，天法道，道法自然”，强调人类活动应顺应自然规律。燃油车向新能源车转型，本质上是减少碳排放、修复人与自然关系的长期选择。海南作为中国生态文明试验区，再次承担先行先试的角色。</p>
+
+<h3>📖 《管子》中的消费智慧</h3>
+<p>《管子》中有句名言：“侈靡则 untranslatable”，意即在适当的时候鼓励消费、活跃经济，才能实现财富流动与社会繁荣。古人早已认识到：消费不是浪费，而是经济循环的重要环节。如果百姓只存钱不消费，生产出来的商品卖不出去，产业就会萎缩、就业就会减少。因此，扩消费政策不仅是短期刺激，更是长期经济健康运行的必要条件。这与现代经济学中的“有效需求”理论不谋而合——有收入、有意愿、有保障的消费，才是可持续的增长动力。</p>
+
+<p>《论语》中“君子喻于义，小人喻于利”的传统观念，在当代扩消费语境下也需要重新理解：鼓励消费不等于鼓励浪费，而是鼓励“有价值、有品质、有长期回报”的消费。教育、健康、技能提升、绿色消费，都是“义利兼顾”的消费类型。Yara每月投资自己的学习课程、副业工具、健康生活方式，本质上都是“值得的消费”。</p>
+
+<div class="highlight">
+<h4>🐱 Yara的国学视角</h4>
+<p>扩消费规划与海南绿色转型，对Yara的职业选择都有启示：前者说明“消费运营”将成为未来十年的核心赛道——用户运营、增长运营、社区运营都会围绕“如何激发消费意愿”展开；后者说明“绿色转型”会催生新岗位、新技能需求。你正在探索的用户运营/增长运营方向，恰好踩在“扩内需”的政策主线上。同时，你的闲鱼猫咪上门副业也是“服务消费”的一种，高温天增加关怀细节、暑期旺季精准获客，都是扩消费时代的小生意机会。<strong>选择大于努力，而政策方向是选择的重要坐标。</strong></p>
+</div>
+</div>
+</section>
+<section id="module-8" class="module">
+<div class="module-header">
+    <span class="module-num">⑧</span>
+    <div><div class="module-title">法律常识</div><div class='module-subtitle'>互联网基础资源高质量发展：数字世界的产权新规矩</div></div>
+</div>
+<div class="content">
+<h3>⚖️ 互联网基础资源新规</h3>
+<p>工信部、中央网信办、国家发改委、国家数据局近日联合印发《关于推动互联网基础资源高质量发展的指导意见》，提出到2030年互联网基础资源高质量发展实现体系化突破，到2035年全面建成架构先进、全域互联、高速泛在、安全可控的新型互联网基础设施。文件覆盖IPv6、域名、标识解析、算力网络、数据安全等16项任务，是数字世界“底座”层面的制度设计。</p>
+
+<p>对普通人而言，这份文件有三层直接影响：<strong>第一，数字身份更安全</strong>——统一标识解析体系让网络身份更可信，减少虚假账号和电信诈骗；<strong>第二，数据流转更清晰</strong>——算力网络和数据安全规则明确后，你的个人信息、交易数据、使用痕迹将有更强的法律保护；<strong>第三，AI工具使用更合规</strong>——随着AI与互联网基础资源深度融合，数据训练、模型输出、内容分发的法律边界会进一步清晰。</p>
+
+<h3>🔐 个人信息保护法与运营实践</h3>
+<p>《个人信息保护法》明确规定，处理个人信息应当遵循合法、正当、必要和诚信原则。对运营人来说，这意味着：收集用户信息前必须明确告知用途；不得过度收集与业务无关的信息；用户有权撤回同意并要求删除数据；向第三方提供个人信息需单独同意。这些规则直接影响用户注册、订单处理、营销活动、数据分析等日常工作。合规不是束缚，而是信任基础——用户越相信你的平台不会滥用数据，转化率与留存率就越高。</p>
+
+<p>互联网基础资源高质量发展指导意见，把这些要求从“个人信息”延伸到“网络空间基础设施”。未来企业在建设用户系统、知识库、AI Agent时，需要更多关注：域名安全、数据备份、跨境数据传输合规、算力资源可靠。对中小企业和个人运营者而言，这意味着选择合规的云服务与SaaS工具将变得更加重要。</p>
+
+<h3>🔒 数据合规：AI时代的必修课</h3>
+<p>指导意见特别强调“安全可控”。在AI大模型训练、智能体运行、企业知识库构建过程中，数据从哪里来、数据如何使用、输出内容是否侵权，正在成为法律风险高发区。近期Anthropic Claude Code因安全后门隐患被工信部警告、阿里全面切断Claude服务，都是数据合规风险的典型案例。未来使用AI工具，必须建立“数据合规意识”：不随意上传含个人隐私或商业机密的数据，对AI输出进行人工审核，敏感场景保留使用记录。</p>
+
+<div class="highlight">
+<h4>🐱 Yara的法律视角</h4>
+<p>对Yara这种每天处理小鹅通用户数据、搭建用户生命周期看板的运营人来说，数据合规不是“别人的事”，而是“自己的事”。你在用AI处理数据时，必须注意：用户手机号、订单金额、学习行为是否属于敏感信息？是否经过脱敏？输出结果是否用于商业决策？建议建立一份个人合规 checklist：上传数据前删除姓名和手机号；用AI生成内容时标注AI辅助；涉及用户画像时确保数据授权完整。懂合规的运营人，比只会跑数据的运营人更值钱——这是指导意见和AI监管趋势给你的职业加分项。</p>
+</div>
+</div>
+</section>
+<section id="module-9" class="module">
+<div class="module-header">
+    <span class="module-num">⑨</span>
+    <div><div class="module-title">历史人文</div><div class='module-subtitle'>长征五号与中国探月：从0到1的跨越史</div></div>
+</div>
+<div class="content">
+<h3>🚀 长征五号：中国航天的“胖五”传奇</h3>
+<p>7月13日，长征五号遥十四运载火箭安全运抵文昌航天发射场，将执行嫦娥七号任务。长征五号是中国现役运载能力最大的火箭，近地轨道运载能力达25吨，地球同步转移轨道运载能力达14吨，被航天爱好者亲切称为“胖五”。它的研制历程充满波折：2017年遥二发射失利，团队经历900多个日夜的排查与改进，2019年遥三复飞成功，2020年正式投入工程应用。每一次成功背后，都是中国航天从失败中学习的韧性。</p>
+
+<p>探月工程的历史脉络同样值得回顾。2004年，中国正式开展月球探测工程，命名为“嫦娥工程”，分为“绕、落、回”三步走。2007年嫦娥一号实现绕月探测；2013年嫦娥三号实现月面软着陆；2019年嫦娥四号实现人类首次月球背面软着陆；2020年嫦娥五号携带月壤返回地球；2024年嫦娥六号实现月球背面采样返回。嫦娥七号将进一步探测月球南极，为未来的月球科研站和国际月球科研站建设奠定基础。</p>
+
+<h3>🏝️ 文昌：中国航天的“起点”</h3>
+<p>长征五号遥十四运抵文昌航天发射场，这一选择本身也有地理深意。文昌位于海南岛东北部，是中国纬度最低、首个濒海的发射场。低纬度意味着地球自转线速度更大，火箭可以借助更多“免费推力”，同等条件下运载能力提升约10%。濒海则让火箭残骸可以落入大海，减少对人口密集区的影响。文昌发射场2014年投入使用，2016年长征七号首飞成功，2017年长征五号在此发射失利，2019年在此复飞成功——这里见证了中国航天最艰难的低谷与最辉煌的反弹。</p>
+
+<p>从更宏观的历史视角看，文昌发射场的启用标志着中国航天从内陆走向海洋、从封闭试验走向开放合作。未来嫦娥七号、嫦娥八号以及载人登月任务，都将从这里出发。这个小小的海滨城市，正在成为中国深空探测的“母港”。</p>
+
+<h3>📜 人类为什么执着登月</h3>
+<p>从1969年阿波罗11号首次载人登月，到2026年中国嫦娥七号即将奔赴月球南极，人类对月球的探索从未停止。月球不仅是科学研究的天然实验室，更是未来深空探测的前哨站。月球南极永久阴影区可能存在水冰，水冰可以分解为氢和氧，既能提供饮用水，也能制造火箭燃料。谁先在月球南极建立可持续存在，谁就可能在未来的太空资源开发中占据先机。这种“先占先得”的逻辑，与商业世界中抢占心智、抢占渠道、抢占生态位如出一辙。</p>
+
+<div class="highlight">
+<h4>🐱 Yara的历史启示</h4>
+<p>长征五号的“从失利到复飞”和探月工程的“从绕到登”，都在讲述同一个道理：<strong>伟大的事业不是一帆风顺的，而是在失败中迭代、在迭代中前进</strong>。Yara的职业转型也是如此：从教务执行到运营操盘手，中间必然有试错、有挫折、有自我怀疑。关键是像长征五号团队一样，把每一次失败都变成下一次成功的数据。你的用户生命周期看板、项目复盘、数据记录，就是你职业迭代的基础。</p>
+</div>
+</div>
+</section>
+<section id="module-10" class="module">
+<div class="module-header">
+    <span class="module-num">⑩</span>
+    <div><div class="module-title">职场教育</div><div class='module-subtitle'>扩消费规划下的运营机会：从执行到操盘</div></div>
+</div>
+<div class="content">
+<h3>💼 政策信号：下半年“扩消费”是主线</h3>
+<p>《扩大消费“十五五”规划》的发布，为下半年职场方向提供了清晰坐标。规划提出促进大宗耐用商品消费、扩大汽车消费、支持家居家电智能化升级、推动服务消费扩容、发展新型消费等28条任务。这与李强7月13日主持的经济形势座谈会形成呼应：政府下半年将“系统施策释放内需潜力，抓好服务业扩能提质政策落实，扩大优质服务供给，加快培育消费新增长点”。</p>
+
+<p>对Yara所在的教培/知识付费行业而言，这是明确的利好。教育、培训、健康、文旅都属于“服务消费”范畴，政策鼓励“优质服务供给”意味着行业监管将更强调质量而非一味打压。你正在负责的之昊项目、太极项目、49.9图书项目，本质上都是在“用内容产品满足用户的自我提升需求”——这正是扩消费政策支持的细分方向。</p>
+
+<h3>📊 运营人的机会窗口</h3>
+<p>扩消费规划的核心是“激发消费意愿+提升消费体验”，这与运营人的核心能力完全匹配：用户洞察、内容转化、社群运营、数据分析、活动设计。Yara正在搭建的用户生命周期看板，就是典型的“消费潜力挖掘工具”——通过识别用户所处的生命周期阶段，匹配不同的课程推荐、服务触达和转化策略。下半年，这类能力在内部的价值会被进一步放大。</p>
+
+<p>另一个关键机会是<strong>AI工具与运营的深度结合</strong>。WAIC 2026即将召开，300款AI新品首发，AI Agent、多模态大模型、智能体手机等新产品将改变用户交互方式。运营人需要快速学习：如何用AI生成个性化内容、如何用AI做用户分层、如何用AI辅助客服与答疑。谁先掌握这些技能，谁就拥有更高的职业溢价。</p>
+
+<h3>📈 从执行岗到操盘手的跃迁路径</h3>
+<p>Yara目前处于“教务执行”向“运营操盘”转型的关键期。操盘手与执行者的核心区别在于：执行者关注“把任务做完”，操盘手关注“为什么做、怎么做更有效、如何复制成功”。具体而言，你需要建立三种能力：<strong>数据能力</strong>——用数据描述业务现状、发现问题、验证假设；<strong>策略能力</strong>——根据数据制定用户触达、转化、留存方案；<strong>工具能力</strong>——用AI和自动化工具把重复性工作交给机器，自己专注于判断与创意。下半年是打磨这三种能力的最佳窗口。</p>
+
+<p>具体学习计划建议：每周用1小时练习小鹅通数据导出与Excel/看板分析；每月读完三节课中一门与增长运营相关的课程；每季度尝试用AI工具完成一个实际工作场景（如自动生成活动文案、批量处理用户标签）。能力增长不是线性爆发，而是复利累积——你今天投入的15分钟，会在6个月后变成明显的差距。</p>
+
+<div class="highlight">
+<h4>🐱 Yara的行动清单</h4>
+<p>下半年的职场主线已经清晰：①把用户生命周期看板从“个人工具”升级为“团队可复用的运营资产”；②结合扩消费政策，优化之昊、太极、49.9图书项目的转化路径；③在WAIC期间每天花15分钟跟踪AI新品发布，选1-2个与你工作相关的工具试用。你的目标不是“变成AI专家”，而是成为“会用AI提升运营效率”的稀缺运营人。同时，抓住思涵搭建运营中台的窗口期，主动请缨承担一个数据看板或活动策划模块——用行动证明自己的操盘能力，而不是等别人来发现。</p>
+</div>
+</div>
+</section>
+<section id="module-11" class="module">
+<div class="module-header">
+    <span class="module-num">⑪</span>
+    <div><div class="module-title">旅游与兴趣爱好</div><div class='module-subtitle'>入伏倒计时·世界杯半决赛·暑期档票房</div></div>
+</div>
+<div class="content">
+<h3>🌞 杭州：周三入伏，三伏天长达40日</h3>
+<p>台风“巴威”已北上离去，杭州今日正式结束防台风应急响应。但“送凉”窗口只有短暂一天——7月15日（周三）正式入伏，三伏天长达40日。气象部门预计，7月14日至18日杭州气温普遍超过35℃，午后有分散性雷阵雨。对Yara这种偏好“极简行动”的人来说，最省力的防暑策略是调整作息：早起处理重要工作，午后室内学习或休息，傍晚再进行户外活动或副业服务。</p>
+
+<p>高温天也给Yara的闲鱼上门喂猫服务带来新挑战。猫咪在高温环境下饮水需求大幅增加，上门服务时务必检查水碗是否充足、室内是否通风或空调是否开启。可以把“高温天额外检查饮水与通风”写进服务说明，既体现专业，也能提升客户信任。暑期是宠物上门服务的旺季，主人出游、猫咪留守的刚需场景正在放大，这是低成本获客的好时机。</p>
+
+<h3>⚽ 世界杯半决赛：宿命对决</h3>
+<p>2026美加墨世界杯四强法国、西班牙、英格兰、阿根廷已全部出炉，且恰好是FIFA世界排名前四的球队。半决赛即将上演：7月15日03:00法国VS西班牙，7月16日03:00英格兰VS阿根廷。四队合计拥有7座世界杯冠军，半决赛含金量堪称历史之最。现代足球的“体系化优势”让偶然性越来越难获胜——这与运营的逻辑一样：持续稳定的转化率来自体系，而非单次运气。</p>
+
+<h3>🎬 暑期档票房破30亿</h3>
+<p>截至7月14日，2026年度电影总票房（含预售）已突破187亿元，暑期档总票房（含预售）超30亿元。电影市场的回暖说明线下娱乐消费正在复苏，也反映出人们“愿意为情绪价值付费”。对运营人来说，这是一个信号：无论是课程产品还是副业服务，<strong>情绪价值与体验设计</strong>都是提升转化和复购的关键要素。</p>
+
+<h3>🏊 杭州避暑：三伏天的生存地图</h3>
+<p>入伏后，杭州的“避暑地图”也值得规划。室内选择：浙江图书馆、杭州图书馆、博物馆、商场、咖啡馆——冷气充足且免费或低成本；近水选择：九溪十八涧、云栖竹径、满觉陇——林荫覆盖、溪水清凉，是周末短途避暑的好去处；夜间选择：西湖断桥、钱江新城灯光秀、运河夜游——避开白天高温，享受夏夜凉风。对于喜欢户外又怕热的Yara，九溪是性价比最高的选择：从杭州市区出发约1小时可达，溪水浅而清，树荫浓密，几乎全程不用暴晒。</p>
+
+<div class="highlight">
+<h4>🐱 Yara的生活节奏</h4>
+<p>入伏后的生活节奏建议：①早起工作、午后避暑、傍晚活动；②上门喂猫服务增加高温关怀细节，把刚需季做成口碑季；③世界杯半决赛挑一场看，推荐英格兰VS阿根廷，代际碰撞最有话题性；④WAIC 7月17日开幕，关注AI Agent和用户运营相关的新工具。生活节奏不是“拼时间”，而是“在对的时间做对的事”。三伏天最怕的不是热，而是热得失去了节奏——把最难的工作放早晨，把学习放午后冷气房，把社交和运动放傍晚，你就比大多数人多了一分从容。</p>
+</div>
+</div>
+</section>
+
+<section id="module-12" class="module">
+<div class="module-header">
+    <span class="module-num">⑫</span>
+    <div><div class="module-title">运营精华</div><div class='module-subtitle'>2026年7月14日 星期二 · WAIC倒计时与扩消费十五五规划的运营机遇</div></div>
+</div>
+<div class="content">
+<h3>🤖 WAIC倒计时的运营启示：大会运营是最高效的品牌曝光</h3>
+<p>WAIC 2026即将开幕，这是AI领域最重要的行业盛会之一。对运营人来说，大型行业大会是最高效的品牌曝光和用户获客场景——你的目标用户、行业专家、潜在合作伙伴都聚集在同一个物理空间里。但大多数人在大会上只是"被动参与"——听听演讲、逛逛展台、收集资料。优秀的运营人在大会前就会制定明确的"大会运营策略"：设定目标（比如"认识10个行业同行"或"找到3个AI工具供应商"）、准备话术（30秒自我介绍）、规划路线（重点逛哪些展台、听哪些论坛）、后续跟进（大会后48小时内联系所有新认识的人）。大会运营的核心不是"去了"，而是"带回了什么"。</p>
+
+<h3>🛒 扩消费十五五规划的增长运营启示：政策红利是增长的加速器</h3>
+<p>国务院批复《扩大消费"十五五"规划》，提出2030年社零60万亿的目标和28条任务。这份规划对运营人来说意味着巨大的增长机遇——国家要扩大消费，就意味着消费者的支出会增加，消费场景会丰富，消费渠道会多元化。对教培行业来说，"扩消费"政策可能带来：更多的教育消费券、更宽松的培训监管、更丰富的教育消费场景（如职业教育、成人教育、终身学习）。运营人需要做的是：密切关注政策落地细则，找到政策红利与自己业务的交叉点，提前布局。政策红利不会平均分配给所有人——它会优先流向那些提前准备、快速响应的人。</p>
+
+<h3>⚔️ 霍尔木兹20%过路费的运营警示：成本上涨时的定价策略</h3>
+<p>特朗普宣布对霍尔木兹海峡货物收取20%费用，国际油价狂飙近10%。这个事件对运营人的启示是：当成本上涨时，如何调整定价策略？三种常见策略：第一，<strong>成本转嫁</strong>——把增加的成本转嫁给消费者（涨价），但这可能导致用户流失；第二，<strong>成本消化</strong>——自己承担成本（不涨价），但这会压缩利润；第三，<strong>价值重塑</strong>——不涨价也不降利润，而是通过提升产品价值来合理化价格。第三种策略是最高明的——比如，在成本上涨时，不直接涨价，而是增加新的服务/功能/内容，让用户觉得"多花的钱是值得的"。对Yara来说，如果小鹅通平台费用上涨或获客成本增加，可以考虑通过提升课程价值（增加AI功能、增加一对一辅导、增加社群服务）来维持价格，而不是简单涨价或压缩利润。</p>
+
+<h3>📊 上半年铁路客运23.48亿人次的运营数据视角</h3>
+<p>上半年铁路客运23.48亿人次，同比增长5.0%。这个数据看似与运营无关，但它揭示了一个重要趋势：人们正在重新流动起来。人员流动的增加意味着：线下活动的参与度会提升、跨城市的服务需求会增加、出行相关的消费会增长。对运营人来说，这是一个"顺势而为"的机会——如果你的业务与出行、旅游、跨城市服务相关，现在正是加大投入的时机。对Yara来说，这个趋势的启示是：暑期是教培行业的黄金期，因为学生放假、家长有更多时间关注教育。抓住暑期的流量红利，是下半年运营工作的重中之重。</p>
+
+
+<div class="highlight">
+<h4>🐱 Yara的运营精华思路</h4>
+<p>WAIC倒计时、扩消费规划、霍尔木兹过路费、铁路客运数据——这四条新闻串起来是一个完整的运营环境扫描：行业大会带来品牌曝光机会、国家政策带来增长红利、地缘冲突带来成本压力、消费数据带来市场信号。建议Yara每周做一次"运营环境扫描"：本周行业有什么大事？政策有什么变化？市场有什么信号？竞对有什么动作？把这些信息整理成一份简短的"运营周报"，不仅帮助自己保持信息敏感度，也可以作为向思涵汇报的素材。运营不只是做活动、写文案、看数据，更是对整个运营环境的持续感知和判断。</p>
+</div>
+</div>
+</section>
+
+<div class="back-link">
+<a href="index.html">← 返回首页</a>
+</div>
+
+<div class="footer">
+<p>🐱 小咪为 Yara 精心编制 | 生存知识日报 · 2026-07-14</p>
+<p style="margin-top:8px;font-size:0.9em;">深度认知 · 理性判断 · 温情陪伴 | 拓展视野，优化大脑</p>
+</div>
+
+</body>
+</html>

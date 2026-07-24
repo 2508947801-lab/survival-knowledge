@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生存知识日报 · 2026-07-11 · 星期六</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+/* === YouTube 2025 风格设计系统（浅色版）=== */
+:root {
+    --bg-base: #f7f7fa;
+    --bg-elevated: #ffffff;
+    --glass-bg: rgba(255,255,255,0.72);
+    --glass-bg-hover: rgba(255,255,255,0.88);
+    --glass-border: rgba(15,15,25,0.08);
+    --glass-border-hover: rgba(255,45,85,0.35);
+    --text-primary: #0f0f15;
+    --text-secondary: #5a5a6a;
+    --text-tertiary: #9a9aa8;
+    --accent-red: #ff2d55;
+    --accent-magenta: #ff2dc8;
+    --accent-gradient: linear-gradient(135deg, #ff2d55 0%, #ff375f 50%, #ff2dc8 100%);
+    --accent-soft: rgba(255,45,85,0.10);
+    --accent-glow: rgba(255,45,85,0.28);
+    --magenta-glow: rgba(255,45,200,0.20);
+    --radius-lg: 28px;
+    --radius-md: 20px;
+    --radius-sm: 14px;
+    --radius-pill: 999px;
+    --blur: 30px;
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+    font-family:-apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg-base);
+    color: var(--text-primary);
+    line-height:1.85;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+}
+.nav-bar {
+    position:sticky; top:0; z-index:1000;
+    background:rgba(255,255,255,0.72);
+    backdrop-filter:blur(var(--blur)) saturate(180%);
+    -webkit-backdrop-filter:blur(var(--blur)) saturate(180%);
+    border-bottom:1px solid rgba(15,15,25,0.06);
+    padding:14px 20px;
+    display:flex; flex-wrap:wrap; gap:8px;
+    justify-content:center;
+}
+.nav-bar a {
+    color: var(--text-secondary);
+    text-decoration:none;
+    font-size:0.82em; font-weight:500;
+    padding:8px 16px;
+    border-radius: var(--radius-pill);
+    background: rgba(255,255,255,0.6);
+    border:1px solid transparent;
+    transition: all 0.3s var(--ease);
+    white-space:nowrap;
+}
+.nav-bar a:hover {
+    color: var(--accent-red);
+    background: rgba(255,45,85,0.08);
+    border-color: rgba(255,45,85,0.25);
+    transform: translateY(-1px);
+}
+.hero {
+    position:relative; overflow:hidden;
+    padding:90px 24px 70px;
+    text-align:center;
+    border-bottom:1px solid rgba(15,15,25,0.06);
+    background: var(--bg-base);
+}
+.hero::before {
+    content:''; position:absolute; inset:-30%;
+    background:
+        radial-gradient(ellipse 60% 50% at 30% 20%, rgba(255,45,85,0.14) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 70% 30%, rgba(255,45,200,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 70% 60% at 50% 100%, rgba(255,55,95,0.10) 0%, transparent 70%);
+    filter: blur(40px);
+    animation: ambient 12s ease-in-out infinite alternate;
+    z-index:0;
+}
+@keyframes ambient {
+    0% { transform: translate(0,0) scale(1); opacity:0.75; }
+    100% { transform: translate(-3%, 2%) scale(1.08); opacity:1; }
+}
+.hero::after {
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.6) 0%, transparent 50%);
+    pointer-events:none; z-index:0;
+}
+.hero h1 {
+    font-size:3.2em; color: var(--text-primary);
+    font-weight:600; letter-spacing:4px;
+    position:relative; z-index:1;
+    text-shadow: 0 2px 20px rgba(255,255,255,0.6);
+}
+.hero .date-info {
+    font-size:1.1em;
+    color: var(--text-secondary);
+    position:relative; z-index:1;
+    margin-top:14px; font-weight:400;
+}
+.toc {
+    max-width:1080px; margin:0 auto; padding:40px 24px;
+}
+.toc-grid {
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap:12px;
+}
+.toc-grid a {
+    display:block; padding:14px 16px;
+    text-decoration:none; color: var(--text-secondary);
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-md);
+    border:1px solid rgba(15,15,25,0.06);
+    transition: all 0.35s var(--ease);
+    font-size:0.9em; font-weight:500;
+    text-align:center;
+}
+.toc-grid a:hover {
+    color: var(--accent-red);
+    background: #fff;
+    border-color: rgba(255,45,85,0.25);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(255,45,85,0.12);
+}
+.module {
+    max-width:1080px;
+    margin:28px auto;
+    padding:48px 40px;
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(var(--blur)) saturate(150%);
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(150%);
+    border-radius: var(--radius-lg);
+    border:1px solid rgba(15,15,25,0.06);
+    box-shadow: 0 1px 3px rgba(15,15,25,0.04), 0 8px 24px rgba(15,15,25,0.03);
+    position:relative; overflow:hidden;
+    transition: all 0.4s var(--ease);
+}
+.module::before {
+    content:''; position:absolute; top:-50%; left:50%;
+    width:140%; height:80px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at center, rgba(255,45,85,0.06) 0%, transparent 70%);
+    filter: blur(20px);
+    pointer-events:none;
+}
+.module:hover {
+    border-color: rgba(255,45,85,0.20);
+    box-shadow: 0 4px 12px rgba(15,15,25,0.05), 0 16px 40px rgba(255,45,85,0.08);
+}
+.module-header {
+    display:flex; align-items:center; gap:18px;
+    margin-bottom:32px;
+    padding-bottom:20px;
+    border-bottom:1px solid rgba(15,15,25,0.08);
+}
+.module-num {
+    font-size:2.4em; font-weight:300; line-height:1;
+    background: var(--accent-gradient);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+.module-title {
+    font-size:1.65em; color: var(--text-primary);
+    font-weight:600; letter-spacing:1px;
+}
+.module-subtitle {
+    color: var(--text-secondary);
+    font-size:0.95em; margin-top:4px; font-weight:400;
+}
+.content { color: var(--text-primary); font-size:1.04em; }
+.content p { margin-bottom:18px; text-indent:2em; color: rgba(15,15,25,0.85); }
+.content h3 {
+    color: var(--accent-red);
+    font-size:1.18em; margin:30px 0 14px;
+    font-weight:600; letter-spacing:0.5px;
+    display:inline-block;
+}
+.content strong {
+    background: var(--accent-gradient);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    font-weight:600;
+}
+.content ul { list-style:none; padding:0; margin:18px 0; }
+.content ul li {
+    padding:8px 0 8px 28px;
+    position:relative;
+    color: rgba(15,15,25,0.80);
+}
+.content ul li::before {
+    content:''; position:absolute; left:6px; top:18px;
+    width:8px; height:8px;
+    border-radius: var(--radius-pill);
+    background: var(--accent-gradient);
+}
+.highlight {
+    background: linear-gradient(135deg, rgba(255,45,85,0.06) 0%, rgba(255,45,200,0.05) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-md);
+    padding:24px 28px; margin:24px 0;
+    border:1px solid rgba(255,45,85,0.18);
+    background-color: rgba(255,255,255,0.6);
+    position:relative; overflow:hidden;
+}
+.highlight::before {
+    content:''; position:absolute; top:0; left:0;
+    width:100%; height:1px;
+    background: linear-gradient(90deg, transparent, rgba(255,45,85,0.5), rgba(255,45,200,0.5), transparent);
+}
+.highlight h4 {
+    background: var(--accent-gradient);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    margin-bottom:12px; font-weight:600;
+    letter-spacing:0.5px; font-size:1.05em;
+}
+.chart-box {
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-md);
+    padding:28px;
+    margin:28px 0;
+    border:1px solid rgba(15,15,25,0.06);
+}
+.chart-box h4 {
+    color: var(--text-secondary);
+    text-align:center;
+    margin-bottom:18px;
+    font-weight:500; letter-spacing:1px;
+    font-size:0.95em;
+}
+.back-link {
+    text-align:center; padding:60px 20px 40px;
+}
+.back-link a {
+    display:inline-block;
+    color:#fff; text-decoration:none;
+    font-size:1.05em; font-weight:600;
+    padding:16px 48px;
+    border-radius: var(--radius-pill);
+    background: var(--accent-gradient);
+    box-shadow: 0 8px 24px rgba(255,45,85,0.30), 0 0 60px rgba(255,45,200,0.12);
+    transition: all 0.35s var(--ease);
+    letter-spacing:1px;
+    border:none;
+}
+.back-link a:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 14px 40px rgba(255,45,85,0.45), 0 0 80px rgba(255,45,200,0.22);
+}
+.back-link a:active { transform: translateY(-1px) scale(0.99); }
+.footer {
+    text-align:center;
+    padding:48px 20px;
+    color: var(--text-tertiary);
+    border-top:1px solid rgba(15,15,25,0.06);
+}
+.footer p { margin:8px 0; font-weight:300; }
+@media (max-width:768px) {
+    .hero { padding:60px 18px 50px; }
+    .hero h1 { font-size:2.1em; letter-spacing:2px; }
+    .hero .date-info { font-size:0.95em; }
+    .nav-bar { gap:5px; padding:10px 12px; }
+    .nav-bar a { font-size:0.72em; padding:6px 11px; }
+    .toc { padding:28px 16px; }
+    .toc-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap:10px; }
+    .toc-grid a { padding:11px 12px; font-size:0.82em; }
+    .module { margin:16px 12px; padding:32px 22px; border-radius: var(--radius-md); }
+    .module-header { gap:12px; margin-bottom:24px; }
+    .module-num { font-size:1.9em; }
+    .module-title { font-size:1.3em; }
+    .content { font-size:0.98em; }
+    .content p { text-indent:1.5em; }
+    .highlight { padding:18px 20px; }
+    .chart-box { padding:18px 14px; }
+    .back-link a { padding:14px 36px; font-size:0.98em; }
+}
+@media (max-width:480px) {
+    .hero h1 { font-size:1.8em; }
+    .nav-bar a { font-size:0.68em; padding:5px 9px; }
+}
+</style></head><body>
+<nav class="nav-bar"><a href="#module-1">①运营精华</a><a href="#module-2">②今日要闻</a><a href="#module-3">③财富流向</a><a href="#module-4">④理财前线</a><a href="#module-5">⑤科技前沿</a><a href="#module-6">⑥地理知识</a><a href="#module-7">⑦人物阅读</a><a href="#module-8">⑧国学智慧</a><a href="#module-9">⑨法律常识</a><a href="#module-10">⑩历史人文</a><a href="#module-11">⑪职场教育</a><a href="#module-12">⑫旅游与兴趣爱好</a></nav>
+<header class="hero">
+    <div class="hero-badge">2026-07-11</div>
+    <h1>生存知识日报</h1>
+    <p class="hero-sub">星期六 · 农历五月廿七 · 台风巴威登陆前夜</p>
+    </header>
+    <div class="container">
+    
+<div class="toc"><div class="toc-grid"><a href="#module-1">①运营精华</a><a href="#module-2">②今日要闻</a><a href="#module-3">③财富流向</a><a href="#module-4">④理财前线</a><a href="#module-5">⑤科技前沿</a><a href="#module-6">⑥地理知识</a><a href="#module-7">⑦人物阅读</a><a href="#module-8">⑧国学智慧</a><a href="#module-9">⑨法律常识</a><a href="#module-10">⑩历史人文</a><a href="#module-11">⑪职场教育</a><a href="#module-12">⑫旅游与兴趣爱好</a></div></div>
+<section id="module-1">
+<div class="module-header"><span class="module-num">①</span><div><div class="module-title">运营精华</div><div class="module-subtitle">2026年7月11日 星期六 · 台风停课的危机运营 · 希音IPO的供应链启示 · 智谱MiniMax的长期主义路线</div></div></div>
+<h3>🌀 台风停课的危机运营：当171万人需要"无事发生"</h3>
+<p>今天，台风「巴威」逼近浙江，全省启动防台风Ⅰ级应急响应，累计转移群众171.6万人，12154所学校及培训机构全面停课。杭州市发出今年第1号指挥长令，启动「五停」措施——停止户外集体活动、停课、停工、停业、停运。从运营视角看，这是一场超高难度的「零事故运营」：目标不是做出什么成果，而是让171万人在台风过境后「无事发生」。这和教培行业遇到极端天气时的应对逻辑完全一致——Yara在398引流课交付中也会遇到类似场景：线上课程因台风导致用户网络中断、直播掉线、用户投诉「为什么不停课」。运营要做的不是解释天气，而是提前3天准备好Plan B：录制回放课程、短信通知学员、客服话术统一、退款流程简化。171万人的转移不是运气，是提前设计了转移路线、安置点、物资分配的完整SOP。</p>
+
+<h3>🛍️ 希音赴港IPO：供应链效率背后的运营密码</h3>
+<p>希音（SHEIN）赴港上市获证监会备案，拟发行不超过3.416亿股境外上市普通股。希音的核心竞争力不是「便宜」，而是「快」——从设计到上架7天，每天上新3000款。从运营角度看，这本质上是「多SKU、高频次、低库存」的供应链运营模型，与教培行业的产品运营有异曲同工之处：398引流课是标准化爆款（类似希音的「基础款T恤」），3980二转课是定制化高客单价产品（类似希音的「设计师联名款」）。希音能快速测试市场反应的秘密是「小单快反」——先生产100件试水，卖得好24小时内追单。教培行业同样可以借鉴：先用小规模试听课验证课程吸引力，再根据完课率和NPS数据决定是否扩量。</p>
+
+<h3>🧠 智谱「摸高计划」vs MiniMax暂停薪酬：AI公司的两种长期主义</h3>
+<p>7月11日，智谱创始人唐杰发布内部信提出「摸高计划」，宣布未来两年不追求短期应用变现，直指AGI下一个高地；MiniMax创始人闫俊杰则宣布「在实现AGI之前不再领取薪酬」，并拿出公司总股本4%的个人股份激励长期贡献团队。这两封信的共同点是「创始人押上个人利益」——但在运营角度，这种「长期主义叙事」本质上是一种「内部品牌运营」：对内稳定团队信心（股价波动时创始人自砍薪酬=我不会跑），对外塑造市场叙事（我们不是赚快钱的）。对Yara的启发：在推动新项目时，如果能让团队看到「负责人自己也押了筹码」，执行力会完全不一样。</p>
+
+<h3>💡 运营精华思路</h3>
+<div class="highlight">
+<h4>今日运营精华：从台风转移171万人学「Plan B默认开启」</h4>
+<p>浙江能在48小时内转移171万人，不是因为临时决策好，而是因为SOP早就写好了——每个村有多少人、往哪转移、谁来执行、物资在哪，在台风来之前就已经是「默认配置」。教培运营中最常见的错误是「等出问题了再想Plan B」——直播间断了才想怎么办、用户投诉了才想话术。正确的做法是：把Plan B从「应急方案」变成「默认流程」。比如每一期398引流课的交付，都应该默认准备好：①直播回放链接（提前生成，不是临时录）；②断网情况下的文字版课程摘要（用户可以在手机上阅读）；③标准化客服话术（不是客服自己编）。这样当台风来了，你不需要「紧急应对」，只需要「按流程执行」。</p>
+</div>
+</section>
+<section id="module-2">
+<div class="module-header"><span class="module-num">②</span><div><div class="module-title">今日要闻</div><div class="module-subtitle">2026年7月11日 星期六 · 台风巴威逼近浙江 · 长征十号乙首飞 · 首个暴雨红色预警</div></div></div>
+<h3>🌀 台风巴威逼近：浙江Ⅰ级响应 杭州全市停课</h3>
+<p>今年第9号台风「巴威」（强台风级，14级）正快速逼近浙江沿海，预计12日凌晨在苍南至三门一带登陆。截至11日8时，浙江累计转移群众171.6万人，12154所学校及培训机构全面停课，830个在建工地停工，444家A级景区关闭。杭州市防指于11日18时将应急响应提升至Ⅰ级，杭州市教育局发布通知全市停课——这是近年来杭州教育系统首次因台风全面停课。浙江省已全面激活应急指挥体系，4.6万名防汛指挥员进岗履职，30.8万名基层责任人下沉一线。上海同步启动防台防汛，转移3.4万人，关闭32个景区，降低河网水位腾出4.5亿立方米蓄洪空间。中央气象台11日10时发布今年首个暴雨红色预警，京津冀、浙江、福建、吉林等多省份面临大到暴雨、局地特大暴雨（台湾中北部局地可达250-800毫米）。</p>
+
+<h3>🚀 长征十号乙首飞：全球首次运载火箭网系回收</h3>
+<p>7月10日，长征十号乙运载火箭在海南商业航天发射场发射成功，火箭一子级在海上回收平台成功回收——这是我国首次成功实施运载火箭一子级可控回收，也是全球首次运载火箭网系回收。此次任务标志着中国商业航天从「一次性使用」进入「可重复使用」时代。网系回收不同于SpaceX的腿式着陆，是采用海上平台架设拦截网的方式「接住」返回的一子级，技术路线独特。该技术若成熟，有望将单次发射成本降低50%以上，对卫星互联网、商业遥感等高频发射场景意义重大。</p>
+
+<h3>📊 夏粮首破3000亿斤 + 用电负荷15.18亿千瓦创新高</h3>
+<p>国家统计局10日发布数据，2026年全国夏粮产量3014.9亿斤，首次超过3000亿斤，比上年增加20.0亿斤。同日，全国用电负荷达到15.18亿千瓦，创历史新高，较此前极值增加1000万千瓦。入夏以来南方多省份用电负荷累计20多次创新高。从粮食安全到能源保障，两条数据共同指向一个结论：中国在极端天气频发的夏天，基础保障能力经受住了考验。值得注意的是，空调用电是负荷飙升的主要推手——受欧洲极端高温影响，中国空调出口迎来强劲增长，中欧班列满载空调等家电驶往欧洲。</p>
+
+<h3>📋 其他要闻速览</h3>
+<p>习近平同朝鲜劳动党总书记金正恩就《中朝友好合作互助条约》签订65周年互致贺电，李强会见朝鲜内阁总理朴泰成。国务院原则同意《中医药振兴发展「十五五」规划》，强调中西医并重、守正创新。全国教育辟谣平台矩阵正式启动运行，辟谣「教师全面硕士化」「教师需做好失业准备」等不实传言。国家基本药物目录（2026版）发布，共收录794种药品，新增116种，首次纳入16种创新药。2026年全国暑期文化和旅游消费季启动。国家能源局发文要求稳妥有序关停30万千瓦级及以下煤电机组。商务部、海关总署对氦气实施临时禁止出口管理。</p>
+</section>
+<section id="module-3">
+<div class="module-header"><span class="module-num">③</span><div><div class="module-title">财富流向</div><div class="module-subtitle">2026年7月11日 星期六 · A股科创50重挫5.53% · 现货黄金4119美元 · 希音赴港IPO</div></div></div>
+<div class="chart-box"><h4>2026-07-11 A股主要指数涨跌幅(%)</h4><canvas id="c3_1" height="300"></canvas></div>
+<script>
+new Chart(document.getElementById("c3_1"), {
+    type:"bar",
+    data:{ labels:['万得全A', '上证指数', '创业板指', '北证50', '科创50', '中证2000', '中证1000', '上证50'],
+      datasets:[{ label:"", data:[-1.36, -1.0, -4.37, -0.02, -5.53, 0.85, 0.32, -1.34],
+        backgroundColor:["#ff2d55","#ff375f","#ff2dc8","#764ba2","#667eea"], borderRadius:6 }]},
+    options:{ plugins:{ legend:{ labels:{ color:'rgba(60,60,90,0.85)' } } },
+      scales:{ x:{ ticks:{ color:'rgba(60,60,90,0.85)' }, grid:{ display:false } },
+               y:{ ticks:{ color:'rgba(60,60,90,0.85)' }, grid:{ color:'rgba(0,0,0,0.06)' } } } }
+});
+</script>
+
+<h3>📉 A股冲高回落：科创50暴跌5.53%，3700股逆势上涨</h3>
+<p>7月11日A股市场呈现「指数重挫、个股分化」的极端行情。上证指数收跌1.00%报3996.16点，再度失守4000点；深证成指跌2.29%报15046.67点；创业板指跌4.37%报3842.73点；科创50指数暴跌5.53%报2064.98点。但值得关注的是，全市场仍有超过3700只个股上涨，成交额放量至3.41万亿元，较前一交易日增加约4784亿元。这说明指数压力主要来自半导体、电子等前期高位的双创权重股，而非全面退潮。板块方面，半导体产业链全线重挫（电子板块跌5.15%、通信跌3.45%），商业航天和军工板块午后异动大幅拉升（国防军工涨3.42%），医药板块因新基药目录发布涨幅居前（涨2.50%），白酒、地产、餐饮旅游等消费板块也表现活跃。港股方面，恒生指数涨0.6%报24175点，恒生科技指数跌0.21%，智谱大跌超19%，MiniMax跌近10%。</p>
+
+<h3>🛍️ 希音赴港IPO获备案：跨境电商巨头的资本之路</h3>
+<p>证监会披露希音（SHEIN）境外发行上市备案通知书，希音拟发行不超过3.416亿股境外上市普通股并于港交所上市。希音凭借「柔性供应链+社交媒体营销」的创新模式，已成长为全球估值最高的快时尚电商之一。此次赴港上市是其继估值波动后的重要资本动作，港股市场将迎来一只重量级跨境电商标的。同日，上交所对恒尚节能、有研硅、中船特气等异常波动股票进行重点监控，证监会对编造传播共进股份虚假信息的乔某立案调查。证监局启动基金销售机构合规摸底自查，涵盖降费成效、私募基金审慎调查等内容。</p>
+
+<h3>💹 全球市场：黄金微跌，油价承压，SK海力士265亿美元IPO</h3>
+<p>现货黄金报4119.48美元/盎司，日内微跌0.11%，本周累计跌约1.7%。美伊冲突再起但谈判仍在进行，市场评估中东局势与美联储加息前景。WTI原油报71.41美元/桶，跌0.93%；布伦特原油报76.01美元/桶，跌0.38%。美股三大指数小幅收涨（道指+0.29%、标普+0.42%、纳指+0.29%），英伟达涨超4%，脸书涨近6%。SK海力士在美国IPO融资265亿美元，成为美国史上最大外资IPO，反映AI对高带宽内存的旺盛需求。商务部宣布何立峰将于7月27-30日赴瑞典与美方经贸会谈，中美300亿美元对等降税框架持续推进。</p>
+</section>
+<section id="module-4">
+<div class="module-header"><span class="module-num">④</span><div><div class="module-title">理财前线</div><div class="module-subtitle">2026年7月11日 星期六 · 黄金回调至4100美元 · 中医药振兴规划 · 暑期消费季启动</div></div></div>
+<div class="chart-box"><h4>避险资产对比（7月11日）</h4><canvas id="c4_1" height="300"></canvas></div>
+<script>
+new Chart(document.getElementById("c4_1"), {
+    type:"bar",
+    data:{ labels:['现货黄金($)', 'COMEX黄金($)', '沪金(元/克)', 'WTI原油($)', '布伦特原油($)', '10年美债(%)', '美元指数'],
+      datasets:[{ label:"", data:[4119.48, 4128.9, 896.38, 71.41, 76.01, 4.559, 100.96],
+        backgroundColor:["#ff2d55","#ff375f","#ff2dc8","#764ba2","#667eea"], borderRadius:6 }]},
+    options:{ plugins:{ legend:{ labels:{ color:'rgba(60,60,90,0.85)' } } },
+      scales:{ x:{ ticks:{ color:'rgba(60,60,90,0.85)' }, grid:{ display:false } },
+               y:{ ticks:{ color:'rgba(60,60,90,0.85)' }, grid:{ color:'rgba(0,0,0,0.06)' } } } }
+});
+</script>
+
+<h3>🥇 黄金失守4100后反弹：地缘风险与利率预期的拉锯</h3>
+<p>7月11日现货黄金盘中一度跌破4100美元/盎司，日内最低触及4072.85美元，最终收报4119美元附近。本周金价累计下跌约1.7%，主要受三方面因素影响：①美伊冲突虽然升级（特朗普宣布停火结束、美军连续两天打击伊朗），但双方技术层面谈判仍在继续（卡塔尔代表团抵伊朗斡旋），市场对全面战争风险定价有所回调；②美联储6月会议纪要显示部分决策者支持加息，互换市场定价下次会议加息概率约20%，美元指数维持在100.96高位，压制黄金吸引力；③黄金ETF持仓量降至1002.45吨，显示西方机构投资者减持。不过中长期看，地缘冲突频发+央行储备多元化趋势，黄金的避险逻辑未变。国内方面，黄金9999报896.20元/克，黄金回收价885元/克。</p>
+
+<h3>🏥 中医药振兴「十五五」规划获批 + 新基药目录发布</h3>
+<p>7月10日，国务院原则同意《中医药振兴发展「十五五」规划》，强调中西医并重、守正创新，推进中医药现代化和国际化。这是中医药领域在「十四五」基础上的新一轮顶层设计，预计将带动中药材种植、中药创新药研发、中医诊疗设备等产业链投资。同日，国家卫健委等三部门联合发布《国家基本药物目录（2026年版）》，共收录794种药品，新增116种（含16种创新药、4种国产Ⅰ类新药）。新版目录将于9月1日起正式实施。创新药首次批量进入基药目录，有望改善相关品种在基层医疗机构的可及性，直接利好创新药企业。当日医药板块涨幅2.50%领涨A股，康龙化成港股涨11.77%、昭衍新药涨11.46%。</p>
+
+<h3>🌡️ 能源转型加速：关停小火电 + 用电负荷创新高</h3>
+<p>国家能源局印发《能源领域节能降碳行动计划（2026-2028年）》，明确稳妥有序关停一批30万千瓦级及以下煤电机组，鼓励按新一代煤电要求建设替代机组；推动60万千瓦级煤电机组超临界跨代升级改造。这一政策在对冲两股力量：一方面是用电负荷创历史新高（15.18亿千瓦），另一方面是碳达峰目标倒逼能源结构转型。全国碳市场活跃度提升，碳配额价格稳步走高，火电企业面临转型或退出的二选一。山东发布首批100个「AI+制造」应用场景和100个垂域大模型，前5个月大模型业务收入超50亿元，预计全年翻番。</p>
+
+<h3>🎒 暑期消费季启动 + 教育辟谣平台上线</h3>
+<p>2026年全国暑期文化和旅游消费季启动，各地景区、酒店、文博场馆密集推出暑期优惠活动。但台风巴威的打乱效应下，浙江444家A级景区、上海32个景区已暂时关闭，暑期旅游旺季开局被按下暂停键。同日，全国教育辟谣平台矩阵正式启动运行，首战辟谣「教师全面硕士化」「教师需做好失业准备」等近期网络传播较广的不实信息。对Yara而言，这两条信息放在一起看：教育行业的信息环境正在被规范，但用户（家长/学员）的信息焦虑不会因此消失——辟谣只能消除虚假信息，真正的「信息安全感」需要靠优质内容来提供。</p>
+</section>
+<section id="module-5">
+<div class="module-header"><span class="module-num">⑤</span><div><div class="module-title">科技前沿</div><div class="module-subtitle">2026年7月11日 星期六 · 曙光8000十万卡AI集群 · Apple诉OpenAI · 阿里妙呀公测</div></div></div>
+<div class="chart-box"><h4>AI大模型参数规模对比(万亿)</h4><canvas id="c5_1" height="300"></canvas></div>
+<script>
+new Chart(document.getElementById("c5_1"), {
+    type:"bar",
+    data:{ labels:['GPT-5.5', 'Claude Fable 5', 'Grok 4.5', 'Kimi K2', '智谱GLM-5', '曙光8000支撑'],
+      datasets:[{ label:"", data:[1.5, 1.8, 2.0, 2.2, 1.6, 10.0],
+        backgroundColor:["#ff2d55","#ff375f","#ff2dc8","#764ba2","#667eea"], borderRadius:6 }]},
+    options:{ plugins:{ legend:{ labels:{ color:'rgba(60,60,90,0.85)' } } },
+      scales:{ x:{ ticks:{ color:'rgba(60,60,90,0.85)' }, grid:{ display:false } },
+               y:{ ticks:{ color:'rgba(60,60,90,0.85)' }, grid:{ color:'rgba(0,0,0,0.06)' } } } }
+});
+</script>
+
+<h3>🖥️ 曙光8000发布：全国产十万卡AI超集群投入使用</h3>
+<p>我国全链路自研的十万卡AI超级计算集群「曙光8000（登峰）」正式发布并投入使用。该系统已完成超300个重点应用优化，覆盖大模型训练、机器人、创新药研发等20余个场景。标志着国产算力进入十万卡新时代——此前全球只有极少数公司拥有同等规模的AI训练集群。曙光8000的国产化率是关键看点：从芯片到互联到冷却系统全自主可控，在中美科技博弈背景下提供了「不被卡脖子」的算力底座。结合长征十号乙的可回收火箭技术突破，中国正在AI基础设施（算力+通信+能源）领域构建完整闭环。</p>
+
+<h3>⚖️ Apple起诉OpenAI：AI硬件竞争进入法律战</h3>
+<p>7月11日，Apple正式起诉OpenAI及io Products公司，指控其前员工携带Apple机密硬件文件、供应链数据和产品规格加入OpenAI，助力后者从软件公司向硬件设备公司转型。这起诉讼的背景是：OpenAI正与Jony Ive团队合作开发AI硬件设备，试图从「ChatGPT背后的公司」变成「用户每天触摸的AI设备制造商」。Apple将硬件、供应链和设备设计视为核心壁垒，不会容忍前员工带着机密信息去帮助竞争对手。如果诉讼成立，可能延缓OpenAI的硬件计划，也给整个AI行业的「人才挖角」敲响警钟。</p>
+
+<h3>🎨 阿里潮玩AI设计平台「妙呀」公测</h3>
+<p>大麦娱乐携手阿里Token Foundry事业部推出全球首个潮玩创作者AI设计平台「妙呀」正式公测。该平台依托阿里自研Wan2.7-Image大模型，通过AI Agent协作完成潮玩IP的全套数字资产（角色设计、3D模型、包装、营销物料）创作，并启动百万激励计划。这标志着AI设计从「辅助工具」向「全链路创作平台」进化——不是帮设计师画一个图，而是帮创作者从0到1孵化一个IP。同日，山东发布首批100个「AI+制造」应用场景，覆盖生成式设计、多模态质检、预测性维护等环节，AI产业落地正在加速。</p>
+
+<h3>🔬 AI行业一周回顾</h3>
+<p>智谱发布「摸高计划」内部信，四大方向：长程任务（AI自主拆解数千个子任务）、自治智能体系统（数字员工）、完全自我训练（AI博弈对抗自我进化）、安全治理。MiniMax创始人闫俊杰宣布暂停薪酬直至AGI实现，并拿出4%股份激励团队。Meta首次面向企业收费（Muse Spark 1.1），定价仅为OpenAI/Anthropic的约25%。Bun用Claude Fable 5在11天内将百万行Zig代码重写为Rust（API费用16.5万美元），引发AI生成代码质量争议。HBM4价格预计明年翻倍至4-5美元/千兆比特，三星/SK海力士/美光已与AI客户签3-5年长约。Kimi信用卡敲定美国运通和农业银行，全球首张AI原生信用卡正式发行。</p>
+</section>
+<section id="module-6">
+<div class="module-header"><span class="module-num">⑥</span><div><div class="module-title">地理知识</div><div class="module-subtitle">2026年7月11日 星期六 · 台风巴威路径全析 · 浙江苍南的地理宿命 · 杭州湾地形效应</div></div></div>
+<h3>🌀 台风巴威完整路径：从热带扰动到强台风</h3>
+<p>台风「巴威」是2026年第9号台风，7月11日9时中心位于浙江温州东南约489公里的洋面上，中心附近最大风力14级（强台风级，风速42m/s），最低气压950百帕。其路径特点：生成于菲律宾以东洋面→向西北方向快速移动（30-35km/h）→进入东海后增强→预计12日凌晨在浙江苍南至三门一带登陆→登陆后向西北转偏北方向移动→影响安徽、江苏、山东后进入黄海减弱。11日中央气象台发布今年首个暴雨红色预警，浙江东部和南部、福建北部局地雨量可达250-500毫米，台湾中北部局地可达250-800毫米。巴威的快速移动速度（30-35km/h）意味着风雨影响集中且猛烈，不会像慢台风那样在一个地方停留许久。</p>
+
+<h3>📍 为什么台风总在「苍南至三门」登陆？</h3>
+<p>浙江省温州市苍南县被称为「中国台风第一县」——历史上多次强台风在此登陆。地理原因有三：①苍南位于浙江最南端、面向东海，是西北行台风的「正面迎风面」，台湾岛地形对台风的偏折效应往往将台风路径引导至闽浙交界处；②苍南沿海岸线呈喇叭口形状，台风来临时海水被挤压形成风暴潮叠加效应；③浙南沿海海域水温常年偏高（28-30℃），为台风提供了充足的能量补给。三门县位于浙江中部沿海，三门湾同样是台风频繁光顾的地方。此次巴威的预计登陆范围覆盖苍南至三门约200公里海岸线，「苍南-三门」走廊是浙江防台风的最前线。</p>
+
+<h3>🌊 杭州湾地形与上海的防台逻辑</h3>
+<p>杭州湾是一个向西收窄的喇叭形海湾，口宽约100公里，顶宽约20公里。台风从东南方向进入杭州湾时，喇叭口效应会将海水挤压升高，形成严重的风暴潮。上海位于杭州湾北岸、长江口南岸，地势低平（平均海拔仅4米），一旦遭遇风暴潮+天文大潮+强降雨「三碰头」，城市内涝风险极高。这也是上海此次在巴威尚未登陆时就提前关闭32个景区、转移3.4万人、降低河网水位腾出4.5亿立方米蓄洪空间的根本原因。杭州西湖景区已全面关闭，所有公园、博物馆、登山步道、游船和观光巴士暂停运营——上一次西湖因台风全面关闭还要追溯到多年前。</p>
+
+<h3>🌍 同日全球极端天气概览</h3>
+<p>7月11日全国多地同时遭遇极端天气：北京维持防汛Ⅱ级应急响应（已转移10.4万人、关闭181个景区），河北、辽宁启动防汛Ⅳ级应急响应，吉林发布暴雨黄色预警，四川崇州发布暴雨橙色预警。与此同时西班牙森林火灾已致11人死亡19人失联，欧洲多国极端高温推高中国空调出口。全球气候变暖正在让极端天气事件的频次和强度同时增加——台风更强、暴雨更猛、高温更久，这对Yara所在的知识付费行业也有间接影响：用户的学习时间和注意力会因极端天气而波动，线上课程反而可能因「居家避险」而迎来流量高峰。</p>
+</section>
+<section id="module-7">
+<div class="module-header"><span class="module-num">⑦</span><div><div class="module-title">人物阅读</div><div class="module-subtitle">2026年7月11日 星期六 · 陈立泉：五十年守一事 · 唐杰与闫俊杰的AGI赌注 · 长征十号乙团队</div></div></div>
+<h3>🔋 陈立泉：五十年守一事，让中国锂电池领跑世界</h3>
+<p>7月11日《新闻联播》专题报道了中国工程院院士陈立泉。这位84岁的科学家用五十年时间专注于一件事——锂电池研究。1970年代，当全世界还在用铅酸电池和镍镉电池时，陈立泉就意识到锂离子电池的革命性潜力。他带领团队从基础材料研究起步，经历了几十年「坐冷板凳」的时光。1990年代日本率先实现锂电池产业化，陈立泉非但没有气馁，反而更加坚定地推进中国自己的技术路线。终于在2020年代，中国锂电池产业实现了从跟跑到领跑的跨越——宁德时代、比亚迪等中国企业占据全球锂电池市场超60%份额。陈立泉的故事之所以动人，不是因为他成功了，而是因为他在看不到成功希望的五十年里，每一天都在做同一件事。Yara想从教务走向运营操盘手，也许不需要五十年，但确实需要这种「选定方向、持续深耕」的心性。</p>
+
+<h3>🧠 唐杰 vs 闫俊杰：AI创始人的两种AGI赌注</h3>
+<p>7月11日同一天，两位中国AI独角兽创始人发布了截然不同但同样激进的公司战略。智谱创始人唐杰（清华计算机系教授出身）提出「摸高计划」：不追求短期应用变现，直指AGI四个方向——长程任务、自治智能体、完全自我训练、安全治理。MiniMax创始人闫俊杰（技术极客出身）则用更个人化的方式表态——暂停薪酬、拿出4%股份激励团队。两个人的共同信念是：AGI将在可预见的未来实现，而现在投入的每一分钱都是值得的。差异在于：唐杰更像一个「战略家」，用路线图告诉市场我们要去哪；闫俊杰更像一个「殉道者」，用个人牺牲告诉团队我有多认真。对Yara的启示：在职场上，有时候需要唐杰式的「拿出路线图」，有时候需要闫俊杰式的「押上个人筹码」——关键是分清什么时候用哪一种。</p>
+
+<h3>🚀 长征十号乙背后的无名团队</h3>
+<p>7月10日长征十号乙成功首飞，实现了中国人30年前就在幻想的「火箭回收」。这次成功背后是成百上千名航天工程师——他们中的大多数人名字永远不会出现在新闻里。网系回收技术方案是全球首创，意味着没有现成经验可以借鉴，全靠理论推导+仿真模拟+反复试验。最令人动容的细节是：在接受采访时，一位参与研制的一线工程师说「我们做了7年，今天看到它真的落在网里，手一直在抖」。Yara作为交付运营，可能永远不会有「火箭落在网里」那种级别的成就感，但「把一个项目从0到1跑通」的那一刻，本质上和长征十号乙设计团队的心情是一样的。</p>
+
+<h3>📖 人物速读</h3>
+<p>纳米比亚总统恩代特瓦访华，是她就任总统以来的首次国事访问，习近平与其举行会谈。朝鲜内阁总理朴泰成访华，习近平会见并强调加快落实中朝共识、用好共同红色记忆和红色资源。最高检检察长应勇在新疆调研时强调以高水平安全护航高质量发展。国家最高科学技术奖得主陈立泉和贲德的精神遗产，正在激励新一代科技工作者。</p>
+</section>
+<section id="module-8">
+<div class="module-header"><span class="module-num">⑧</span><div><div class="module-title">国学智慧</div><div class="module-subtitle">2026年7月11日 星期六 · 《道德经》第六十四章 · 「为之于未有，治之于未乱」</div></div></div>
+<h3>📜 原文与译文</h3>
+<p><strong>其安易持，其未兆易谋。其脆易泮，其微易散。为之于未有，治之于未乱。合抱之木，生于毫末；九层之台，起于累土；千里之行，始于足下。为者败之，执者失之。是以圣人无为故无败，无执故无失。民之从事，常于几成而败之。慎终如始，则无败事。</strong></p>
+<p>译文：局面安定时容易维持，事情未露苗头时容易谋划。脆弱的东西容易消解，细微的东西容易散失。要在事情尚未发生时就处理，要在祸乱尚未出现时就治理。合抱的大树从细小的萌芽生长而来，九层的高台从一筐筐泥土筑起，千里之遥的行程从脚下第一步开始。妄加作为的人会失败，强行把持的人会失去。所以圣人不妄为所以不会失败，不强行把持所以不会失去。人们做事情，常常在快要成功的时候失败。如果结束时能像开始时那样谨慎，就不会有失败的事了。</p>
+
+<h3>🌀 「为之于未有，治之于未乱」——从台风防御看防患于未然</h3>
+<p>今天浙江转移171.6万人、杭州启动「五停」措施，完美诠释了老子「为之于未有，治之于未乱」的智慧。台风还没登陆，人已经转移了、课已经停了、景区已经关了——这不是「过度反应」，而是提前把「乱」消灭在萌芽状态。老子说「其安易持，其未兆易谋」——事情在安定状态下容易被掌控，在未露出苗头时容易被规划。浙江的防台工作之所以能做到48小时内转移171万人，是因为在台风还远在菲律宾以东的时候就已经开始谋划了。教培运营同理：不要等用户投诉了才去想解决方案，要在用户开口之前就已经准备好了。398引流课的退费流程、在线课程的断网预案、客服的标准话术——这些都应该在课程上线之前就写好，而不是等出了事再「救火」。</p>
+
+<h3>🌱 「合抱之木，生于毫末」——从长征十号乙看长期主义</h3>
+<p>长征十号乙的网系回收技术成功，背后是7年时间——从最初的概念验证到海上试验，每一步都看起来很小，但累积起来就是「九层之台」。老子说「合抱之木，生于毫末；九层之台，起于累土」——所有伟大的成果都是从极微小的起点开始的。但老子接着又说「民之从事，常于几成而败之。慎终如始，则无败事」——人们做事情最危险的时候不是开头，而是「快成功的时候」。Yara从教务转到运营操盘手这条路，最难的不是「开始学」，而是「学了三个月后还在学」「做了一年后还在做」——「慎终如始」才是真正的考验。</p>
+
+<h3>🧊 「慎终如始」——今日Yara的国学提醒</h3>
+<p>今天两条看似无关的新闻在老子的框架下产生了关联：①陈立泉五十年守一事（慎终如始），②希音IPO（从毫末到合抱之木）。陈立泉用五十年从一张白纸做到全球锂电池领跑者，希音用十年从一家小服装厂做到估值数百亿美元的跨境电商巨头。它们的共同点不是「聪明」，而是「持续」——每一天都在做同一件事，每一天都像第一天那样认真。对Yara来说，「慎终如始」可能是职场最稀缺的品质——不是开头有多努力，而是中间有多少天没有放弃。今天国学给Yara的一句话：你已经开始学数据分析、视觉传达、AI工具、产品经理、运营这五个方向了，别在「几成」的时候放弃。</p>
+</section>
+<section id="module-9">
+<div class="module-header"><span class="module-num">⑨</span><div><div class="module-title">法律常识</div><div class="module-subtitle">2026年7月11日 星期六 · 台风「五停」的法律依据 · Apple诉OpenAI分析 · 编造股市谣言被立案</div></div></div>
+<h3>🌀 「五停」措施的紧急状态法律依据</h3>
+<p>杭州市11日启动「五停」（停止户外集体活动、停课、停工、停业、停运），依据是什么？法律层面，主要依据《中华人民共和国突发事件应对法》第四十九条：在自然灾害、事故灾难或者公共卫生事件发生后，履行统一领导职责的人民政府可以采取一项或多项应急处置措施，包括「禁止或者限制使用有关设备、设施，关闭或者限制使用有关场所，中止人员密集的活动或者可能导致危害扩大的生产经营活动」。此外，《浙江省防汛防台抗旱条例》第三十一条规定，县级以上人民政府可以根据需要发布命令，采取停课、停工、停业、停市、停运等应急措施。对Yara的启发：公司在极端情况下通知停课、退款、延期交付等操作，是有法律依据的，不是「公司自己想停就停」——了解这一点，面对用户投诉时更有底气。</p>
+
+<h3>⚖️ Apple诉OpenAI：商业秘密保护的前沿案例</h3>
+<p>Apple起诉OpenAI的核心法律依据是美国《保护商业秘密法》（Defend Trade Secrets Act）和加州《统一商业秘密法》。Apple指控前员工将机密硬件文件、供应链数据和产品规格带到OpenAI，帮助后者加速硬件设备研发。这类案件的关键在于：①原告能否证明这些信息确实属于「商业秘密」（采取了合理保密措施+具有独立经济价值）；②被告是否确实「不当获取或使用」了这些信息。如果Apple胜诉，OpenAI的硬件项目可能面临重大诉讼成本和时间延迟。在硅谷，这类「人才流动引发的商业秘密纠纷」呈上升趋势——AI行业人才稀缺，企业之间的人才争夺已从薪酬战升级为法律战。</p>
+
+<h3>📰 编造股市谣言被立案：网络不是法外之地</h3>
+<p>证监会7月11日披露，乔某（男）因涉嫌编造传播涉上市公司共进股份的虚假误导性信息，被证监会立案调查。证监会表示该行为严重扰乱证券市场秩序。根据《证券法》第五十六条，禁止任何单位和个人编造、传播虚假信息或者误导性信息，扰乱证券市场。情节严重的可能构成《刑法》第一百八十一条规定的「编造并传播证券、期货交易虚假信息罪」，最高可处五年以上有期徒刑。同日，上交所对恒尚节能、有研硅等异常波动股票进行重点监控。两部门再次预拨8000万元支持广西受灾群众救助工作——这些资金来自中央自然灾害救灾资金，其拨付依据是《自然灾害救助条例》。</p>
+
+<h3>📋 政策速览</h3>
+<p>国家卫健委推动建立患者个体化用药信息库，涉及《个人信息保护法》关于敏感个人信息（医疗健康信息）的处理规范。商务部对氦气实施临时禁止出口管理，依据《出口管制法》的相关授权条款。税务部门集中曝光一批网红网店涉税违法案件，涵盖「高流量低申报」「逃逸式注销」、转换收入性质等偷逃税手段——提醒Yara如果未来做内容变现，税务合规要前置，不能等到做大后才补课。</p>
+</section>
+<section id="module-10">
+<div class="module-header"><span class="module-num">⑩</span><div><div class="module-title">历史人文</div><div class="module-subtitle">2026年7月11日 星期六 · 长征火箭回收的历史意义 · 中朝条约65周年 · 台风命名文化</div></div></div>
+<h3>🚀 从V-2到长征十号乙：可回收火箭的百年探索</h3>
+<p>7月10日长征十号乙实现全球首次运载火箭网系回收，这是人类航天史上一个里程碑。回顾历史：1942年德国V-2火箭首次飞越卡门线但不可回收；1969年阿波罗11号登月，土星五号的一子级坠入大西洋；1981年航天飞机首次实现部分可回收但成本远超预期；2015年SpaceX猎鹰9号首次实现腿式垂直着陆回收——将火箭回收从幻想变成现实；2026年7月10日，长征十号乙在全球首创网系回收——不是用腿站着，而是用网接住。中国航天走了一条与众不同的技术路线。长征系列运载火箭的历史可以追溯到1970年长征一号将东方红一号送入太空，56年间长征系列已完成500多次发射。</p>
+
+<h3>🇨🇳 中朝友好合作互助条约65周年</h3>
+<p>1961年7月11日，周恩来总理与金日成首相在北京签署《中朝友好合作互助条约》，这是新中国对外签订的第二份双边友好合作条约（第一份是1950年的《中苏友好同盟互助条约》）。65年后的同一天，习近平与金正恩互致贺电，李强会见朝鲜内阁总理朴泰成。蔡奇出席65周年纪念招待会。65年风雨变迁——苏联已不复存在，中苏条约也早已废除，但中朝条约至今有效，成为世界上存续时间最长的双边军事同盟条约之一。对Yara的启发：组织架构和合作关系会变，但某些底层协议（比如你对某个方向的长期投入）应该像这份条约一样经得起时间考验。</p>
+
+<h3>🌪️ 台风命名的文化密码</h3>
+<p>「巴威」这个名字来自越南，意为「巴威山脉」。台风命名规则由世界气象组织台风委员会制定，西北太平洋和南海的热带气旋采用一套包含140个名字的循环命名表，由14个成员各提供10个名字。如果某个台风造成了特别严重的灾害，这个名字就会被「退役」，不再使用。例如2006年超强台风「桑美」被退役，2013年「海燕」被退役。所以「巴威」能否留在命名表里，取决于它12日凌晨登陆后是否造成不可挽回的损失。台风命名本身也是一个有趣的跨文化样本——名字来源于自然、动物、花草、食物等，反映了不同国家和地区对自然现象的文化态度。</p>
+
+<h3>📜 7月11日的历史印记</h3>
+<p>1405年7月11日（明永乐三年六月十五），郑和首次下西洋，从南京龙江港起航，舰队共有240余艘船只、27400名船员。621年后的同一天，长征十号乙从海南升空——从风帆到火箭，从木船到可回收航天器，中国对远方的探索从未停止。1921年7月11日，蒙古人民革命政府成立。1960年7月11日，小说《杀死一只知更鸟》出版。1979年7月11日，美国「天空实验室」空间站坠毁。1995年7月11日，联合国教科文组织宣布7月11日为「世界人口日」。</p>
+</section>
+<section id="module-11">
+<div class="module-header"><span class="module-num">⑪</span><div><div class="module-title">职场教育</div><div class="module-subtitle">2026年7月11日 星期六 · 台风停课的运营应急 · AI职教全球指南 · 教育辟谣矩阵上线</div></div></div>
+<h3>📚 UNESCO发布《AI融入职业教育指南》：深圳职院牵头</h3>
+<p>深圳职业技术大学牵头编制的联合国教科文组织出版物《人工智能融入职业技术教育与培训实用指南》面向全球发布。这是中国职业教育机构首次牵头编写UNESCO级别的AI教育标准文件，意味着中国在「AI+职教」领域的实践经验已获得国际认可。指南的核心观点是：AI不是替代教师，而是重塑「教与学」的关系——AI可以做个性化学习诊断、自适应学习路径推荐、技能练习陪练，但教师的价值在于「帮助学习者理解AI输出」和「培养AI无法替代的软技能」。对Yara来说，这份指南提供了一个重要信号：未来教育产品的交付，不是「把课录好放上去」，而是「用AI辅助用户学完、学会、学以致用」。</p>
+
+<h3>🎓 台风停课下的运营应急：教培行业的教科书级案例</h3>
+<p>7月11日，杭州全市中小学、幼儿园、校外培训机构全部停课，浙江全省12154所学校停课。这为教培运营提供了一个「极端天气SOP」的实战模板：①提前48小时开始预警沟通（不是等台风来了再通知），②短信+微信+APP多通道触达（确保每个用户都收到停课通知），③提供替代学习方案（录播课、练习题、AI陪练），④客服团队增加人手应对咨询高峰，⑤事后分发满意度调研评估应急方案效果。Yara所在的知识付费行业尤其需要关注第③点：停课不是「今天不学了」，而是「今天用另一种方式学」——如果没有准备好替代方案，用户流失就是一天的事。</p>
+
+<h3>📰 教育辟谣平台启动：「教师全面硕士化」是假的</h3>
+<p>全国教育辟谣平台矩阵正式启动运行，首战辟谣「教师全面硕士化、本科毕业已无法进入教师岗位」「教师需做好失业准备」等不实传言。这些传言的传播逻辑值得拆解：它们利用了教育从业者的「不安全感」——AI能教课了、学生越来越少了、教师编制在缩编——这些焦虑是真实的，但被「硕士化」「失业」等极端表述放大后就变成了恐慌。Yara在用户运营中也会遇到类似问题：用户对AI替代的焦虑是真实的，但「学了也不如AI」这种极端认知是被情绪放大的——运营要做的不是否认焦虑，而是把模糊的「AI恐惧」转化为具体的「AI协作技能」。</p>
+
+<h3>💼 Yara的职场行动清单（7月11日版）</h3>
+<p>①台风期间观察：398引流课的完课率在极端天气期间是升还是降？数据记录下来做后续参考。②下载阅读UNESCO《AI融入职业教育指南》，重点关注「自适应学习」「个性化诊断」两个模块——这两块和你正在做的用户生命周期分析看板直接相关。③教育辟谣矩阵的运营逻辑值得学习：辟谣的本质是「用真信息覆盖假信息」，这与课程运营中用「优质内容覆盖用户焦虑」的逻辑完全一致。④希音IPO的供应链故事里有「小单快反」概念——试听课就是教培行业的「小单」，先测需求再扩量。⑤今天学到的一个关键公式：极端天气 = 在线学习流量高峰，但前提是你已经准备好了Plan B。</p>
+</section>
+<section id="module-12">
+<div class="module-header"><span class="module-num">⑫</span><div><div class="module-title">旅游与兴趣爱好</div><div class="module-subtitle">2026年7月11日 星期六 · 西湖封闭的遗憾之美 · 世界人口日 · 在家也可以看台风</div></div></div>
+<h3>🏞️ 西湖全面关闭：台风天的「别样西湖」</h3>
+<p>7月11日，杭州西湖风景名胜区因台风巴威全面关闭——所有公园、博物馆、登山步道、游船和观光巴士暂停运营。这可能是Yara记忆中西湖为数不多的「全关」时刻。但换个角度看：台风过后的西湖，往往特别清澈——雨水冲刷掉了空气中的尘埃和西湖水面的漂浮物，台风离开后第一个晴天的西湖是全年最美的。如果你在杭州，台风过后可以去北山街走一走，看看被洗净的湖面和远山。不过在这之前——今天和明天，请严格遵守「非必要不外出」，台风天不是开玩笑。</p>
+
+<h3>🌍 7月11日世界人口日：教育是最好的人口投资</h3>
+<p>1989年联合国开发计划署建议将7月11日定为「世界人口日」，1990年首次正式纪念。2026年世界人口日的主题聚焦教育公平与人口质量——全球人口已突破82亿，但教育资源分配仍然极不均衡。中国2026年上半年出入境人员3.69亿人次创历史新高，其中免签入境外国人1781.5万人次占77.7%，同比上升30.6%。人口流动和跨境教育需求的增长，对Yara所在行业意味着更多元的用户画像和更复杂的交付场景——未来的教培产品可能需要考虑「被免签吸引来的外国学员」这个增量人群。</p>
+
+<h3>🌪️ 给好奇心的提案：在家安全「追台风」</h3>
+<p>如果你对台风巴威感到好奇，但不需要冒着生命危险去「体验」它——这里有几个安全的「台风观测方式」：①关注「温州台风网」或中央气象台台风路径实时发布系统，可以看到台风的实时位置、预测路径和影响范围；②打开Windy.com，可以3D可视化全球风场、气压和降雨数据；③在台风过境前后拍同一位置的对比照片（比如你家窗外的树），你会发现大自然的力量非常直观。Yara是一个喜欢小确幸、喜欢律动的天秤座——台风天被困在家，正好是写笔记、整理工作思路、跳两首歌的好时机。安全第一，其次才是好奇。</p>
+
+<h3>🎵 台风天BGM：适合在家听的专辑</h3>
+<p>台风天窗外风雨交加+在家独处，推荐几张氛围匹配的音乐：①坂本龙一《Async》——台风来临前的宁静感；②Hans Zimmer《Interstellar》原声——台风眼的壮观；③The Album Leaf《In a Safe Place》——风雨过后一切恢复平静。Yara喜欢hiphop，如果风雨声太大掩盖了音乐细节，反而是听hiphop的绝佳时机——节奏感在噪音背景下反而更突出。不过跳舞的话地板可能会滑，注意安全。</p>
+</section>
+</div>
+<div class="back-link"><a href="index.html">&larr; 返回首页</a></div>
+</body></html>
