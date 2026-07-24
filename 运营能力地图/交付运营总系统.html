@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>交付运营总系统 · Yara</title>
+<style>
+:root {
+  --bg:#f4f1ea; --card:#fffdf8; --gold:#9a7b4f; --gold-l:#f0e8db;
+  --ink:#2c2c2c; --ink-l:#6b6b6b; --border:#e8e2d8;
+  --serif:"Songti SC","Noto Serif SC",Georgia,serif;
+  --sans:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
+  --r:12px; --shadow:0 2px 12px rgba(0,0,0,.05);
+  --sidebar-w:220px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.7;}
+/* === SIDEBAR === */
+.sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;background:var(--card);border-right:1px solid var(--border);padding:20px 0;overflow-y:auto;z-index:100;display:flex;flex-direction:column;}
+.sidebar .logo{padding:0 20px 16px;font-family:var(--serif);font-size:1rem;color:var(--gold);border-bottom:1px solid var(--border);margin-bottom:12px;}
+.sidebar .logo small{display:block;font-size:.65rem;color:var(--ink-l);font-family:var(--sans);}
+.nav-item{display:flex;align-items:center;gap:8px;padding:9px 20px;font-size:.8rem;color:var(--ink-l);cursor:pointer;transition:all .15s;border-left:3px solid transparent;}
+.nav-item:hover{background:var(--gold-l);color:var(--ink);}
+.nav-item.active{background:var(--gold-l);color:var(--gold);border-left-color:var(--gold);font-weight:600;}
+.nav-item .dot{width:6px;height:6px;border-radius:50%;background:var(--border);flex-shrink:0;}
+.nav-item.active .dot{background:var(--gold);}
+.nav-item .score-badge{margin-left:auto;font-size:.65rem;background:var(--gold-l);color:var(--gold);padding:1px 6px;border-radius:8px;font-weight:600;}
+.sidebar .save-status{margin-top:auto;padding:12px 20px;font-size:.65rem;color:var(--ink-l);border-top:1px solid var(--border);}
+.sidebar .save-status .dot-save{display:inline-block;width:6px;height:6px;border-radius:50%;background:#7cb342;margin-right:4px;}
+/* === MAIN === */
+.main{margin-left:var(--sidebar-w);padding:32px 40px 80px;max-width:900px;}
+.section{display:none;}
+.section.active{display:block;}
+.section-head{margin-bottom:24px;}
+.section-head h2{font-family:var(--serif);font-size:1.4rem;color:var(--gold);}
+.section-head p{font-size:.82rem;color:var(--ink-l);margin-top:4px;}
+/* === CARDS === */
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:16px;}
+.card-title{font-size:.9rem;font-weight:600;margin-bottom:4px;}
+.card-desc{font-size:.78rem;color:var(--ink-l);margin-bottom:10px;}
+/* Rating */
+.rate-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.rate-row .lbl{font-size:.72rem;color:var(--ink-l);min-width:90px;}
+.rate-btns{display:flex;gap:3px;}
+.rate-btns button{width:28px;height:28px;border:1.5px solid var(--border);border-radius:6px;background:#fff;cursor:pointer;font-size:.75rem;color:var(--ink-l);transition:all .15s;}
+.rate-btns button:hover{border-color:var(--gold);color:var(--gold);}
+.rate-btns button.on{background:var(--gold);border-color:var(--gold);color:#fff;font-weight:700;}
+/* Textarea */
+.ta-group{margin-top:6px;}
+.ta-group label{font-size:.7rem;color:var(--gold);font-weight:600;display:block;margin-bottom:3px;}
+.ta-group textarea{width:100%;min-height:48px;border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:.78rem;font-family:var(--sans);resize:vertical;background:#fffef9;transition:border-color .2s;}
+.ta-group textarea:focus{outline:none;border-color:var(--gold);}
+/* Checklist */
+.chk{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:.8rem;cursor:pointer;}
+.chk .box{width:17px;height:17px;border:1.5px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+.chk.checked .box{background:var(--gold);border-color:var(--gold);}
+.chk.checked .box::after{content:"✓";color:#fff;font-size:.65rem;}
+/* === DASHBOARD === */
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+.dash-stat{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:20px;text-align:center;}
+.dash-stat .num{font-size:1.6rem;font-weight:700;color:var(--gold);}
+.dash-stat .lbl{font-size:.72rem;color:var(--ink-l);margin-top:2px;}
+.radar-wrap{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:24px;text-align:center;margin-bottom:24px;}
+.radar-wrap h3{font-family:var(--serif);font-size:1rem;color:var(--gold);margin-bottom:12px;}
+/* Smart box */
+.smart-box{background:linear-gradient(135deg,#fdf8f0,#f9f3e8);border:1px solid var(--gold-l);border-radius:var(--r);padding:20px 24px;margin-bottom:24px;}
+.smart-box h3{font-size:.85rem;color:var(--gold);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.smart-box .rec{font-size:.8rem;color:var(--ink);padding:8px 0;border-bottom:1px dashed var(--border);line-height:1.6;}
+.smart-box .rec:last-child{border-bottom:none;}
+.smart-box .rec strong{color:var(--gold);}
+/* Linkage hint */
+.link-hint{background:#f0f7f0;border-left:3px solid #7cb342;padding:8px 12px;border-radius:0 8px 8px 0;font-size:.72rem;color:#4a7c4a;margin-top:8px;display:none;}
+.link-hint.show{display:block;}
+/* Progress bar */
+.prog-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:6px;}
+.prog-bar .fill{height:100%;background:var(--gold);border-radius:3px;transition:width .3s;}
+/* Actions */
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;}
+.actions button{padding:9px 20px;border-radius:8px;border:none;cursor:pointer;font-size:.8rem;font-weight:600;transition:all .15s;}
+.btn-gold{background:var(--gold);color:#fff;}
+.btn-gold:hover{background:#8a6b3f;}
+.btn-out{background:#fff;color:var(--gold);border:1.5px solid var(--gold)!important;}
+.btn-out:hover{background:var(--gold-l);}
+.btn-red{background:#fff;color:#c0392b;border:1.5px solid #c0392b!important;}
+.btn-red:hover{background:#fdf0ef;}
+/* Mobile */
+.menu-toggle{display:none;position:fixed;top:12px;left:12px;z-index:200;width:36px;height:36px;border-radius:8px;background:var(--gold);color:#fff;border:none;font-size:1.1rem;cursor:pointer;}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);transition:transform .2s;}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;padding:24px 16px 80px;}
+  .menu-toggle{display:block;}
+  .dash-grid{grid-template-columns:1fr;}
+  #radarCanvas{max-width:100%;height:auto;}
+}
+@media print{
+  .sidebar,.menu-toggle,.actions{display:none!important;}
+  .main{margin-left:0;padding:0;}
+  .section{display:block!important;page-break-inside:avoid;}
+  .card{box-shadow:none;border:1px solid #ddd;}
+}
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="logo">交付运营总系统<small>Yara · Knowledge-Payment Ops OS</small></div>
+  <div class="nav-item active" data-sec="dash"><span class="dot"></span>总览 Dashboard</div>
+  <div class="nav-item" data-sec="m1"><span class="dot"></span>① 运营能力<span class="score-badge" id="badge-m1">-</span></div>
+  <div class="nav-item" data-sec="m2"><span class="dot"></span>② 成长地图<span class="score-badge" id="badge-m2">-</span></div>
+  <div class="nav-item" data-sec="m3"><span class="dot"></span>③ 工作OS<span class="score-badge" id="badge-m3">-</span></div>
+  <div class="nav-item" data-sec="m4"><span class="dot"></span>④ 数据指标<span class="score-badge" id="badge-m4">-</span></div>
+  <div class="nav-item" data-sec="m5"><span class="dot"></span>⑤ SOP体系<span class="score-badge" id="badge-m5">-</span></div>
+  <div class="nav-item" data-sec="m6"><span class="dot"></span>⑥ AI工作流<span class="score-badge" id="badge-m6">-</span></div>
+  <div class="nav-item" data-sec="m7"><span class="dot"></span>⑦ 年度系统<span class="score-badge" id="badge-m7">-</span></div>
+  <div class="nav-item" data-sec="m8"><span class="dot"></span>⑧ 负责人手册<span class="score-badge" id="badge-m8">-</span></div>
+  <div class="save-status"><span class="dot-save"></span>自动保存 · <span id="saveTime">未保存</span></div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- ===== DASHBOARD ===== -->
+<div class="section active" id="sec-dash">
+  <div class="section-head"><h2>总览 · Dashboard</h2><p>八大模块联动视图 · 实时计算 · 智能推荐</p></div>
+  <div class="dash-grid">
+    <div class="dash-stat"><div class="num" id="d-avg">-</div><div class="lbl">综合均分 / 5.0</div></div>
+    <div class="dash-stat"><div class="num" id="d-done">0%</div><div class="lbl">评估完成度</div></div>
+    <div class="dash-stat"><div class="num" id="d-weak">-</div><div class="lbl">最薄弱维度</div></div>
+    <div class="dash-stat"><div class="num" id="d-assets">0</div><div class="lbl">已建资产数</div></div>
+  </div>
+  <div class="radar-wrap">
+    <h3>六维能力雷达 · 跨模块联动</h3>
+    <canvas id="radarCanvas" width="380" height="380"></canvas>
+  </div>
+  <div class="smart-box">
+    <h3>⚡ 智能推荐 · 下一步行动</h3>
+    <div id="smartRecs"><div class="rec">完成任意模块评分后，系统将自动生成个性化行动建议。</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">模块进度一览</div>
+    <div id="moduleProgress"></div>
+  </div>
+  <div class="actions">
+    <button class="btn-gold" onclick="exportAll()">导出完整报告</button>
+    <button class="btn-out" onclick="window.print()">打印 / PDF</button>
+    <button class="btn-red" onclick="resetAll()">重置所有数据</button>
+  </div>
+</div>
+
+<!-- ===== M1 运营能力 ===== -->
+<div class="section" id="sec-m1">
+  <div class="section-head"><h2>① 运营能力自查</h2><p>6层 × 12项核心能力 · 从执行到体系</p></div>
+  <div id="m1-cards"></div>
+  <div class="link-hint" id="link-m1"></div>
+</div>
+
+<!-- ===== M2 成长地图 ===== -->
+<div class="section" id="sec-m2">
+  <div class="section-head"><h2>② 能力成长地图</h2><p>0-3年四阶段 · S1执行→S2设计→S3体系→S4管理</p></div>
+  <div id="m2-cards"></div>
+  <div class="link-hint" id="link-m2"></div>
+</div>
+
+<!-- ===== M3 工作OS ===== -->
+<div class="section" id="sec-m3">
+  <div class="section-head"><h2>③ 工作操作系统</h2><p>6模块 · 日/周/月节奏 · 从混乱到自转</p></div>
+  <div id="m3-cards"></div>
+  <div class="link-hint" id="link-m3"></div>
+</div>
+
+<!-- ===== M4 数据指标 ===== -->
+<div class="section" id="sec-m4">
+  <div class="section-head"><h2>④ 数据指标体系</h2><p>7模块 × 20指标 · 用数字说话</p></div>
+  <div id="m4-cards"></div>
+  <div class="link-hint" id="link-m4"></div>
+</div>
+
+<!-- ===== M5 SOP体系 ===== -->
+<div class="section" id="sec-m5">
+  <div class="section-head"><h2>⑤ SOP体系</h2><p>10个核心SOP · 用户全生命周期覆盖</p></div>
+  <div id="m5-cards"></div>
+  <div class="link-hint" id="link-m5"></div>
+</div>
+
+<!-- ===== M6 AI工作流 ===== -->
+<div class="section" id="sec-m6">
+  <div class="section-head"><h2>⑥ AI运营工作台</h2><p>6个AI助手 · 每日30min效率飞轮</p></div>
+  <div id="m6-cards"></div>
+  <div class="link-hint" id="link-m6"></div>
+</div>
+
+<!-- ===== M7 年度系统 ===== -->
+<div class="section" id="sec-m7">
+  <div class="section-head"><h2>⑦ 年度总系统</h2><p>8章主文档 · Q1-Q4节奏 · 资产库建设</p></div>
+  <div id="m7-cards"></div>
+  <div class="link-hint" id="link-m7"></div>
+</div>
+
+<!-- ===== M8 负责人手册 ===== -->
+<div class="section" id="sec-m8">
+  <div class="section-head"><h2>⑧ 交付运营负责人手册</h2><p>10章融合 · 从定位到晋升的完整路径</p></div>
+  <div id="m8-cards"></div>
+  <div class="link-hint" id="link-m8"></div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+// ===== DATA MODEL =====
+const MODULES = {
+  m1: { name:'运营能力', dim:'系统思维', items:[
+    {id:'m1a',t:'用户生命周期管理',d:'付费→激活→学习→完课→续费，全链路是否清晰',dim:'用户洞察'},
+    {id:'m1b',t:'社群运营节奏',d:'日/周/月内容规划，社群活跃度维护',dim:'交付体系'},
+    {id:'m1c',t:'数据敏感度',d:'看到数字能否快速判断好坏、找到归因',dim:'数据能力'},
+    {id:'m1d',t:'SOP设计与执行',d:'流程是否标准化、可复制、可交接',dim:'交付体系'},
+    {id:'m1e',t:'AI工具应用',d:'是否用AI提效日常重复工作',dim:'AI效率'},
+    {id:'m1f',t:'复盘与迭代',d:'做完是否回看、总结、优化下一轮',dim:'复盘成长'},
+    {id:'m1g',t:'跨部门协作',d:'与销售/产品/技术的信息同步和推动能力',dim:'商业证明'},
+    {id:'m1h',t:'用户洞察',d:'是否真正理解用户卡在哪、要什么',dim:'用户洞察'},
+    {id:'m1i',t:'指标拆解',d:'大目标能否拆成可追踪的过程指标',dim:'数据能力'},
+    {id:'m1j',t:'异常预警',d:'能否在问题爆发前发现信号并干预',dim:'数据能力'},
+    {id:'m1k',t:'方法论沉淀',d:'经验是否抽象成可复用的方法',dim:'复盘成长'},
+    {id:'m1l',t:'团队赋能',d:'能否让他人也跑通你设计的流程',dim:'商业证明'}
+  ]},
+  m2: { name:'成长地图', dim:'复盘成长', items:[
+    {id:'m2a',t:'S1·执行到位',d:'交给我的事100%完成、0差错、有回音',dim:'交付体系'},
+    {id:'m2b',t:'S1·效率意识',d:'同样的事能否更快、更省力地完成',dim:'AI效率'},
+    {id:'m2c',t:'S1·主动补位',d:'看到缝隙主动填，不等别人安排',dim:'商业证明'},
+    {id:'m2d',t:'S2·流程设计',d:'从"做"到"设计怎么做"，输出SOP',dim:'交付体系'},
+    {id:'m2e',t:'S2·数据驱动',d:'用数据发现问题、验证方案、汇报成果',dim:'数据能力'},
+    {id:'m2f',t:'S2·用户分层',d:'不同状态用户给不同动作，非一刀切',dim:'用户洞察'},
+    {id:'m2g',t:'S3·体系搭建',d:'多模块联动形成自转系统',dim:'系统思维'},
+    {id:'m2h',t:'S3·策略输出',d:'能提出"下个月做什么、为什么"的方案',dim:'商业证明'},
+    {id:'m2i',t:'S3·带教能力',d:'新人来了能快速上手你设计的系统',dim:'商业证明'},
+    {id:'m2j',t:'S4·业务判断',d:'能判断什么值得做、什么该砍掉',dim:'商业证明'},
+    {id:'m2k',t:'S4·资源调配',d:'人/钱/时间的全局最优分配',dim:'系统思维'},
+    {id:'m2l',t:'S4·向上管理',d:'让领导看到价值、争取资源、影响决策',dim:'商业证明'}
+  ]},
+  m3: { name:'工作OS', dim:'系统思维', items:[
+    {id:'m3a',t:'每日三件事',d:'每天开工前明确最重要的3件事',dim:'交付体系'},
+    {id:'m3b',t:'数据晨检',d:'花5分钟看核心指标，发现异常',dim:'数据能力'},
+    {id:'m3c',t:'社群节奏',d:'早安/内容/互动/总结，日更不断档',dim:'交付体系'},
+    {id:'m3d',t:'周复盘',d:'本周数据→异常→归因→下周调整',dim:'复盘成长'},
+    {id:'m3e',t:'用户触达',d:'沉默用户分层召回，不遗漏',dim:'用户洞察'},
+    {id:'m3f',t:'知识输入',d:'每天30min定向学习，有固定信息源',dim:'复盘成长'},
+    {id:'m3g',t:'AI辅助',d:'文案/数据/整理用AI加速',dim:'AI效率'},
+    {id:'m3h',t:'月度全景',d:'月度指标达成→策略调整→资源申请',dim:'数据能力'},
+    {id:'m3i',t:'资产沉淀',d:'做完的事变成模板/SOP/案例',dim:'复盘成长'}
+  ]},
+  m4: { name:'数据指标', dim:'数据能力', items:[
+    {id:'m4a',t:'新增与激活',d:'日新增/24h激活率/首课完成率',dim:'用户洞察'},
+    {id:'m4b',t:'活跃与完课',d:'DAU/周活跃率/30天完课率',dim:'用户洞察'},
+    {id:'m4c',t:'续费与转化',d:'续费率/转介绍率/客单价',dim:'商业证明'},
+    {id:'m4d',t:'退费与流失',d:'退费率/退费原因分布/挽回率',dim:'用户洞察'},
+    {id:'m4e',t:'社群健康度',d:'发言率/互动率/沉默占比',dim:'交付体系'},
+    {id:'m4f',t:'服务效率',d:'响应时长/问题解决率/满意度',dim:'交付体系'},
+    {id:'m4g',t:'GMV与ROI',d:'月度GMV/获客成本/用户LTV',dim:'商业证明'},
+    {id:'m4h',t:'看板建设',d:'是否有可视化看板、自动更新',dim:'AI效率'},
+    {id:'m4i',t:'异常预警',d:'指标偏离阈值时自动提醒',dim:'AI效率'},
+    {id:'m4j',t:'数据驱动决策',d:'数据是否真正影响了下一步行动',dim:'数据能力'}
+  ]},
+  m5: { name:'SOP体系', dim:'交付体系', items:[
+    {id:'m5a',t:'承接SOP',d:'销售→教务交接：信息/建档/分组/首触',dim:'交付体系'},
+    {id:'m5b',t:'开营SOP',d:'开营前3天→当天→次日：仪式感+规则',dim:'交付体系'},
+    {id:'m5c',t:'日常运营SOP',d:'每日内容/互动/答疑/打卡的标准动作',dim:'交付体系'},
+    {id:'m5d',t:'沉默召回SOP',d:'3天/7天/14天分层触达策略',dim:'用户洞察'},
+    {id:'m5e',t:'完课推动SOP',d:'进度预警→1v1→卡点干预→激励',dim:'用户洞察'},
+    {id:'m5f',t:'续费SOP',d:'时机判断→价值回顾→话术→案例背书',dim:'商业证明'},
+    {id:'m5g',t:'退费挽留SOP',d:'原因诊断→方案→升级→兜底',dim:'用户洞察'},
+    {id:'m5h',t:'案例沉淀SOP',d:'发现→采访→包装→传播→复用',dim:'复盘成长'},
+    {id:'m5i',t:'结营SOP',d:'成果展示→感谢→续费引导→转介绍',dim:'商业证明'},
+    {id:'m5j',t:'异常处理SOP',d:'投诉/退款/对公付款等极端场景兜底',dim:'交付体系'}
+  ]},
+  m6: { name:'AI工作流', dim:'AI效率', items:[
+    {id:'m6a',t:'内容助手',d:'社群文案/打卡提醒/学习引导的AI生成',dim:'AI效率'},
+    {id:'m6b',t:'数据助手',d:'自动拉数/生成日报/异常预警',dim:'AI效率'},
+    {id:'m6c',t:'用户洞察助手',d:'分析反馈/社群聊天→提取需求信号',dim:'AI效率'},
+    {id:'m6d',t:'SOP执行助手',d:'自动提醒/模板填充/流程检查',dim:'AI效率'},
+    {id:'m6e',t:'知识管理助手',d:'学习笔记/行业信息/案例库整理',dim:'AI效率'},
+    {id:'m6f',t:'复盘助手',d:'辅助日/周/月复盘结构化输出',dim:'AI效率'},
+    {id:'m6g',t:'Prompt库',d:'≥10个场景的成熟prompt可复用',dim:'AI效率'},
+    {id:'m6h',t:'AI×业务融合',d:'AI不是玩具，是否真正嵌入工作流',dim:'AI效率'}
+  ]},
+  m7: { name:'年度系统', dim:'复盘成长', items:[
+    {id:'m7a',t:'年度目标拆解',d:'年→季→月→周，目标层层分解可追踪',dim:'数据能力'},
+    {id:'m7b',t:'Q1打地基',d:'数据看板+核心SOP+日输入习惯',dim:'交付体系'},
+    {id:'m7c',t:'Q2跑闭环',d:'生命周期全流程+AI工作台+周复盘',dim:'系统思维'},
+    {id:'m7d',t:'Q3出成果',d:'指标提升+方法论+跨部门分享',dim:'商业证明'},
+    {id:'m7e',t:'Q4证价值',d:'年度述职+晋升材料+下年规划',dim:'商业证明'},
+    {id:'m7f',t:'资产库建设',d:'SOP库/案例库/数据库/话术库/知识库',dim:'复盘成长'},
+    {id:'m7g',t:'节奏稳定性',d:'日/周/月/季节奏是否真正在跑',dim:'交付体系'},
+    {id:'m7h',t:'价值公式',d:'价值=(用户成果×规模)÷成本，是否清晰',dim:'商业证明'}
+  ]},
+  m8: { name:'负责人手册', dim:'商业证明', items:[
+    {id:'m8a',t:'使命清晰',d:'让每个付费用户从"买了课"变成"真的学会了"',dim:'用户洞察'},
+    {id:'m8b',t:'追根因',d:'问题追到第二层原因，不停在表象',dim:'数据能力'},
+    {id:'m8c',t:'指标说话',d:'汇报/思考带数字，不凭感觉',dim:'数据能力'},
+    {id:'m8d',t:'系统化重复',d:'做过两次的事就有SOP',dim:'交付体系'},
+    {id:'m8e',t:'24h激活',d:'新用户24h内完成首次学习触达',dim:'用户洞察'},
+    {id:'m8f',t:'7天习惯',d:'7天形成打开→学习→反馈闭环',dim:'用户洞察'},
+    {id:'m8g',t:'30天完课',d:'进度预警+1v1+卡点干预',dim:'用户洞察'},
+    {id:'m8h',t:'续费设计',d:'续费时机/话术/案例背书主动设计',dim:'商业证明'},
+    {id:'m8i',t:'日复盘5min',d:'做了什么→数据→明天改什么',dim:'复盘成长'},
+    {id:'m8j',t:'周复盘30min',d:'指标→异常→归因→行动闭环',dim:'复盘成长'},
+    {id:'m8k',t:'月复盘2h',d:'全景→策略→瓶颈→下月OKR',dim:'复盘成长'},
+    {id:'m8l',t:'项目表达',d:'背景→分析→行动→结果→沉淀',dim:'商业证明'},
+    {id:'m8m',t:'量化成果',d:'≥3个可量化的业务成果',dim:'商业证明'},
+    {id:'m8n',t:'影响力证据',d:'带人/分享/影响决策，超出边界的证据',dim:'商业证明'}
+  ]}
+};
+
+const DIMS = ['用户洞察','交付体系','数据能力','AI效率','复盘成长','商业证明'];
+const DIM_MAP = {'用户洞察':[],'交付体系':[],'数据能力':[],'AI效率':[],'复盘成长':[],'商业证明':[]};
+
+// Build dim map
+Object.values(MODULES).forEach(mod=>{
+  mod.items.forEach(it=>{ if(DIM_MAP[it.dim]) DIM_MAP[it.dim].push(it.id); });
+});
+
+// ===== STATE =====
+let state = { scores:{}, texts:{}, checks:{} };
+const LS_KEY = 'yara_ops_os_v1';
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(raw) state = JSON.parse(raw);
+  }catch(e){}
+}
+function saveState(){
+  try{
+    localStorage.setItem(LS_KEY, JSON.stringify(state));
+    document.getElementById('saveTime').textContent = new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+  }catch(e){}
+}
+
+// ===== RENDER MODULES =====
+function renderModules(){
+  Object.keys(MODULES).forEach(mk=>{
+    const mod = MODULES[mk];
+    const container = document.getElementById(mk+'-cards');
+    let html = '';
+    mod.items.forEach(it=>{
+      const sv = state.scores[it.id]||0;
+      const tv = state.texts[it.id+'-think']||'';
+      const av = state.texts[it.id+'-act']||'';
+      html += `<div class="card">
+        <div class="card-title">${it.t}</div>
+        <div class="card-desc">${it.d}</div>
+        <div class="rate-row"><span class="lbl">1 无 → 5 精通</span>
+          <div class="rate-btns" data-id="${it.id}">
+            ${[1,2,3,4,5].map(n=>`<button class="${sv===n?'on':''}" data-v="${n}">${n}</button>`).join('')}
+          </div>
+        </div>
+        <div class="ta-group"><label>当下想法</label><textarea data-tid="${it.id}-think" placeholder="我对这项的真实感受…">${tv}</textarea></div>
+        <div class="ta-group"><label>改进动作</label><textarea data-tid="${it.id}-act" placeholder="下一步具体做什么…">${av}</textarea></div>
+      </div>`;
+    });
+    container.innerHTML = html;
+  });
+}
+
+// ===== EVENTS =====
+document.addEventListener('click', e=>{
+  const btn = e.target.closest('.rate-btns button');
+  if(!btn) return;
+  const group = btn.closest('.rate-btns');
+  const id = group.dataset.id;
+  const v = parseInt(btn.dataset.v);
+  group.querySelectorAll('button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  state.scores[id] = v;
+  saveState();
+  refresh();
+});
+
+document.addEventListener('input', e=>{
+  const ta = e.target.closest('textarea[data-tid]');
+  if(!ta) return;
+  state.texts[ta.dataset.tid] = ta.value;
+  saveState();
+});
+
+document.addEventListener('click', e=>{
+  const chk = e.target.closest('.chk');
+  if(!chk) return;
+  chk.classList.toggle('checked');
+  state.checks[chk.dataset.ck] = chk.classList.contains('checked');
+  saveState();
+  refresh();
+});
+
+// ===== NAV =====
+document.querySelectorAll('.nav-item').forEach(nav=>{
+  nav.addEventListener('click', ()=>{
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    nav.classList.add('active');
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.getElementById('sec-'+nav.dataset.sec).classList.add('active');
+    document.querySelector('.sidebar').classList.remove('open');
+  });
+});
+
+// ===== CALCULATIONS =====
+function getDimScores(){
+  const result = {};
+  DIMS.forEach(dim=>{
+    const ids = DIM_MAP[dim];
+    let sum=0, cnt=0;
+    ids.forEach(id=>{ if(state.scores[id]){ sum+=state.scores[id]; cnt++; } });
+    result[dim] = cnt>0 ? sum/cnt : 0;
+  });
+  return result;
+}
+
+function getModuleAvg(mk){
+  const items = MODULES[mk].items;
+  let sum=0,cnt=0;
+  items.forEach(it=>{ if(state.scores[it.id]){ sum+=state.scores[it.id]; cnt++; } });
+  return cnt>0 ? sum/cnt : 0;
+}
+
+function getModuleProgress(mk){
+  const items = MODULES[mk].items;
+  let done=0;
+  items.forEach(it=>{ if(state.scores[it.id]) done++; });
+  return done/items.length;
+}
+
+// ===== RADAR =====
+function drawRadar(){
+  const scores = getDimScores();
+  const canvas = document.getElementById('radarCanvas');
+  const ctx = canvas.getContext('2d');
+  const W=canvas.width, H=canvas.height, cx=W/2, cy=H/2, R=Math.min(W,H)/2-48;
+  ctx.clearRect(0,0,W,H);
+  const n=DIMS.length, step=Math.PI*2/n, start=-Math.PI/2;
+
+  for(let ring=1;ring<=5;ring++){
+    ctx.beginPath();
+    for(let i=0;i<=n;i++){
+      const a=start+i*step, r=R*ring/5;
+      const x=cx+r*Math.cos(a), y=cy+r*Math.sin(a);
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle=ring===5?'#d4c9b8':'#e8e2d8';
+    ctx.lineWidth=1; ctx.stroke();
+  }
+  ctx.font='11px -apple-system, PingFang SC, sans-serif';
+  ctx.fillStyle='#6b6b6b'; ctx.textAlign='center';
+  for(let i=0;i<n;i++){
+    const a=start+i*step;
+    const x=cx+R*Math.cos(a), y=cy+R*Math.sin(a);
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(x,y);ctx.strokeStyle='#e8e2d8';ctx.stroke();
+    const lx=cx+(R+22)*Math.cos(a), ly=cy+(R+22)*Math.sin(a);
+    ctx.fillText(DIMS[i],lx,ly+4);
+  }
+  // Data
+  ctx.beginPath();
+  for(let i=0;i<=n;i++){
+    const idx=i%n, a=start+idx*step;
+    const r=R*(scores[DIMS[idx]]/5);
+    const x=cx+r*Math.cos(a), y=cy+r*Math.sin(a);
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  }
+  ctx.closePath();
+  ctx.fillStyle='rgba(154,123,79,0.15)'; ctx.fill();
+  ctx.strokeStyle='#9a7b4f'; ctx.lineWidth=2; ctx.stroke();
+  for(let i=0;i<n;i++){
+    const a=start+i*step, r=R*(scores[DIMS[i]]/5);
+    ctx.beginPath();ctx.arc(cx+r*Math.cos(a),cy+r*Math.sin(a),4,0,Math.PI*2);
+    ctx.fillStyle='#9a7b4f';ctx.fill();
+  }
+}
+
+// ===== SMART RECOMMENDATIONS =====
+function genRecs(){
+  const scores = getDimScores();
+  const recs = [];
+  // Find weakest dim
+  let weakDim='', weakVal=6;
+  DIMS.forEach(d=>{ if(scores[d]>0 && scores[d]<weakVal){ weakVal=scores[d]; weakDim=d; } });
+  
+  // Cross-module linkage rules
+  const linkage = {
+    '用户洞察': {low:'用户洞察薄弱 → SOP体系(⑤)中的召回/完课流程缺乏用户分层依据，建议先做10个用户访谈再优化SOP', target:'m5'},
+    '交付体系': {low:'交付体系薄弱 → AI工作流(⑥)的前提是SOP已固化，否则AI化的是混乱。先跑通1个SOP再谈AI辅助', target:'m6'},
+    '数据能力': {low:'数据能力薄弱 → 年度系统(⑦)的Q1目标"数据看板"是地基，没有数据一切复盘都是凭感觉', target:'m7'},
+    'AI效率': {low:'AI效率薄弱 → 工作OS(③)的日/周节奏如果全靠人肉，不可持续。先从"内容助手"一个点切入', target:'m3'},
+    '复盘成长': {low:'复盘成长薄弱 → 负责人手册(⑧)的晋升证明需要方法论沉淀，不复盘就没有可讲的"项目故事"', target:'m8'},
+    '商业证明': {low:'商业证明薄弱 → 成长地图(②)的S3/S4阶段需要"超出边界的证据"，现在就要开始积累', target:'m2'}
+  };
+
+  if(weakDim && weakVal<3.5){
+    recs.push(`<strong>最薄弱：${weakDim}（${weakVal.toFixed(1)}分）</strong><br>${linkage[weakDim].low}`);
+  }
+
+  // Find lowest individual items
+  let lowItems = [];
+  Object.values(MODULES).forEach(mod=>{
+    mod.items.forEach(it=>{
+      const s = state.scores[it.id];
+      if(s && s<=2) lowItems.push({t:it.t, s, mod:mod.name});
+    });
+  });
+  lowItems.sort((a,b)=>a.s-b.s);
+  if(lowItems.length>0){
+    const top3 = lowItems.slice(0,3);
+    recs.push(`<strong>急迫短板（≤2分）</strong><br>${top3.map(i=>`「${i.t}」(${i.mod} ${i.s}分)`).join('、')}<br>→ 本周只攻一个，写下具体第一步。`);
+  }
+
+  // Progress-based recs
+  const totalItems = Object.values(MODULES).reduce((a,m)=>a+m.items.length,0);
+  const rated = Object.keys(state.scores).filter(k=>state.scores[k]>0).length;
+  if(rated < totalItems*0.3){
+    recs.push(`<strong>评估进度 ${Math.round(rated/totalItems*100)}%</strong><br>先完成所有评分再谈改进。建议每天评1个模块，一周内跑完。`);
+  } else if(rated >= totalItems*0.8) {
+    recs.push(`<strong>评估接近完成</strong><br>现在进入"跑"的阶段：选3个最低分项，写改进动作，下周回验。`);
+  }
+
+  // Linkage: if m5 low and m6 high
+  const m5avg = getModuleAvg('m5'), m6avg = getModuleAvg('m6');
+  if(m5avg>0 && m6avg>0 && m6avg>m5avg+1){
+    recs.push(`<strong>联动警告</strong><br>AI工作流(${m6avg.toFixed(1)})远超SOP体系(${m5avg.toFixed(1)})——你在用AI加速一个还没标准化的流程，先固化再加速。`);
+  }
+
+  if(recs.length===0){
+    recs.push('完成任意模块评分后，系统将自动生成个性化行动建议。');
+  }
+  document.getElementById('smartRecs').innerHTML = recs.map(r=>`<div class="rec">${r}</div>`).join('');
+}
+
+// ===== LINKAGE HINTS =====
+function updateLinkHints(){
+  const scores = getDimScores();
+  const hints = {
+    'm1': ()=> scores['系统思维']>0 && scores['系统思维']<3 ? '系统思维偏低：运营能力12项中，关注"方法论沉淀"和"团队赋能"——这两项是从L2→L3的门槛。' : '',
+    'm2': ()=> scores['商业证明']>0 && scores['商业证明']<3 ? '商业证明偏低：S3/S4阶段的核心是"用结果说话"，现在就要开始积累量化成果。' : '',
+    'm3': ()=> scores['AI效率']>0 && scores['AI效率']<3 ? 'AI效率偏低：工作OS的可持续性取决于AI辅助，从"内容助手"一个点切入即可。' : '',
+    'm4': ()=> scores['数据能力']>0 && scores['数据能力']<3 ? '数据能力偏低：不要求你会SQL，但"每天看5分钟数据"是最低门槛。' : '',
+    'm5': ()=> scores['用户洞察']>0 && scores['用户洞察']<3 ? '用户洞察偏低：SOP不是"我规定你做什么"，是"用户卡在哪我就在哪设一个动作"。' : '',
+    'm6': ()=> { const m5=getModuleAvg('m5'); return m5>0 && m5<3 ? '前置依赖：SOP体系(⑤)未固化时，AI化的是混乱。先跑通再加速。' : ''; },
+    'm7': ()=> scores['数据能力']>0 && scores['数据能力']<3 ? 'Q1地基=数据看板。数据能力不足时，年度系统的所有"指标达成"都是空谈。' : '',
+    'm8': ()=> scores['复盘成长']>0 && scores['复盘成长']<3 ? '晋升证明的前提是复盘沉淀。没有日/周复盘，就没有"项目故事"可讲。' : ''
+  };
+  Object.keys(hints).forEach(mk=>{
+    const el = document.getElementById('link-'+mk);
+    const msg = hints[mk]();
+    if(msg){ el.textContent='⚡ 联动提示：'+msg; el.classList.add('show'); }
+    else el.classList.remove('show');
+  });
+}
+
+// ===== REFRESH =====
+function refresh(){
+  // Badges
+  Object.keys(MODULES).forEach(mk=>{
+    const avg = getModuleAvg(mk);
+    document.getElementById('badge-'+mk).textContent = avg>0 ? avg.toFixed(1) : '-';
+  });
+  // Dashboard stats
+  const dimScores = getDimScores();
+  const vals = Object.values(dimScores).filter(v=>v>0);
+  const avg = vals.length>0 ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2) : '-';
+  document.getElementById('d-avg').textContent = avg;
+  
+  const totalItems = Object.values(MODULES).reduce((a,m)=>a+m.items.length,0);
+  const rated = Object.keys(state.scores).filter(k=>state.scores[k]>0).length;
+  document.getElementById('d-done').textContent = Math.round(rated/totalItems*100)+'%';
+  
+  let weakDim='-', weakVal=6;
+  DIMS.forEach(d=>{ if(dimScores[d]>0 && dimScores[d]<weakVal){ weakVal=dimScores[d]; weakDim=d; } });
+  document.getElementById('d-weak').textContent = weakVal<6 ? weakDim : '-';
+  
+  const assets = Object.values(state.checks).filter(v=>v).length;
+  document.getElementById('d-assets').textContent = assets;
+
+  // Module progress
+  let progHtml = '';
+  Object.keys(MODULES).forEach(mk=>{
+    const p = getModuleProgress(mk);
+    progHtml += `<div style="display:flex;align-items:center;gap:10px;padding:6px 0;font-size:.78rem;">
+      <span style="min-width:80px;color:var(--ink-l)">${MODULES[mk].name}</span>
+      <div class="prog-bar" style="flex:1"><div class="fill" style="width:${p*100}%"></div></div>
+      <span style="color:var(--gold);font-weight:600;min-width:36px">${Math.round(p*100)}%</span>
+    </div>`;
+  });
+  document.getElementById('moduleProgress').innerHTML = progHtml;
+
+  drawRadar();
+  genRecs();
+  updateLinkHints();
+}
+
+// ===== EXPORT =====
+function exportAll(){
+  const lines = [];
+  lines.push('═══════════════════════════════════════════');
+  lines.push('交付运营总系统 · 完整自评报告');
+  lines.push('导出时间：'+new Date().toLocaleString('zh-CN'));
+  lines.push('═══════════════════════════════════════════\n');
+  
+  const dimScores = getDimScores();
+  lines.push('【六维雷达】');
+  DIMS.forEach(d=>{ lines.push(`  ${d}：${dimScores[d]>0?dimScores[d].toFixed(2):'未评'} / 5.0`); });
+  lines.push('');
+
+  Object.keys(MODULES).forEach(mk=>{
+    const mod = MODULES[mk];
+    lines.push(`\n【${mod.name}】均分 ${getModuleAvg(mk)>0?getModuleAvg(mk).toFixed(2):'未评'}`);
+    mod.items.forEach(it=>{
+      const s = state.scores[it.id];
+      lines.push(`  ◆ ${it.t}${s?' ['+s+'/5]':' [未评]'}`);
+      const think = state.texts[it.id+'-think'];
+      const act = state.texts[it.id+'-act'];
+      if(think) lines.push(`    想法：${think}`);
+      if(act) lines.push(`    动作：${act}`);
+    });
+  });
+
+  const blob = new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '交付运营总系统_自评报告_'+new Date().toISOString().slice(0,10)+'.txt';
+  a.click();
+}
+
+function resetAll(){
+  if(!confirm('确定重置所有数据？此操作不可撤销。')) return;
+  state = {scores:{},texts:{},checks:{}};
+  localStorage.removeItem(LS_KEY);
+  renderModules();
+  refresh();
+}
+
+// ===== INIT =====
+loadState();
+renderModules();
+refresh();
+</script>
+</body>
+</html>

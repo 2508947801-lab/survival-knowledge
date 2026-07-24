@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>交付运营管理系统 · Yara</title>
+<style>
+:root {
+  --bg:#f4f1ea; --card:#fffdf8; --gold:#9a7b4f; --gold-l:#f0e8db;
+  --ink:#2c2c2c; --ink-l:#6b6b6b; --border:#e8e2d8;
+  --serif:"Songti SC","Noto Serif SC",Georgia,serif;
+  --sans:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
+  --sidebar-w:240px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);}
+
+/* === SIDEBAR === */
+.sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100;transition:transform .2s;}
+.sidebar .logo{padding:20px 20px 16px;border-bottom:1px solid var(--border);}
+.sidebar .logo h1{font-family:var(--serif);font-size:1.05rem;color:var(--gold);letter-spacing:1px;}
+.sidebar .logo small{display:block;font-size:.65rem;color:var(--ink-l);margin-top:3px;}
+.sidebar .nav-scroll{flex:1;overflow-y:auto;padding:12px 0;}
+
+/* Nav groups */
+.nav-group{margin-bottom:4px;}
+.nav-group-title{display:flex;align-items:center;gap:8px;padding:10px 20px;font-size:.78rem;font-weight:700;color:var(--ink);cursor:pointer;user-select:none;transition:background .15s;}
+.nav-group-title:hover{background:var(--gold-l);}
+.nav-group-title .icon{font-size:.9rem;width:20px;text-align:center;}
+.nav-group-title .arrow{margin-left:auto;font-size:.6rem;color:var(--ink-l);transition:transform .2s;}
+.nav-group.open .arrow{transform:rotate(90deg);}
+.nav-children{display:none;padding:2px 0 6px;}
+.nav-group.open .nav-children{display:block;}
+.nav-child{display:flex;align-items:center;gap:8px;padding:8px 20px 8px 48px;font-size:.76rem;color:var(--ink-l);cursor:pointer;transition:all .15s;border-left:3px solid transparent;}
+.nav-child:hover{background:var(--gold-l);color:var(--ink);}
+.nav-child.active{background:var(--gold-l);color:var(--gold);border-left-color:var(--gold);font-weight:600;}
+.nav-child .dot{width:5px;height:5px;border-radius:50%;background:var(--border);flex-shrink:0;}
+.nav-child.active .dot{background:var(--gold);}
+
+/* Sidebar footer */
+.sidebar .footer{padding:12px 20px;border-top:1px solid var(--border);font-size:.62rem;color:var(--ink-l);}
+
+/* === MAIN === */
+.main{margin-left:var(--sidebar-w);height:100vh;display:flex;flex-direction:column;}
+.topbar{height:44px;background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0;}
+.topbar .breadcrumb{font-size:.75rem;color:var(--ink-l);}
+.topbar .breadcrumb strong{color:var(--gold);}
+.topbar .btn-home{margin-left:auto;padding:4px 12px;border:1px solid var(--border);border-radius:6px;background:#fff;font-size:.7rem;color:var(--ink-l);cursor:pointer;transition:all .15s;}
+.topbar .btn-home:hover{border-color:var(--gold);color:var(--gold);}
+.frame-wrap{flex:1;position:relative;}
+.frame-wrap iframe{width:100%;height:100%;border:none;background:#fff;}
+
+/* === HOME === */
+.home{position:absolute;inset:0;background:var(--bg);overflow-y:auto;padding:48px 40px;}
+.home.hidden{display:none;}
+.home h2{font-family:var(--serif);font-size:1.5rem;color:var(--gold);margin-bottom:8px;}
+.home .sub{font-size:.82rem;color:var(--ink-l);margin-bottom:32px;}
+.home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;max-width:800px;}
+.home-card{background:var(--card);border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.05);padding:20px;cursor:pointer;transition:all .2s;border:1px solid transparent;}
+.home-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.08);}
+.home-card .hc-icon{font-size:1.4rem;margin-bottom:8px;}
+.home-card .hc-title{font-size:.85rem;font-weight:600;margin-bottom:4px;}
+.home-card .hc-desc{font-size:.72rem;color:var(--ink-l);line-height:1.5;}
+.home-card .hc-tag{display:inline-block;margin-top:8px;padding:2px 8px;background:var(--gold-l);border-radius:10px;font-size:.62rem;color:var(--gold);}
+
+/* Mobile */
+.menu-toggle{display:none;position:fixed;top:8px;left:8px;z-index:200;width:34px;height:34px;border-radius:8px;background:var(--gold);color:#fff;border:none;font-size:1rem;cursor:pointer;}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .menu-toggle{display:block;}
+  .topbar{padding-left:52px;}
+  .topbar .btn-home{padding:8px 14px;}
+  .home{padding:24px 16px;}
+  .home-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="logo">
+    <h1>交付运营管理系统</h1>
+    <small>Delivery Ops Management · Yara</small>
+  </div>
+  <div class="nav-scroll">
+
+    <!-- 一级：教务管理 -->
+    <div class="nav-group open">
+      <div class="nav-group-title" onclick="toggleGroup(this)">
+        <span class="icon">📚</span>教务管理<span class="arrow">▶</span>
+      </div>
+      <div class="nav-children">
+        <div class="nav-child" data-src="运营能力地图/academic-system.html" data-name="建课系统" data-group="教务管理"><span class="dot"></span>建课系统</div>
+        <div class="nav-child" data-src="杨家成课表管理工具/课表批量生成工具.html" data-name="杨家成排课" data-group="教务管理"><span class="dot"></span>杨家成3980排课</div>
+        <div class="nav-child" data-src="杨家成课表管理工具/之昊2980课表生成工具.html" data-name="之昊排课" data-group="教务管理"><span class="dot"></span>之昊2980排课</div>
+      </div>
+    </div>
+
+    <!-- 一级：运营能力 -->
+    <div class="nav-group">
+      <div class="nav-group-title" onclick="toggleGroup(this)">
+        <span class="icon">🗺️</span>运营能力<span class="arrow">▶</span>
+      </div>
+      <div class="nav-children">
+        <div class="nav-child" data-src="运营能力地图/运营能力地图.html" data-name="能力地图" data-group="运营能力"><span class="dot"></span>能力地图 · 20卡</div>
+        <div class="nav-child" data-src="运营能力地图/交付运营总系统.html" data-name="自查总系统" data-group="运营能力"><span class="dot"></span>自查总系统 · 8模块</div>
+      </div>
+    </div>
+
+    <!-- 一级：对帐工具 -->
+    <div class="nav-group">
+      <div class="nav-group-title" onclick="toggleGroup(this)">
+        <span class="icon">🧾</span>对帐工具<span class="arrow">▶</span>
+      </div>
+      <div class="nav-children">
+        <div class="nav-child" data-src="账号异常对帐工具/对账对比看板.html" data-name="对账对比看板" data-group="对帐工具"><span class="dot"></span>对账对比看板</div>
+      </div>
+    </div>
+
+    <!-- 一级：日报系统 -->
+    <div class="nav-group">
+      <div class="nav-group-title" onclick="toggleGroup(this)">
+        <span class="icon">📰</span>日报系统<span class="arrow">▶</span>
+      </div>
+      <div class="nav-children">
+        <div class="nav-child" data-src="index.html" data-name="每日生存知识系统" data-group="日报系统"><span class="dot"></span>每日生存知识系统</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="footer">Yara · 雅识教育 · 2026</div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="breadcrumb" id="breadcrumb"><strong>首页</strong></div>
+    <button class="btn-home" onclick="goHome()">← 返回首页</button>
+  </div>
+  <div class="frame-wrap">
+    <!-- HOME -->
+    <div class="home" id="homePage">
+      <h2>交付运营管理系统</h2>
+      <p class="sub">教务管理 × 运营能力 × 对帐工具 × 日报系统 · 七大工具统一入口</p>
+      <div class="home-grid">
+        <div class="home-card" onclick="openTool('运营能力地图/academic-system.html','建课系统','教务管理')">
+          <div class="hc-icon">📚</div>
+          <div class="hc-title">建课系统</div>
+          <div class="hc-desc">项目→期班→课节三级结构，自动状态判定，今日课程汇总</div>
+          <div class="hc-tag">教务管理</div>
+        </div>
+        <div class="home-card" onclick="openTool('杨家成课表管理工具/课表批量生成工具.html','杨家成3980排课','教务管理')">
+          <div class="hc-icon">📅</div>
+          <div class="hc-title">杨家成3980排课</div>
+          <div class="hc-desc">四类课型自动排期，节假日顺延，两阶段算法生成</div>
+          <div class="hc-tag">教务管理</div>
+        </div>
+        <div class="home-card" onclick="openTool('杨家成课表管理工具/之昊2980课表生成工具.html','之昊2980排课','教务管理')">
+          <div class="hc-icon">📅</div>
+          <div class="hc-title">之昊2980排课</div>
+          <div class="hc-desc">之昊精品英语课表生成，2类型4章45节</div>
+          <div class="hc-tag">教务管理</div>
+        </div>
+        <div class="home-card" onclick="openTool('运营能力地图/运营能力地图.html','能力地图','运营能力')">
+          <div class="hc-icon">🗺️</div>
+          <div class="hc-title">运营能力地图</div>
+          <div class="hc-desc">20项能力卡片，L1-L3成熟度分级，诚实评价+成长前线</div>
+          <div class="hc-tag">运营能力</div>
+        </div>
+        <div class="home-card" onclick="openTool('运营能力地图/交付运营总系统.html','自查总系统','运营能力')">
+          <div class="hc-icon">⚡</div>
+          <div class="hc-title">自查总系统</div>
+          <div class="hc-desc">8模块77项评分，六维雷达联动，智能推荐，自动记忆</div>
+          <div class="hc-tag">运营能力</div>
+        </div>
+        <div class="home-card" onclick="openTool('账号异常对帐工具/对账对比看板.html','对账对比看板','对帐工具')">
+          <div class="hc-icon">🧾</div>
+          <div class="hc-title">对账对比看板</div>
+          <div class="hc-desc">多期多轮对账，异常标记，台账基线对比，WPS兼容导出</div>
+          <div class="hc-tag">对帐工具</div>
+        </div>
+        <div class="home-card" onclick="openTool('index.html','每日生存知识系统','日报系统')">
+          <div class="hc-icon">📰</div>
+          <div class="hc-title">每日生存知识系统</div>
+          <div class="hc-desc">Yara的运营情报系统，每日生存知识沉淀与播报</div>
+          <div class="hc-tag">日报系统</div>
+        </div>
+      </div>
+    </div>
+    <!-- IFRAME (hidden until tool opened) -->
+    <iframe id="toolFrame" style="display:none;"></iframe>
+  </div>
+</div>
+
+<script>
+function toggleGroup(el){
+  el.closest('.nav-group').classList.toggle('open');
+}
+
+function openTool(src, name, group){
+  var frame = document.getElementById('toolFrame');
+  var home = document.getElementById('homePage');
+  frame.src = src;
+  frame.style.display = 'block';
+  home.classList.add('hidden');
+  document.getElementById('breadcrumb').innerHTML = group + ' / <strong>' + name + '</strong>';
+  // Update nav active state
+  document.querySelectorAll('.nav-child').forEach(function(c){ c.classList.remove('active'); });
+  document.querySelectorAll('.nav-child').forEach(function(c){
+    if(c.dataset.src === src) c.classList.add('active');
+  });
+  // Close mobile sidebar
+  document.querySelector('.sidebar').classList.remove('open');
+}
+
+function goHome(){
+  var frame = document.getElementById('toolFrame');
+  var home = document.getElementById('homePage');
+  frame.src = '';
+  frame.style.display = 'none';
+  home.classList.remove('hidden');
+  document.getElementById('breadcrumb').innerHTML = '<strong>首页</strong>';
+  document.querySelectorAll('.nav-child').forEach(function(c){ c.classList.remove('active'); });
+}
+
+// Nav child click
+document.querySelectorAll('.nav-child').forEach(function(child){
+  child.addEventListener('click', function(){
+    openTool(child.dataset.src, child.dataset.name, child.dataset.group);
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>杨家成英语·课表管理工具</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#f4f1ea; --surface:#fffdf8; --surface2:#f2eee4;
+  --text:#2c2c2c; --text2:#6b6b6b; --text3:#9a948a;
+  --border:#e8e2d8; --border2:#d8d0c2;
+  --info:#9a7b4f; --infoBg:#f0e8db;
+  --success:#5f7a52; --successBg:#e9efe2;
+  --warning:#a8823c; --warningBg:#f5ecd9;
+  --danger:#a04a3a; --dangerBg:#f5e3de;
+  --purple:#7a6a9a; --purpleBg:#ece8f2;
+  --orange:#b06a3a; --orangeBg:#f5e8da;
+  --radius:10px; --radius-sm:7px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;padding:20px;max-width:1500px;margin:0 auto}
+h1{font-family:"Songti SC","Noto Serif SC",Georgia,serif;font-size:22px;margin-bottom:4px}
+h2{font-size:16px;color:var(--text2);font-weight:500;margin-bottom:16px}
+.module{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;position:relative}
+.module.locked{opacity:.45;pointer-events:none}
+.module-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.module-num{width:28px;height:28px;border-radius:50%;background:var(--info);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex-shrink:0}
+.module-title{font-size:16px;font-weight:600}
+.module-badge{font-size:12px;padding:2px 8px;border-radius:4px;background:var(--surface2);color:var(--text2);margin-left:auto}
+.module-badge.confirmed{background:var(--successBg);color:var(--success)}
+.module-desc{font-size:13px;color:var(--text2);margin-left:38px;margin-bottom:14px}
+.drop-zone{border:2px dashed var(--border2);border-radius:var(--radius);padding:32px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s}
+.drop-zone:hover,.drop-zone.dragover{border-color:var(--info);background:var(--infoBg)}
+.drop-zone p{color:var(--text2);font-size:14px}
+.drop-zone .icon{font-size:32px;margin-bottom:8px}
+.param-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.param-item{display:flex;flex-direction:column;gap:4px}
+.param-item label{font-size:13px;font-weight:600;color:var(--text2)}
+.param-item input[type=date],.param-item select,.param-item input[type=text]{
+  padding:8px 10px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);font-size:14px
+}
+.weekday-picker{display:flex;gap:6px;flex-wrap:wrap}
+.weekday-btn{padding:6px 14px;border:1px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;font-size:13px;background:var(--bg);color:var(--text2);transition:all .15s;user-select:none}
+.weekday-btn.active{background:var(--info);color:#fff;border-color:var(--info)}
+.weekday-btn.active.wed{background:var(--purple);border-color:var(--purple)}
+.weekday-btn.active.thu{background:var(--orange);border-color:var(--orange)}
+.btn{padding:8px 16px;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;transition:opacity .15s}
+.btn-primary{background:var(--info);color:#fff}
+.btn-success{background:var(--success);color:#fff}
+.btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border2)}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-warning{background:var(--warning);color:#fff}
+.btn:hover{opacity:.85}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn-sm{padding:5px 10px;font-size:12px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:6px 10px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:var(--surface2);font-weight:600;color:var(--text2);white-space:nowrap;position:sticky;top:0;z-index:1}
+tr.chapter-row td{background:var(--infoBg);font-weight:600;color:var(--info)}
+tr.course-row:hover{background:var(--surface2)}
+tr.cancelled-row{opacity:.4;text-decoration:line-through}
+tr.changed-row td:first-child{border-left:3px solid var(--warning)}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
+.tag-qinshou{background:var(--successBg);color:var(--success)}
+.tag-jiaoyin{background:var(--purpleBg);color:var(--purple)}
+.tag-yuliao{background:var(--purpleBg);color:var(--purple)}
+.tag-waijiao{background:var(--orangeBg);color:var(--orange)}
+.tag-guide{background:var(--infoBg);color:var(--info)}
+.tag-kaixue{background:var(--warningBg);color:var(--warning)}
+.alert{padding:10px 14px;border-radius:var(--radius-sm);font-size:13px;margin-bottom:10px}
+.alert-info{background:var(--infoBg);color:var(--info)}
+.alert-warning{background:var(--warningBg);color:var(--warning)}
+.alert-success{background:var(--successBg);color:var(--success)}
+.alert-danger{background:var(--dangerBg);color:var(--danger)}
+.holiday-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.holiday-tag{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:var(--radius-sm);font-size:12px}
+.holiday-tag.hol{background:var(--dangerBg);color:var(--danger)}
+.holiday-tag.mak{background:var(--successBg);color:var(--success)}
+.holiday-tag .remove{cursor:pointer;font-weight:bold;opacity:.6}
+.holiday-tag .remove:hover{opacity:1}
+.stats{display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.stat-box{background:var(--surface2);border-radius:var(--radius-sm);padding:8px 14px}
+.stat-box .num{font-size:20px;font-weight:700}
+.stat-box .label{font-size:12px;color:var(--text2)}
+.hidden{display:none!important}
+.hint{font-size:12px;color:var(--text3);margin-top:4px}
+.op-bar{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.op-bar .selected-info{font-size:13px;font-weight:600;color:var(--text2)}
+.filter-bar{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center}
+.filter-btn{padding:4px 12px;border:1px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;background:var(--bg);color:var(--text2);user-select:none}
+.filter-btn.active{background:var(--info);color:#fff;border-color:var(--info)}
+#scheduleTableWrap{max-height:550px;overflow:auto;border:1px solid var(--border);border-radius:var(--radius-sm)}
+#lessonTableWrap{max-height:500px;overflow:auto;border:1px solid var(--border);border-radius:var(--radius-sm)}
+#chapterTableWrap{max-height:500px;overflow:auto;border:1px solid var(--border);border-radius:var(--radius-sm)}
+.toast{position:fixed;top:20px;right:20px;padding:12px 20px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;z-index:9999;animation:slideIn .3s ease;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.toast.success{background:var(--success);color:#fff}
+.toast.warning{background:var(--warning);color:#fff}
+.toast.danger{background:var(--danger);color:#fff}
+.toast.info{background:var(--info);color:#fff}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+.chapter-tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.chapter-tab{padding:6px 14px;border:1px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;font-size:13px;background:var(--bg);color:var(--text2);user-select:none}
+.chapter-tab.active{background:var(--info);color:#fff;border-color:var(--info)}
+.split-info{display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.split-card{flex:1;min-width:160px;background:var(--surface2);border-radius:var(--radius-sm);padding:10px;border-left:3px solid var(--info)}
+.split-card .price{font-size:16px;font-weight:700;color:var(--info)}
+.split-card .desc{font-size:12px;color:var(--text2)}
+.split-card .range{font-size:11px;color:var(--text3);margin-top:2px}
+.sub-panel{background:var(--surface2);border-radius:var(--radius-sm);padding:14px;margin-bottom:14px}
+.sub-panel-title{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:8px}
+input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--info)}
+.date-input-inline{padding:4px 8px;border:1px solid var(--border2);border-radius:4px;background:var(--bg);color:var(--text);font-size:13px}
+</style>
+</head>
+<body>
+<h1>杨家成英语·课表管理工具</h1>
+<h2>导入模板 → 编辑课表 → 生成课节管理 → 生成章节关联课节（三个独立模块）</h2>
+
+<!-- ========== Module 0: Import ========== -->
+<div class="module" id="mod-import">
+  <div class="module-header">
+    <div class="module-num">0</div>
+    <div class="module-title">导入课表模板</div>
+    <div class="module-badge" id="importBadge">未导入</div>
+  </div>
+  <div class="module-desc">导入前一期的总课表Excel。若含行课时间→修改模式；若不含→新建模式。工具保留课节名称、作业ID、视频ID。</div>
+  <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+    <div class="icon">📄</div>
+    <p>点击或拖拽 Excel 文件到此处</p>
+    <p style="font-size:12px;color:var(--text3);margin-top:4px">支持总课表格式（含章节标题行 + 作业ID/视频ID列）</p>
+  </div>
+  <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none">
+  <div id="importResult" class="hidden" style="margin-top:14px">
+    <div class="alert alert-success" id="importAlert"></div>
+    <div class="stats" id="importStats"></div>
+    <div id="modeConfirm" class="hidden" style="margin-top:10px">
+      <div class="alert alert-info" id="modeAlert"></div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-primary btn-sm" onclick="setMode('modify')">修改模式</button>
+        <button class="btn btn-secondary btn-sm" onclick="setMode('new')">新建模式（清空日期和课节ID）</button>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:14px;padding:12px;border:1px dashed var(--border);border-radius:8px">
+    <div style="font-size:13px;font-weight:600;margin-bottom:6px">章节关联课节模板（可选，推荐导入）</div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:8px">导入第二~第八章的章节关联Excel，导出时保留作业ID/视频ID排序</div>
+    <input type="file" id="chapterTemplateInput" accept=".xlsx,.xls" multiple style="font-size:12px" onchange="handleChapterTemplateImport(this.files)">
+    <div id="chapterTemplateResult" class="hidden" style="margin-top:6px;font-size:12px"></div>
+  </div>
+</div>
+
+<!-- ========== Module 1: Schedule ========== -->
+<div class="module hidden" id="mod-schedule">
+  <div class="module-header">
+    <div class="module-num">1</div>
+    <div class="module-title">模块一：课表</div>
+    <div class="module-badge" id="scheduleBadge">编辑中</div>
+  </div>
+  <div class="module-desc">确定亲授课、纠音课、语聊房、外教课的行课时间。支持自动生成和手动调整（顺延/调换/取消/改期）。确认后解锁模块二。</div>
+
+  <!-- Parameters -->
+  <div class="sub-panel" id="paramPanel">
+    <div class="sub-panel-title">排课参数</div>
+    <div class="param-grid">
+      <div class="param-item">
+        <label>开课日（第一节课）</label>
+        <input type="date" id="startDate" value="">
+        <div class="hint">第一节亲授课的日期（赠课不占行课日）</div>
+      </div>
+      <div class="param-item">
+        <label>亲授课星期</label>
+        <div class="weekday-picker" id="qinshouDays">
+          <div class="weekday-btn active" data-day="1">周一</div>
+          <div class="weekday-btn active" data-day="2">周二</div>
+          <div class="weekday-btn" data-day="3">周三</div>
+          <div class="weekday-btn" data-day="4">周四</div>
+          <div class="weekday-btn active" data-day="5">周五</div>
+        </div>
+      </div>
+      <div class="param-item">
+        <label>纠音课 / 语聊房 星期</label>
+        <div class="weekday-picker" id="jiaoyinDay">
+          <div class="weekday-btn" data-day="1">周一</div>
+          <div class="weekday-btn" data-day="2">周二</div>
+          <div class="weekday-btn active wed" data-day="3">周三</div>
+          <div class="weekday-btn" data-day="4">周四</div>
+          <div class="weekday-btn" data-day="5">周五</div>
+        </div>
+      </div>
+      <div class="param-item">
+        <label>外教课 星期</label>
+        <div class="weekday-picker" id="waijiaoDay">
+          <div class="weekday-btn" data-day="1">周一</div>
+          <div class="weekday-btn" data-day="2">周二</div>
+          <div class="weekday-btn" data-day="3">周三</div>
+          <div class="weekday-btn active thu" data-day="4">周四</div>
+          <div class="weekday-btn" data-day="5">周五</div>
+        </div>
+      </div>
+      <div class="param-item">
+        <label>纠音/语聊 谁先开始</label>
+        <select id="whoFirst">
+          <option value="jiaoyin">纠音课先</option>
+          <option value="yuliao">语聊房先</option>
+        </select>
+      </div>
+      <div class="param-item">
+        <label>纠音/语聊 起始日期</label>
+        <input type="date" id="jiaoyinStartDate" value="">
+        <div class="hint">留空则自动计算</div>
+      </div>
+      <div class="param-item">
+        <label>行课时间（开始）</label>
+        <input type="text" id="classStartTime" value="19:55" placeholder="19:55">
+      </div>
+      <div class="param-item">
+        <label>行课时间（结束）</label>
+        <input type="text" id="classEndTime" value="21:30" placeholder="21:30">
+      </div>
+    </div>
+    <div style="margin-top:10px">
+      <button class="btn btn-primary btn-sm" onclick="generateSchedule()">生成课表</button>
+      <span style="font-size:12px;color:var(--text3);margin-left:8px">仅新建模式需要，修改模式可直接编辑下方表格</span>
+    </div>
+  </div>
+
+  <!-- Holidays -->
+  <div class="sub-panel">
+    <div class="sub-panel-title">节假日 & 补班日</div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap">
+      <div>
+        <label style="font-size:13px;font-weight:600;color:var(--text2)">节假日（跳过且顺延）</label>
+        <div style="display:flex;gap:8px;margin-top:6px;align-items:center">
+          <input type="date" id="holidayInput" class="date-input-inline">
+          <button class="btn btn-secondary btn-sm" onclick="addHoliday()">添加</button>
+        </div>
+        <div class="holiday-list" id="holidayList" style="margin-top:6px"></div>
+      </div>
+      <div>
+        <label style="font-size:13px;font-weight:600;color:var(--text2)">补班日（周末变上课日）</label>
+        <div style="display:flex;gap:8px;margin-top:6px;align-items:center">
+          <input type="date" id="makeupInput" class="date-input-inline">
+          <button class="btn btn-secondary btn-sm" onclick="addMakeup()">添加</button>
+        </div>
+        <div class="holiday-list" id="makeupList" style="margin-top:6px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter -->
+  <div class="filter-bar" id="filterBar">
+    <span style="font-size:12px;color:var(--text2);margin-right:4px">筛选：</span>
+    <div class="filter-btn active" data-filter="all" onclick="setFilter('all')">全部</div>
+    <div class="filter-btn" data-filter="qinshou" onclick="setFilter('qinshou')">亲授</div>
+    <div class="filter-btn" data-filter="jiaoyin" onclick="setFilter('jiaoyin')">纠音</div>
+    <div class="filter-btn" data-filter="yuliao" onclick="setFilter('yuliao')">语聊</div>
+    <div class="filter-btn" data-filter="waijiao" onclick="setFilter('waijiao')">外教</div>
+    <div class="filter-btn" data-filter="guide" onclick="setFilter('guide')">指南</div>
+    <div class="filter-btn" data-filter="kaixue" onclick="setFilter('kaixue')">赠课</div>
+    <div class="filter-btn" data-filter="cancelled" onclick="setFilter('cancelled')">已取消</div>
+    <div class="filter-btn" data-filter="changed" onclick="setFilter('changed')">有变更</div>
+  </div>
+
+  <!-- Operation Bar -->
+  <div class="op-bar" id="opBar">
+    <span class="selected-info" id="selectedInfo">未选择</span>
+    <button class="btn btn-warning btn-sm" onclick="applyDelay(1)" id="btnDelay1">顺延1周</button>
+    <button class="btn btn-warning btn-sm" onclick="applyDelay(2)" id="btnDelay2">顺延2周</button>
+    <button class="btn btn-secondary btn-sm" onclick="applySwap()" id="btnSwap">调换</button>
+    <button class="btn btn-danger btn-sm" onclick="applyCancel()" id="btnCancel">取消</button>
+    <button class="btn btn-secondary btn-sm" onclick="applyRestore()" id="btnRestore">恢复</button>
+    <span style="font-size:12px;color:var(--text2)">改期至：</span>
+    <input type="date" id="rescheduleInput" class="date-input-inline">
+    <button class="btn btn-primary btn-sm" onclick="applyReschedule()" id="btnReschedule">改期</button>
+    <button class="btn btn-secondary btn-sm" onclick="selectAllVisible()">全选/取消</button>
+  </div>
+
+  <!-- Validation alerts -->
+  <div id="validationAlerts"></div>
+
+  <!-- Schedule Table -->
+  <div id="scheduleStats"></div>
+  <div class="split-info hidden" id="splitInfo"></div>
+  <div id="scheduleTableWrap">
+    <table id="scheduleTable">
+      <thead><tr><th style="width:30px">选</th><th style="width:40px">课号</th><th style="width:60px">类型</th><th>课节名称</th><th style="width:100px">行课时间</th><th style="width:50px">星期</th><th style="width:80px">作业ID</th><th style="width:120px">视频ID</th><th style="width:60px">状态</th></tr></thead>
+      <tbody id="scheduleBody"></tbody>
+    </table>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-success" onclick="confirmModule1()" id="btnConfirmSchedule">确认课表</button>
+    <button class="btn btn-secondary" onclick="exportSchedule()">导出课表（总课表格式）</button>
+  </div>
+</div>
+
+<!-- ========== Module 2: Lesson Management ========== -->
+<div class="module hidden locked" id="mod-lesson">
+  <div class="module-header">
+    <div class="module-num">2</div>
+    <div class="module-title">模块二：课节管理</div>
+    <div class="module-badge" id="lessonBadge">未确认</div>
+  </div>
+  <div class="module-desc">基于已确认课表生成9列格式。新建=操作类型"新增"，修改=操作类型"修改"+保留课节ID。导出后导入雅识后台，再导入系统回传的课节ID。</div>
+
+  <div id="lessonStats"></div>
+  <div id="lessonTableWrap">
+    <table id="lessonTable">
+      <thead><tr><th>操作类型</th><th>课节ID</th><th>课节名称</th><th>课节类型</th><th>开始时间</th><th>结束时间</th><th>直播老师</th><th>学习类目</th><th>直播源</th></tr></thead>
+      <tbody id="lessonBody"></tbody>
+    </table>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-primary" onclick="exportLessonManagement()">导出课节管理Excel</button>
+    <button class="btn btn-secondary" onclick="exportThreeProducts()">导出三品课表（3980/1980/2000）</button>
+    <button class="btn btn-secondary" onclick="document.getElementById('lessonIdInput').click()">导入课节ID（系统回传）</button>
+    <input type="file" id="lessonIdInput" accept=".xlsx,.xls" style="display:none" onchange="importLessonIds(this.files[0])">
+    <button class="btn btn-success" onclick="confirmModule2()" id="btnConfirmLesson">确认课节管理</button>
+  </div>
+</div>
+
+<!-- ========== Module 3: Chapter Association ========== -->
+<div class="module hidden locked" id="mod-chapter">
+  <div class="module-header">
+    <div class="module-num">3</div>
+    <div class="module-title">模块三：章节关联课节</div>
+    <div class="module-badge" id="chapterBadge">未确认</div>
+  </div>
+  <div class="module-desc">基于课节管理生成3列格式（课节ID/课节名称/排序序号），按章导出。课节ID从模块二获取，作业ID/视频ID保留不变。</div>
+
+  <div class="chapter-tabs" id="chapterTabs"></div>
+  <div id="chapterTableWrap">
+    <table id="chapterTable">
+      <thead><tr><th style="width:120px">课节ID</th><th>课节名称</th><th style="width:80px">排序序号</th></tr></thead>
+      <tbody id="chapterBody"></tbody>
+    </table>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-primary" onclick="exportChapterAssociation()">导出章节关联课节（多Sheet）</button>
+  </div>
+</div>
+
+<script>
+// ==================== State ====================
+const state = {
+  mode: null, // 'new' | 'modify'
+  courses: [],
+  holidays: new Set(),
+  makeupDays: new Set(),
+  module1Confirmed: false,
+  module2Confirmed: false,
+  lessonIds: {}, // { courseIdx: '9801' }
+  chapterTemplates: {},
+  selectedRows: new Set(),
+  filterType: 'all',
+  activeChapter: null,
+};
+
+const DEFAULT_HOLIDAYS = [
+  '2026-09-25',
+  '2026-10-01','2026-10-02','2026-10-05','2026-10-06','2026-10-07',
+  '2027-01-01','2027-01-02','2027-01-03',
+  '2027-02-06','2027-02-07','2027-02-08','2027-02-09','2027-02-10','2027-02-11','2027-02-12',
+];
+const DEFAULT_MAKEUP = ['2026-10-08'];
+DEFAULT_HOLIDAYS.forEach(d => state.holidays.add(d));
+DEFAULT_MAKEUP.forEach(d => state.makeupDays.add(d));
+
+const WEEKDAY_NAMES = ['周日','周一','周二','周三','周四','周五','周六'];
+const CHAPTER_NAMES = [
+  '第一章：解锁母语的第一课',
+  '第二章：启动口语\u201C变活\u201D术/调教你的语音天赋',
+  '第三章：动词生存大指南/高频词拿捏手册',
+  '第四章：社恐保命句型包/万能急救句型包',
+  '第五章：口语实战全攻略',
+  '第六章：美音听力三阶通关包:解锁美式听力自由',
+  '第七章：雅思口语的表达进阶路径',
+  '第八章：打开全球聊天室/地球村听力特训'
+];
+
+// ==================== Course Classification ====================
+function classifyCourse(name) {
+  if (!name) return 'other';
+  const n = String(name);
+  if (n.includes('Mr. Yang') || n.includes('Mr.Yang')) return 'kaixue';
+  if (n.includes('纠音')) return 'jiaoyin';
+  if (n.includes('外教')) return 'waijiao';
+  if (n.includes('语聊')) return 'yuliao';
+  if (n.includes('学习指南')) return 'guide';
+  return 'qinshou';
+}
+function typeLabel(t){return{kaixue:'赠课',qinshou:'亲授',jiaoyin:'纠音',yuliao:'语聊',waijiao:'外教',guide:'指南',other:'其他'}[t]||'其他'}
+function typeTagClass(t){return{kaixue:'tag-kaixue',qinshou:'tag-qinshou',jiaoyin:'tag-jiaoyin',yuliao:'tag-yuliao',waijiao:'tag-waijiao',guide:'tag-guide'}[t]||'tag-qinshou'}
+function isMonthly(c){return c.chapter === CHAPTER_NAMES[7]}
+function matchChapter(courseChapter, targetChapter) {
+  if (courseChapter === targetChapter) return true;
+  const prefix = targetChapter.substring(0, targetChapter.indexOf('：'));
+  return courseChapter && courseChapter.startsWith(prefix);
+}
+
+// ==================== Date Utilities ====================
+function parseDate(s) {
+  if (!s) return null;
+  if (s instanceof Date) return new Date(s.getFullYear(), s.getMonth(), s.getDate());
+  if (typeof s === 'string') {
+    let m = s.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+    if (m) return new Date(parseInt(m[1]), parseInt(m[2])-1, parseInt(m[3]));
+    m = s.match(/(\d{1,2})\/(\d{1,2})/);
+    if (m) return new Date(2026, parseInt(m[1])-1, parseInt(m[2]));
+    let d = new Date(s);
+    if (!isNaN(d)) return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  }
+  return null;
+}
+function formatDate(d){return!d?'':d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function formatDateShort(d){return!d?'':String(d.getMonth()+1).padStart(2,'0')+'/'+String(d.getDate()).padStart(2,'0')}
+function isSchoolDay(d){const ds=formatDate(d);if(state.makeupDays.has(ds))return true;if(d.getDay()===0||d.getDay()===6)return false;if(state.holidays.has(ds))return false;return true}
+function nextDay(d){const r=new Date(d);r.setDate(r.getDate()+1);return r}
+function findNextMatchingDay(startDate, weekdays) {
+  let d = new Date(startDate); let safety = 0;
+  while (safety < 400) { if (isSchoolDay(d) && weekdays.includes(d.getDay())) return d; d = nextDay(d); safety++; }
+  return d;
+}
+function findNextWeekday(startDate, weekday) { return findNextMatchingDay(startDate, [weekday]); }
+
+// ==================== Toast ====================
+function showToast(msg, type='info') {
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => { el.style.opacity='0'; el.style.transition='opacity .3s'; setTimeout(()=>el.remove(),300); }, 3000);
+}
+
+// ==================== Import ====================
+document.getElementById('fileInput').addEventListener('change', e => { if(e.target.files[0]) processExcelFile(e.target.files[0]); });
+document.getElementById('dropZone').addEventListener('dragover', e => { e.preventDefault(); e.currentTarget.classList.add('dragover'); });
+document.getElementById('dropZone').addEventListener('dragleave', e => e.currentTarget.classList.remove('dragover'));
+document.getElementById('dropZone').addEventListener('drop', e => {
+  e.preventDefault(); e.currentTarget.classList.remove('dragover');
+  if(e.dataTransfer.files[0]) processExcelFile(e.dataTransfer.files[0]);
+});
+
+function processExcelFile(file) {
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = new Uint8Array(e.target.result);
+      const wb = XLSX.read(data, {type:'array', cellDates:true});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, {header:1, raw:true, defval:null});
+      state.courses = parseImportedRows(rows);
+      showImportResult();
+    } catch(err) { showToast('导入失败：'+err.message, 'danger'); }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function parseImportedRows(rows) {
+  const courses = [];
+  let currentChapter = '';
+  let courseIdx = 0;
+  let hasDates = false;
+
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    if (!row || row.every(c => c === null || c === undefined || c === '')) continue;
+
+    const col1 = row[0], col2 = row[1], col3 = row[2], col4 = row[3];
+    const col5 = row[4], col6 = row[5], col7 = row[6], col8 = row[7], col9 = row[8];
+    const isYashiRow = col1 === '新增' || col1 === '修改';
+
+    if (isYashiRow) {
+      const name = col3;
+      if (!name) continue;
+      courseIdx++;
+      const type = classifyCourse(name);
+      currentChapter = getChapterByIndex(courseIdx);
+      courses.push({
+        idx: courseIdx, name: String(name).trim(), type, chapter: currentChapter,
+        hwId: '', videoIds: [], liveId: '', date: null,
+        isZengke: type==='kaixue', isCancelled: false, dateChanged: false, isNew: true
+      });
+    } else {
+      if (col1 && String(col1).includes('第') && String(col1).includes('章') && !col2) {
+        currentChapter = String(col1).trim(); continue;
+      }
+      if (col2 === '新课节' || col2 === '课节名称') continue;
+      const name = col2;
+      if (!name) continue;
+      courseIdx++;
+      const type = classifyCourse(name);
+      const videoIds = [];
+      for (let c = 6; c <= 8; c++) { if (row[c] !== null && row[c] !== undefined && row[c] !== '') videoIds.push(String(row[c]).trim()); }
+      const dateStr = col3 ? String(col3).trim() : '';
+      const parsedDate = parseDate(dateStr);
+      if (parsedDate) hasDates = true;
+      const liveId = col4 ? String(col4).trim() : '';
+      courses.push({
+        idx: courseIdx, name: String(name).trim(), type, chapter: currentChapter || getChapterByIndex(courseIdx),
+        hwId: col6 ? String(col6).trim() : '', videoIds, liveId,
+        date: parsedDate, isZengke: type==='kaixue', isCancelled: false,
+        dateChanged: false, isNew: !parsedDate
+      });
+    }
+  }
+  state._hasDates = hasDates;
+  return courses;
+}
+
+function getChapterByIndex(idx) {
+  if (idx <= 1) return CHAPTER_NAMES[0];
+  if (idx <= 7) return CHAPTER_NAMES[1];
+  if (idx <= 25) return CHAPTER_NAMES[2];
+  if (idx <= 36) return CHAPTER_NAMES[3];
+  if (idx <= 52) return CHAPTER_NAMES[4];
+  if (idx <= 64) return CHAPTER_NAMES[5];
+  if (idx <= 74) return CHAPTER_NAMES[6];
+  return CHAPTER_NAMES[7];
+}
+
+function showImportResult() {
+  document.getElementById('importResult').classList.remove('hidden');
+  document.getElementById('mod-schedule').classList.remove('hidden');
+  const courses = state.courses;
+  if (!courses.length) { showToast('未解析到课程数据', 'danger'); return; }
+
+  const tc = {};
+  courses.forEach(c => { tc[c.type] = (tc[c.type]||0)+1; });
+  const hwCount = courses.filter(c => c.hwId).length;
+  const vidCount = courses.filter(c => c.videoIds.length > 0).length;
+
+  document.getElementById('importAlert').innerHTML =
+    `✅ 导入 <b>${courses.length}</b> 节课 | 作业ID: ${hwCount}节 | 视频ID: ${vidCount}节`;
+  document.getElementById('importStats').innerHTML = `
+    <div class="stat-box"><div class="num">${courses.length}</div><div class="label">总课节</div></div>
+    <div class="stat-box"><div class="num">${tc.qinshou||0}</div><div class="label">亲授</div></div>
+    <div class="stat-box"><div class="num">${tc.jiaoyin||0}</div><div class="label">纠音</div></div>
+    <div class="stat-box"><div class="num">${tc.yuliao||0}</div><div class="label">语聊</div></div>
+    <div class="stat-box"><div class="num">${tc.waijiao||0}</div><div class="label">外教</div></div>
+    <div class="stat-box"><div class="num">${tc.guide||0}</div><div class="label">指南</div></div>
+  `;
+  document.getElementById('importBadge').textContent = '已导入';
+
+  // Mode detection
+  const modeConfirm = document.getElementById('modeConfirm');
+  const modeAlert = document.getElementById('modeAlert');
+  if (state._hasDates) {
+    modeConfirm.classList.remove('hidden');
+    modeAlert.innerHTML = `检测到已有行课时间，建议使用<b>修改模式</b>。如需新建期班（清空日期和课节ID），选择新建模式。`;
+  } else {
+    modeConfirm.classList.remove('hidden');
+    modeAlert.innerHTML = `未检测到行课时间，已自动设为<b>新建模式</b>。请设置排课参数后生成课表。`;
+    setMode('new');
+  }
+  renderHolidayList();
+  renderScheduleTable();
+}
+
+function setMode(mode) {
+  state.mode = mode;
+  if (mode === 'new') {
+    state.courses.forEach(c => { c.date = null; c.liveId = ''; c.isNew = true; c.dateChanged = false; });
+    document.getElementById('paramPanel').style.display = '';
+  } else {
+    state.courses.forEach(c => { c.isNew = false; c.dateChanged = false; });
+    document.getElementById('paramPanel').style.display = 'none';
+  }
+  document.getElementById('modeConfirm').classList.add('hidden');
+  showToast(`已切换到${mode==='new'?'新建':'修改'}模式`, 'success');
+  renderScheduleTable();
+}
+
+// ==================== Weekday Pickers ====================
+document.querySelectorAll('#qinshouDays .weekday-btn').forEach(btn => btn.addEventListener('click', () => btn.classList.toggle('active')));
+document.querySelectorAll('#jiaoyinDay .weekday-btn').forEach(btn => btn.addEventListener('click', () => {
+  document.querySelectorAll('#jiaoyinDay .weekday-btn').forEach(b => b.classList.remove('active','wed'));
+  btn.classList.add('active','wed');
+}));
+document.querySelectorAll('#waijiaoDay .weekday-btn').forEach(btn => btn.addEventListener('click', () => {
+  document.querySelectorAll('#waijiaoDay .weekday-btn').forEach(b => b.classList.remove('active','thu'));
+  btn.classList.add('active','thu');
+}));
+function getSelectedWeekdays(id) {
+  return [...document.querySelectorAll(`#${id} .weekday-btn.active`)].map(b => parseInt(b.dataset.day)).sort();
+}
+function getSelectedSingleWeekday(id) {
+  const btn = document.querySelector(`#${id} .weekday-btn.active`);
+  return btn ? parseInt(btn.dataset.day) : 3;
+}
+
+// ==================== Holiday Management ====================
+function addHoliday(){const v=document.getElementById('holidayInput').value;if(v){state.holidays.add(v);document.getElementById('holidayInput').value='';renderHolidayList();}}
+function addMakeup(){const v=document.getElementById('makeupInput').value;if(v){state.makeupDays.add(v);document.getElementById('makeupInput').value='';renderHolidayList();}}
+function renderHolidayList(){
+  document.getElementById('holidayList').innerHTML = [...state.holidays].sort().map(d=>`<span class="holiday-tag hol">${d}<span class="remove" onclick="state.holidays.delete('${d}');renderHolidayList()">✕</span></span>`).join('');
+  document.getElementById('makeupList').innerHTML = [...state.makeupDays].sort().map(d=>`<span class="holiday-tag mak">${d}<span class="remove" onclick="state.makeupDays.delete('${d}');renderHolidayList()">✕</span></span>`).join('');
+}
+function removeHoliday(d){state.holidays.delete(d);renderHolidayList();}
+function removeMakeup(d){state.makeupDays.delete(d);renderHolidayList();}
+
+// ==================== Schedule Generation ====================
+function generateSchedule() {
+  const courses = state.courses;
+  if (!courses.length) { showToast('请先导入模板', 'warning'); return; }
+  const startDate = parseDate(document.getElementById('startDate').value);
+  if (!startDate) { showToast('请设置开课日', 'warning'); return; }
+  const qinshouDays = getSelectedWeekdays('qinshouDays');
+  const jiaoyinWeekday = getSelectedSingleWeekday('jiaoyinDay');
+  const waijiaoWeekday = getSelectedSingleWeekday('waijiaoDay');
+  const whoFirst = document.getElementById('whoFirst').value;
+  const jiaoyinStartInput = document.getElementById('jiaoyinStartDate').value;
+  const classStart = document.getElementById('classStartTime').value || '19:55';
+  const classEnd = document.getElementById('classEndTime').value || '21:30';
+  if (!qinshouDays.length) { showToast('请选择亲授课星期', 'warning'); return; }
+
+  const qinshouCourses = courses.filter(c => c.type==='qinshou'||c.type==='guide'||c.type==='kaixue');
+  const jiaoyinYuliao = [];
+  for (const c of courses) { if (c.type==='jiaoyin'||c.type==='yuliao') jiaoyinYuliao.push(c); }
+  const waijiaoCourses = courses.filter(c => c.type==='waijiao');
+
+  // 1. 亲授课
+  let qCursor = new Date(startDate);
+  for (const c of qinshouCourses) {
+    if (c.type==='kaixue') { c.date=null; c.isZengke=true; }
+    else { const d=findNextMatchingDay(qCursor,qinshouDays); c.date=d; qCursor=nextDay(d); }
+  }
+
+  // 2. 纠音/语聊
+  let jyCursor;
+  if (jiaoyinStartInput) jyCursor = parseDate(jiaoyinStartInput);
+  else { jyCursor = new Date(startDate); jyCursor.setDate(jyCursor.getDate()+2); }
+  for (const c of jiaoyinYuliao) {
+    if (isMonthly(c)) continue; // 月度课单独处理，不终止循环
+    const d = findNextWeekday(jyCursor, jiaoyinWeekday);
+    c.date = d; jyCursor = new Date(d); jyCursor.setDate(jyCursor.getDate()+7);
+  }
+
+  // 3. 外教
+  let wCursor = new Date(startDate); wCursor.setDate(wCursor.getDate()+3);
+  for (const c of waijiaoCourses) {
+    const d = findNextWeekday(wCursor, waijiaoWeekday);
+    c.date = d; wCursor = new Date(d); wCursor.setDate(wCursor.getDate()+7);
+  }
+
+  // 4. 月度纠音/语聊课 (every 2 weeks)
+  const monthly = courses.filter(c => isMonthly(c) && (c.type==='jiaoyin' || c.type==='yuliao'));
+  if (monthly.length) {
+    const regularJy = courses.filter(c => !isMonthly(c) && (c.type==='jiaoyin' || c.type==='yuliao') && c.date);
+    let mCursor;
+    if (regularJy.length) { mCursor = new Date(regularJy[regularJy.length-1].date); mCursor.setDate(mCursor.getDate()+14); }
+    else { mCursor = new Date(startDate); mCursor.setDate(mCursor.getDate()+14*20); }
+    for (const c of monthly) {
+      const d = findNextWeekday(mCursor, jiaoyinWeekday);
+      c.date = d; mCursor = new Date(d); mCursor.setDate(mCursor.getDate()+14);
+    }
+  }
+
+  state.module1Confirmed = false;
+  renderScheduleTable();
+  showToast('课表已生成，请检查后确认', 'success');
+}
+
+// ==================== Schedule Table Rendering ====================
+function renderScheduleTable() {
+  const body = document.getElementById('scheduleBody');
+  let html = '';
+  let currentChapter = '';
+  let visibleIdx = 0;
+
+  for (const c of state.courses) {
+    // Filter
+    if (state.filterType !== 'all') {
+      if (state.filterType === 'cancelled') { if (!c.isCancelled) continue; }
+      else if (state.filterType === 'changed') { if (!c.dateChanged) continue; }
+      else if (c.type !== state.filterType) continue;
+    }
+    if (c.chapter !== currentChapter) {
+      currentChapter = c.chapter;
+      html += `<tr class="chapter-row"><td colspan="9">${currentChapter}</td></tr>`;
+    }
+    const checked = state.selectedRows.has(c.idx) ? 'checked' : '';
+    const classes = ['course-row'];
+    if (c.isCancelled) classes.push('cancelled-row');
+    if (c.dateChanged) classes.push('changed-row');
+    const vidStr = c.videoIds.length ? c.videoIds.join(', ') : '<span style="color:var(--text3)">—</span>';
+    const hwStr = c.hwId || '<span style="color:var(--text3)">—</span>';
+    let dateStr, weekdayStr, statusStr = '';
+    if (c.isZengke) { dateStr = '<span style="color:var(--warning);font-weight:600">赠课</span>'; weekdayStr=''; }
+    else if (c.isCancelled) { dateStr = '<span style="color:var(--danger)">已取消</span>'; weekdayStr=''; }
+    else if (c.date) { dateStr = formatDateShort(c.date); weekdayStr = WEEKDAY_NAMES[c.date.getDay()]; }
+    else { dateStr = '<span style="color:var(--danger)">未排</span>'; weekdayStr=''; }
+    if (c.dateChanged) statusStr = '<span class="tag" style="background:var(--warningBg);color:var(--warning)">变更</span>';
+    if (c.isCancelled) statusStr = '<span class="tag" style="background:var(--dangerBg);color:var(--danger)">取消</span>';
+
+    html += `<tr class="${classes.join(' ')}">
+      <td><input type="checkbox" ${checked} onchange="toggleRow(${c.idx}, this.checked)"></td>
+      <td>${c.idx}</td>
+      <td><span class="tag ${typeTagClass(c.type)}">${typeLabel(c.type)}</span></td>
+      <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${c.name}">${c.name}</td>
+      <td>${dateStr}</td>
+      <td>${weekdayStr}</td>
+      <td style="font-size:12px">${hwStr}</td>
+      <td style="font-size:12px">${vidStr}</td>
+      <td>${statusStr}</td>
+    </tr>`;
+  }
+  body.innerHTML = html;
+  updateOpBar();
+  updateStats();
+  validateSchedule();
+}
+
+function updateStats() {
+  const c = state.courses;
+  const active = c.filter(x => x.date && !x.isCancelled);
+  const cancelled = c.filter(x => x.isCancelled).length;
+  const changed = c.filter(x => x.dateChanged).length;
+  const firstDate = active.length ? formatDate(active[0].date) : '—';
+  const lastDate = active.length ? formatDate(active[active.length-1].date) : '—';
+  const tc = {};
+  active.forEach(x => { tc[x.type] = (tc[x.type]||0)+1; });
+  document.getElementById('scheduleStats').innerHTML = `
+    <div class="stats">
+      <div class="stat-box"><div class="num">${active.length}</div><div class="label">已排课节</div></div>
+      <div class="stat-box"><div class="num">${cancelled}</div><div class="label">已取消</div></div>
+      <div class="stat-box"><div class="num">${changed}</div><div class="label">有变更</div></div>
+      <div class="stat-box"><div class="num">${firstDate}</div><div class="label">开课日</div></div>
+      <div class="stat-box"><div class="num">${lastDate}</div><div class="label">结课日</div></div>
+      <div class="stat-box"><div class="num">${tc.qinshou||0}</div><div class="label">亲授</div></div>
+      <div class="stat-box"><div class="num">${(tc.jiaoyin||0)+(tc.yuliao||0)}</div><div class="label">纠音+语聊</div></div>
+      <div class="stat-box"><div class="num">${tc.waijiao||0}</div><div class="label">外教</div></div>
+    </div>
+  `;
+}
+
+function validateSchedule() {
+  const alerts = [];
+  const active = state.courses.filter(c => c.date && !c.isCancelled && !c.isZengke);
+  // Date conflicts
+  const dateMap = {};
+  active.forEach(c => { const k = formatDate(c.date); if (!dateMap[k]) dateMap[k] = []; dateMap[k].push(c.idx); });
+  const conflicts = Object.entries(dateMap).filter(([k,v]) => v.length > 1);
+  if (conflicts.length) alerts.push({type:'danger', msg:`❌ ${conflicts.length}天有多节课: ${conflicts.slice(0,5).map(([k,v])=>`${k}(课${v.join(',')})`).join('; ')}`});
+  else alerts.push({type:'success', msg:'✅ 无日期冲突'});
+  // Undated
+  const noDate = state.courses.filter(c => !c.date && !c.isZengke && !c.isCancelled);
+  if (noDate.length) alerts.push({type:'warning', msg:`⚠️ ${noDate.length}节课未排日期`});
+  // Holiday check
+  const onHoliday = active.filter(c => state.holidays.has(formatDate(c.date)));
+  if (onHoliday.length) alerts.push({type:'warning', msg:`⚠️ ${onHoliday.length}节课排在节假日: ${onHoliday.slice(0,3).map(c=>`课${c.idx}(${formatDateShort(c.date)})`).join(', ')}`});
+  // Alternation check
+  const jyYl = active.filter(c => c.type==='jiaoyin'||c.type==='yuliao').sort((a,b)=>a.date-b.date);
+  let altIssues = 0;
+  for (let i=1; i<jyYl.length; i++) { if (jyYl[i].type===jyYl[i-1].type && !isMonthly(jyYl[i])) altIssues++; }
+  if (altIssues > 0) alerts.push({type:'warning', msg:`⚠️ 纠音/语聊交替异常: ${altIssues}处连续同类型`});
+
+  document.getElementById('validationAlerts').innerHTML = alerts.map(a => `<div class="alert alert-${a.type}">${a.msg}</div>`).join('');
+}
+
+// ==================== Row Selection ====================
+function toggleRow(idx, checked) {
+  if (checked) state.selectedRows.add(idx);
+  else state.selectedRows.delete(idx);
+  updateOpBar();
+}
+function selectAllVisible() {
+  const visible = state.courses.filter(c => {
+    if (state.filterType==='all') return true;
+    if (state.filterType==='cancelled') return c.isCancelled;
+    if (state.filterType==='changed') return c.dateChanged;
+    return c.type === state.filterType;
+  });
+  const allSelected = visible.every(c => state.selectedRows.has(c.idx));
+  if (allSelected) visible.forEach(c => state.selectedRows.delete(c.idx));
+  else visible.forEach(c => state.selectedRows.add(c.idx));
+  renderScheduleTable();
+}
+
+function updateOpBar() {
+  const n = state.selectedRows.size;
+  document.getElementById('selectedInfo').textContent = n ? `已选 ${n} 节` : '未选择';
+  const enableDelay = n === 1;
+  const enableSwap = n === 2;
+  const enableCancel = n >= 1;
+  const enableRestore = n >= 1;
+  const enableReschedule = n === 1;
+  document.getElementById('btnDelay1').disabled = !enableDelay;
+  document.getElementById('btnDelay2').disabled = !enableDelay;
+  document.getElementById('btnSwap').disabled = !enableSwap;
+  document.getElementById('btnCancel').disabled = !enableCancel;
+  document.getElementById('btnRestore').disabled = !enableRestore;
+  document.getElementById('btnReschedule').disabled = !enableReschedule;
+}
+
+// ==================== Filter ====================
+function setFilter(type) {
+  state.filterType = type;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === type));
+  renderScheduleTable();
+}
+
+// ==================== Row Operations ====================
+function getSelectedCourses() {
+  return state.courses.filter(c => state.selectedRows.has(c.idx));
+}
+
+function applyDelay(weeks) {
+  const sel = getSelectedCourses();
+  if (sel.length !== 1) { showToast('请选择1节课进行顺延', 'warning'); return; }
+  const target = sel[0];
+  if (!target.date || target.isZengke || target.isCancelled) { showToast('该课程无法顺延', 'warning'); return; }
+  const targetType = target.type;
+  const monthly = isMonthly(target);
+  const shiftDays = weeks * (monthly ? 14 : 7);
+
+  // Find all same-type courses with dates >= target's date, sorted
+  const affected = state.courses
+    .filter(c => c.type === targetType && c.date && c.date >= target.date && !c.isZengke && !c.isCancelled)
+    .sort((a,b) => a.date - b.date);
+
+  for (const c of affected) {
+    let newDate = new Date(c.date);
+    newDate.setDate(newDate.getDate() + shiftDays);
+    while (!isSchoolDay(newDate)) { newDate.setDate(newDate.getDate() + (monthly?14:7)); }
+    c.date = newDate;
+    c.dateChanged = true;
+  }
+  showToast(`已顺延 ${affected.length} 节${typeLabel(targetType)}课 ${weeks}周`, 'success');
+  renderScheduleTable();
+}
+
+function applySwap() {
+  const sel = getSelectedCourses();
+  if (sel.length !== 2) { showToast('请选择2节课进行调换', 'warning'); return; }
+  const [a, b] = sel;
+  if (a.isZengke || b.isZengke) { showToast('赠课无法调换', 'warning'); return; }
+  if (a.isCancelled || b.isCancelled) { showToast('已取消的课程无法调换', 'warning'); return; }
+  const tmp = a.date;
+  a.date = b.date;
+  b.date = tmp;
+  a.dateChanged = true;
+  b.dateChanged = true;
+  if (a.type !== b.type) {
+    showToast(`已调换课${a.idx}和课${b.idx}（注意：类型不同，星期可能冲突）`, 'warning');
+  } else {
+    showToast(`已调换课${a.idx}和课${b.idx}`, 'success');
+  }
+  renderScheduleTable();
+}
+
+function applyCancel() {
+  const sel = getSelectedCourses();
+  if (!sel.length) { showToast('请选择课程', 'warning'); return; }
+  sel.forEach(c => { if (!c.isZengke) c.isCancelled = true; });
+  showToast(`已取消 ${sel.length} 节课`, 'info');
+  state.selectedRows.clear();
+  renderScheduleTable();
+}
+
+function applyReschedule() {
+  const sel = getSelectedCourses();
+  if (sel.length !== 1) { showToast('请选择1节课进行改期', 'warning'); return; }
+  const target = sel[0];
+  if (target.isZengke) { showToast('赠课无法改期', 'warning'); return; }
+  if (target.isCancelled) { showToast('已取消的课程无法改期，请先恢复', 'warning'); return; }
+  const newDateStr = document.getElementById('rescheduleInput').value;
+  if (!newDateStr) { showToast('请选择新日期', 'warning'); return; }
+  const newDate = parseDate(newDateStr);
+  target.date = newDate;
+  target.dateChanged = true;
+  if (state.holidays.has(newDateStr)) showToast(`已改期至${newDateStr}（注意：该日为节假日）`, 'warning');
+  else if (newDate.getDay()===0||newDate.getDay()===6) {
+    if (!state.makeupDays.has(newDateStr)) showToast(`已改期至${newDateStr}（注意：该日为周末）`, 'warning');
+    else showToast(`已改期至${newDateStr}`, 'success');
+  } else showToast(`已改期至${newDateStr}`, 'success');
+  document.getElementById('rescheduleInput').value = '';
+  state.selectedRows.clear();
+  renderScheduleTable();
+}
+
+function applyRestore() {
+  const sel = getSelectedCourses();
+  if (!sel.length) { showToast('请选择课程', 'warning'); return; }
+  let cnt = 0;
+  sel.forEach(c => { if (c.isCancelled) { c.isCancelled = false; cnt++; } });
+  showToast(`已恢复 ${cnt} 节课`, 'success');
+  state.selectedRows.clear();
+  renderScheduleTable();
+}
+
+// ==================== Module 1 → 2 Transition ====================
+function confirmModule1() {
+  const undated = state.courses.filter(c => !c.date && !c.isZengke && !c.isCancelled);
+  if (undated.length) { showToast(`还有${undated.length}节课未排日期`, 'warning'); return; }
+  state.module1Confirmed = true;
+  document.getElementById('mod-lesson').classList.remove('hidden','locked');
+  document.getElementById('scheduleBadge').textContent = '已确认';
+  document.getElementById('scheduleBadge').classList.add('confirmed');
+  showToast('课表已确认，模块二已解锁', 'success');
+  renderLessonTable();
+  // Show split info
+  const splitIdx = 54;
+  document.getElementById('splitInfo').classList.remove('hidden');
+  document.getElementById('splitInfo').innerHTML = `
+    <div class="split-card"><div class="price">3980 全程班</div><div class="desc">全部 ${state.courses.length} 节</div><div class="range">课1~课${state.courses.length}</div></div>
+    <div class="split-card"><div class="price">1980 上半程</div><div class="desc">前4章 ${splitIdx} 节</div><div class="range">课1~课${splitIdx}</div></div>
+    <div class="split-card"><div class="price">2000 下半程</div><div class="desc">后4章 ${state.courses.length-splitIdx} 节</div><div class="range">课${splitIdx+1}~课${state.courses.length}</div></div>
+  `;
+}
+
+// ==================== Module 2: Lesson Management ====================
+function renderLessonTable() {
+  const classStart = document.getElementById('classStartTime').value || '19:55';
+  const classEnd = document.getElementById('classEndTime').value || '21:30';
+  const isModify = state.mode === 'modify';
+  let html = '';
+  let count = 0;
+
+  for (const c of state.courses) {
+    if (c.isCancelled) continue; // cancelled courses excluded
+    let opType, lessonId, startTime, endTime;
+    if (c.isZengke) {
+      opType = isModify && !c.isNew ? '修改' : '新增';
+      lessonId = c.liveId || '';
+      startTime = '赠课'; endTime = '';
+    } else if (!c.date) {
+      continue;
+    } else {
+      opType = isModify && !c.isNew ? '修改' : '新增';
+      lessonId = c.liveId || state.lessonIds[c.idx] || '';
+      const ds = formatDate(c.date);
+      startTime = `${ds} ${classStart}:00`;
+      endTime = `${ds} ${classEnd}:00`;
+    }
+    count++;
+    html += `<tr>
+      <td>${opType}</td><td>${lessonId}</td><td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${c.name}">${c.name}</td>
+      <td>直播课节</td><td>${startTime}</td><td>${endTime}</td><td>杨老师</td><td>英语口语</td><td>小鹅通</td>
+    </tr>`;
+  }
+  document.getElementById('lessonBody').innerHTML = html;
+  document.getElementById('lessonStats').innerHTML = `
+    <div class="stats">
+      <div class="stat-box"><div class="num">${count}</div><div class="label">课节总数</div></div>
+      <div class="stat-box"><div class="num">${state.courses.filter(c=>c.isNew).length}</div><div class="label">新增</div></div>
+      <div class="stat-box"><div class="num">${state.courses.filter(c=>!c.isNew&&!c.isCancelled).length}</div><div class="label">修改/保留</div></div>
+      <div class="stat-box"><div class="num">${state.courses.filter(c=>c.isCancelled).length}</div><div class="label">已取消(排除)</div></div>
+    </div>
+  `;
+}
+
+function exportLessonManagement() {
+  if (!state.module1Confirmed) { showToast('请先确认课表', 'warning'); return; }
+  const classStart = document.getElementById('classStartTime').value || '19:55';
+  const classEnd = document.getElementById('classEndTime').value || '21:30';
+  const isModify = state.mode === 'modify';
+  const data = [['操作类型','课节ID','课节名称','课节类型','开始时间','结束时间','直播老师','学习类目','直播源']];
+
+  for (const c of state.courses) {
+    if (c.isCancelled) continue;
+    let opType, lessonId, startTime, endTime;
+    if (c.isZengke) {
+      opType = isModify && !c.isNew ? '修改' : '新增';
+      lessonId = c.liveId || '';
+      startTime = '赠课'; endTime = '';
+    } else if (!c.date) continue;
+    else {
+      opType = isModify && !c.isNew ? '修改' : '新增';
+      lessonId = c.liveId || state.lessonIds[c.idx] || '';
+      const ds = formatDate(c.date);
+      startTime = `${ds} ${classStart}:00`; endTime = `${ds} ${classEnd}:00`;
+    }
+    data.push([opType, lessonId, c.name, '直播课节', startTime, endTime, '杨老师', '英语口语', '小鹅通']);
+  }
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  ws['!cols'] = [{wch:8},{wch:12},{wch:50},{wch:10},{wch:20},{wch:20},{wch:10},{wch:10},{wch:10}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, '课节导入');
+  const fname = state.mode==='modify' ? '课节管理_修改.xlsx' : '课节管理_新增.xlsx';
+  XLSX.writeFile(wb, fname);
+  showToast('课节管理已导出', 'success');
+}
+
+function exportThreeProducts() {
+  if (!state.module1Confirmed) { showToast('请先确认课表', 'warning'); return; }
+  const cs = document.getElementById('classStartTime').value || '19:55';
+  const ce = document.getElementById('classEndTime').value || '21:30';
+  const isModify = state.mode === 'modify';
+  const splitIdx = 54;
+  const wb = XLSX.utils.book_new();
+  const header = ['操作类型','课节ID','课节名称','课节类型','开始时间','结束时间','直播老师','学习类目','直播源'];
+
+  function buildRows(courses) {
+    const rows = [header];
+    for (const c of courses) {
+      if (c.isCancelled) continue;
+      if (c.isZengke) { rows.push([isModify&&!c.isNew?'修改':'新增','',c.name,'直播课节','赠课','','杨老师','英语口语','小鹅通']); continue; }
+      if (!c.date) continue;
+      const ds = formatDate(c.date);
+      rows.push([isModify&&!c.isNew?'修改':'新增', c.liveId||state.lessonIds[c.idx]||'', c.name,'直播课节',`${ds} ${cs}:00`,`${ds} ${ce}:00`,'杨老师','英语口语','小鹅通']);
+    }
+    return rows;
+  }
+  const ws3980 = XLSX.utils.aoa_to_sheet(buildRows(state.courses));
+  ws3980['!cols'] = [{wch:8},{wch:12},{wch:50},{wch:10},{wch:20},{wch:20},{wch:10},{wch:10},{wch:10}];
+  XLSX.utils.book_append_sheet(wb, ws3980, '3980全程班');
+  const ws1980 = XLSX.utils.aoa_to_sheet(buildRows(state.courses.slice(0, splitIdx)));
+  ws1980['!cols'] = ws3980['!cols'];
+  XLSX.utils.book_append_sheet(wb, ws1980, '1980上半程');
+  const ws2000 = XLSX.utils.aoa_to_sheet(buildRows(state.courses.slice(splitIdx)));
+  ws2000['!cols'] = ws3980['!cols'];
+  XLSX.utils.book_append_sheet(wb, ws2000, '2000下半程');
+  XLSX.writeFile(wb, '三品课表.xlsx');
+  showToast('三品课表已导出', 'success');
+}
+
+function importLessonIds(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const wb = XLSX.read(e.target.result, {type:'array'});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:null});
+      // Find columns: look for 课节名称 and 课节ID
+      const header = (rows[0]||[]).map(h => String(h||'').trim());
+      let nameCol = header.findIndex(h => h.includes('课节名称'));
+      let idCol = header.findIndex(h => h.includes('课节ID'));
+      if (nameCol < 0 || idCol < 0) { showToast('未找到课节名称或课节ID列', 'danger'); return; }
+      let matched = 0;
+      for (let i = 1; i < rows.length; i++) {
+        const name = rows[i][nameCol];
+        const id = rows[i][idCol];
+        if (!name || !id) continue;
+        const course = state.courses.find(c => c.name === String(name).trim());
+        if (course) { state.lessonIds[course.idx] = String(id).trim(); course.liveId = String(id).trim(); matched++; }
+      }
+      showToast(`已匹配 ${matched} 个课节ID`, 'success');
+      renderLessonTable();
+    } catch(err) { showToast('导入失败：'+err.message, 'danger'); }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function confirmModule2() {
+  state.module2Confirmed = true;
+  document.getElementById('mod-chapter').classList.remove('hidden','locked');
+  document.getElementById('lessonBadge').textContent = '已确认';
+  document.getElementById('lessonBadge').classList.add('confirmed');
+  showToast('课节管理已确认，模块三已解锁', 'success');
+  renderChapterTabs();
+}
+
+// ==================== Module 3: Chapter Association ====================
+function renderChapterTabs() {
+  const exportChapters = CHAPTER_NAMES.slice(1); // 第二~第八章
+  const tabs = exportChapters.map(ch => {
+    const short = ch.substring(0, ch.indexOf('：'));
+    return `<div class="chapter-tab ${state.activeChapter===short?'active':''}" onclick="selectChapter('${short}')">${short}</div>`;
+  }).join('');
+  document.getElementById('chapterTabs').innerHTML = tabs;
+  if (!state.activeChapter) selectChapter(exportChapters[0].substring(0, exportChapters[0].indexOf('：')));
+  else renderChapterTable();
+}
+
+function selectChapter(shortName) {
+  state.activeChapter = shortName;
+  document.querySelectorAll('.chapter-tab').forEach(t => t.classList.toggle('active', t.textContent === shortName));
+  renderChapterTable();
+}
+
+function renderChapterTable() {
+  const shortName = state.activeChapter;
+  if (!shortName) return;
+  const fullChapter = CHAPTER_NAMES.find(ch => ch.startsWith(shortName));
+  const hasTemplate = state.chapterTemplates[shortName];
+  let html = '';
+
+  if (hasTemplate) {
+    // Use imported template structure
+    const template = state.chapterTemplates[shortName];
+    const liveIdToName = {};
+    for (const c of state.courses) { if (c.liveId) liveIdToName[String(c.liveId)] = c.name; }
+    const nameToLiveId = {};
+    for (const c of state.courses) { if (c.liveId) nameToLiveId[c.name] = c.liveId; }
+
+    for (const item of template) {
+      const id = String(item.id);
+      const isLiveId = liveIdToName[id] || (id.startsWith('98') && id.length === 4) || id === '2687';
+      if (isLiveId) {
+        const name = liveIdToName[id] || '(待填入)';
+        const course = state.courses.find(c => c.name === name);
+        const newId = course ? (course.liveId || state.lessonIds[course.idx] || '') : '';
+        html += `<tr><td>${newId}</td><td>${name}</td><td>${item.sort}</td></tr>`;
+      } else {
+        html += `<tr><td>${id}</td><td></td><td>${item.sort}</td></tr>`;
+      }
+    }
+  } else {
+    // Reconstruct from course data
+    const chapterCourses = state.courses.filter(c => matchChapter(c.chapter, fullChapter));
+    let sort = 1;
+    for (const c of chapterCourses) {
+      if (c.isCancelled) continue;
+      const lid = c.liveId || state.lessonIds[c.idx] || '';
+      html += `<tr><td>${lid}</td><td>${c.name}</td><td>${sort++}</td></tr>`;
+      if (c.hwId) html += `<tr><td>${c.hwId}</td><td></td><td>${sort++}</td></tr>`;
+      for (const vid of c.videoIds) html += `<tr><td>${vid}</td><td></td><td>${sort++}</td></tr>`;
+    }
+  }
+  document.getElementById('chapterBody').innerHTML = html;
+}
+
+function exportChapterAssociation() {
+  if (!state.module2Confirmed) { showToast('请先确认课节管理', 'warning'); return; }
+  const wb = XLSX.utils.book_new();
+  const exportChapters = CHAPTER_NAMES.slice(1);
+
+  for (const fullChapter of exportChapters) {
+    const shortName = fullChapter.substring(0, fullChapter.indexOf('：'));
+    const data = [['课节ID','课节名称','排序序号']];
+    const hasTemplate = state.chapterTemplates[shortName];
+
+    if (hasTemplate) {
+      const template = state.chapterTemplates[shortName];
+      const liveIdToName = {};
+      for (const c of state.courses) { if (c.liveId) liveIdToName[String(c.liveId)] = c.name; }
+      for (const item of template) {
+        const id = String(item.id);
+        const isLiveId = liveIdToName[id] || (id.startsWith('98') && id.length === 4) || id === '2687';
+        if (isLiveId) {
+          const name = liveIdToName[id] || '(待填入)';
+          const course = state.courses.find(c => c.name === name);
+          const newId = course ? (course.liveId || state.lessonIds[course.idx] || '') : '';
+          data.push([newId, name, item.sort]);
+        } else {
+          data.push([id, '', item.sort]);
+        }
+      }
+    } else {
+      const chapterCourses = state.courses.filter(c => matchChapter(c.chapter, fullChapter));
+      let sort = 1;
+      for (const c of chapterCourses) {
+        if (c.isCancelled) continue;
+        const lid = c.liveId || state.lessonIds[c.idx] || '';
+        data.push([lid, c.name, sort++]);
+        if (c.hwId) data.push([c.hwId, '', sort++]);
+        for (const vid of c.videoIds) data.push([vid, '', sort++]);
+      }
+    }
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{wch:12},{wch:55},{wch:10}];
+    XLSX.utils.book_append_sheet(wb, ws, shortName);
+  }
+  XLSX.writeFile(wb, '章节关联课节.xlsx');
+  showToast('章节关联课节已导出', 'success');
+}
+
+// ==================== Export Schedule (总课表) ====================
+function exportSchedule() {
+  if (!state.courses.length) { showToast('请先导入并生成课表', 'warning'); return; }
+  const data = [['','新课节','行课时间','课节ID','是否已结束','作业ID','视频ID','','']];
+  let currentChapter = '';
+  for (const c of state.courses) {
+    if (c.chapter !== currentChapter) {
+      currentChapter = c.chapter;
+      data.push([currentChapter,'','','','','','','','']);
+    }
+    let dateStr;
+    if (c.isZengke) dateStr = '赠课';
+    else if (c.isCancelled) dateStr = '已取消';
+    else if (c.date) dateStr = formatDate(c.date) + ' ' + WEEKDAY_NAMES[c.date.getDay()];
+    else dateStr = '';
+    const lid = c.liveId || state.lessonIds[c.idx] || '';
+    data.push([c.idx, c.name, dateStr, lid, c.isCancelled?'已取消':'待上', c.hwId||'', c.videoIds[0]||'', c.videoIds[1]||'', c.videoIds[2]||'']);
+  }
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  ws['!cols'] = [{wch:5},{wch:50},{wch:18},{wch:10},{wch:10},{wch:10},{wch:10},{wch:10},{wch:10}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, '课表');
+  XLSX.writeFile(wb, '课表.xlsx');
+  showToast('课表已导出', 'success');
+}
+
+// ==================== Chapter Template Import ====================
+function handleChapterTemplateImport(files) {
+  let pending = files.length;
+  for (const file of files) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const wb = XLSX.read(e.target.result, {type:'array'});
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(ws, {header:1});
+        let chName = file.name.replace(/.*期】/,'').replace('.xlsx','').replace('.xls','');
+        const items = [];
+        for (let i = 1; i < rows.length; i++) {
+          const lid = rows[i][0];
+          const sort = rows[i][2];
+          if (lid !== null && lid !== undefined && lid !== '') items.push({id:String(lid).trim(), sort:sort?parseInt(sort):i});
+        }
+        state.chapterTemplates[chName] = items;
+      } catch(err) { console.error(err); }
+      pending--;
+      if (pending === 0) {
+        const chCount = Object.keys(state.chapterTemplates).length;
+        const totalItems = Object.values(state.chapterTemplates).reduce((s,a)=>s+a.length,0);
+        const msg = document.getElementById('chapterTemplateResult');
+        if (msg) { msg.innerHTML = `<span style="color:var(--success)">已导入 ${chCount} 个章节模板，共 ${totalItems} 条排序记录</span>`; msg.classList.remove('hidden'); }
+        if (state.module2Confirmed) renderChapterTable();
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+}
+
+// ==================== Init ====================
+renderHolidayList();
+document.getElementById('startDate').addEventListener('change', function() {
+  const d = parseDate(this.value);
+  if (d) { d.setDate(d.getDate()+2); document.getElementById('jiaoyinStartDate').value = formatDate(d); }
+});
+</script>
+</body>
+</html>

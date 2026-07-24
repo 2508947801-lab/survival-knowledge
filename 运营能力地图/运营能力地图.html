@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>运营能力地图 — Yara</title>
+<style>
+  :root {
+    --bg: #f4f1ea;
+    --bg-2: #faf8f3;
+    --paper: #fffdf8;
+    --surface: #ffffff;
+    --tint: #f2eee4;
+    --tint-2: #ebe6da;
+    --line: #e2dccf;
+    --line-2: #d4ccb9;
+    --ink: #2a2620;
+    --ink-2: #5c564b;
+    --ink-3: #948d7e;
+    --gold: #9a7b4f;
+    --gold-deep: #7a5f38;
+    --serif: "Songti SC","Noto Serif SC","Source Han Serif SC",Georgia,serif;
+    --sans: -apple-system,"PingFang SC","Helvetica Neue",sans-serif;
+    --shadow: 0 1px 2px rgba(60,50,30,.04), 0 2px 8px rgba(60,50,30,.04);
+    --shadow-h: 0 6px 24px rgba(60,50,30,.07), 0 2px 6px rgba(60,50,30,.04);
+    --l1: #b8a88a;
+    --l2: #7a9a6a;
+    --l3: #5a7a9a;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.75;
+    padding: 0 24px 80px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; }
+
+  .hero { text-align:center; padding:72px 0 52px; position:relative; }
+  .hero .kicker {
+    font-size:11px; letter-spacing:4px; text-transform:uppercase;
+    color: var(--gold); margin-bottom:22px;
+  }
+  .hero .kicker::before, .hero .kicker::after {
+    content:""; display:inline-block; width:32px; height:1px;
+    background: var(--line-2); vertical-align:middle; margin:0 14px;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-size:46px; font-weight:500; color: var(--ink);
+    letter-spacing:2px; margin-bottom:14px;
+  }
+  .hero .sub { font-size:15px; color: var(--ink-2); letter-spacing:1px; }
+  .hero .date { font-size:12px; color: var(--ink-3); margin-top:10px; font-family:var(--serif); }
+  .hero .rule { width:40px; height:2px; background:var(--gold); margin:28px auto 0; }
+
+  .stats {
+    display:grid; grid-template-columns:repeat(5,1fr);
+    gap:1px; background: var(--line);
+    border:1px solid var(--line); border-radius:14px;
+    overflow:hidden; margin-bottom:20px;
+  }
+  .stat { background:var(--paper); padding:26px 12px 22px; text-align:center; }
+  .stat .n {
+    font-family: var(--serif); font-size:34px; font-weight:500;
+    color: var(--gold-deep); line-height:1;
+  }
+  .stat .l { font-size:12px; color: var(--ink-3); margin-top:8px; letter-spacing:.5px; }
+  .scale-note {
+    text-align:center; font-size:12px; color:var(--ink-3);
+    margin-bottom:40px; font-style:italic;
+  }
+
+  /* Legend */
+  .legend {
+    display:flex; justify-content:center; gap:24px; flex-wrap:wrap;
+    margin-bottom:32px; padding:16px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .legend-item { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--ink-2); }
+  .legend-dot { width:10px; height:10px; border-radius:50%; }
+  .legend-dot.l1 { background:var(--l1); }
+  .legend-dot.l2 { background:var(--l2); }
+  .legend-dot.l3 { background:var(--l3); }
+
+  .domain-bar {
+    display:flex; gap:6px; flex-wrap:wrap; justify-content:center;
+    margin-bottom:44px;
+  }
+  .domain-chip {
+    border:none; background:none; cursor:pointer;
+    font-family:var(--sans); font-size:13px;
+    padding:6px 16px; color: var(--ink-3);
+    border-radius:0; position:relative;
+    transition: color .15s;
+  }
+  .domain-chip:hover { color: var(--ink-2); }
+  .domain-chip.active { color: var(--ink); font-weight:500; }
+  .domain-chip.active::after {
+    content:""; position:absolute; left:16px; right:16px; bottom:-1px;
+    height:2px; background:var(--gold);
+  }
+
+  .cap-card {
+    background: var(--surface);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:34px 38px 28px;
+    margin-bottom:22px;
+    position:relative; overflow:hidden;
+    box-shadow: var(--shadow);
+    transition: box-shadow .25s, transform .25s;
+  }
+  .cap-card:hover { box-shadow: var(--shadow-h); transform: translateY(-2px); }
+  .cap-strip {
+    position:absolute; left:0; top:0; bottom:0; width:3px;
+    background: var(--cc);
+  }
+  .cap-head { display:flex; align-items:baseline; gap:18px; margin-bottom:22px; }
+  .cap-num {
+    font-family: var(--serif);
+    font-size:30px; font-weight:400; color: var(--cc);
+    line-height:1; flex-shrink:0; min-width:42px;
+  }
+  .cap-title h2 {
+    font-family: var(--serif);
+    font-size:21px; font-weight:500; color: var(--ink);
+    line-height:1.4;
+  }
+  .chips { margin-top:7px; display:flex; gap:8px; flex-wrap:wrap; }
+  .chip {
+    font-size:11px; padding:2px 0; color: var(--ink-3);
+    border-bottom:1px solid var(--line-2);
+  }
+  .level-badge {
+    margin-left:auto; flex-shrink:0;
+    font-size:11px; font-weight:600; padding:4px 12px;
+    border-radius:4px; letter-spacing:0.5px;
+  }
+  .level-badge.l1 { background:rgba(184,168,138,0.15); color:#8a7a5a; }
+  .level-badge.l2 { background:rgba(122,154,106,0.15); color:#5a7a4a; }
+  .level-badge.l3 { background:rgba(90,122,154,0.15); color:#4a6a8a; }
+
+  .cap-body { display:grid; grid-template-columns:1fr 1fr; gap:32px; margin-bottom:8px; }
+  .cap-sec h3 {
+    font-size:11px; color: var(--gold); font-weight:500;
+    text-transform:uppercase; letter-spacing:1.5px; margin-bottom:10px;
+  }
+  .cap-sec p { font-size:14px; color: var(--ink-2); line-height:1.9; }
+  .cap-sec .highlight {
+    color: var(--ink); font-weight:500;
+    background: var(--tint); padding:0 4px; border-radius:2px;
+  }
+
+  .metric-row { display:flex; gap:0; flex-wrap:wrap; margin-top:18px;
+    border-top:1px solid var(--line); padding-top:16px; }
+  .metric-pill {
+    font-size:13px; color: var(--ink-2);
+    padding:0 18px 0 0; margin-right:18px;
+    border-right:1px solid var(--line);
+  }
+  .metric-pill:last-child { border-right:none; }
+  .metric-pill strong { color: var(--ink); font-weight:600; font-family:var(--serif); }
+
+  .translation {
+    margin-top:20px; padding:16px 0 0;
+    border-top:1px solid var(--line);
+  }
+  .trans-label {
+    font-size:10px; color: var(--gold); font-weight:500;
+    text-transform:uppercase; letter-spacing:1.5px;
+    display:block; margin-bottom:8px;
+  }
+  .translation p {
+    font-size:14px; color: var(--ink); line-height:1.85;
+    font-family:var(--serif);
+  }
+  .next-level {
+    margin-top:10px; font-size:13px; color:var(--ink-3);
+    font-style:italic; font-family:var(--sans);
+  }
+  .next-level::before { content:"→ 下一级："; font-style:normal; font-weight:500; color:var(--gold); }
+
+  /* Growth Frontier */
+  .frontier {
+    margin-top:52px; padding:48px 40px;
+    background: var(--paper); border:1px solid var(--line);
+    border-radius:18px; box-shadow: var(--shadow);
+  }
+  .frontier h2 {
+    font-family: var(--serif); font-size:24px; font-weight:500;
+    color: var(--ink); margin-bottom:6px; text-align:center;
+  }
+  .frontier .sub { font-size:12px; color:var(--ink-3); letter-spacing:1px; margin-bottom:28px; text-align:center; }
+  .frontier-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px; }
+  .frontier-card {
+    padding:22px 18px; border:1px dashed var(--line-2);
+    border-radius:12px; text-align:center;
+    background:var(--bg-2);
+  }
+  .frontier-card .f-icon { font-size:1.4em; margin-bottom:8px; }
+  .frontier-card .f-title { font-size:14px; font-weight:600; color:var(--ink); margin-bottom:6px; }
+  .frontier-card .f-desc { font-size:12px; color:var(--ink-3); line-height:1.7; }
+  .frontier-card .f-action { font-size:12px; color:var(--gold-deep); margin-top:10px; font-weight:500; }
+  .frontier p.note {
+    font-size:13px; color:var(--ink-2); text-align:center;
+    line-height:1.9; max-width:600px; margin:0 auto;
+  }
+
+  /* Summary */
+  .summary {
+    margin-top:32px; padding:48px 40px; text-align:center;
+    background: var(--paper); border:1px solid var(--line);
+    border-radius:18px; box-shadow: var(--shadow);
+  }
+  .summary h2 {
+    font-family: var(--serif); font-size:26px; font-weight:500;
+    color: var(--ink); margin-bottom:6px;
+  }
+  .summary .sub { font-size:12px; color:var(--ink-3); letter-spacing:1px; margin-bottom:28px; }
+  .cap-grid {
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+    gap:8px; margin-bottom:30px;
+  }
+  .cap-tag {
+    padding:10px 8px; border:1px solid var(--line);
+    border-radius:8px; background:var(--surface);
+    display:flex; align-items:center; justify-content:center; gap:7px;
+    font-size:13px; color: var(--ink-2);
+  }
+  .cap-tag .dot { width:7px; height:7px; border-radius:50%; }
+  .summary p.desc {
+    font-size:14px; color: var(--ink-2); max-width:660px;
+    margin:0 auto; line-height:2.1; font-family:var(--serif);
+  }
+  .summary .punch {
+    font-family: var(--serif); font-size:20px; font-weight:500;
+    color: var(--gold-deep); margin-top:22px; letter-spacing:1px;
+  }
+
+  .footer {
+    text-align:center; margin-top:44px;
+    font-size:12px; color: var(--ink-3); letter-spacing:.5px;
+  }
+
+  .totop {
+    position:fixed; right:28px; bottom:28px;
+    width:40px; height:40px; border-radius:50%;
+    border:1px solid var(--line-2); background:var(--surface);
+    color: var(--gold); font-size:16px; cursor:pointer;
+    box-shadow: var(--shadow-h);
+    display:none; align-items:center; justify-content:center;
+    transition: transform .15s;
+  }
+  .totop:hover { transform: translateY(-2px); }
+  .totop.show { display:flex; }
+
+  @media (max-width:700px) {
+    .stats { grid-template-columns:repeat(2,1fr); }
+    .cap-body { grid-template-columns:1fr; gap:22px; }
+    .cap-card { padding:26px 22px; }
+    .hero h1 { font-size:34px; }
+    .hero { padding:48px 0 36px; }
+    .frontier-grid { grid-template-columns:1fr; }
+    .legend { gap:14px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="kicker">Capability Map · Honest Edition</div>
+    <h1>运营能力地图</h1>
+    <p class="sub">你已经在做的事，和你还没碰到的事</p>
+    <p class="date">Anno 2026 · July · v2 去包装版</p>
+    <div class="rule"></div>
+  </header>
+
+  <section class="stats">
+    <div class="stat"><div class="n">198</div><div class="l">每月管理课节</div></div>
+    <div class="stat"><div class="n">420</div><div class="l">每月退费路由</div></div>
+    <div class="stat"><div class="n">23</div><div class="l">独立优化流程</div></div>
+    <div class="stat"><div class="n">25</div><div class="l">需求提报(15上线)</div></div>
+    <div class="stat"><div class="n">2×3</div><div class="l">正价双线×三档(杨家成+之昊)</div></div>
+  </section>
+  <p class="scale-note">* 以上数据基于一家中小型知识付费公司（月营收百万级）的实际业务量。规模本身不大，复杂度主要来自系统不打通。</p>
+
+  <!-- Maturity Legend -->
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot l1"></span>L1 执行级 · 把事做对</div>
+    <div class="legend-item"><span class="legend-dot l2"></span>L2 设计级 · 设计怎么做</div>
+    <div class="legend-item"><span class="legend-dot l3"></span>L3 体系级 · 定义做什么</div>
+  </div>
+
+  <nav class="domain-bar">
+    <button class="domain-chip active" data-domain="all">全部</button>
+    <button class="domain-chip" data-domain="系统化">系统化</button>
+    <button class="domain-chip" data-domain="数据运营">数据运营</button>
+    <button class="domain-chip" data-domain="交付保障">交付保障</button>
+    <button class="domain-chip" data-domain="线索获客">线索获客</button>
+    <button class="domain-chip" data-domain="产品运营">产品运营</button>
+    <button class="domain-chip" data-domain="流程异常">流程异常</button>
+    <button class="domain-chip" data-domain="AI工具">AI工具</button>
+  </nav>
+
+<!-- ===== L3 体系级 ===== -->
+
+<article class="cap-card" style="--cc:#5a7a9a" data-num="11">
+  <div class="cap-strip"></div>
+  <div class="cap-head">
+    <div class="cap-num">11</div>
+    <div class="cap-title">
+      <h2>产品需求规划与系统设计</h2>
+      <div class="chips"><span class="chip">产品规划</span><span class="chip">系统架构</span><span class="chip">用户增长</span></div>
+    </div>
+    <span class="level-badge l3">L3 体系级</span>
+  </div>
+  <div class="cap-body">
+    <div class="cap-sec">
+      <h3>你做了什么</h3>
+      <p>累计向产研提报<span class="highlight">25项产品需求</span>（15项已落地+10项提案），每项含完整需求文档：问题背景、方案设计、业务目标、ROI量化。覆盖系统架构（课程权益精细化、数据联动）、用户体验（倍速/投屏/打印）、用户增长（6级测评+积分体系）、互动能力（语音连麦）、合规效率（批量废课、退费参数化）五大领域。</p>
+    </div>
+    <div class="cap-sec">
+      <h3>解决了什么问题</h3>
+      <p>从业务痛点出发设计完整产品方案并量化价值：批量废课30分钟→5分钟；积分体系预算控制在营收0.5%以内；语音连麦直接服务续班转化场景。每条需求有竞品分析和ROI预估，<span class="highlight">不是"我觉得需要"，而是"数据证明需要"</span>。</p>
+    </div>
+  </div>
+  <div class="metric-row">
+    <div class="metric-pill"><strong>25项</strong> 15已落地</div>
+    <div class="metric-pill"><strong>5大领域</strong> 完整PRD</div>
+    <div class="metric-pill"><strong>ROI量化</strong> 每条需求</div>
+  </div>
+  <div class="translation">
+    <span class="trans-label">诚实评价</span>
+    <p>这是你整张地图里最硬的一张牌。25项需求带完整PRD和ROI，15项推到落地——这在很多互联网公司是1-2年经验产品经理的输出量。你确实具备了产品规划能力，不是"提工单"的水平。</p>
+    <p class="next-level">落地后对核心指标（续费率/完课率/转化率）的实际影响数据。有"我设计了"，还缺"它带来了什么结果"。</p>
+  </div>
+</article>
+
+<article class="cap-card" style="--cc:#5a7a9a" data-num="14">
+  <div class="cap-strip"></div>
+  <div class="cap-head">
+    <div class="cap-num">14</div>
+    <div class="cap-title">
+      <h2>运营流程体系设计与SOP标准化</h2>
+      <div class="chips"><span class="chip">流程架构</span><span class="chip">体系建设</span></div>
+    </div>
+    <span class="level-badge l3">L3 体系级</span>
+  </div>
+  <div class="cap-body">
+    <div class="cap-sec">
+      <h3>你做了什么</h3>
+      <p>将课程/直播/学员/技术协同四条主线写成<span class="highlight">6大模块、19个流程节点</span>的SOP体系，每节点带「目标→流程→风险点→改造方向」四段结构。关键：每节点都写了"改造方向"，把一线痛点翻译成系统级需求。</p>
+    </div>
+    <div class="cap-sec">
+      <h3>解决了什么问题</h3>
+      <p>运营知识从"个人脑内"变成"组织资产"。新人接手有手册，跨模块不脱节，出了问题有预案。更重要的是"改造方向"把执行痛点转译为产品需求——<span class="highlight">SOP不是终点，是需求池的入口</span>。</p>
+    </div>
+  </div>
+  <div class="metric-row">
+    <div class="metric-pill"><strong>6模块</strong> 19节点</div>
+    <div class="metric-pill"><strong>四段结构</strong> 含改造方向</div>
+    <div class="metric-pill"><strong>前13项能力</strong> 的母体框架</div>
+  </div>
+  <div class="translation">
+    <span class="trans-label">诚实评价</span>
+    <p>你从"在流程里做事"变成了"设计流程本身"。这是真的体系级能力。但诚实说：这套SOP目前只服务一家公司、一个团队。它的价值还没有被"别人拿去也能跑"验证过。</p>
+    <p class="next-level">让一个新人完全靠SOP独立跑通一个营期，不需要你口头补充。如果做到了，这套体系才算真的成立。</p>
+  </div>
+</article>
+
+<article class="cap-card" style="--cc:#5a7a9a" data-num="12">
+  <div class="cap-strip"></div>
+  <div class="cap-head">
+    <div class="cap-num">12</div>
+    <div class="cap-title">
+      <h2>完课数据归因与度量体系诊断</h2>
+      <div class="chips"><span class="chip">数据治理</span><span class="chip">根因分析</span></div>
+    </div>
+    <span class="level-badge l3">L3 体系级</span>
+  </div>
+  <div class="cap-body">
+    <div class="cap-sec">
+      <h3>你做了什么</h3>
+      <p>发现完课数据存在系统性偏差，建立P0/P1归因框架：P0五大归因（未绑定账号、冲突账号、账号不一致、海外账号、投屏不抓数据）；P1三类（多设备切换、浏览器兼容、缓存秒退）。直接挂钩两个决策：<span class="highlight">课程产品力评估</span>和<span class="highlight">辅导效能考核</span>。</p>
+    </div>
+    <div class="cap-sec">
+      <h3>解决了什么问题</h3>
+      <p>数据失真→决策失真。你没有停在"数据不准"的抱怨，而是把"不准的因"列清楚、分级、标注影响面，为后续治理（统一身份映射、SDK修复）提供输入。</p>
+    </div>
+  </div>
+  <div class="metric-row">
+    <div class="metric-pill"><strong>P0(5)+P1(3)</strong> 归因框架</div>
+    <div class="metric-pill"><strong>2个决策</strong> 直接挂钩</div>
+    <div class="metric-pill"><strong>治理方案</strong> 已输出</div>
+  </div>
+  <div class="translation">
+    <span class="trans-label">诚实评价</span>
+    <p>这个认知层级是真的稀缺——理解"数据可信度是决策基础设施"。很多数据分析师都停在"出表"层面。你的归因框架逻辑清晰、分级合理。</p>
+    <p class="next-level">推动治理落地并量化效果：修复后完课率数据变化了多少？考核公平性提升了多少？有before/after对比才算闭环。</p>
+  </div>
+</article>
+
+<article class="cap-card" style="--cc:#5a7a9a" data-num="9">
+  <div class="cap-strip"></div>
+  <div class="cap-head">
+    <div class="cap-num">09</div>
+    <div class="cap-title">
+      <h2>营期全周期数据管控</h2>
+      <div class="chips"><span class="chip">生命周期管理</span><span class="chip">季度规划</span></div>
+    </div>
+    <span class="level-badge l3">L3 体系级</span>
+  </div>
+  <div class="cap-body">
+    <div class="cap-sec">
+      <h3>你做了什么</h3>
+      <p>季度定出行课日历→月度定开课时间+建课→开课前1月核查账号→每周五六日导表核查→营期数据管控（退费/调班）。<span class="highlight">从季度规划拉到周度执行</span>，形成完整生命周期管理。</p>
+    </div>
+    <div class="cap-sec">
+      <h3>解决了什么问题</h3>
+      <p>此前营期管理碎片化，没人从全局视角把控。你把课表、账号、退费、调班串成一条链，形成了"规划→建课→核查→交付→管控"的闭环。</p>
+    </div>
+  </div>
+  <div class="metric-row">
+    <div class="metric-pill"><strong>季度→周度</strong> 全周期</div>
+    <div class="metric-pill"><strong>2期/月</strong> 建课</div>
+    <div class="metric-pill"><strong>开课前1月</strong> 核查</div>
+  </div>
+  <div class="translation">
+    <span class="trans-label">诚实评价</span>
+    <p>大多数教务只看眼前一期课，你能拉到季度视角再拆到周度执行，这是真的规划能力。但诚实说：这是"管控"不是"经营"——你在确保流程跑通，还没有为"这期招了多少人、续了多少费"负责。</p>
+    <p class="next-level">从"管控营期流程"升级为"对营期经营结果负责"：这期的转化率、续费率、退费率，你来背。</p>
+  </div>
+</article>
+
+<article class="cap-card" style="--cc:#5a7a9a" data-num="7">
+  <div class="cap-strip"></div>
+  <div class="cap-head">
+    <div class="cap-num">07</div>
+    <div class="cap-title">
+      <h2>跨部门需求统筹与产品推进</h2>
+      <div class="chips"><span class="chip">产品运营</span><span class="chip">项目管理</span></div>
+    </div>
+    <span class="level-badge l3">L3 体系级</span>
+  </div>
+  <div class="cap-body">
+    <div class="cap-sec">
+      <h3>你做了什么</h3>
+      <p>主导7项APP端需求的收集、评估和落地推进。每条需求跟到技术可行性评估、风险标注和排期确认。对技术风险做了独立判断（苹果税30%合规、学习机适配成本、投屏与学习记录冲突），<span class="highlight">带着判断去沟通，不是传话</span>。</p>
+    </div>
+    <div class="cap-sec">
+      <h3>解决了什么问题</h3>
+      <p>跑通了"销售需求→运营评估→产研可行性→排期落地"的结构化通道。此前一线用户声音没有传递路径。</p>
+    </div>
+  </div>
+  <div class="metric-row">
+    <div class="metric-pill"><strong>7项需求</strong> 全链路</div>
+    <div class="metric-pill"><strong>3角色</strong> 销售→运营→产研</div>
+    <div class="metric-pill"><strong>独立风险判断</strong> 3项</div>
+  </div>
+  <div class="translation">
+    <span class="trans-label">诚实评价</span>
+    <p>跨部门协调+技术风险判断，这确实是产品运营的核心能力。你不是传话筒，是过滤器和翻译器。但7项需求的规模偏小，且你是"推进者"不是"决策者"——最终做不做、先做哪个，不是你定的。</p>
+    <p class="next-level">拥有需求优先级的决策权：不是"我推进了7项"，而是"我决定先做这3项，因为ROI最高"。</p>
+  </div>
+</article>
+
+<!-- ===== L2 设计级 ===== -->
+
+<article class="cap-card" style="--cc:#7a9a6a" data-num="1">
+  <div class="cap-strip"></div>
+  <div class="cap-head">
+    <div class="cap-num">01</div>
+    <div class="cap-title">
+      <h2>课表批量生成与管理工具</h2>
+      <div class="chips"><span class="chip">系统化能力</span><span class="chip">流程自动化</span></div>
+    </div>
+    <span class="level-badge l2">L2 设计级</span>
+  </div>
+  <div class="cap-body">
+    <div class="cap-sec">
+      <h3>你做了什么</h3>
+      <p>独立设计课表批量生成工具，覆盖行课排期、课节管理（9列）、章节关联（3列）三大模块。支持新建+修改双模式，内置节假日顺延、纠音/语聊交替、外教共享直播间、<span class="highlight">正价双线（杨家成+之昊）×三档独立生成</span>等规则。</p>
+    </div>
+    <div class="cap-sec">
+      <h3>解决了什么问题</h3>
+      <p>此前每期需手动修改<span class="highlight">99节×3品×3模块</span>的数据，任一步出错即导致学员无法上课。工具将高风险重复流程转化为参数化生成，人只做决策，工具做执行。</p>
+    </div>
+  </div>
+  <div class="metric-row">
+    <div class="metric-pill"><strong>99节/期</strong> ×3品</div>
+    <div class="metric-pill"><strong>双模式</strong> 新建+修改</div>
+    <div class="metric-pill"><strong>规则内置</strong> 节假日/交替/共享</div>
+  </div>
+  <div class="translation">
+    <span class="trans-label">诚实评价</span>
+    <p>这是你真的"设计了一个系统"，不是"用了一个系统"。把业务规则抽象成参数化逻辑，这是运营操盘手的核心能力。在你当前的环境里，这可能是性价比最高的一项产出。</p>
+    <p class="next-level">如果这个工具能让另一个人零培训上手使用，它就从"你的脚本"变成了"组织的基础设施"。</p>
+  </div>
+</article>
+
+<article class="cap-card" style="--cc:#7a9a6a" data-num="16">
+  <div class="cap-strip"></div>
+  <div class="cap-head">
+    <div class="cap-num">16</div>
+    <div class="cap-title">
+      <h2>线索分发规则引擎设计与维护</h2>
+      <div class="chips"><span class="chip">CRM运营</span><span class="chip">线索路由</span></div>
+    </div>
+    <span class="level-badge l2">L2 设计级</span>
+  </div>
+  <div class="cap-body">
+    <div class="cap-sec">
+      <h3>你做了什么</h3>
+      <p>每周接量前维护<span class="highlight">10+条分配规则</span>，覆盖多期班×五品矩阵。5层配置：基础路由（期班×品×场景）、算法分配（权重/定量）、容量控制（日上限+备用溢出）、熟客路由（归原对接人）、企微触点（活码+标签+欢迎语）。</p>
+    </div>
+    <div class="cap-sec">
+      <h3>解决了什么问题</h3>
+      <p>把销售团队的"人治分配"变成可配置、有兜底、有追溯的系统化路由。直接决定每周接量效率和学员第一触点体验。</p>
+    </div>
+  </div>
+  <div class="metric-row">
+    <div class="metric-pill"><strong>10+条</strong> 规则</div>
+    <div class="metric-pill"><strong>5层</strong> 配置</div>
+    <div class="metric-pill"><strong>五品</strong> 全覆盖</div>
+  </div>
+  <div class="translation">
+    <span class="trans-label">诚实评价</span>
+    <p>你确实在设计和维护一个路由引擎，不是"填表"。5层配置的完整度说明你理解分配逻辑的全貌。但诚实说：这是在小鹅通后台做配置，不是在写代码或设计算法。复杂度来自品多、期多，不是来自技术深度。</p>
+    <p class="next-level">用数据验证分配效果：不同权重方案下的转化率差异、销售workload均衡度、学员首触响应时间。有A/B对比才是"引擎运营"，没有就还是"配置管理"。</p>
+  </div>
+</article>
+
+<article class="cap-card" style="--cc:#7a9a6a" data-num="17">
+  <div class="cap-strip"></div>
+  <div class="cap-head">
+    <div class="cap-num">17</div>
+    <div class="cap-title">
+      <h2>营期全链路获客交付闭环</h2>
+      <div class="chips"><span class="chip">获客运营</span><span class="chip">正价双线×三档</span></div>
+    </div>
+    <span class="level-badge l2">L2 设计级</span>
+  </div>
+  <div class="cap-body">
+    <div class="cap-sec">
+      <h3>你做了什么</h3>
+      <p>每期开课前完成营期全链路搭建：营期创建（8+参数）→活码下载→接量海报更新→分发销售。正价课双线（杨家成+之昊精品英语）均已落地<span class="highlight">1980/2000/3980三档全构</span>，操作逻辑完全同构；引流三品共用通用逻辑。双系统（雅识+小鹅通）×8通用环节。</p>
+    </div>
+    <div class="cap-sec">
+      <h3>解决了什么问题</h3>
+      <p>串联了"规则引擎(16)→流量入口(17)→交付管控(9)"的全管线。之昊精品英语课作为新产品上线，<span class="highlight">从0到完整三档交付仅用一套已验证的Pipeline</span>，无需重新设计流程——证明操盘逻辑可复制到任意同构产品线。</p>
+    </div>
+  </div>
+  <div class="metric-row">
+    <div class="metric-pill"><strong>正价2线</strong> 杨家成+之昊</div>
+    <div class="metric-pill"><strong>每线3档</strong> 1980/2000/3980</div>
+    <div class="metric-pill"><strong>引流3品</strong> 共用逻辑</div>
+    <div class="metric-pill"><strong>双系统</strong> 雅识+小鹅通</div>
+    <div class="metric-pill"><strong>新品上线</strong> 复用验证→日常运营</div>
+  </div>
+  <div class="translation">
+    <span class="trans-label">诚实评价</span>
+    <p>之昊精品英语课上线是真正的"复用验证"——不是PPT里写"可以复制"，而是实际跑通了第二条正价线的全部三档。从"验证了"到"日常在跑"，这是一个实质性的跃迁。你的操盘逻辑确实不依赖特定产品，而是依赖结构化流程。</p>
+    <p class="next-level">现在双线×三档=6条交付线同时在跑。下一步：写一份《新品上线Checklist》，让任何人拿着它就能在3天内完成一条新产品线的全链路搭建。当你不需要亲自做，而是"教别人做"的时候，你就从L2升到L3了。</p>
+  </div>
+</article>
+
+<article class="cap-card" style="--cc:#7a9a6a" data-num="18">
+  <div class="cap-strip"></div>
+  <div class="cap-head">
+    <div class="cap-num">18</div>
+    <div class="cap-title">
+      <h2>订单驱动批量开课与跨系统履约</h2>
+      <div class="chips"><span class="chip">跨系统履约</span><span class="chip">批量运营</span></div>
+    </div>
+    <span class="level-badge l2">L2 设计级</span>
+  </div>
+  <div class="cap-body">
+    <div class="cap-sec">
+      <h3>你做了什么</h3>
+      <p>每晚执行Order-to-Fulfillment流程：小鹅通4维筛选订单→导出Excel→双键匹配（金额+手机号）→雅识后台批量开课。确保已付款学员当晚获得课程权限。</p>
+    </div>
+    <div class="cap-sec">
+      <h3>解决了什么问题</h3>
+      <p>小鹅通收钱、雅识交付，两套系统不打通。你充当了"人工ETL"：抽取→清洗→映射→写入。没有这步，学员付了钱进不了课堂→客诉+退费。</p>
+    </div>
+  </div>
+  <div class="metric-row">
+    <div class="metric-pill"><strong>每日1次</strong> 当晚执行</div>
+    <div class="metric-pill"><strong>4维筛选</strong> +双键匹配</div>
+    <div class="metric-pill"><strong>批量开课</strong> 替代逐人</div>
+  </div>
+  <div class="translation">
+    <span class="trans-label">诚实评价</span>
+    <p>你设计了一套标准化的履约流程，这比"每天手动一个个开"强很多。但诚实说：这本质上是两个系统没有API对接的权宜之计。在成熟的技术环境里，这应该是自动化的。你的价值不在于"做了这个操作"，而在于"在系统缺失时设计了替代方案"。</p>
+    <p class="next-level">推动技术实现自动对接（Webhook/API），让这个流程彻底不需要人。你的目标应该是消灭自己的工作。</p>
+  </div>
+</article>
+
+<article class="cap-card" style="--cc:#7a9a6a" data-num="19">
+  <div class="cap-strip"></div>
+  <div class="cap-head">
+    <div class="cap-num">19</div>
+    <div class="cap-title">
+      <h2>课程包搭建与直播间注入</h2>
+      <div class="chips"><span class="chip">产品配置</span><span class="chip">内容交付</span></div>
+    </div>
+    <span class="level-badge l2">L2 设计级</span>
+  </div>
+  <div class="cap-body">
+    <div class="cap-sec">
+      <h3>你做了什么</h3>
+      <p>每期开课后完成三步：创建系列课包（名称/节数/价格/上架）→配置目录并注入直播间→营期关联绑定。<span class="highlight">正价双线（杨家成+之昊）×三档（3980全量/1980前半/2000后半）</span>独立打包，操作逻辑同构。</p>
+    </div>
+    <div class="cap-sec">
+      <h3>解决了什么问题</h3>
+      <p>把"后台的权限数据"变成"用户面前可用的课程产品"。没有这步：学员打开APP看不到课、找不到直播间、不同品级看到一样的内容。</p>
+    </div>
+  </div>
+  <div class="metric-row">
+    <div class="metric-pill"><strong>2个/月</strong> 系列课包</div>
+    <div class="metric-pill"><strong>23~99节</strong> 每包</div>
+    <div class="metric-pill"><strong>三品独立</strong> 打包策略</div>
+  </div>
+  <div class="translation">
+    <span class="trans-label">诚实评价</span>
+    <p>这是产品内容管理的核心工作——把数据变成用户可用的产品。你理解"权限≠产品"这个区别，这比很多教务强。但操作本身的复杂度不高，主要是细心和流程化。</p>
+    <p class="next-level">从"组装课程包"升级为"设计课程产品体验"：目录结构怎么排学员完课率最高？课节顺序怎么设计续费率最好？这是产品思维，不只是配置思维。</p>
+  </div>
+</article>
+
+<article class="cap-card" style="--cc:#7a9a6a" data-num="6">
+  <div class="cap-strip"></div>
+  <div class="cap-head">
+    <div class="cap-num">06</div>
+    <div class="cap-title">
+      <h2>直播跟播与交付保障</h2>
+      <div class="chips"><span class="chip">实时运营</span><span class="chip">交付闭环</span></div>
+    </div>
+    <span class="level-badge l2">L2 设计级</span>
+  </div>
+  <div class="cap-body">
+    <div class="cap-sec">
+      <h3>你做了什么</h3>
+      <p>每周四五六日跟播，实时盯接量线索数据，逐人排查三类账号冲突（AB账号/冲突账号/海外账号）。海外账号问题不满足于人工处理，<span class="highlight">主动建登记表并推技术做前端填表方案</span>。</p>
+    </div>
+    <div class="cap-sec">
+      <h3>解决了什么问题</h3>
+      <p>直播课是交付核心环节，任何学员"开不了课"都意味着客诉和退费。你在高压时间窗口内实时处理身份冲突，且主动推动系统化解决方案。</p>
+    </div>
+  </div>
+  <div class="metric-row">
+    <div class="metric-pill"><strong>4天/周</strong> 实时跟播</div>
+    <div class="metric-pill"><strong>3类账号</strong> 冲突解决</div>
+    <div class="metric-pill"><strong>推技术</strong> 系统化方案</div>
+  </div>
+  <div class="translation">
+    <span class="trans-label">诚实评价</span>
+    <p>实时运营保障+主动推系统化方案，这个组合说明你不只是"救火"，你在"设计消防系统"。这是从L1到L2的关键跃迁。但跟播本身是时间密集型工作，长期不可持续。</p>
+    <p class="next-level">让跟播变成"监控仪表盘+异常告警"，而不是"人肉盯4小时"。你的时间应该花在系统设计上，不是实时操作上。</p>
+  </div>
+</article>
+
+<article class="cap-card" style="--cc:#7a9a6a" data-num="8">
+  <div class="cap-strip"></div>
+  <div class="cap-head">
+    <div class="cap-num">08</div>
+    <div class="cap-title">
+      <h2>数据分析与运营周报体系</h2>
+      <div class="chips"><span class="chip">数据分析</span><span class="chip">质量把控</span></div>
+    </div>
+    <span class="level-badge l2">L2 设计级</span>
+  </div>
+  <div class="cap-body">
+    <div class="cap-sec">
+      <h3>你做了什么</h3>
+      <p>每周一19点前产出运营周报（完课率/退费率/环比/同比/业绩/试听数），发出前逐一核查，异常数据先对接主管修正再产出。建立了"产出→自检→异常拦截→修正→发出"的质量链路。</p>
+    </div>
+    <div class="cap-sec">
+      <h3>解决了什么问题</h3>
+      <p>运营周报是管理层决策依据，数据错误直接导致误判。你对数据质量兜底，把可信度从"大概对"提升到"可决策"。</p>
+    </div>
+  </div>
+  <div class="metric-row">
+    <div class="metric-pill"><strong>每周一</strong> 19:00前</div>
+    <div class="metric-pill"><strong>6项指标</strong> 全覆盖</div>
+    <div class="metric-pill"><strong>异常拦截</strong> 修正后再发</div>
+  </div>
+  <div class="translation">
+    <span class="trans-label">诚实评价</span>
+    <p>对数据质量负责，这比"会拉数据"高一个层级。但诚实说：出周报+自检，在中型互联网公司是数据实习生的基本工作。你的价值不在于"出了这个表"，而在于"在没有人要求你自检的环境下，你主动建立了质量管控"。</p>
+    <p class="next-level">从"出表"升级为"用表驱动决策"：周报里加一段"本周数据说明什么、建议做什么"。让管理层看到你的判断，不只是你的数字。</p>
+  </div>
+</article>
+
+<article class="cap-card" style="--cc:#7a9a6a" data-num="15">
+  <div class="cap-strip"></div>
+  <div class="cap-head">
+    <div class="cap-num">15</div>
+    <div class="cap-title">
+      <h2>跨系统数据对账与差异根因定位</h2>
+      <div class="chips"><span class="chip">数据治理</span><span class="chip">主数据对齐</span></div>
+    </div>
+    <span class="level-badge l2">L2 设计级</span>
+  </div>
+  <div class="cap-body">
+    <div class="cap-sec">
+      <h3>你做了什么</h3>
+      <p>发现接量线索数据与小鹅通用户列表存在差异，逐一电话核实全部线索，定位根因（导入来源不一致、账号绑定状态、平台渠道差异），输出差异结论。</p>
+    </div>
+    <div class="cap-sec">
+      <h3>解决了什么问题</h3>
+      <p>销售侧线索数与实际学员数对不上，影响接量判断、业绩核算与辅导分配。你在多系统不打通的约束下，人工充当主数据对齐层。</p>
+    </div>
+  </div>
+  <div class="metric-row">
+    <div class="metric-pill"><strong>逐条核实</strong> 电话沟通</div>
+    <div class="metric-pill"><strong>3维根因</strong> 导入/绑定/渠道</div>
+    <div class="metric-pill"><strong>重要紧急</strong> 优先级</div>
+  </div>
+  <div class="translation">
+    <span class="trans-label">诚实评价</span>
+    <p>你理解"数据不只是准不准，更是通不通"，这个认知是对的。但诚实说：逐条电话核实是体力活，不是方法论。你的价值在于"发现了问题并定位了根因"，执行方式本身没有技术含量。</p>
+    <p class="next-level">设计一个可重复的对账机制（比如每周自动导出两表做VLOOKUP），而不是每次都人工逐条打电话。把一次性救火变成常态化机制。</p>
+  </div>
+</article>
+
+<article class="cap-card" style="--cc:#7a9a6a" data-num="10">
+  <div class="cap-strip"></div>
+  <div class="cap-head">
+    <div class="cap-num">10</div>
+    <div class="cap-title">
+      <h2>支付链路与AI工具运营</h2>
+      <div class="chips"><span class="chip">商业化工具</span><span class="chip">AI运营</span></div>
+    </div>
+    <span class="level-badge l2">L2 设计级</span>
+  </div>
+  <div class="cap-body">
+    <div class="cap-sec">
+      <h3>你做了什么</h3>
+      <p>三块并行：① 扩科支付链路（小鹅通+海外）；② 电子协议合同（评估易签宝成本，推动主管自主签订）；③ 千幅AI语音外呼（每天设置开课前40min~3h区间外呼，日均1h）。</p>
+    </div>
+    <div class="cap-sec">
+      <h3>解决了什么问题</h3>
+      <p>支付保障收入顺畅，合同降低法务风险，AI外呼提升到课率。同时做成本评估和工具下放，不只是"用工具"，是在"管理工具"。</p>
+    </div>
+  </div>
+  <div class="metric-row">
+    <div class="metric-pill"><strong>3条工具线</strong> 并行运营</div>
+    <div class="metric-pill"><strong>成本评估</strong> 易签宝</div>
+    <div class="metric-pill"><strong>AI外呼</strong> 日1h</div>
+  </div>
+  <div class="translation">
+    <span class="trans-label">诚实评价</span>
+    <p>同时管理多条工具线+做成本评估+推动下放，这是"工具管理者"而非"工具使用者"。AI外呼的落地说明你对新技术有实操能力。但三件事的单项复杂度都不高，价值在于"并行管理"的带宽。</p>
+    <p class="next-level">量化AI外呼的效果：到课率提升了多少个百分点？ROI是多少？有数据才能决定是加大投入还是砍掉。</p>
+  </div>
+</article>
+
+<article class="cap-card" style="--cc:#7a9a6a" data-num="13">
+  <div class="cap-strip"></div>
+  <div class="cap-head">
+    <div class="cap-num">13</div>
+    <div class="cap-title">
+      <h2>海外学员排查SOP</h2>
+      <div class="chips"><span class="chip">知识沉淀</span><span class="chip">一线赋能</span></div>
+    </div>
+    <span class="level-badge l2">L2 设计级</span>
+  </div>
+  <div class="cap-body">
+    <div class="cap-sec">
+      <h3>你做了什么</h3>
+      <p>将海外学员排查经验沉淀为5步标准SOP：确认网络→测试连通性→华佗检测→异常转技术/正常切网络。每步写死工具和判定标准，辅导/助教按图索骥即可完成初判。</p>
+    </div>
+    <div class="cap-sec">
+      <h3>解决了什么问题</h3>
+      <p>此前靠口口相传，不可复制、不可下放。SOP让你从重复答疑中抽身，只接手真正需要技术的case。</p>
+    </div>
+  </div>
+  <div class="metric-row">
+    <div class="metric-pill"><strong>5步SOP</strong> 标准化</div>
+    <div class="metric-pill"><strong>下放</strong> 辅导/助教可执行</div>
+    <div class="metric-pill"><strong>分支逻辑</strong> 异常/正常</div>
+  </div>
+  <div class="translation">
+    <span class="trans-label">诚实评价</span>
+    <p>把隐性经验变成显性手册，这是"杠杆思维"——用一份文档撬动整个一线的排障能力。这个意识比SOP本身更值钱。</p>
+    <p class="next-level">追踪SOP使用效果：辅导按SOP操作后，转技术的case减少了多少？如果没减少，说明SOP写得不够好或培训没到位。</p>
+  </div>
+</article>
+
+<article class="cap-card" style="--cc:#7a9a6a" data-num="20">
+  <div class="cap-strip"></div>
+  <div class="cap-head">
+    <div class="cap-num">20</div>
+    <div class="cap-title">
+      <h2>排课接量统筹</h2>
+      <div class="chips"><span class="chip">多约束调度</span><span class="chip">资源分配</span></div>
+    </div>
+    <span class="level-badge l2">L2 设计级</span>
+  </div>
+  <div class="cap-body">
+    <div class="cap-sec">
+      <h3>你做了什么</h3>
+      <p>接手杨家成3980全年排课与接量预排：18期班×5辅导/期，在"每人≤3期/年、结课前1周才可接新期、主管归属变动、课型周轮转（亲授/外教/纠音/语聊）"等硬约束下，<span class="highlight">用自研排课系统完成44人→50坑位的分配</span>，并处理人员流动时的实时补位。</p>
+    </div>
+    <div class="cap-sec">
+      <h3>解决了什么问题</h3>
+      <p>排课接量是交付链的"总调度"——排错一个坑位，下游就是辅导超负荷、学员无人接、结课断档。你把一个组合约束问题从"拍脑袋"变成了"有系统、有规则、有预排表"。</p>
+    </div>
+  </div>
+  <div class="metric-row">
+    <div class="metric-pill"><strong>18期班</strong> 全年覆盖</div>
+    <div class="metric-pill"><strong>≤3期/人</strong> 硬约束</div>
+    <div class="metric-pill"><strong>自研系统</strong> 辅助决策</div>
+  </div>
+  <div class="translation">
+    <span class="trans-label">诚实评价</span>
+    <p>这确实烧脑——本质是一个带时间窗口的约束满足问题（CSP），很多SaaS公司的排班引擎干的就是这件事。你能在规则给定的情况下把44人排进50个坑、标出数学硬缺口（1207期缺1人），说明逻辑能力和全局视野都在线。但诚实地说：规则是别人定的（≤3期、结课前1周），你是在"解方程"，不是在"列方程"。</p>
+    <p class="next-level">从"满足约束"升级为"优化目标"：不只是排得下，而是排得好——哪种分配方式续费率最高？辅导带同一批学员时间越长，续费是否越好？当你开始用结果数据反推排课策略，这就是L3。</p>
+  </div>
+</article>
+
+<!-- ===== L1 执行级 ===== -->
+
+<article class="cap-card" style="--cc:#b8a88a" data-num="2">
+  <div class="cap-strip"></div>
+  <div class="cap-head">
+    <div class="cap-num">02</div>
+    <div class="cap-title">
+      <h2>退费订单跨平台路由</h2>
+      <div class="chips"><span class="chip">多平台协同</span><span class="chip">异常处理</span></div>
+    </div>
+    <span class="level-badge l1">L1 执行级</span>
+  </div>
+  <div class="cap-body">
+    <div class="cap-sec">
+      <h3>你做了什么</h3>
+      <p>每月处理约420单退费，在多店铺间搜索订单，秒级判断来源平台，识别收款主体。搜不到时引导提供带订单号截图，并<span class="highlight">新增「订单截图」列</span>将兜底操作标准化。</p>
+    </div>
+    <div class="cap-sec">
+      <h3>解决了什么问题</h3>
+      <p>退费涉及多店铺、多平台、多主体，信息分散。你建立了"手机号→店铺A→店铺B→截图兜底"的路由路径，并固化了兜底流程。</p>
+    </div>
+  </div>
+  <div class="metric-row">
+    <div class="metric-pill"><strong>~420单/月</strong></div>
+    <div class="metric-pill"><strong>多店铺</strong> 搜索降级</div>
+    <div class="metric-pill"><strong>截图列</strong> 标准化</div>
+  </div>
+  <div class="translation">
+    <span class="trans-label">诚实评价</span>
+    <p>420单/月的处理量说明你熟练且高效，新增截图列说明你有"把临时操作固化"的意识。但诚实说：搜索订单+判断平台，这是执行层面的熟练度，不是设计层面的能力。真正的L2是：设计一个让辅导自己能查到的自助退费系统。</p>
+    <p class="next-level">推动退费自助化：学员/辅导在系统里输入手机号就能自动匹配订单和平台，不需要你人肉搜索。</p>
+  </div>
+</article>
+
+<article class="cap-card" style="--cc:#b8a88a" data-num="3">
+  <div class="cap-strip"></div>
+  <div class="cap-head">
+    <div class="cap-num">03</div>
+    <div class="cap-title">
+      <h2>发票登记流程下放</h2>
+      <div class="chips"><span class="chip">流程重构</span><span class="chip">权责拆分</span></div>
+    </div>
+    <span class="level-badge l1">L1 执行级</span>
+  </div>
+  <div class="cap-body">
+    <div class="cap-sec">
+      <h3>你做了什么</h3>
+      <p>将发票登记下放给各主管，建立金山文档在线协作表，自己只保留审核和提交。</p>
+    </div>
+    <div class="cap-sec">
+      <h3>解决了什么问题</h3>
+      <p>此前所有发票需求汇聚到你一人，形成瓶颈。下放后信息采集由离信息源最近的人完成，你从执行者变成审核者。</p>
+    </div>
+  </div>
+  <div class="metric-row">
+    <div class="metric-pill"><strong>流程下放</strong> 主管自登记</div>
+    <div class="metric-pill"><strong>角色转变</strong> 执行→审核</div>
+  </div>
+  <div class="translation">
+    <span class="trans-label">诚实评价</span>
+    <p>识别瓶颈并下放，这是基本的管理意识，做对了。但诚实说：建一个共享表格让别人填，复杂度是2/10。它的价值不在于"做了什么"，而在于"你意识到不该什么都自己干"——这个意识比动作本身重要。</p>
+    <p class="next-level">这个思维可以复制到更多地方：还有哪些事在你身上形成瓶颈？列出来，逐个下放或自动化。</p>
+  </div>
+</article>
+
+<article class="cap-card" style="--cc:#b8a88a" data-num="4">
+  <div class="cap-strip"></div>
+  <div class="cap-head">
+    <div class="cap-num">04</div>
+    <div class="cap-title">
+      <h2>新人权限前置预警</h2>
+      <div class="chips"><span class="chip">机制设计</span><span class="chip">风险前置</span></div>
+    </div>
+    <span class="level-badge l1">L1 执行级</span>
+  </div>
+  <div class="cap-body">
+    <div class="cap-sec">
+      <h3>你做了什么</h3>
+      <p>建企微群，主管提前提供新人信息（中文名/英文名/手机号），你提前完成权限配置，消除接量延迟。</p>
+    </div>
+    <div class="cap-sec">
+      <h3>解决了什么问题</h3>
+      <p>此前新人接量时才发现权限未开，导致延迟。机制建立后从"事后救火"变成"事前预备"。</p>
+    </div>
+  </div>
+  <div class="metric-row">
+    <div class="metric-pill"><strong>前置机制</strong> 事前预备</div>
+    <div class="metric-pill"><strong>消除卡点</strong> 接量零延迟</div>
+  </div>
+  <div class="translation">
+    <span class="trans-label">诚实评价</span>
+    <p>"让问题不发生"的思维是对的，比"等问题来了再解决"高一个层级。但诚实说：建个群提前收集信息，操作复杂度很低。它的价值在于思维模式（前置>救火），不在于操作本身。</p>
+    <p class="next-level">把这个思维系统化：列出所有"事后救火"的场景，逐个设计前置机制。当你有10个前置机制在跑，那就是体系了。</p>
+  </div>
+</article>
+
+<article class="cap-card" style="--cc:#b8a88a" data-num="5">
+  <div class="cap-strip"></div>
+  <div class="cap-head">
+    <div class="cap-num">05</div>
+    <div class="cap-title">
+      <h2>关店异常退款兜底</h2>
+      <div class="chips"><span class="chip">异常处理</span><span class="chip">资金安全</span></div>
+    </div>
+    <span class="level-badge l1">L1 执行级</span>
+  </div>
+  <div class="cap-body">
+    <div class="cap-sec">
+      <h3>你做了什么</h3>
+      <p>收款店铺关闭、原路退回不可行时，引导学生提供银行卡信息，通过招行薪福通提交对公付款，确保信息完整准确。</p>
+    </div>
+    <div class="cap-sec">
+      <h3>解决了什么问题</h3>
+      <p>退费流程的最远异常分支——正常路径全部失效时的兜底。涉及对公付款，信息填错可能导致资金损失。</p>
+    </div>
+  </div>
+  <div class="metric-row">
+    <div class="metric-pill"><strong>最远分支</strong> 兜底</div>
+    <div class="metric-pill"><strong>对公付款</strong> 信息校验</div>
+  </div>
+  <div class="translation">
+    <span class="trans-label">诚实评价</span>
+    <p>承担异常兜底说明你被信任处理高敏感环节，这是好事。但操作本身是"按流程填对信息"，复杂度不高。你的价值在于"可靠"，不在于"设计"。</p>
+    <p class="next-level">把这个兜底流程写成SOP（像Card 13那样），让其他人也能执行。你不应该永远是"最后一道关"。</p>
+  </div>
+</article>
+
+<!-- ===== 成长前线 ===== -->
+
+<section class="frontier">
+  <h2>成长前线</h2>
+  <p class="sub">你还没碰到、但必须碰到的三个硬维度</p>
+  <div class="frontier-grid">
+    <div class="frontier-card">
+      <div class="f-icon">📈</div>
+      <div class="f-title">背一个数字</div>
+      <div class="f-desc">为续费率/转化率/退费率中的一个指标负全责。不是"我出报表"，是"这个月数字没达标，我来解释为什么、怎么办"。</div>
+      <div class="f-action">行动：下个月主动请缨背续费率指标</div>
+    </div>
+    <div class="frontier-card">
+      <div class="f-icon">👥</div>
+      <div class="f-title">管几个人</div>
+      <div class="f-desc">不是"设计SOP让别人执行"，是真的管人：分配任务、追进度、给反馈、处理绩效不达标、激励士气。</div>
+      <div class="f-action">行动：申请带1-2个新人，完整走一遍"教→盯→放→评"</div>
+    </div>
+    <div class="frontier-card">
+      <div class="f-icon">🔥</div>
+      <div class="f-title">在更大容器里验证</div>
+      <div class="f-desc">你的能力在"5品×2期/月"的规模下成立。换到50品×20期/月，哪些流程会先崩？那就是你真正的瓶颈。</div>
+      <div class="f-action">行动：做一次压力测试推演——如果量翻10倍，你的流程哪里先断</div>
+    </div>
+  </div>
+  <p class="note">你的底层能力（系统思维、全链路视角、数据敏感度、从执行到设计的跃迁意识）是真的。问题不是"能力不够"，是"能力没有被放在足够大的容器里验证过"。你需要的不是第20项能力，是一个战场。</p>
+</section>
+
+<!-- ===== Summary ===== -->
+
+<section class="summary">
+  <h2>你的真实定位</h2>
+  <p class="sub">七大能力域 · 十九项能力 · 三级成熟度</p>
+  <div class="cap-grid">
+    <div class="cap-tag"><span class="dot" style="background:#5a7a9a"></span>L3 体系级 ×5</div>
+    <div class="cap-tag"><span class="dot" style="background:#7a9a6a"></span>L2 设计级 ×9</div>
+    <div class="cap-tag"><span class="dot" style="background:#b8a88a"></span>L1 执行级 ×5</div>
+  </div>
+  <p class="desc">你的能力结构是"倒三角"：体系级能力（产品规划、SOP架构、数据归因、全周期管控、跨部门推进）已经长出来了，但执行级能力（退费路由、发票下放、权限前置、退款兜底）还占着你的时间。下一步不是"再多一项能力"，而是"把L1的事自动化或下放，把时间留给L3的事"。</p>
+  <p class="punch">你是没有操盘战场的运营架构师。能力到了，战场还没到。</p>
+</section>
+
+<footer class="footer">
+  本文档基于实际工作内容梳理 · v2 去包装版 · 2026年7月<br>
+  评价标准：教培/互联网/电商/跨境/SaaS多行业视角
+</footer>
+
+</div>
+<button class="totop" onclick="scrollTo({top:0,behavior:'smooth'})">&uarr;</button>
+<script>
+  const btn=document.querySelector('.totop');
+  window.addEventListener('scroll',()=>btn.classList.toggle('show',scrollY>500));
+  const DOMAINS={"系统化":[1,14],"数据运营":[8,9,12,15],"交付保障":[6,13,18,19,20],"线索获客":[16,17],"产品运营":[7,11],"流程异常":[2,3,4,5],"AI工具":[10]};
+  document.querySelectorAll('.domain-chip').forEach(ch=>{
+    ch.onclick=()=>{
+      document.querySelectorAll('.domain-chip').forEach(c=>c.classList.remove('active'));
+      ch.classList.add('active');
+      const d=ch.dataset.domain, nums=DOMAINS[d];
+      document.querySelectorAll('.cap-card').forEach(card=>{
+        const n=+card.dataset.num;
+        card.style.display=(d==='all'||(nums&&nums.includes(n)))?'':'none';
+      });
+    };
+  });
+</script>
+</body>
+</html>

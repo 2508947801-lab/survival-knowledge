@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>每日生存知识系统 · Yara的知识资产库</title>
+<title>每日生存知识系统 · Yara的运营情报系统</title>
 <style>
 /* === YouTube 2025 风格设计系统（浅色版）=== */
 :root {
@@ -82,6 +82,51 @@ body {
     -webkit-text-fill-color:var(--accent-red);
     font-weight:600;
 }
+.thinking-chain {
+    display:flex; align-items:center; justify-content:center;
+    gap:6px; flex-wrap:wrap;
+    margin-top:22px; font-size:0.82em;
+}
+.chain-node {
+    padding:6px 14px; border-radius:var(--radius-pill);
+    background:rgba(255,255,255,0.7);
+    border:1px solid rgba(15,15,25,0.08);
+    font-weight:500; color:var(--text-secondary);
+    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+}
+.chain-arrow { color:var(--accent-red); font-weight:700; font-size:1.1em; }
+
+/* === 4 Knowledge Base Cards === */
+.kb-section { max-width:1200px; margin:24px auto 0; padding:0 20px; }
+.kb-label {
+    font-size:0.82em; color:var(--text-tertiary);
+    text-align:center; margin-bottom:12px;
+    letter-spacing:1px; font-weight:500;
+}
+.kb-grid {
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:12px;
+}
+.kb-card {
+    background:var(--glass-bg);
+    backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+    border:1px solid var(--glass-border);
+    border-radius:var(--radius-md);
+    padding:20px 18px; text-align:center;
+    transition:all 0.35s var(--ease);
+    cursor:default;
+}
+.kb-card:hover {
+    border-color:var(--glass-border-hover);
+    transform:translateY(-3px);
+    box-shadow:0 8px 24px rgba(255,45,85,0.10);
+}
+.kb-icon { font-size:1.6em; margin-bottom:8px; }
+.kb-name { font-size:0.9em; font-weight:700; color:var(--text-primary); }
+.kb-desc { font-size:0.72em; color:var(--text-tertiary); margin-top:4px; line-height:1.5; }
+.kb-card:nth-child(1) { border-top:3px solid #ff2d55; }
+.kb-card:nth-child(2) { border-top:3px solid #ff6b35; }
+.kb-card:nth-child(3) { border-top:3px solid #7c3aed; }
+.kb-card:nth-child(4) { border-top:3px solid #059669; }
 
 /* === Stats Bar === */
 .stats-bar {
@@ -202,6 +247,33 @@ body {
 .structure-name { font-size:0.82em; font-weight:600; color:var(--text-primary); margin-top:4px; }
 .structure-q { font-size:0.72em; color:var(--text-tertiary); margin-top:3px; line-height:1.4; }
 
+/* === Feedback Loops === */
+.loops-section { max-width:1200px; margin:20px auto 0; padding:0 20px; }
+.loops-label {
+    font-size:0.82em; color:var(--text-tertiary);
+    text-align:center; margin-bottom:12px;
+    letter-spacing:1px; font-weight:500;
+}
+.loops-grid {
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:10px;
+}
+.loop-item {
+    background:var(--glass-bg);
+    backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+    border:1px solid var(--glass-border);
+    border-radius:var(--radius-sm);
+    padding:14px 14px; text-align:center;
+    transition:all 0.3s var(--ease);
+}
+.loop-item:hover { border-color:var(--glass-border-hover); transform:translateY(-2px); }
+.loop-icon { font-size:1.2em; }
+.loop-name { font-size:0.78em; font-weight:700; color:var(--text-primary); margin-top:6px; }
+.loop-freq { font-size:0.68em; color:var(--text-tertiary); margin-top:3px; }
+.loop-item:nth-child(1) { border-bottom:2px solid #ff6b35; }
+.loop-item:nth-child(2) { border-bottom:2px solid #059669; }
+.loop-item:nth-child(3) { border-bottom:2px solid #2563eb; }
+.loop-item:nth-child(4) { border-bottom:2px solid #7c3aed; }
+
 /* === Ratio Bar === */
 .ratio-section { max-width:1200px; margin:20px auto 0; padding:0 20px; }
 .ratio-bar {
@@ -289,6 +361,10 @@ body {
     .hero h1 { font-size:2em; letter-spacing:2px; }
     .stats-bar { gap:18px; }
     .stat-num { font-size:1.4em; }
+    .thinking-chain { font-size:0.72em; gap:4px; }
+    .chain-node { padding:4px 10px; }
+    .kb-grid { grid-template-columns:repeat(2, 1fr); }
+    .loops-grid { grid-template-columns:repeat(2, 1fr); }
     .focal-card { padding:24px 22px; }
     .focal-title { font-size:1.15em; }
     .structure-strip { flex-wrap:wrap; }
@@ -300,6 +376,8 @@ body {
 @media (max-width:480px) {
     .hero h1 { font-size:1.6em; }
     .structure-item { flex:1 1 45%; }
+    .kb-grid { grid-template-columns:1fr 1fr; gap:8px; }
+    .kb-card { padding:14px 12px; }
 }
 </style>
 </head>
@@ -309,12 +387,23 @@ body {
 <div class="hero">
     <div class="hero-inner">
         <h1>每日生存知识系统</h1>
-        <p class="hero-sub">知识付费交付运营人的<strong>个人知识资产库</strong> · 始于2026年7月</p>
+        <p class="hero-sub">知识付费交付运营人的<strong>运营情报系统</strong> · 不是新闻搬运，是决策训练</p>
         <div class="stats-bar">
             <div class="stat-item"><div class="stat-num" id="streak-days">24</div><div class="stat-label">连续更新天数</div></div>
             <div class="stat-item"><div class="stat-num">24</div><div class="stat-label">总期数</div></div>
-            <div class="stat-item"><div class="stat-num">8</div><div class="stat-label">知识方向</div></div>
+            <div class="stat-item"><div class="stat-num">4</div><div class="stat-label">知识库</div></div>
             <div class="stat-item"><div class="stat-num">5</div><div class="stat-label">每日栏目</div></div>
+        </div>
+        <div class="thinking-chain">
+            <span class="chain-node">行业变化</span>
+            <span class="chain-arrow">→</span>
+            <span class="chain-node">用户变化</span>
+            <span class="chain-arrow">→</span>
+            <span class="chain-node">产品调整</span>
+            <span class="chain-arrow">→</span>
+            <span class="chain-node">交付优化</span>
+            <span class="chain-arrow">→</span>
+            <span class="chain-node">管理动作</span>
         </div>
     </div>
 </div>
@@ -332,6 +421,33 @@ body {
         <div class="filter-tag" data-filter="edu" onclick="filterCards('edu',this)">教育趋势</div>
         <div class="filter-tag" data-filter="psych" onclick="filterCards('psych',this)">心理行为</div>
         <div class="filter-tag" data-filter="social" onclick="filterCards('social',this)">社会热点<span class="tag-pct">5%</span></div>
+    </div>
+</div>
+
+<!-- 4 Knowledge Base Cards -->
+<div class="kb-section">
+    <div class="kb-label">— 四大知识库 · 每日沉淀 —</div>
+    <div class="kb-grid">
+        <div class="kb-card">
+            <div class="kb-icon">👁</div>
+            <div class="kb-name">A 用户洞察库</div>
+            <div class="kb-desc">学员行为 / 退费信号 / 续费动机 / 社群情绪</div>
+        </div>
+        <div class="kb-card">
+            <div class="kb-icon">🔧</div>
+            <div class="kb-name">B 运营案例库</div>
+            <div class="kb-desc">同行做法 / 交付SOP / 转化话术 / 活动复盘</div>
+        </div>
+        <div class="kb-card">
+            <div class="kb-icon">🧭</div>
+            <div class="kb-name">C 管理方法库</div>
+            <div class="kb-desc">团队激励 / 组长培养 / 向上管理 / 目标拆解</div>
+        </div>
+        <div class="kb-card">
+            <div class="kb-icon">⚡</div>
+            <div class="kb-name">D AI效率库</div>
+            <div class="kb-desc">排课自动化 / 数据对账 / 内容生成 / 工具选型</div>
+        </div>
     </div>
 </div>
 
@@ -355,27 +471,54 @@ body {
         <div class="structure-item">
             <div class="structure-num">①</div>
             <div class="structure-name">今日行业变化</div>
-            <div class="structure-q">教育/AI/商业发生了什么？</div>
+            <div class="structure-q">WHAT · 发生了什么？</div>
         </div>
         <div class="structure-item">
             <div class="structure-num">②</div>
-            <div class="structure-name">用户洞察</div>
-            <div class="structure-q">用户需求有什么变化？</div>
+            <div class="structure-name">我的判断</div>
+            <div class="structure-q">SO WHAT · 意味着什么？</div>
         </div>
         <div class="structure-item">
             <div class="structure-num">③</div>
-            <div class="structure-name">运营启发</div>
-            <div class="structure-q">对交付有什么可复制的方法？</div>
+            <div class="structure-name">交付运营启发</div>
+            <div class="structure-q">HOW · 我可以怎么用？</div>
         </div>
         <div class="structure-item">
             <div class="structure-num">④</div>
-            <div class="structure-name">管理思考</div>
-            <div class="structure-q">对团队管理有什么价值？</div>
+            <div class="structure-name">可执行动作</div>
+            <div class="structure-q">DO IT · 今天做什么？</div>
         </div>
         <div class="structure-item">
             <div class="structure-num">⑤</div>
-            <div class="structure-name">我的行动</div>
-            <div class="structure-q">今天可以应用在哪？</div>
+            <div class="structure-name">管理思考</div>
+            <div class="structure-q">RULE · 提炼一个原则</div>
+        </div>
+    </div>
+</div>
+
+<!-- 4 Feedback Loops -->
+<div class="loops-section">
+    <div class="loops-label">— 四条回路 · 越用越准 —</div>
+    <div class="loops-grid">
+        <div class="loop-item">
+            <div class="loop-icon">📋</div>
+            <div class="loop-name">判断回执</div>
+            <div class="loop-freq">每两周 · 校准直觉</div>
+        </div>
+        <div class="loop-item">
+            <div class="loop-icon">⚡</div>
+            <div class="loop-name">精简模式</div>
+            <div class="loop-freq">状态差时 · 10min不断链</div>
+        </div>
+        <div class="loop-item">
+            <div class="loop-icon">📊</div>
+            <div class="loop-name">决策审计</div>
+            <div class="loop-freq">每月 · 动作→指标</div>
+        </div>
+        <div class="loop-item">
+            <div class="loop-icon">📤</div>
+            <div class="loop-name">输出分享</div>
+            <div class="loop-freq">每周 · 讲清楚才是真判断</div>
         </div>
     </div>
 </div>
@@ -605,9 +748,9 @@ body {
 
 <!-- Footer -->
 <div class="footer">
-    <p class="footer-brand">🐱 Yara的个人知识资产库</p>
-    <p>教育行业洞察库 + 用户运营方法库 + 管理案例库</p>
-    <p>始于2026年7月 · 每天一点生存智慧 · 深度认知·理性判断·温情陪伴</p>
+    <p class="footer-brand">🐱 Yara的运营情报系统</p>
+    <p>行业变化 → 用户变化 → 产品调整 → 交付优化 → 管理动作</p>
+    <p>始于2026年7月 · 每天30分钟 · 训练决策能力 · 沉淀《教育行业交付增长观察》</p>
 </div>
 
 <script>
