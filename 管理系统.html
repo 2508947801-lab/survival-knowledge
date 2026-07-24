@@ -64,6 +64,52 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);}
 .home-card .hc-desc{font-size:.72rem;color:var(--ink-l);line-height:1.5;}
 .home-card .hc-tag{display:inline-block;margin-top:8px;padding:2px 8px;background:var(--gold-l);border-radius:10px;font-size:.62rem;color:var(--gold);}
 
+/* === DASHBOARD === */
+.dash-greeting h2{font-family:var(--serif);font-size:1.4rem;color:var(--gold);margin-bottom:4px;}
+.dash-greeting .sub{font-size:.8rem;color:var(--ink-l);margin-bottom:24px;}
+.dash-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
+.stat-card{background:var(--card);border-radius:12px;padding:16px 18px;box-shadow:0 2px 10px rgba(0,0,0,.04);border-left:4px solid var(--gold);}
+.stat-card.st-green{border-left-color:#5f7a52;}
+.stat-card.st-gold{border-left-color:#a8823c;}
+.stat-card.st-red{border-left-color:#a04a3a;}
+.stat-card .stat-num{font-family:var(--serif);font-size:1.5rem;font-weight:700;color:var(--ink);line-height:1.2;}
+.stat-card .stat-label{font-size:.68rem;color:var(--ink-l);margin-top:4px;}
+.stat-card .stat-sub{font-size:.62rem;color:var(--ink-l);margin-top:2px;opacity:.8;}
+.dash-section{margin-bottom:24px;}
+.dash-section-title{font-family:var(--serif);font-size:.95rem;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.dash-section-title .icon{font-size:1rem;}
+.class-list{background:var(--card);border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.04);overflow:hidden;}
+.class-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);}
+.class-item:last-child{border-bottom:none;}
+.class-item .ci-time{font-size:.75rem;font-weight:700;color:var(--gold);white-space:nowrap;min-width:44px;}
+.class-item .ci-info{flex:1;min-width:0;}
+.class-item .ci-name{font-size:.78rem;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.class-item .ci-meta{font-size:.65rem;color:var(--ink-l);margin-top:2px;}
+.class-item .ci-status{font-size:.62rem;padding:2px 8px;border-radius:10px;white-space:nowrap;}
+.ci-status.done{background:#eef3ec;color:#5f7a52;}
+.ci-status.pending{background:#f5f0e6;color:#a8823c;}
+.class-empty{padding:24px 16px;text-align:center;color:var(--ink-l);font-size:.8rem;}
+.progress-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.progress-row .pr-name{font-size:.75rem;color:var(--ink);min-width:80px;white-space:nowrap;}
+.progress-row .pr-track{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+.progress-row .pr-fill{height:100%;border-radius:4px;transition:width .6s ease;}
+.pr-fill.green{background:#5f7a52;}
+.pr-fill.gold{background:#a8823c;}
+.pr-fill.red{background:#a04a3a;}
+.progress-row .pr-pct{font-size:.72rem;font-weight:700;color:var(--ink);min-width:36px;text-align:right;}
+.progress-row .pr-count{font-size:.62rem;color:var(--ink-l);min-width:52px;text-align:right;}
+.cap-summary{background:var(--card);border-radius:12px;padding:16px 18px;box-shadow:0 2px 10px rgba(0,0,0,.04);}
+.cap-summary .cap-score{font-family:var(--serif);font-size:1.3rem;font-weight:700;color:var(--gold);}
+.cap-summary .cap-note{font-size:.72rem;color:var(--ink-l);margin-top:4px;}
+.cap-empty{font-size:.78rem;color:var(--ink-l);padding:12px 0;}
+.cap-empty a{color:var(--gold);cursor:pointer;text-decoration:underline;}
+.quick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;}
+.quick-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;background:var(--card);border-radius:10px;cursor:pointer;transition:all .15s;border:1px solid transparent;box-shadow:0 1px 6px rgba(0,0,0,.03);}
+.quick-btn:hover{border-color:var(--gold);transform:translateY(-1px);}
+.quick-btn .qb-icon{font-size:1.2rem;}
+.quick-btn .qb-name{font-size:.65rem;color:var(--ink);text-align:center;line-height:1.3;}
+.dash-loading{text-align:center;padding:40px;color:var(--ink-l);font-size:.8rem;}
+
 /* Mobile */
 .menu-toggle{display:none;position:fixed;top:8px;left:8px;z-index:200;width:34px;height:34px;border-radius:8px;background:var(--gold);color:#fff;border:none;font-size:1rem;cursor:pointer;}
 @media(max-width:768px){
@@ -75,6 +121,12 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);}
   .topbar .btn-home{padding:8px 14px;}
   .home{padding:24px 16px;}
   .home-grid{grid-template-columns:1fr;}
+  .dash-stats{gap:8px;}
+  .stat-card{padding:12px 10px;}
+  .stat-card .stat-num{font-size:1.2rem;}
+  .quick-grid{grid-template-columns:repeat(4,1fr);gap:8px;}
+  .quick-btn{padding:10px 4px;}
+  .progress-row .pr-name{min-width:64px;font-size:.7rem;}
 }
 </style>
 </head>
@@ -145,50 +197,26 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);}
   <div class="frame-wrap">
     <!-- HOME -->
     <div class="home" id="homePage">
-      <h2>交付运营管理系统</h2>
-      <p class="sub">教务管理 × 运营能力 × 对帐工具 × 日报系统 · 七大工具统一入口</p>
-      <div class="home-grid">
-        <div class="home-card" onclick="openTool('运营能力地图/academic-system.html','建课系统','教务管理')">
-          <div class="hc-icon">📚</div>
-          <div class="hc-title">建课系统</div>
-          <div class="hc-desc">项目→期班→课节三级结构，自动状态判定，今日课程汇总</div>
-          <div class="hc-tag">教务管理</div>
-        </div>
-        <div class="home-card" onclick="openTool('杨家成课表管理工具/课表批量生成工具.html','杨家成3980排课','教务管理')">
-          <div class="hc-icon">📅</div>
-          <div class="hc-title">杨家成3980排课</div>
-          <div class="hc-desc">四类课型自动排期，节假日顺延，两阶段算法生成</div>
-          <div class="hc-tag">教务管理</div>
-        </div>
-        <div class="home-card" onclick="openTool('杨家成课表管理工具/之昊2980课表生成工具.html','之昊2980排课','教务管理')">
-          <div class="hc-icon">📅</div>
-          <div class="hc-title">之昊2980排课</div>
-          <div class="hc-desc">之昊精品英语课表生成，2类型4章45节</div>
-          <div class="hc-tag">教务管理</div>
-        </div>
-        <div class="home-card" onclick="openTool('运营能力地图/运营能力地图.html','能力地图','运营能力')">
-          <div class="hc-icon">🗺️</div>
-          <div class="hc-title">运营能力地图</div>
-          <div class="hc-desc">20项能力卡片，L1-L3成熟度分级，诚实评价+成长前线</div>
-          <div class="hc-tag">运营能力</div>
-        </div>
-        <div class="home-card" onclick="openTool('运营能力地图/交付运营总系统.html','自查总系统','运营能力')">
-          <div class="hc-icon">⚡</div>
-          <div class="hc-title">自查总系统</div>
-          <div class="hc-desc">8模块77项评分，六维雷达联动，智能推荐，自动记忆</div>
-          <div class="hc-tag">运营能力</div>
-        </div>
-        <div class="home-card" onclick="openTool('账号异常对帐工具/对账对比看板.html','对账对比看板','对帐工具')">
-          <div class="hc-icon">🧾</div>
-          <div class="hc-title">对账对比看板</div>
-          <div class="hc-desc">多期多轮对账，异常标记，台账基线对比，WPS兼容导出</div>
-          <div class="hc-tag">对帐工具</div>
-        </div>
-        <div class="home-card" onclick="openTool('index.html','每日生存知识系统','日报系统')">
-          <div class="hc-icon">📰</div>
-          <div class="hc-title">每日生存知识系统</div>
-          <div class="hc-desc">Yara的运营情报系统，每日生存知识沉淀与播报</div>
-          <div class="hc-tag">日报系统</div>
+      <div class="dash-greeting">
+        <h2 id="dashGreeting">你好，Yara</h2>
+        <p class="sub" id="dashDate"></p>
+      </div>
+      <div class="dash-stats" id="dashStats">
+        <div class="dash-loading">正在加载运营数据…</div>
+      </div>
+      <div class="dash-section" id="dashToday"></div>
+      <div class="dash-section" id="dashProgress"></div>
+      <div class="dash-section" id="dashCap"></div>
+      <div class="dash-section">
+        <div class="dash-section-title"><span class="icon">🔧</span>快捷入口</div>
+        <div class="quick-grid">
+          <div class="quick-btn" onclick="openTool('运营能力地图/academic-system.html','建课系统','教务管理')"><span class="qb-icon">📚</span><span class="qb-name">建课系统</span></div>
+          <div class="quick-btn" onclick="openTool('杨家成课表管理工具/课表批量生成工具.html','杨家成3980排课','教务管理')"><span class="qb-icon">📅</span><span class="qb-name">杨家成排课</span></div>
+          <div class="quick-btn" onclick="openTool('杨家成课表管理工具/之昊2980课表生成工具.html','之昊2980排课','教务管理')"><span class="qb-icon">📅</span><span class="qb-name">之昊排课</span></div>
+          <div class="quick-btn" onclick="openTool('运营能力地图/运营能力地图.html','能力地图','运营能力')"><span class="qb-icon">🗺️</span><span class="qb-name">能力地图</span></div>
+          <div class="quick-btn" onclick="openTool('运营能力地图/交付运营总系统.html','自查总系统','运营能力')"><span class="qb-icon">⚡</span><span class="qb-name">自查总系统</span></div>
+          <div class="quick-btn" onclick="openTool('账号异常对帐工具/对账对比看板.html','对账对比看板','对帐工具')"><span class="qb-icon">🧾</span><span class="qb-name">对账看板</span></div>
+          <div class="quick-btn" onclick="openTool('index.html','每日生存知识系统','日报系统')"><span class="qb-icon">📰</span><span class="qb-name">日报系统</span></div>
         </div>
       </div>
     </div>
@@ -234,6 +262,117 @@ document.querySelectorAll('.nav-child').forEach(function(child){
     openTool(child.dataset.src, child.dataset.name, child.dataset.group);
   });
 });
+
+// ===== DASHBOARD =====
+var DASH_DATA = null;
+
+function setGreeting(){
+  var h = new Date().getHours();
+  var g = h<5?'夜深了，Yara':h<11?'早上好，Yara':h<14?'中午好，Yara':h<18?'下午好，Yara':'晚上好，Yara';
+  document.getElementById('dashGreeting').textContent = g;
+  var d = new Date();
+  var wk = ['周日','周一','周二','周三','周四','周五','周六'][d.getDay()];
+  document.getElementById('dashDate').textContent = d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日 '+wk+' · 你的运营驾驶舱';
+}
+
+function todayStr(){
+  var d = new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+
+function getCapAvg(){
+  try{
+    var raw = localStorage.getItem('yara_ops_os_v1');
+    if(!raw) return null;
+    var st = JSON.parse(raw);
+    var vals = Object.values(st.scores||{}).filter(function(v){return v>0;});
+    if(!vals.length) return null;
+    return {avg: vals.reduce(function(a,b){return a+b;},0)/vals.length, count: vals.length};
+  }catch(e){ return null; }
+}
+
+function renderDashStats(todayCount){
+  var totalLessons=0, totalDone=0;
+  for(var proj in DASH_DATA){ for(var p in DASH_DATA[proj]){ DASH_DATA[proj][p].forEach(function(l){ totalLessons++; if(l.status==='已完成')totalDone++; }); }}
+  var pct = totalLessons?Math.round(totalDone/totalLessons*100):0;
+  var pctColor = pct>=70?'st-green':pct>=40?'st-gold':'st-red';
+  var todayColor = todayCount>0?'st-gold':'st-green';
+  var cap = getCapAvg();
+  var capColor = !cap?'':cap.avg>=3.5?'st-green':cap.avg>=2.5?'st-gold':'st-red';
+  document.getElementById('dashStats').innerHTML =
+    '<div class="stat-card '+todayColor+'"><div class="stat-num">'+todayCount+' 节</div><div class="stat-label">今日课程</div><div class="stat-sub">'+(todayCount>0?'今天有课':'休息日 🎉')+'</div></div>'+
+    '<div class="stat-card '+pctColor+'"><div class="stat-num">'+pct+'%</div><div class="stat-label">课表完成度</div><div class="stat-sub">'+totalDone+'/'+totalLessons+' 节已完成</div></div>'+
+    '<div class="stat-card '+capColor+'"><div class="stat-num">'+(cap?cap.avg.toFixed(1):'—')+'</div><div class="stat-label">能力自评</div><div class="stat-sub">'+(cap?cap.count+'项 · /5分':'未评估')+'</div></div>';
+}
+
+function renderTodayClasses(){
+  var today = todayStr();
+  var classes = [];
+  for(var proj in DASH_DATA){ for(var p in DASH_DATA[proj]){ DASH_DATA[proj][p].forEach(function(l){
+    if(l.time && l.time.indexOf(today)===0) classes.push({time:l.time.substring(11,16),name:l.lesson,proj:proj,period:p,status:l.status});
+  });}}
+  classes.sort(function(a,b){return a.time<b.time?-1:1;});
+  var el = document.getElementById('dashToday');
+  var html = '<div class="dash-section-title"><span class="icon">📋</span>今日课程</div>';
+  if(!classes.length){ html += '<div class="class-list"><div class="class-empty">今天没有排课，好好休息 🎉</div></div>'; }
+  else{
+    html += '<div class="class-list">';
+    classes.forEach(function(c){
+      var done = c.status==='已完成';
+      html += '<div class="class-item"><span class="ci-time">'+c.time+'</span><div class="ci-info"><div class="ci-name">'+c.name+'</div><div class="ci-meta">'+c.proj+' · '+c.period+'</div></div><span class="ci-status '+(done?'done':'pending')+'">'+(done?'已完成':'待上')+'</span></div>';
+    });
+    html += '</div>';
+  }
+  el.innerHTML = html;
+  return classes.length;
+}
+
+function renderProgress(){
+  var el = document.getElementById('dashProgress');
+  var html = '<div class="dash-section-title"><span class="icon">📊</span>项目进度</div>';
+  for(var proj in DASH_DATA){
+    var total=0,done=0;
+    for(var p in DASH_DATA[proj]){ DASH_DATA[proj][p].forEach(function(l){ total++; if(l.status==='已完成')done++; }); }
+    var pct = total?Math.round(done/total*100):0;
+    var color = pct>=70?'green':pct>=40?'gold':'red';
+    html += '<div class="progress-row"><span class="pr-name">'+proj+'</span><div class="pr-track"><div class="pr-fill '+color+'" style="width:'+pct+'%"></div></div><span class="pr-pct">'+pct+'%</span><span class="pr-count">'+done+'/'+total+'</span></div>';
+  }
+  el.innerHTML = html;
+}
+
+function renderCapability(){
+  var el = document.getElementById('dashCap');
+  var cap = getCapAvg();
+  var html = '<div class="dash-section-title"><span class="icon">⚡</span>运营能力</div>';
+  if(!cap){
+    html += '<div class="cap-empty">还没有自评数据。<a onclick="openTool(\'运营能力地图/交付运营总系统.html\',\'自查总系统\',\'运营能力\')">去评一下 →</a></div>';
+  } else {
+    html += '<div class="cap-summary"><span class="cap-score">'+cap.avg.toFixed(1)+' / 5</span><div class="cap-note">已评估 '+cap.count+' 项 · 平均分'+(cap.avg>=3.5?' · 状态不错 👍':cap.avg>=2.5?' · 稳步成长中':' · 加油，空间很大')+'</div></div>';
+  }
+  el.innerHTML = html;
+}
+
+async function loadDashboard(){
+  setGreeting();
+  if(!DASH_DATA){
+    try{
+      var resp = await fetch('运营能力地图/academic-system.html');
+      var txt = await resp.text();
+      var m = txt.match(/const COURSE_DATA = (\{.+\});/);
+      if(m) DASH_DATA = JSON.parse(m[1]);
+    }catch(e){}
+  }
+  if(!DASH_DATA){
+    document.getElementById('dashStats').innerHTML = '<div class="dash-loading">课表数据暂无法加载（本地 file:// 打开时会出现此提示，线上版正常显示）</div>';
+    return;
+  }
+  var todayCount = renderTodayClasses();
+  renderDashStats(todayCount);
+  renderProgress();
+  renderCapability();
+}
+
+loadDashboard();
 </script>
 </body>
 </html>
