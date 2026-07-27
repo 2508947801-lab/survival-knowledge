@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>之昊2980·课表管理工具</title>
+<title>高高2980·课表管理工具</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root{
@@ -105,7 +105,7 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--in
 </style>
 </head>
 <body>
-<h1>之昊2980·课表管理工具</h1>
+<h1>高高2980·课表管理工具</h1>
 <h2>导入模板 → 编辑课表 → 生成课节管理 → 生成章节关联课节</h2>
 
 <!-- ========== Module 0: Import ========== -->
@@ -115,11 +115,11 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--in
     <div class="module-title">导入课表模板</div>
     <div class="module-badge" id="importBadge">未导入</div>
   </div>
-  <div class="module-desc">导入之昊2980总课表Excel。含行课时间→修改模式；不含→新建模式。工具保留课节名称、课节ID。</div>
+  <div class="module-desc">导入高高2980总课表Excel。含行课时间→修改模式；不含→新建模式。工具保留课节名称、课节ID。</div>
   <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
     <div class="icon">📄</div>
     <p>点击或拖拽 Excel 文件到此处</p>
-    <p style="font-size:12px;color:var(--text3);margin-top:4px">支持之昊2980课表格式（含章节标题行 + 课节名称/行课时间/课节ID列）</p>
+    <p style="font-size:12px;color:var(--text3);margin-top:4px">支持高高2980课表格式（含章节标题行 + 课节名称/行课时间/课节ID列）</p>
   </div>
   <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none">
   <div id="importResult" class="hidden" style="margin-top:14px">
@@ -142,52 +142,28 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--in
     <div class="module-title">模块一：课表</div>
     <div class="module-badge" id="scheduleBadge">编辑中</div>
   </div>
-  <div class="module-desc">正课每周两次（周日13:30-15:00 + 周四19:30-21:00交替），答疑每两周一次（周六13:30-15:00）。支持自动生成和手动调整。确认后解锁模块二。</div>
+  <div class="module-desc">每周三、周五晚19:55-21:25直播，遇法定节假日自动顺延到下一个周三/周五。支持自动生成和手动调整。确认后解锁模块二。</div>
 
   <!-- Parameters -->
   <div class="sub-panel" id="paramPanel">
     <div class="sub-panel-title">排课参数</div>
     <div class="param-grid">
       <div class="param-item">
-        <label>开课日（第一堂正课）</label>
-        <input type="date" id="startDate" value="2026-08-09">
-        <div class="hint">默认8月9日周日13:30</div>
+        <label>开课日（第一堂直播课）</label>
+        <input type="date" id="startDate" value="2026-08-05">
+        <div class="hint">默认8月5日周三19:55</div>
       </div>
       <div class="param-item">
-        <label>正课 · 周日时段</label>
+        <label>直播时段（周三/周五）</label>
         <div class="time-slot-row">
-          <span class="day-label">周日</span>
-          <input type="text" id="sunStart" value="13:30">
+          <input type="text" id="liveStart" value="19:55">
           <span class="sep">~</span>
-          <input type="text" id="sunEnd" value="15:00">
+          <input type="text" id="liveEnd" value="21:25">
         </div>
-      </div>
-      <div class="param-item">
-        <label>正课 · 周四时段</label>
-        <div class="time-slot-row">
-          <span class="day-label">周四</span>
-          <input type="text" id="thuStart" value="19:30">
-          <span class="sep">~</span>
-          <input type="text" id="thuEnd" value="21:00">
-        </div>
-      </div>
-      <div class="param-item">
-        <label>答疑 · 周六时段</label>
-        <div class="time-slot-row">
-          <span class="day-label">周六</span>
-          <input type="text" id="satStart" value="13:30">
-          <span class="sep">~</span>
-          <input type="text" id="satEnd" value="15:00">
-        </div>
-      </div>
-      <div class="param-item">
-        <label>周六课程起始日（可选）</label>
-        <input type="date" id="dayiStartDate" value="">
-        <div class="hint">外教/答疑从首个周六开始，留空=开课日后首个周六（默认8/15）</div>
       </div>
       <div class="param-item">
         <label>直播老师</label>
-        <input type="text" id="teacherName" value="之昊老师">
+        <input type="text" id="teacherName" value="高高老师">
       </div>
     </div>
     <div style="margin-top:10px">
@@ -323,29 +299,24 @@ const state = {
   activeChapter: null,
 };
 
-// 之昊2980 节假日默认（含周末日，因为课程在周末）
+// 高高2980 节假日默认（2026下-2027上法定节假日，周三/周五落入即顺延）
 const DEFAULT_HOLIDAYS = [
   '2026-09-25','2026-09-26','2026-09-27',
   '2026-10-01','2026-10-02','2026-10-03','2026-10-04','2026-10-05','2026-10-06','2026-10-07',
   '2027-01-01',
   '2027-02-06','2027-02-07','2027-02-08','2027-02-09','2027-02-10','2027-02-11','2027-02-12',
+  '2027-04-04','2027-04-05','2027-04-06',
+  '2027-05-01','2027-05-02','2027-05-03','2027-05-04','2027-05-05',
+  '2027-06-09','2027-06-10','2027-06-11',
 ];
 DEFAULT_HOLIDAYS.forEach(d => state.holidays.add(d));
 
 const WEEKDAY_NAMES = ['周日','周一','周二','周三','周四','周五','周六'];
-const CHAPTER_NAMES = [
-  '第一章：小词大用・词汇思维筑基',
-  '第二章：时态解码・时间思维建立',
-  '第三章：句式进阶 · 结构思维升级',
-  '第四章：融会贯通・思维落地输出'
-];
+// 章节名以导入模板里的章节标题行为准；此常量仅作兜底
+const CHAPTER_NAMES = ['第一章','第二章','第三章','第四章'];
 
-// 正课排课星期：周日(0) + 周四(4)
-const ZHENGKE_WEEKDAYS = [0, 4];
-// 答疑排课星期：周六(6)
-const DAYI_WEEKDAY = 6;
-// 答疑间隔天数
-const DAYI_INTERVAL = 14;
+// 直播排课星期：周三(3) + 周五(5)
+const LIVE_WEEKDAYS = [3, 5];
 
 // ==================== Course Classification ====================
 function classifyCourse(name) {
@@ -359,35 +330,47 @@ function typeLabel(t){return{zhengke:'正课',dayi:'答疑',waifang:'外教'}[t]
 function typeTagClass(t){return{zhengke:'tag-zhengke',dayi:'tag-dayi',waifang:'tag-waifang'}[t]||'tag-zhengke'}
 
 function getChapterByIndex(idx) {
-  if (idx <= 15) return CHAPTER_NAMES[0];
-  if (idx <= 25) return CHAPTER_NAMES[1];
-  if (idx <= 37) return CHAPTER_NAMES[2];
+  if (idx <= 9) return CHAPTER_NAMES[0];
+  if (idx <= 18) return CHAPTER_NAMES[1];
+  if (idx <= 27) return CHAPTER_NAMES[2];
   return CHAPTER_NAMES[3];
 }
 function matchChapter(courseChapter, targetChapter) {
   if (courseChapter === targetChapter) return true;
-  const prefix = targetChapter.substring(0, targetChapter.indexOf('：'));
+  const idx = targetChapter.indexOf('：');
+  if (idx < 0) return false; // 无冒号的章节名只做精确匹配
+  const prefix = targetChapter.substring(0, idx);
   return courseChapter && courseChapter.startsWith(prefix);
 }
 
 // ==================== Date Utilities ====================
+// Excel序列值→日期：纯UTC换算，规避SheetJS cellDates在Asia/Shanghai的LMT偏移bug
+function excelSerialToDate(v) {
+  if (typeof v !== 'number' || !isFinite(v) || v < 1 || v > 2958465) return null;
+  let days = Math.floor(v);
+  if (days > 60) days--; // 跳过Excel虚构的1900-02-29
+  const d = new Date(Date.UTC(1899, 11, 31) + days * 86400000);
+  return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+}
 function parseDate(s) {
-  if (!s) return null;
-  if (s instanceof Date) return new Date(s.getFullYear(), s.getMonth(), s.getDate());
+  if (s === null || s === undefined || s === '') return null;
+  if (s instanceof Date) return isNaN(s.getTime()) ? null : new Date(s.getFullYear(), s.getMonth(), s.getDate());
+  if (typeof s === 'number') return excelSerialToDate(s);
   if (typeof s === 'string') {
-    let m = s.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+    const str = s.trim();
+    let m = str.match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
     if (m) return new Date(parseInt(m[1]), parseInt(m[2])-1, parseInt(m[3]));
-    m = s.match(/(\d{1,2})\/(\d{1,2})/);
-    if (m) return new Date(2026, parseInt(m[1])-1, parseInt(m[2]));
-    let d = new Date(s);
-    if (!isNaN(d)) return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    m = str.match(/^(\d{1,2})\/(\d{1,2})$/);
+    if (m) return new Date(new Date().getFullYear(), parseInt(m[1])-1, parseInt(m[2]));
+    const d = new Date(str);
+    if (!isNaN(d.getTime())) return new Date(d.getFullYear(), d.getMonth(), d.getDate());
   }
   return null;
 }
 function formatDate(d){return!d?'':d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function formatDateShort(d){return!d?'':String(d.getMonth()+1).padStart(2,'0')+'/'+String(d.getDate()).padStart(2,'0')}
 function isAvailableDay(d){
-  // 之昊课程在周末，只需跳过节假日
+  // 高高课程在周三/周五，只需跳过节假日
   const ds=formatDate(d);
   if(state.holidays.has(ds)) return false;
   return true;
@@ -401,23 +384,12 @@ function findNextMatchingDay(startDate, weekdays) {
 function findNextWeekday(startDate, weekday) { return findNextMatchingDay(startDate, [weekday]); }
 
 // ==================== Time Slot Helper ====================
-function getTimeSlot(dayOfWeek, courseType) {
-  if (courseType === 'dayi' || courseType === 'waifang') {
-    return {
-      start: document.getElementById('satStart').value || '13:30',
-      end: document.getElementById('satEnd').value || '15:00'
-    };
-  }
-  // 正课
-  if (dayOfWeek === 0) return {
-    start: document.getElementById('sunStart').value || '13:30',
-    end: document.getElementById('sunEnd').value || '15:00'
+function getTimeSlot() {
+  // 高高所有课程统一时段：周三/周五 19:55~21:25
+  return {
+    start: document.getElementById('liveStart').value || '19:55',
+    end: document.getElementById('liveEnd').value || '21:25'
   };
-  if (dayOfWeek === 4) return {
-    start: document.getElementById('thuStart').value || '19:30',
-    end: document.getElementById('thuEnd').value || '21:00'
-  };
-  return { start: '13:30', end: '15:00' };
 }
 
 // ==================== Toast ====================
@@ -443,7 +415,9 @@ function processExcelFile(file) {
   reader.onload = function(e) {
     try {
       const data = new Uint8Array(e.target.result);
-      const wb = XLSX.read(data, {type:'array', cellDates:true});
+      // 不用cellDates：SheetJS 0.18.5在Asia/Shanghai会把午夜序列值转成前一天23:59:17（LMT bug）
+      // 改读原始序列值，由parseDate→excelSerialToDate纯UTC换算
+      const wb = XLSX.read(data, {type:'array'});
       const ws = wb.Sheets[wb.SheetNames[0]];
       const rows = XLSX.utils.sheet_to_json(ws, {header:1, raw:true, defval:null});
       state.courses = parseImportedRows(rows);
@@ -644,54 +618,15 @@ function generateSchedule() {
   const startDate = parseDate(document.getElementById('startDate').value);
   if (!startDate) { showToast('请设置开课日', 'warning'); return; }
 
-  const zhengkeSorted = [...ZHENGKE_WEEKDAYS].sort((a,b)=>a-b);
-  const zhengkeCourses = courses.filter(c => c.type === 'zhengke');
-  const dayiCourses = courses.filter(c => c.type === 'dayi');
-
-  // 1. 正课：从开课日开始，交替排周日/周四
-  let cursor = new Date(startDate);
-  for (const c of zhengkeCourses) {
-    const d = findNextMatchingDay(cursor, zhengkeSorted);
-    c.date = d;
-    const ts = getTimeSlot(d.getDay(), 'zhengke');
+  // 高高排课规则：所有课节按顺序排入周三/周五，每个周三或周五一节，
+  // 遇节假日自动跳到下一个周三/周五（顺延继续排，绝不跳过课程）
+  let cursor = findNextMatchingDay(new Date(startDate), LIVE_WEEKDAYS);
+  for (const c of courses) {
+    c.date = new Date(cursor);
+    const ts = getTimeSlot();
     c.timeStart = ts.start;
     c.timeEnd = ts.end;
-    cursor = nextDay(d);
-  }
-
-  // 2. 周六课程（外教课 + 答疑课）：每两周一次，外教与答疑交替
-  //    交错合并：外教1、答疑1、外教2、答疑2…… 保证第一次外教、第二次答疑
-  const waifangCourses = courses.filter(c => c.type === 'waifang');
-  const satCourses = [];
-  const maxSat = Math.max(waifangCourses.length, dayiCourses.length);
-  for (let i = 0; i < maxSat; i++) {
-    if (i < waifangCourses.length) satCourses.push(waifangCourses[i]);
-    if (i < dayiCourses.length) satCourses.push(dayiCourses[i]);
-  }
-
-  const satStartInput = document.getElementById('dayiStartDate').value;
-  let satCursor;
-  if (satStartInput) {
-    // 用户指定周六课程起始日
-    satCursor = parseDate(satStartInput);
-  } else {
-    // 自动计算：开课日后第一个周六（默认8月15日）
-    satCursor = findNextWeekday(new Date(startDate), DAYI_WEEKDAY);
-  }
-
-  for (let i = 0; i < satCourses.length; i++) {
-    const c = satCourses[i];
-    c.date = new Date(satCursor);
-    const ts = getTimeSlot(c.date.getDay(), c.type);
-    c.timeStart = ts.start;
-    c.timeEnd = ts.end;
-    // 下一周六（外教与答疑错开，故每周一个周六课程，每种每两周一次）
-    satCursor = new Date(satCursor);
-    satCursor.setDate(satCursor.getDate() + 7);
-    // 跳过节假日
-    while (!isAvailableDay(satCursor)) {
-      satCursor = findNextWeekday(nextDay(satCursor), DAYI_WEEKDAY);
-    }
+    cursor = findNextMatchingDay(nextDay(cursor), LIVE_WEEKDAYS);
   }
 
   state.module1Confirmed = false;
@@ -786,14 +721,9 @@ function validateSchedule() {
   // Holiday check
   const onHoliday = active.filter(c => state.holidays.has(formatDate(c.date)));
   if (onHoliday.length) alerts.push({type:'warning', msg:`⚠️ ${onHoliday.length}节课排在节假日: ${onHoliday.slice(0,3).map(c=>`课${c.idx}(${formatDateShort(c.date)})`).join(', ')}`});
-  // 周六课程（外教+答疑）间隔检查
-  const satActive = active.filter(c => c.type==='dayi' || c.type==='waifang').sort((a,b)=>a.date-b.date);
-  let intervalIssues = 0;
-  for (let i=1; i<satActive.length; i++) {
-    const diff = (satActive[i].date - satActive[i-1].date) / (1000*60*60*24);
-    if (Math.abs(diff - 14) > 1) intervalIssues++;
-  }
-  if (intervalIssues > 0) alerts.push({type:'warning', msg:`⚠️ 周六课程间隔异常: ${intervalIssues}处非标准14天间隔`});
+  // 星期检查（高高课程应全部在周三/周五）
+  const wrongDay = active.filter(c => !LIVE_WEEKDAYS.includes(c.date.getDay()));
+  if (wrongDay.length) alerts.push({type:'warning', msg:`⚠️ ${wrongDay.length}节课不在周三/周五: ${wrongDay.slice(0,3).map(c=>`课${c.idx}(${formatDateShort(c.date)})`).join(', ')}`});
 
   document.getElementById('validationAlerts').innerHTML = alerts.map(a => `<div class="alert alert-${a.type}">${a.msg}</div>`).join('');
 }
@@ -932,7 +862,7 @@ function confirmModule1() {
 // ==================== Module 2: Lesson Management ====================
 function renderLessonTable() {
   const isModify = state.mode === 'modify';
-  const teacher = document.getElementById('teacherName').value || '之昊老师';
+  const teacher = document.getElementById('teacherName').value || '高高老师';
   let html = '';
   let count = 0;
   for (const c of state.courses) {
@@ -943,8 +873,8 @@ function renderLessonTable() {
     const opType = hasLiveId ? '修改' : '新增';
     const lessonId = c.liveId || state.lessonIds[c.idx] || '';
     const ds = formatDateNoPad(c.date);
-    const ts = c.timeStart || '13:30';
-    const te = c.timeEnd || '15:00';
+    const ts = c.timeStart || '19:55';
+    const te = c.timeEnd || '21:25';
     count++;
     html += `<tr>
       <td>${opType}</td><td>${lessonId}</td><td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${c.name}">${c.name}</td>
@@ -1010,7 +940,7 @@ function exportHomework() {
   ws['!cols'] = [{wch:8},{wch:12},{wch:20},{wch:10},{wch:10},{wch:10},{wch:10},{wch:10},{wch:10}];
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, '课后作业导入');
-  const fname = state.mode==='modify' ? '之昊_课后作业_修改.xlsx' : '之昊_课后作业_新增.xlsx';
+  const fname = state.mode==='modify' ? '高高_课后作业_修改.xlsx' : '高高_课后作业_新增.xlsx';
   try {
     downloadXLSX(wb, fname);
     showToast(`课后作业已导出（${rowCount}节）`, 'success');
@@ -1023,7 +953,7 @@ function exportHomework() {
 
 function exportLessonManagement() {
   if (!state.module1Confirmed) { showToast('请先确认课表', 'warning'); return; }
-  const teacher = document.getElementById('teacherName').value || '之昊老师';
+  const teacher = document.getElementById('teacherName').value || '高高老师';
   const data = [['操作类型','课节ID','课节名称','课节类型','开始时间','结束时间','直播老师','学习类目','直播源']];
   let rowCount = 0;
   for (const c of state.courses) {
@@ -1033,8 +963,8 @@ function exportLessonManagement() {
     const opType = hasLiveId ? '修改' : '新增';
     const lessonId = c.liveId || state.lessonIds[c.idx] || '';
     const ds = formatDateNoPad(c.date);
-    const ts = c.timeStart || '13:30';
-    const te = c.timeEnd || '15:00';
+    const ts = c.timeStart || '19:55';
+    const te = c.timeEnd || '21:25';
     data.push([opType, lessonId, c.name, '直播课节', `${ds} ${ts}:00`, `${ds} ${te}:00`, teacher, '英语', '小鹅通']);
     rowCount++;
   }
@@ -1043,7 +973,7 @@ function exportLessonManagement() {
   ws['!cols'] = [{wch:8},{wch:12},{wch:50},{wch:10},{wch:20},{wch:20},{wch:10},{wch:10},{wch:10}];
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, '课节导入');
-  const fname = state.mode==='modify' ? '之昊_课节管理_修改.xlsx' : '之昊_课节管理_新增.xlsx';
+  const fname = state.mode==='modify' ? '高高_课节管理_修改.xlsx' : '高高_课节管理_新增.xlsx';
   try {
     downloadXLSX(wb, fname);
     showToast(`课节管理已导出（${rowCount}节）`, 'success');
@@ -1093,13 +1023,27 @@ function confirmModule2() {
 }
 
 // ==================== Module 3: Chapter Association ====================
+// 章节列表：以导入模板里的章节标题行为准（按首次出现顺序），无章节行时兜底CHAPTER_NAMES
+function getChapterList() {
+  const seen = new Set(); const list = [];
+  for (const c of state.courses) {
+    if (c.chapter && !seen.has(c.chapter)) { seen.add(c.chapter); list.push(c.chapter); }
+  }
+  return list.length ? list : CHAPTER_NAMES;
+}
+function chapterShortName(ch) {
+  const i = ch.indexOf('：');
+  return i >= 0 ? ch.substring(0, i) : ch;
+}
+
 function renderChapterTabs() {
-  const tabs = CHAPTER_NAMES.map(ch => {
-    const short = ch.substring(0, ch.indexOf('：'));
+  const chapters = getChapterList();
+  const tabs = chapters.map(ch => {
+    const short = chapterShortName(ch);
     return `<div class="chapter-tab ${state.activeChapter===short?'active':''}" onclick="selectChapter('${short}')">${short}</div>`;
   }).join('');
   document.getElementById('chapterTabs').innerHTML = tabs;
-  if (!state.activeChapter) selectChapter(CHAPTER_NAMES[0].substring(0, CHAPTER_NAMES[0].indexOf('：')));
+  if (!state.activeChapter) selectChapter(chapterShortName(chapters[0]));
   else renderChapterTable();
 }
 
@@ -1112,7 +1056,7 @@ function selectChapter(shortName) {
 function renderChapterTable() {
   const shortName = state.activeChapter;
   if (!shortName) return;
-  const fullChapter = CHAPTER_NAMES.find(ch => ch.startsWith(shortName));
+  const fullChapter = getChapterList().find(ch => ch.startsWith(shortName));
   const chapterCourses = state.courses.filter(c => matchChapter(c.chapter, fullChapter));
   let html = '';
   let sort = 1;
@@ -1137,8 +1081,8 @@ function exportChapterAssociation() {
   if (!state.module2Confirmed) { showToast('请先确认课节管理', 'warning'); return; }
   const wb = XLSX.utils.book_new();
   let totalRows = 0;
-  for (const fullChapter of CHAPTER_NAMES) {
-    const shortName = fullChapter.substring(0, fullChapter.indexOf('：'));
+  for (const fullChapter of getChapterList()) {
+    const shortName = chapterShortName(fullChapter);
     const data = [['课节ID','课节名称','排序序号']];
     const chapterCourses = state.courses.filter(c => matchChapter(c.chapter, fullChapter));
     let sort = 1;
@@ -1164,7 +1108,7 @@ function exportChapterAssociation() {
   }
   if (totalRows === 0) { showToast('没有可导出的课节', 'warning'); return; }
   try {
-    downloadXLSX(wb, '之昊_章节关联课节.xlsx');
+    downloadXLSX(wb, '高高_章节关联课节.xlsx');
     showToast(`章节关联课节已导出（${totalRows}行）`, 'success');
   } catch(e) {
     console.error('XLSX导出失败', e);
@@ -1243,11 +1187,11 @@ function exportSchedule() {
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, '课表');
   try {
-    downloadXLSX(wb, '之昊2980_课表.xlsx');
+    downloadXLSX(wb, '高高2980_课表.xlsx');
     showToast(`课表已导出（${rowCount}节）`, 'success');
   } catch(e) {
     console.error('XLSX导出失败，降级CSV', e);
-    downloadCSV(data, '之昊2980_课表.csv');
+    downloadCSV(data, '高高2980_课表.csv');
     showToast('XLSX导出失败，已降级为CSV', 'warning');
   }
 }
