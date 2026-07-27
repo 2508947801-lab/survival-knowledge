@@ -50,6 +50,19 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1
 .ta-group label{font-size:.7rem;color:var(--primary);font-weight:600;display:block;margin-bottom:3px;}
 .ta-group textarea{width:100%;min-height:48px;border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:.78rem;font-family:var(--sans);resize:vertical;background:#fffef9;transition:border-color .2s;}
 .ta-group textarea:focus{outline:none;border-color:var(--primary);}
+/* AI Calibration Panel */
+.calib{margin-top:12px;border:1px solid #bfdbfe;border-left:4px solid var(--primary);background:var(--primary-l);border-radius:8px;padding:10px 12px;}
+.calib-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+.calib-tag{background:var(--primary);color:#fff;font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:.5px;}
+.calib-score{font-size:.78rem;color:var(--ink);}
+.calib-score b{color:var(--primary);font-size:.95rem;}
+.calib-delta{font-size:.7rem;color:var(--ink-l);background:#fff;border:1px solid var(--border);padding:2px 8px;border-radius:10px;}
+.calib-delta.match{color:#16a34a;border-color:#bbf7d0;}
+.calib-delta.gap{color:#d97706;border-color:#fde68a;}
+.calib-date{font-size:.65rem;color:var(--ink-l);margin-left:auto;}
+.calib-row{margin-top:6px;}
+.calib-lbl{font-size:.68rem;font-weight:700;color:var(--primary);display:block;margin-bottom:2px;}
+.calib-row p{font-size:.76rem;color:var(--ink);line-height:1.55;}
 /* Checklist */
 .chk{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:.8rem;cursor:pointer;}
 .chk .box{width:17px;height:17px;border:1.5px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
@@ -312,6 +325,30 @@ const MODULES = {
   ]}
 };
 
+// ===== AI CALIBRATION (校准层) =====
+// 基于Yara填写的【当下想法】+ 真实运营资产（7期7621学员/1343退费/679延期/9步SOP/5组长39辅导）逐条校准
+// 新增校准：在此对象按条目追加即可，卡片自动渲染
+const CALIBRATION = {
+  m1a: {
+    score: 3, date: '2026-07-27',
+    verdict: '你打3分是准的，但理由要换：值3分不是因为"用心服务"的态度，而是你已经跑通398→3980→2980二转链路、9步SOP、5阶段旅程——这是生命周期骨架，很多知识付费团队到死都没有。"续费挺难的"恰恰说明续费还没被设计进旅程，"用心"是态度，不是机制。',
+    benchmark: '知识付费4分水平：续费动作嵌进完课节点（不等结课才谈）、退费做离场访谈、延期池有召回触点。你手里1343退费+679延期，就是未开采的生命周期资产。',
+    action: '把679个延期学员拉出来看他们卡在哪一步，设计一个召回触点（哪怕一条定向消息），跑一周看响应率。'
+  },
+  m1b: {
+    score: 2, date: '2026-07-27',
+    verdict: '2分诚实且准确。你写的是辅导层的日动作（口语问答题/催到课/节日问候），题目问的是日/周/月三层内容规划+活跃度维护——你只有"日"，且只覆盖到课和轻互动，没有周/月结构和活跃指标。',
+    benchmark: '你的杠杆点不是自己做得更多：你手下有5组长39辅导。从2到3的路径是把每日建联写成标准动作让39人跑起来——你是编排者，不是第40个辅导。',
+    action: '把口语问答题+催到课+节日问候写成一张一页纸的《辅导每日动作卡》，先在一个组试跑一周，看到课率变化。'
+  },
+  m1c: {
+    score: 3, date: '2026-07-27',
+    verdict: '你没打分，但这条比你以为的好：多数人这个阶段只会说"多盯着点"，你已经在用阈值思考（一周零到课=危险信号），这是数据敏感度的真起点。你也已有对账/教务的数据基建能力，缺的是把行为数据（到课/作业/活跃）接上。',
+    benchmark: '从直觉到4分只差一步验证：你有1343条退费记录，回测"退费前是否出现过一周零到课"，命中率高就把它变成经过验证的先行指标，嵌进教务系统做自动预警。这条答案同时覆盖了m1j异常预警。',
+    action: '用对账工具的思路做一次退费回测：1343个退费学员中，退费前30天出现过"连续7天零到课"的占比是多少。'
+  }
+};
+
 const DIMS = ['用户洞察','交付体系','数据能力','AI效率','复盘成长','商业证明'];
 const DIM_MAP = {'用户洞察':[],'交付体系':[],'数据能力':[],'AI效率':[],'复盘成长':[],'商业证明':[]};
 
@@ -338,6 +375,16 @@ function saveState(){
 }
 
 // ===== RENDER MODULES =====
+function calibDeltaHtml(id){
+  const c = CALIBRATION[id];
+  if(!c) return '';
+  const sv = state.scores[id]||0;
+  if(!sv) return `<span class="calib-delta gap" data-cid="${id}">你未打分 → 校准 ${c.score} 分</span>`;
+  if(sv === c.score) return `<span class="calib-delta match" data-cid="${id}">你打 ${sv} 分 · 与校准一致</span>`;
+  const diff = Math.abs(sv - c.score);
+  return `<span class="calib-delta gap" data-cid="${id}">你打 ${sv} 分 · ${sv < c.score ? '低于' : '高于'}校准 ${diff} 分</span>`;
+}
+
 function renderModules(){
   Object.keys(MODULES).forEach(mk=>{
     const mod = MODULES[mk];
@@ -357,6 +404,17 @@ function renderModules(){
         </div>
         <div class="ta-group"><label>当下想法</label><textarea data-tid="${it.id}-think" placeholder="我对这项的真实感受…">${tv}</textarea></div>
         <div class="ta-group"><label>改进动作</label><textarea data-tid="${it.id}-act" placeholder="下一步具体做什么…">${av}</textarea></div>
+        ${CALIBRATION[it.id] ? `<div class="calib">
+          <div class="calib-head">
+            <span class="calib-tag">AI校准</span>
+            <span class="calib-score">校准 <b>${CALIBRATION[it.id].score}</b> / 5</span>
+            ${calibDeltaHtml(it.id)}
+            <span class="calib-date">${CALIBRATION[it.id].date}</span>
+          </div>
+          <div class="calib-row"><span class="calib-lbl">判定依据</span><p>${CALIBRATION[it.id].verdict}</p></div>
+          <div class="calib-row"><span class="calib-lbl">行业对标</span><p>${CALIBRATION[it.id].benchmark}</p></div>
+          <div class="calib-row"><span class="calib-lbl">建议动作</span><p>${CALIBRATION[it.id].action}</p></div>
+        </div>` : ''}
       </div>`;
     });
     container.innerHTML = html;
@@ -391,6 +449,16 @@ document.addEventListener('click', e=>{
   state.checks[chk.dataset.ck] = chk.classList.contains('checked');
   saveState();
   refresh();
+});
+
+// ===== AI CALIBRATION LIVE DELTA =====
+// 自评分变化时，实时刷新校准差值标签（不改动原有评分逻辑）
+document.addEventListener('click', e=>{
+  const btn = e.target.closest('.rate-btns button');
+  if(!btn) return;
+  const id = btn.closest('.rate-btns').dataset.id;
+  const chip = document.querySelector(`.calib-delta[data-cid="${id}"]`);
+  if(chip) chip.outerHTML = calibDeltaHtml(id);
 });
 
 // ===== NAV =====
