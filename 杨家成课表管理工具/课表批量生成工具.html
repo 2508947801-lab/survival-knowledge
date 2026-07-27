@@ -403,16 +403,26 @@ function matchChapter(courseChapter, targetChapter) {
 }
 
 // ==================== Date Utilities ====================
+// Excel序列值→日期：纯UTC算术，不依赖本地时区，彻底规避SheetJS cellDates的时区偏移问题
+function excelSerialToDate(v) {
+  if (typeof v !== 'number' || !isFinite(v) || v < 1 || v > 2958465) return null;
+  let days = Math.floor(v);
+  if (days > 60) days--; // 跳过Excel虚构的1900-02-29
+  const d = new Date(Date.UTC(1899, 11, 31) + days * 86400000);
+  return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+}
 function parseDate(s) {
-  if (!s) return null;
-  if (s instanceof Date) return new Date(s.getFullYear(), s.getMonth(), s.getDate());
+  if (s === null || s === undefined || s === '') return null;
+  if (s instanceof Date) return isNaN(s.getTime()) ? null : new Date(s.getFullYear(), s.getMonth(), s.getDate());
+  if (typeof s === 'number') return excelSerialToDate(s);
   if (typeof s === 'string') {
-    let m = s.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+    const str = s.trim();
+    let m = str.match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
     if (m) return new Date(parseInt(m[1]), parseInt(m[2])-1, parseInt(m[3]));
-    m = s.match(/(\d{1,2})\/(\d{1,2})/);
-    if (m) return new Date(2026, parseInt(m[1])-1, parseInt(m[2]));
-    let d = new Date(s);
-    if (!isNaN(d)) return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    m = str.match(/^(\d{1,2})\/(\d{1,2})$/);
+    if (m) return new Date(new Date().getFullYear(), parseInt(m[1])-1, parseInt(m[2]));
+    const d = new Date(str);
+    if (!isNaN(d.getTime())) return new Date(d.getFullYear(), d.getMonth(), d.getDate());
   }
   return null;
 }
@@ -450,7 +460,10 @@ function processExcelFile(file) {
   reader.onload = function(e) {
     try {
       const data = new Uint8Array(e.target.result);
-      const wb = XLSX.read(data, {type:'array', cellDates:true});
+      // 注意：不开cellDates。SheetJS 0.18.5在Asia/Shanghai时区会把00:00的日期序列值
+      // 转成前一天23:59:17（1900年LMT偏移问题），导致导入后查重误报重复。
+      // 改为读取原始序列值，由parseDate内的excelSerialToDate做纯UTC换算。
+      const wb = XLSX.read(data, {type:'array'});
       const ws = wb.Sheets[wb.SheetNames[0]];
       const rows = XLSX.utils.sheet_to_json(ws, {header:1, raw:true, defval:null});
       state.courses = parseImportedRows(rows);
@@ -466,12 +479,28 @@ function parseImportedRows(rows) {
   let courseIdx = 0;
   let hasDates = false;
 
+  // 列定位：优先按表头识别 课节ID/作业ID/视频ID 所在列，兼容两种格式：
+  //   用户行课模板: D课节ID E作业ID F~I视频ID
+  //   工具总课表导出: D课节ID F作业ID G~I视频ID
+  let lidCol = 3, hwCol = 5, vidCol = 6;
+  for (let i = 0; i < Math.min(rows.length, 5); i++) {
+    const r = rows[i];
+    if (!r) continue;
+    let hit = false;
+    for (let c = 0; c < r.length; c++) {
+      const h = (r[c] === null || r[c] === undefined) ? '' : String(r[c]).trim();
+      if (h === '课节ID') { lidCol = c; hit = true; }
+      else if (h === '作业ID') { hwCol = c; hit = true; }
+      else if (h.indexOf('视频ID') === 0) { vidCol = c; hit = true; }
+    }
+    if (hit) break;
+  }
+
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
     if (!row || row.every(c => c === null || c === undefined || c === '')) continue;
 
-    const col1 = row[0], col2 = row[1], col3 = row[2], col4 = row[3];
-    const col5 = row[4], col6 = row[5], col7 = row[6], col8 = row[7], col9 = row[8];
+    const col1 = row[0], col2 = row[1], col3 = row[2];
     const isYashiRow = col1 === '新增' || col1 === '修改';
 
     if (isYashiRow) {
@@ -495,14 +524,19 @@ function parseImportedRows(rows) {
       courseIdx++;
       const type = classifyCourse(name);
       const videoIds = [];
-      for (let c = 6; c <= 8; c++) { if (row[c] !== null && row[c] !== undefined && row[c] !== '') videoIds.push(String(row[c]).trim()); }
-      const dateStr = col3 ? String(col3).trim() : '';
-      const parsedDate = parseDate(dateStr);
+      for (let c = vidCol; c < row.length; c++) {
+        if (c === lidCol || c === hwCol) continue;
+        if (row[c] !== null && row[c] !== undefined && row[c] !== '') videoIds.push(String(row[c]).trim());
+      }
+      const parsedDate = parseDate(col3);
       if (parsedDate) hasDates = true;
-      const liveId = col4 ? String(col4).trim() : '';
+      const lidVal = row[lidCol];
+      const liveId = (lidVal !== null && lidVal !== undefined && lidVal !== '') ? String(lidVal).trim() : '';
+      const hwVal = row[hwCol];
+      const hwId = (hwVal !== null && hwVal !== undefined && hwVal !== '') ? String(hwVal).trim() : '';
       courses.push({
         idx: courseIdx, name: String(name).trim(), type, chapter: currentChapter || getChapterByIndex(courseIdx),
-        hwId: col6 ? String(col6).trim() : '', videoIds, liveId,
+        hwId, videoIds, liveId,
         date: parsedDate, isZengke: type==='kaixue', isCancelled: false,
         dateChanged: false, isNew: !parsedDate
       });
@@ -1164,12 +1198,19 @@ function exportChapterAssociation() {
 // ==================== Export Schedule (总课表) ====================
 function exportSchedule() {
   if (!state.courses.length) { showToast('请先导入并生成课表', 'warning'); return; }
-  const data = [['','新课节','行课时间','课节ID','是否已结束','作业ID','视频ID','','']];
+  // 视频列数量随实际数据动态扩展(至少3列)，避免4个视频的课节导出时丢失
+  let maxVids = 3;
+  state.courses.forEach(c => { if (c.videoIds.length > maxVids) maxVids = c.videoIds.length; });
+  const header = ['','新课节','行课时间','课节ID','是否已结束','作业ID','视频ID'];
+  while (header.length < 6 + maxVids) header.push('');
+  const data = [header];
   let currentChapter = '';
   for (const c of state.courses) {
     if (c.chapter !== currentChapter) {
       currentChapter = c.chapter;
-      data.push([currentChapter,'','','','','','','','']);
+      const chRow = header.map(() => '');
+      chRow[0] = currentChapter;
+      data.push(chRow);
     }
     let dateStr;
     if (c.isZengke) dateStr = '赠课';
@@ -1177,10 +1218,14 @@ function exportSchedule() {
     else if (c.date) dateStr = formatDate(c.date) + ' ' + WEEKDAY_NAMES[c.date.getDay()];
     else dateStr = '';
     const lid = c.liveId || state.lessonIds[c.idx] || '';
-    data.push([c.idx, c.name, dateStr, lid, c.isCancelled?'已取消':'待上', c.hwId||'', c.videoIds[0]||'', c.videoIds[1]||'', c.videoIds[2]||'']);
+    const rowOut = [c.idx, c.name, dateStr, lid, c.isCancelled?'已取消':'待上', c.hwId||''];
+    for (let vi = 0; vi < maxVids; vi++) rowOut.push(c.videoIds[vi]||'');
+    data.push(rowOut);
   }
   const ws = XLSX.utils.aoa_to_sheet(data);
-  ws['!cols'] = [{wch:5},{wch:50},{wch:18},{wch:10},{wch:10},{wch:10},{wch:10},{wch:10},{wch:10}];
+  const cols = [{wch:5},{wch:50},{wch:18},{wch:10},{wch:10},{wch:10}];
+  for (let vi = 0; vi < maxVids; vi++) cols.push({wch:10});
+  ws['!cols'] = cols;
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, '课表');
   XLSX.writeFile(wb, '课表.xlsx');
