@@ -145,6 +145,14 @@ const SEED = {
   ]
 };
 
+// ===== 云同步配置（Supabase）：让 web 端和手机端待办数据实时一致 =====
+const SB_URL = 'https://yyqnugidfwgstlcgvnep.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cW51Z2lkZndnc3RsY2d2bmVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyMzEzNTAsImV4cCI6MjEwMDgwNzM1MH0.ufK55TfjlF4w98x6Fj28oFjUnYGz4lsY7MRaHVV2aIA';
+const SB_ROW = 'main';        // 云端只存一行，id 固定为 main
+const SB_POLL_MS = 15000;     // 每 15 秒轮询一次云端，拉取其他设备的改动
+let lastSync = 0;             // 最近一次已知的云端版本时间戳（毫秒）
+let saveTimer = null;         // 防抖：短时间内多次改动只上云一次
+
 let state = load();
 let current = todayStr();
 
@@ -153,10 +161,7 @@ function fmtDate(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(
 function parseDate(s){ const p=s.split('-'); return new Date(+p[0], +p[1]-1, +p[2]); }
 function shiftDay(s, n){ const d=parseDate(s); d.setDate(d.getDate()+n); return fmtDate(d); }
 
-function load(){
-  let s;
-  try{ s=JSON.parse(localStorage.getItem(LS_KEY)); }catch(e){}
-  if(!s || !s.tasks) s = {tasks: JSON.parse(JSON.stringify(SEED)), deletedSeeds:[]};
+function mergeSeeds(s){
   if(!s.deletedSeeds) s.deletedSeeds=[];
   // 合并新增的预置任务（按 id 判断，已删除的不再恢复）
   for(const date in SEED){
@@ -169,7 +174,79 @@ function load(){
   }
   return s;
 }
-function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+function load(){
+  let s;
+  try{ s=JSON.parse(localStorage.getItem(LS_KEY)); }catch(e){}
+  if(!s || !s.tasks) s = {tasks: JSON.parse(JSON.stringify(SEED)), deletedSeeds:[]};
+  return mergeSeeds(s);
+}
+function save(){
+  localStorage.setItem(LS_KEY, JSON.stringify(state));
+  scheduleCloudSave();
+}
+
+// ===== 云同步（Supabase REST）=====
+function sbHeaders(extra){
+  const h = {'apikey':SB_KEY, 'Authorization':'Bearer '+SB_KEY, 'Content-Type':'application/json'};
+  for(const k in (extra||{})) h[k]=extra[k];
+  return h;
+}
+function cloudLoad(){
+  return fetch(SB_URL+'/rest/v1/yara_todo?id=eq.'+SB_ROW+'&select=data,updated_at', {headers:sbHeaders()})
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(rows){ return (rows && rows.length) ? rows[0] : null; })
+    .catch(function(){ return null; });
+}
+function cloudSave(){
+  const iso = new Date().toISOString();
+  return fetch(SB_URL+'/rest/v1/yara_todo', {
+    method:'POST',
+    headers:sbHeaders({'Prefer':'resolution=merge-duplicates'}),
+    body:JSON.stringify({id:SB_ROW, data:state, updated_at:iso})
+  }).then(function(r){ if(r.ok){ lastSync = Date.parse(iso); } return r.ok; })
+    .catch(function(){ return false; });
+}
+function scheduleCloudSave(){
+  if(saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(function(){ cloudSave(); }, 600);
+}
+// 采纳云端数据；本地已勾选的完成状态绝不丢失，若因此产生差异则回推云端
+function adoptCloud(row){
+  const cloud = row.data;
+  if(!cloud || !cloud.tasks) return;
+  if(!cloud.deletedSeeds) cloud.deletedSeeds=[];
+  const localDone = {};
+  for(const d in state.tasks){ state.tasks[d].forEach(function(t){ if(t.done) localDone[t.id]=true; }); }
+  let changed = false;
+  Object.keys(cloud.tasks).forEach(function(d){
+    (cloud.tasks[d]||[]).forEach(function(t){
+      if(localDone[t.id] && !t.done){ t.done=true; changed=true; }
+    });
+  });
+  state = mergeSeeds(cloud);
+  localStorage.setItem(LS_KEY, JSON.stringify(state));
+  lastSync = Date.parse(row.updated_at)||0;
+  render();
+  if(changed) cloudSave();
+}
+function initCloud(){
+  cloudLoad().then(function(row){
+    if(!row || !row.data || !row.data.tasks){
+      // 云端还没有数据 → 把本机状态推上去作为基准
+      cloudSave();
+      return;
+    }
+    if((Date.parse(row.updated_at)||0) > lastSync) adoptCloud(row);
+  });
+  setInterval(pollCloud, SB_POLL_MS);
+}
+function pollCloud(){
+  cloudLoad().then(function(row){
+    if(!row || !row.data || !row.data.tasks) return;
+    const t = Date.parse(row.updated_at)||0;
+    if(t > lastSync) adoptCloud(row);
+  });
+}
 
 function getTasks(date){ if(!state.tasks[date]) state.tasks[date]=[]; return state.tasks[date]; }
 
@@ -279,6 +356,7 @@ document.getElementById('taskList').addEventListener('click', e=>{
 
 // ===== INIT =====
 render();
+initCloud();
 </script>
 </body>
 </html>
