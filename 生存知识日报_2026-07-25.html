@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生存知识日报 · 2026-07-25 · 星期六</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+/* === YouTube 2025 风格设计系统（浅色版）=== */
+:root {
+    --bg-base: #f7f7fa;
+    --bg-elevated: #ffffff;
+    --glass-bg: rgba(255,255,255,0.72);
+    --glass-bg-hover: rgba(255,255,255,0.88);
+    --glass-border: rgba(15,15,25,0.08);
+    --glass-border-hover: rgba(255,45,85,0.35);
+    --text-primary: #0f0f15;
+    --text-secondary: #5a5a6a;
+    --text-tertiary: #9a9aa8;
+    --accent-red: #ff2d55;
+    --accent-magenta: #ff2dc8;
+    --accent-gradient: linear-gradient(135deg, #ff2d55 0%, #ff375f 50%, #ff2dc8 100%);
+    --accent-soft: rgba(255,45,85,0.10);
+    --accent-glow: rgba(255,45,85,0.28);
+    --magenta-glow: rgba(255,45,200,0.20);
+    --radius-lg: 28px;
+    --radius-md: 20px;
+    --radius-sm: 14px;
+    --radius-pill: 999px;
+    --blur: 30px;
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+    font-family:-apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg-base);
+    color: var(--text-primary);
+    line-height:1.85;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+}
+.nav-bar {
+    position:sticky; top:0; z-index:1000;
+    background:rgba(255,255,255,0.72);
+    backdrop-filter:blur(var(--blur)) saturate(180%);
+    -webkit-backdrop-filter:blur(var(--blur)) saturate(180%);
+    border-bottom:1px solid rgba(15,15,25,0.06);
+    padding:14px 20px;
+    display:flex; flex-wrap:wrap; gap:8px;
+    justify-content:center;
+}
+.nav-bar a {
+    color: var(--text-secondary);
+    text-decoration:none;
+    font-size:0.82em; font-weight:500;
+    padding:8px 16px;
+    border-radius: var(--radius-pill);
+    background: rgba(255,255,255,0.6);
+    border:1px solid transparent;
+    transition: all 0.3s var(--ease);
+    white-space:nowrap;
+}
+.nav-bar a:hover {
+    color: var(--accent-red);
+    background: rgba(255,45,85,0.08);
+    border-color: rgba(255,45,85,0.25);
+    transform: translateY(-1px);
+}
+.hero {
+    position:relative; overflow:hidden;
+    padding:90px 24px 70px;
+    text-align:center;
+    border-bottom:1px solid rgba(15,15,25,0.06);
+    background: var(--bg-base);
+}
+.hero::before {
+    content:''; position:absolute; inset:-30%;
+    background:
+        radial-gradient(ellipse 60% 50% at 30% 20%, rgba(255,45,85,0.14) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 70% 30%, rgba(255,45,200,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 70% 60% at 50% 100%, rgba(255,55,95,0.10) 0%, transparent 70%);
+    filter: blur(40px);
+    animation: ambient 12s ease-in-out infinite alternate;
+    z-index:0;
+}
+@keyframes ambient {
+    0% { transform: translate(0,0) scale(1); opacity:0.75; }
+    100% { transform: translate(-3%, 2%) scale(1.08); opacity:1; }
+}
+.hero::after {
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.6) 0%, transparent 50%);
+    pointer-events:none; z-index:0;
+}
+.hero h1 {
+    font-size:3.2em; color: var(--text-primary);
+    font-weight:600; letter-spacing:4px;
+    position:relative; z-index:1;
+    text-shadow: 0 2px 20px rgba(255,255,255,0.6);
+}
+.hero .date-info {
+    font-size:1.1em;
+    color: var(--text-secondary);
+    position:relative; z-index:1;
+    margin-top:14px; font-weight:400;
+}
+.toc {
+    max-width:1080px; margin:0 auto; padding:40px 24px;
+}
+.toc-grid {
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap:12px;
+}
+.toc-grid a {
+    display:block; padding:14px 16px;
+    text-decoration:none; color: var(--text-secondary);
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-md);
+    border:1px solid rgba(15,15,25,0.06);
+    transition: all 0.35s var(--ease);
+    font-size:0.9em; font-weight:500;
+    text-align:center;
+}
+.toc-grid a:hover {
+    color: var(--accent-red);
+    background: #fff;
+    border-color: rgba(255,45,85,0.25);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(255,45,85,0.12);
+}
+.module {
+    max-width:1080px;
+    margin:28px auto;
+    padding:48px 40px;
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(var(--blur)) saturate(150%);
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(150%);
+    border-radius: var(--radius-lg);
+    border:1px solid rgba(15,15,25,0.06);
+    box-shadow: 0 1px 3px rgba(15,15,25,0.04), 0 8px 24px rgba(15,15,25,0.03);
+    position:relative; overflow:hidden;
+    transition: all 0.4s var(--ease);
+}
+.module::before {
+    content:''; position:absolute; top:-50%; left:50%;
+    width:140%; height:80px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at center, rgba(255,45,85,0.06) 0%, transparent 70%);
+    filter: blur(20px);
+    pointer-events:none;
+}
+.module:hover {
+    border-color: rgba(255,45,85,0.20);
+    box-shadow: 0 4px 12px rgba(15,15,25,0.05), 0 16px 40px rgba(255,45,85,0.08);
+}
+.module-header {
+    display:flex; align-items:center; gap:18px;
+    margin-bottom:32px;
+    padding-bottom:20px;
+    border-bottom:1px solid rgba(15,15,25,0.08);
+}
+.module-num {
+    font-size:2.4em; font-weight:300; line-height:1;
+    background: var(--accent-gradient);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+.module-title {
+    font-size:1.65em; color: var(--text-primary);
+    font-weight:600; letter-spacing:1px;
+}
+.module-subtitle {
+    color: var(--text-secondary);
+    font-size:0.95em; margin-top:4px; font-weight:400;
+}
+.content { color: var(--text-primary); font-size:1.04em; }
+.content p { margin-bottom:18px; text-indent:2em; color: rgba(15,15,25,0.85); }
+.content h3 {
+    color: var(--accent-red);
+    font-size:1.18em; margin:30px 0 14px;
+    font-weight:600; letter-spacing:0.5px;
+    display:inline-block;
+}
+.content strong {
+    background: var(--accent-gradient);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    font-weight:600;
+}
+.content ul { list-style:none; padding:0; margin:18px 0; }
+.content ul li {
+    padding:8px 0 8px 28px;
+    position:relative;
+    color: rgba(15,15,25,0.80);
+}
+.content ul li::before {
+    content:''; position:absolute; left:6px; top:18px;
+    width:8px; height:8px;
+    border-radius: var(--radius-pill);
+    background: var(--accent-gradient);
+}
+.highlight {
+    background: linear-gradient(135deg, rgba(255,45,85,0.06) 0%, rgba(255,45,200,0.05) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-md);
+    padding:24px 28px; margin:24px 0;
+    border:1px solid rgba(255,45,85,0.18);
+    background-color: rgba(255,255,255,0.6);
+    position:relative; overflow:hidden;
+}
+.highlight::before {
+    content:''; position:absolute; top:0; left:0;
+    width:100%; height:1px;
+    background: linear-gradient(90deg, transparent, rgba(255,45,85,0.5), rgba(255,45,200,0.5), transparent);
+}
+.highlight h4 {
+    background: var(--accent-gradient);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    margin-bottom:12px; font-weight:600;
+    letter-spacing:0.5px; font-size:1.05em;
+}
+.chart-box {
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-md);
+    padding:28px;
+    margin:28px 0;
+    border:1px solid rgba(15,15,25,0.06);
+}
+.chart-box h4 {
+    color: var(--text-secondary);
+    text-align:center;
+    margin-bottom:18px;
+    font-weight:500; letter-spacing:1px;
+    font-size:0.95em;
+}
+.back-link {
+    text-align:center; padding:60px 20px 40px;
+}
+.back-link a {
+    display:inline-block;
+    color:#fff; text-decoration:none;
+    font-size:1.05em; font-weight:600;
+    padding:16px 48px;
+    border-radius: var(--radius-pill);
+    background: var(--accent-gradient);
+    box-shadow: 0 8px 24px rgba(255,45,85,0.30), 0 0 60px rgba(255,45,200,0.12);
+    transition: all 0.35s var(--ease);
+    letter-spacing:1px;
+    border:none;
+}
+.back-link a:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 14px 40px rgba(255,45,85,0.45), 0 0 80px rgba(255,45,200,0.22);
+}
+.back-link a:active { transform: translateY(-1px) scale(0.99); }
+.footer {
+    text-align:center;
+    padding:48px 20px;
+    color: var(--text-tertiary);
+    border-top:1px solid rgba(15,15,25,0.06);
+}
+.footer p { margin:8px 0; font-weight:300; }
+@media (max-width:768px) {
+    .hero { padding:60px 18px 50px; }
+    .hero h1 { font-size:2.1em; letter-spacing:2px; }
+    .hero .date-info { font-size:0.95em; }
+    .nav-bar { gap:5px; padding:10px 12px; }
+    .nav-bar a { font-size:0.72em; padding:6px 11px; }
+    .toc { padding:28px 16px; }
+    .toc-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap:10px; }
+    .toc-grid a { padding:11px 12px; font-size:0.82em; }
+    .module { margin:16px 12px; padding:32px 22px; border-radius: var(--radius-md); }
+    .module-header { gap:12px; margin-bottom:24px; }
+    .module-num { font-size:1.9em; }
+    .module-title { font-size:1.3em; }
+    .content { font-size:0.98em; }
+    .content p { text-indent:1.5em; }
+    .highlight { padding:18px 20px; }
+    .chart-box { padding:18px 14px; }
+    .back-link a { padding:14px 36px; font-size:0.98em; }
+}
+@media (max-width:480px) {
+    .hero h1 { font-size:1.8em; }
+    .nav-bar a { font-size:0.68em; padding:5px 9px; }
+}
+</style></head><body>
+
+<nav class="nav-bar"><a href="#module-1">①运营精华</a><a href="#module-2">②今日要闻</a><a href="#module-3">③科技×AI前沿</a><a href="#module-4">④财富趋势</a><a href="#module-5">⑤职场教育</a><a href="#module-6">⑥深度阅读</a><a href="#module-7">⑦五栏分析</a></nav>
+
+<div class="hero">
+<h1>📰 生存知识日报</h1>
+<div class="date-info">2026-07-25 · 星期六 · 农历六月十二 · 大暑第四天 · 第 25 期</div>
+<div class="date-info" style="font-size:0.95em;margin-top:5px;opacity:0.7;">深度认知 · 理性判断 · 温情陪伴</div>
+</div>
+
+<div class="toc"><div class="toc-grid"><a href="#module-1">①运营精华</a><a href="#module-2">②今日要闻</a><a href="#module-3">③科技×AI前沿</a><a href="#module-4">④财富趋势</a><a href="#module-5">⑤职场教育</a><a href="#module-6">⑥深度阅读</a><a href="#module-7">⑦五栏分析</a></div></div>
+
+<!-- ====== 模块1：运营精华 ====== -->
+<section id="module-1" class="module"><div class="module-header"><span class="module-num">①</span><div><div class="module-title">运营精华</div><div class="module-subtitle">2026年7月25日 星期六 · 台风红色预警下的交付连续性·"五停"映射的停课预案·A股黑色星期五的信任资产·教育部五类禁令的合规红利</div></div></div><div class="content">
+<h3>🌀 台风红色预警下的"交付连续性"：线上课最大的优势是"不停"</h3>
+<p>今天中央气象台把台风预警升到了红色，广东惠州、汕尾全市"五停"（停课、停工、停产、停运、停业），东莞"四停"，揭阳潮汕机场一天取消84个航班，广东转移近35万人。这是一次典型的"物理世界停摆"。但恰恰在这种时刻，知识付费线上交付的结构性优势会被放大到极致——线下机构被迫停课、家长焦虑无处安放的时候，<strong>线上课的核心卖点不再是"方便"，而是"确定性"</strong>。对Yara来说，杨家成3980、之昊3980、高高2980三个项目都是线上交付，理论上不受台风影响。但"理论上不受影响"和"家长感知到不受影响"是两回事：如果辅导老师因为自己所在地停电停网而失联，如果排课系统因为机房受灾而延迟，家长的"确定性"就会瞬间崩塌。所以真正的运营动作不是"等台风来了再说"，而是在预警发布的当下就启动"交付连续性预案"：确认39名辅导的属地分布、把粤闽沿海辅导的课提前调换、给学员发一条"你的课程不受天气影响，老师已就位"的主动告知。<strong>危机里最贵的不是损失，是确定性溢价</strong>——谁能在别人都停的时候稳稳交付，谁就收割了这一波的信任。</p>
+
+<h3>📴 "五停"映射的停课预案：把"突发"变成"流程"</h3>
+<p>广东这次"五停"之所以秩序井然，不是因为临时反应快，而是因为"五停"本身已经是一套写进防汛预案的标准动作——达到什么预警等级，自动触发什么级别的停摆，不需要现场拍脑袋。这套逻辑对辅导团队管理极有借鉴价值。Yara手上是5位组长管39名辅导、每期1200人、月开2期的高密度交付，最怕的就是"突发"——老师突然请假、系统突然宕机、某期续费率突然跳水。如果每次都靠人肉救火，39个人根本管不过来。正确的做法是学"五停"，把高频突发场景预先写成<strong>分级响应SOP</strong>：比如"单辅导临时缺岗"触发组长10分钟内顶替机制，"单组缺岗超2人"触发跨组调度，"系统宕机超30分钟"触发全员话术安抚+补课券自动发放。9步SOP解决的是"正常流程怎么走"，而分级响应SOP解决的是"异常来了怎么不慌"。两者合起来，才是完整的交付操作系统。<strong>成熟的运营不是没有意外，而是意外来了每个人都知道自己该干什么</strong>。</p>
+
+<h3>📉 A股"黑色星期五"的信任资产：恐慌时不收割，才有人跟你穿越周期</h3>
+<p>昨天（7月24日周五）A股是名副其实的"黑色星期五"：上证指数跌1.61%收3814.20点，深证成指跌2.47%，创业板指跌2.65%，全市场超4900只个股下跌、上涨不足500只，两市成交跌破2万亿。这种行情里，最考验的不是技术，而是"机构对持有人说什么"。优秀的基金公司会在暴跌当天主动发声、解释、安抚，因为他们知道<strong>信任是在恐慌里建立的，不是在牛市里建立的</strong>。这条逻辑原封不动可以搬到知识付费续费上：学员报3980正价课后，会经历一段"学习曲线低谷"——新鲜劲过了、难度上来了、效果还没显现，这就是学员的"黑色星期五"。这个节点上，辅导是选择"催续费"还是"先安抚、先帮学员跨过低谷"，决定了三个月后的续费率。7期累计1343退费的背后，相当一部分不是课程不好，而是学员在"低谷期"没人拉一把。<strong>恐慌时不收割，才有人愿意跟你穿越周期</strong>——这是续费率的底层密码。</p>
+
+<h3>📋 教育部"五类禁令"的合规红利：红线之内，就是护城河</h3>
+<p>教育部部署2026暑期校外培训治理，明令禁止五类违规行为，包括严禁违规补课、严禁提前开学、严禁超范围培训等。表面看这是"监管收紧"，但对杨家成、之昊、高高这类合规的成人英语/素质类知识付费项目，其实是<strong>结构性利好</strong>：当大量打擦边球的中小机构被清退、家长被反复教育"要选合规机构"时，"合规"本身就成了一种稀缺的信任资产。运营上可以做的动作很具体：在398引流课的转化话术里，把"正规办学资质、透明退费规则（7天全退、7天后扣已消耗）、可查的课程体系"前置成卖点，而不是埋在合同角落。别人避而不谈的合规，恰恰是你最该大声说的差异化。<strong>监管的红线之内，就是合规玩家的护城河</strong>。把合规从"成本"翻译成"卖点"，是运营操盘手和教务执行者的分水岭。</p>
+
+<h3>💡 今日运营思路提炼</h3>
+<div class="highlight">
+<h4>今日运营精华：用"确定性"对冲一切不确定性</h4>
+<p>把今天四条新闻放在一起看，会发现一根共同的主线——<strong>不确定性</strong>。台风是不确定性（物理停摆），A股暴跌是不确定性（情绪恐慌），监管收紧是不确定性（政策变化），AI迭代是不确定性（能力被替代）。而运营操盘手的全部价值，就是把自己变成用户和团队眼中的"确定性来源"。具体到本周可落地的三件事：第一，借台风预警做一次"交付连续性"压力测试，盘点39名辅导的属地风险，给粤闽沿海学员发一条主动告知；第二，把"学员学习低谷期"标注进5阶段用户旅程，在低谷节点插入安抚动作而非催费动作，目标压低退费率；第三，把合规资质和透明退费规则前置到398转化话术第一屏。这三件事都不需要预算，但每一件都在往"信任账户"里存钱。<strong>续费率和二转续班率，本质上都是信任账户的余额</strong>。余额够，398→3980→2980的链路自然顺畅；余额空，再多的促销话术也填不上。</p>
+</div>
+</div></section>
+
+<!-- ====== 模块2：今日要闻 ====== -->
+<section id="module-2" class="module"><div class="module-header"><span class="module-num">②</span><div><div class="module-title">今日要闻</div><div class="module-subtitle">2026年7月25日 星期六 · 台风红色预警·广东五停转移35万·36座机场受波及·教育部暑期五类禁令·中美瑞典会谈在即</div></div></div><div class="content">
+<h3>🔴 台风预警升级为红色：今年最强台风"红霞"今夜登陆</h3>
+<p>7月25日，中央气象台将台风预警由橙色升级为最高等级的红色预警，今年第12号台风"红霞"成为2026年迄今最强台风，也是近十年以来登陆珠江口以东的最强台风。"红霞"在48小时内急剧增强，预计将于25日夜间至26日凌晨在广东惠州到汕尾一带沿海登陆，登陆时强度可达强台风级（14级，45米/秒），中心气压低至955百帕。25日白天，广东沿海已出现190厘米的风暴增水，风暴潮警报同步升级为红色。中央气象台预计，26日至27日粤东中部将有大暴雨到特大暴雨（250-500毫米），最大小时降雨量30-50毫米、局地超80毫米，并伴有10级以上雷暴大风。广东省减灾委员会已将救灾应急响应提升为三级。对运营人来说，红色预警意味着"物理交付链路的全面中断风险"，所有依赖线下场景的服务都必须提前切换到线上或延期预案。</p>
+
+<h3>🌀 广东多地"五停"：转移近35万人，36座机场受波及</h3>
+<p>面对"红霞"的正面冲击，广东启动了大范围应急停摆。惠州、汕尾全市实行"五停"（停课、停工、停产、停运、停业），东莞实行"四停"，省内多地高速公路封控、铁路停运、航班停航。据不完全统计，全国共有36座机场受台风波及，揭阳潮汕机场单日取消航班84个。截至25日，广东全省已转移安置群众近35万人，沿海低洼地区、危房住户、海上作业人员全部撤离。台风还造成广东多地篮球架被刮倒、灯杆被吹断等基础设施损毁。这是2026年入汛以来影响范围最广、停摆力度最大的一次台风过程。从公共管理角度看，"五停"的本质是用短期的经济停摆换取人员零伤亡，这套"分级响应、提前转移"的机制，对任何高密度服务行业的应急管理都有直接参照价值——尤其是每期1200人、月开2期的线上教育交付，更需要一套对应的"分级响应预案"。</p>
+
+<div class="chart-box"><h4>2026-07-25 台风"红霞"关键影响数据</h4><canvas id="c2_1" height="300"></canvas></div>
+<script>
+new Chart(document.getElementById("c2_1"),{
+  type:"bar",
+  data:{ labels:["转移群众(万人)","波及机场(座)","潮汕取消航班","登陆风力(级)","风暴增水(厘米)"],
+    datasets:[{ label:"数值", data:[35,36,84,14,190],
+      backgroundColor:["#ff2d55","#ff375f","#ff2dc8","#764ba2","#ff375f"], borderRadius:6 }]},
+  options:{ plugins:{ legend:{ labels:{ color:'rgba(60,60,90,0.85)' } } },
+    scales:{ x:{ ticks:{ color:'rgba(60,60,90,0.85)' }, grid:{ display:false } },
+             y:{ ticks:{ color:'rgba(60,60,90,0.85)' }, grid:{ color:'rgba(0,0,0,0.06)' } } } }
+});
+</script>
+
+<h3>📚 教育部部署暑期校外培训治理：五类违规行为明令禁止</h3>
+<p>教育部印发通知，部署做好2026年暑期校外培训治理工作，明令禁止五类违规行为：严禁违规组织补课、严禁提前开学、严禁超范围超时段培训、严禁违规收费与虚假宣传、严禁聘用无资质人员从教。通知要求各地教育行政部门在暑期开展高频次巡查，对隐形变异培训保持高压态势，同时畅通家长举报渠道。这是继"双减"之后，监管层在暑期这一违规培训高发期的又一次集中发力。对合规知识付费机构而言，这轮治理清退的是"擦边球"玩家，留下的市场空间反而更干净——家长在反复被教育"选机构要看资质、看退费规则"之后，对正规机构的信任溢价会上升。成人英语、职业技能等素质类项目虽不在学科培训整治的核心射程内，但"合规即卖点"的行业心智正在被这轮监管持续强化。</p>
+
+<h3>🕊️ 中美经贸会谈27日瑞典举行：300亿美元对等降税框架推进</h3>
+<p>商务部此前宣布，经中美双方商定，中共中央政治局委员、国务院副总理何立峰将于7月27日至30日赴瑞典与美方举行经贸会谈。双方将就贸易理事会架构、职能、运行模式等具体安排保持密切沟通，并探讨推进各自300亿美元规模的对等降税框架安排。中方正在就相关降税安排建议广泛征求国内企业、商协会等利益相关方意见。IMF此前预测2026年全球贸易增速将由2025年的5%放缓至3.5%，中美经贸关系的边际改善对稳定全球贸易预期具有关键意义。对知识付费行业，宏观贸易环境趋稳意味着居民收入预期与消费信心的修复，而教育消费本质上是"对未来收入的信心消费"——信心稳，3980正价课的转化阻力才会下降。</p>
+
+<h3>🌡️ 大暑第四天高温持续：杭州周末阵雨，台风外围26日起影响浙江</h3>
+<p>今天是农历六月十二、大暑节气第四天，全国高温格局仍在持续。杭州市气象台预计，25日杭州仍以晴热为主，最高气温维持在36-38℃、局部39℃以上。受台风"红霞"外围环流影响，26日至28日浙江雨水增多，杭州高温将短暂缓解，但需警惕短时暴雨和雷暴大风；29日后副热带高压重新加强，晴热高温再度回归。高温叠加台风外围，正是暑期线上学习的高峰窗口——学生居家时间增加、家长对"假期不虚度"的焦虑上升，这恰好是398引流课转化和正价课续费的天然需求旺季。运营上应抓住这个"高温居家+开学焦虑"的双重窗口，把排课密度和辅导触达频次适度上调。</p>
+</div></section>
+
+<!-- ====== 模块3：科技×AI前沿 ====== -->
+<section id="module-3" class="module"><div class="module-header"><span class="module-num">③</span><div><div class="module-title">科技×AI前沿</div><div class="module-subtitle">2026年7月25日 星期六 · 宇树390万人形机甲登《时代》·韩美9500亿美元芯片合作·小米罗福莉入选·AI婚恋获徐新200万美元·工业大模型私有化</div></div></div><div class="content">
+<h3>🤖 宇树390万元载人机甲登《时代》封面：10亿台人形机器人的想象</h3>
+<p>7月25日的科技圈被宇树科技刷屏。创始人王兴兴携公司GD01机甲登上《时代》周刊封面，这款被称为"全球首款量产级载人机甲"的产品定价390万元，载人状态下自重约500公斤。同期，摩根士丹利发布预测称，24年后（约2050年）全球将有10亿台人形机器人融入人类生活。390万元的定价今天看是"奢侈品"，但它的真正意义不在销量，而在<strong>定义了一个新品类的认知锚点</strong>——就像第一台iPhone定价不低，却定义了智能手机。对教育交付的启示是：当一个行业还在卷"价格"时，头部玩家已经在卷"定义权"。杨家成、之昊、高高三个项目如果只比"谁家课时便宜"（之昊36.8元/课时已是低价），天花板很低；真正的护城河是能不能在学员心智里定义一个品类锚点，比如"成人英语二转续班做得最稳的团队"。<strong>低价只能赢一单，定义品类才能赢一个时代</strong>。</p>
+
+<h3>💾 韩美9500亿美元芯片合作：AI算力的"军备竞赛"意味着什么</h3>
+<p>7月25日曝光的一组数字震动产业界：三星电子与SK海力士同美国巨头敲定高达9500亿美元的芯片领域合作，英伟达则联手SK集团推进规模超5000亿美元的AI基建方案。两项合计接近1.5万亿美元，几乎相当于一个中等经济体一年的GDP。这天量投资的背后，是AI大模型对算力的饥渴——Kimi K3这类2.8万亿参数模型的训练和推理，需要以数据中心为单位的算力堆叠。对Yara这样的教育运营者，这条新闻的真正信号不是"芯片很贵"，而是<strong>AI能力的边际成本正在被巨头们疯狂压低</strong>。当算力变成基础设施，AI口语陪练、AI作文批改、AI学情分析这些今天还偏贵的能力，两三年内会变得像水电一样便宜。这意味着辅导团队的核心价值会从"知识传递"加速转向"情感连接+学习管理"——能被AI替代的部分越来越便宜，不能被替代的"人对人的影响"越来越值钱。</p>
+
+<div class="chart-box"><h4>2026-07-25 全球AI/芯片巨头合作与融资规模（亿美元）</h4><canvas id="c3_1" height="300"></canvas></div>
+<script>
+new Chart(document.getElementById("c3_1"),{
+  type:"bar",
+  data:{ labels:["三星·SK海力士芯片合作","英伟达·SK集团AI基建","宇树机甲定价(万元)","良配科技天使轮(万美元)"],
+    datasets:[{ label:"规模", data:[9500,5000,390,200],
+      backgroundColor:["#ff2d55","#ff375f","#ff2dc8","#764ba2"], borderRadius:6 }]},
+  options:{ plugins:{ legend:{ labels:{ color:'rgba(60,60,90,0.85)' } } },
+    scales:{ x:{ ticks:{ color:'rgba(60,60,90,0.85)' }, grid:{ display:false } },
+             y:{ ticks:{ color:'rgba(60,60,90,0.85)' }, grid:{ color:'rgba(0,0,0,0.06)' } } } }
+});
+</script>
+
+<h3>🏆 小米罗福莉入选"35岁以下科技创新35人"：年轻操盘手的时代</h3>
+<p>在7月25日公布的"35岁以下科技创新35人"中国区榜单中，小米MiMo大模型创立者罗福莉成功入选。这份榜单的意义不在于个人荣誉，而在于它揭示了一个趋势：<strong>AI时代的关键岗位正在快速年轻化</strong>。罗福莉与Yara几乎是同龄人，却已经主导了一个大模型产品从0到1。这不是"天才叙事"，而是时代红利——当一个新范式（AI）出现时，经验的价值会被部分清零，年轻人和资深者重新站在相近的起跑线上。对26岁、正从"教务执行者"向"运营操盘手"转型的Yara来说，这是极强的正向信号：在"AI+教育运营"这个交叉地带，没有谁是绝对的权威，谁先把AI工具用进真实业务、跑出可量化的成果（比如用AI把续费率提升几个百分点），谁就能快速建立专业话语权。<strong>年龄不是劣势，没有作品才是</strong>。</p>
+
+<h3>💍 前Kimi骨干创业AI婚恋获徐新200万美元：垂直场景的春天</h3>
+<p>7月25日还有一条值得玩味的融资新闻：月之暗面前Kimi技术骨干曾歆勋离职创立"良配科技"，推出AI婚恋匹配软件，获得知名投资人徐新200万美元天使轮融资。同时，中天科技研发了"天玑工业大模型"，专门针对制造业实际生产场景做本地私有化运行。这两条新闻指向同一个方向：<strong>大模型的竞争正在从"通用能力"下沉到"垂直场景"</strong>。通用大模型负责"什么都能干一点"，垂直应用负责"在某件事上干到极致"。教育正是最典型的垂直场景之一——通用AI能陪聊，但"懂杨家成3980课程体系、懂398→3980→2980转化链路、懂5阶段用户旅程"的AI，才能真帮Yara干活。这给运营的启发是：与其等一个完美的通用AI，不如现在就用现有大模型，喂入自己的业务数据（学员画像、续费数据、SOP话术），搭一个"小而专"的运营助手。<strong>未来值钱的不是会用AI的人，而是会用AI解决自己行业具体问题的人</strong>。</p>
+</div></section>
+
+<!-- ====== 模块4：财富趋势 ====== -->
+<section id="module-4" class="module"><div class="module-header"><span class="module-num">④</span><div><div class="module-title">财富趋势</div><div class="module-subtitle">2026年7月25日 星期六 · A股黑色星期五4900股下跌·美伊停火布油暴跌7%·金价跳涨破4090美元·周末休市布局·信心即资产</div></div></div><div class="content">
+<h3>📉 A股"黑色星期五"复盘：4900股下跌，成交跌破2万亿</h3>
+<p>7月25日是周六，A股休市，但昨天（周五）的盘面值得反复复盘。7月24日A股三大指数集体重挫：上证指数收报3814.20点、跌1.61%，对应成交9153.66亿元；深证成指收报13774.68点、跌2.47%，成交10157.74亿元；创业板指收报3480.87点、跌2.65%；科创50收跌1.05%。沪深两市合计成交约1.93万亿元，跌破2万亿元关口。最刺眼的是 breadth（市场宽度）：全市场上涨股票不足500只，下跌股票超过4900只，几乎是"无差别杀跌"。板块上，兵装重组、半导体设备、端侧AI、电网设备逆势活跃，而贵金属、算力租赁、AI应用、电力运营、基本金属、互联网软件领跌。这种普跌行情里，散户最容易在恐慌底部割肉。对Yara来说，A股的"市场宽度"概念可以直接迁移到交付管理——<strong>看一个团队健不健康，不能只看平均续费率，要看"宽度"：是少数尖子组撑起来的，还是大多数组都在线</strong>。如果续费率靠1个组长扛、其余4个组躺平，那就是教育版的"4900股下跌"，平均数再好也是虚的。</p>
+
+<div class="chart-box"><h4>2026-07-24（周五）A股主要指数收盘涨跌幅（%）</h4><canvas id="c4_1" height="300"></canvas></div>
+<script>
+new Chart(document.getElementById("c4_1"),{
+  type:"bar",
+  data:{ labels:["上证指数","深证成指","创业板指","科创50"],
+    datasets:[{ label:"涨跌幅(%)", data:[-1.61,-2.47,-2.65,-1.05],
+      backgroundColor:["#764ba2","#764ba2","#764ba2","#ff2d55"], borderRadius:6 }]},
+  options:{ plugins:{ legend:{ labels:{ color:'rgba(60,60,90,0.85)' } } },
+    scales:{ x:{ ticks:{ color:'rgba(60,60,90,0.85)' }, grid:{ display:false } },
+             y:{ ticks:{ color:'rgba(60,60,90,0.85)' }, grid:{ color:'rgba(0,0,0,0.06)' } } } }
+});
+</script>
+
+<h3>🛢️ 美伊停火引爆大宗商品：布油暴跌逾7%失守90美元</h3>
+<p>周末国际市场最大的变量来自地缘。随着美国与伊朗结束连续十三天的交火、达成暂时停火默契，大宗商品市场剧震。布伦特原油"战争溢价"快速消退，盘中暴跌逾7%、跌破每桶90美元整数关口，随后反弹至92美元上下；WTI原油跌约5.5%，交投于每桶84美元附近。油价跳水的传导链条很清晰：地缘风险下降→供应中断担忧缓解→通胀预期降温→美元走弱。对普通家庭，油价下行是实实在在的利好——交通、物流、化工下游成本压力缓解，有助于稳住整体物价。但需要警惕的是，红海区域的船只遇袭事件并未因停火而完全停止，油价的"地缘底"仍在。对教育消费的间接影响是：能源和物价企稳，居民的可支配收入预期更稳，而教育这类"发展型消费"的支付意愿，高度依赖这种"稳"的感觉。</p>
+
+<h3>🥇 金价跳涨近40美元：避险与降息预期共振，触及4096美元</h3>
+<p>与油价暴跌形成鲜明对比的是黄金的强势。受美伊停火缓解通胀忧虑、美元走弱、以及美联储降息预期升温的多重推动，现货黄金高开近40美元，盘中涨幅超1%，一度触及4096.33美元/盎司。市场正在静待即将公布的美联储利率决议这一"生死局"。黄金这轮"油价跌、金价涨"的反常组合，本质是市场在为"降息周期"定价：当利率下行、美元走弱，无息资产黄金的吸引力上升。对普通投资者的启示是经典的"哑铃型"配置——一头用货币基金/短债守住流动性，一头用黄金/超长债锁定长期与避险价值，中间少碰高波动品种。把这个逻辑翻译成Yara熟悉的语言：<strong>黄金之于投资组合，就像"老学员口碑"之于交付运营——平时不显山露水，但风浪来的时候，它是唯一能托底的东西</strong>。续费率和转介绍，就是教育机构的"黄金储备"。</p>
+
+<h3>🧭 周末休市的布局思维：信心是最便宜的资产</h3>
+<p>周六休市，恰好是给情绪降温、给策略校准的窗口。把本周的市场信号串起来看：A股普跌反映风险偏好回落，油价暴跌反映地缘降温，金价跳涨反映降息预期，中美瑞典会谈在即反映贸易边际改善——这四条线交织出一个关键词：<strong>信心修复</strong>。市场不缺钱，缺的是信心；居民不缺需求，缺的是对未来的稳定预期。知识付费行业对此应该极度敏感，因为3980正价课、2980二转续班本质上是"信心消费"——家长相信孩子学了能进步、相信机构不会跑路、相信退费有保障，才会下单。所以这个周末，Yara最该做的"布局"不是研究K线，而是盘点自己手上的"信心资产"：39名辅导里谁的学员满意度最高、哪套话术的转化最稳、哪个SOP环节最容易让学员产生"被认真对待"的感觉。把这些确定性强的资产做厚，就是在为下一期开班"低位建仓"。<strong>市场恐慌时建仓的人，赚的是别人恐慌的钱；交付低谷时存信任的人，赚的是别人放弃的钱</strong>。</p>
+</div></section>
+
+<!-- ====== 模块5：职场教育 ====== -->
+<section id="module-5" class="module"><div class="module-header"><span class="module-num">⑤</span><div><div class="module-title">职场教育</div><div class="module-subtitle">2026年7月25日 星期六 · 五类禁令重塑暑期生态·AI时代辅导的不可替代性·从教务到操盘手的能力跃迁·大暑居家学习窗口</div></div></div><div class="content">
+<h3>📚 五类禁令重塑暑期生态：合规能力成为机构的核心竞争力</h3>
+<p>教育部暑期校外培训治理通知明令禁止五类违规行为，正在重塑整个暑期教育生态。过去暑期是"违规补课"的重灾区，大量机构靠"提前开学""超时段培训""名师包装"抢生源；新规之下，这些打法全部失效。这背后是一次行业价值观的强制纠偏：<strong>教育的竞争力正在从"抢跑"回归到"交付质量"</strong>。对Yara所在的合规知识付费赛道，这是一个明确的方法论启示——与其在转化话术里制造焦虑（"不报就落后"），不如把竞争力建立在可验证的交付质量上（学员进步数据、续费率、退费透明度）。具体到团队管理，可以把"五类禁令"反向用作辅导行为的负面清单：不夸大课程效果、不诱导超前消费、不隐瞒退费规则。短期看这些话术"转化更慢"，长期看它们累积的是"零投诉、高续费"的优质学员池。<strong>监管划出的红线，恰恰是长期主义者的护城河</strong>。</p>
+
+<h3>🤝 AI时代辅导的不可替代性：从"讲知识"到"管学习"</h3>
+<p>结合今天科技模块里韩美1.5万亿美元AI基建、宇树人形机甲、AI婚恋应用等新闻，一个判断越来越清晰：AI正在快速接管"知识传递"这件事。AI口语陪练可以24小时陪练发音、AI批改可以秒级反馈作文、AI学情分析可以精准定位薄弱点——这些"硬交付"环节，人很难比AI更便宜、更快。但这恰恰把人类辅导的价值逼到了更稀缺的维度：<strong>情感连接、动机管理、习惯养成、低谷陪伴</strong>。学员在"学习曲线低谷"想放弃时，AI可以说一百句鼓励的话，但只有真人辅导那句"我看了你这三周的打卡，你比上个月强太多了"才有重量——因为这句话背后是一个真实的人在"承担关注你的成本"。对39名辅导的培训方向应该随之调整：减少"知识点讲解"的考核权重，增加"学员关系经营、低谷干预、续费时机把握"的能力训练。<strong>未来辅导的核心KPI不是"讲了多少课"，而是"留住了多少人"</strong>——这正好对上续费率这个核心增长指标。</p>
+
+<h3>🚀 从教务到操盘手：能力跃迁的三个台阶</h3>
+<p>Yara的职业目标是从"教务执行者"转型为"运营操盘手/编排者"，这条路可以拆成三个清晰的台阶。第一个台阶是<strong>"流程优化者"</strong>：在现有9步SOP基础上，持续发现并修复低效环节，把每一次优化沉淀成案例，建立"我能让流程更好"的证据链。第二个台阶是"数据解读者"：从被动记录数据（出勤、续费、退费），转向主动用数据发现问题——比如发现"之昊36.8元/课时的学员续费率反而高于平均"，进而追问"是价格筛选了高意愿人群，还是低价降低了决策门槛"。第三个台阶是"资源编排者"：站在思涵的视角思考"5个组长39名辅导怎么排兵布阵能让本期1200人的二转续班率最大化"，而不是只盯着自己手头那一摊。这三个台阶不需要换岗位就能开始爬——<strong>转型不是从拿到新title那天开始的，是从你用下一个岗位的思维做当前工作那天开始的</strong>。罗福莉26岁主导大模型，靠的不是title，是作品。</p>
+
+<h3>🌡️ 大暑居家学习窗口：把"高温焦虑"转化为"学习行动"</h3>
+<p>今天是农历六月十二、大暑第四天，杭州36-39℃的高温叠加台风外围即将到来的雨水，把大量学生和家长"困"在家里。这是一个被很多运营忽视的天然窗口：<strong>高温居家+开学临近，是暑期学习需求的峰值时刻</strong>。家长的心理状态是矛盾的——既心疼孩子天热辛苦，又焦虑"假期不能白白浪费"。谁能在这个节点提供"低门槛、有陪伴、看得见进步"的学习方案，谁就能收割这波需求。对398引流课来说，可以设计"大暑居家学习包"：短课时（避开高温时段）、强陪伴（辅导每日打卡反馈）、可视化成果（一周一个进步报告）。对正价课续费来说，可以借"开学收心"做二转续班的自然衔接，而不是生硬促销。学习方法上，大暑时节最适合"少量高频"——与其一次学两小时昏昏欲睡，不如早晚各30分钟高效专注，这与认知科学中的"间隔效应"完全吻合。<strong>好的运营不是创造需求，而是在需求最浓的时刻准时出现</strong>。</p>
+</div></section>
+
+<!-- ====== 模块6：深度阅读 ====== -->
+<section id="module-6" class="module"><div class="module-header"><span class="module-num">⑥</span><div><div class="module-title">深度阅读</div><div class="module-subtitle">2026年7月25日 星期六 · 珠江口以东的台风地理·近十年最强登陆的历史坐标·大暑"顺势而为"的东方智慧</div></div></div><div class="content">
+<h3>🗺️ 地理：为什么"红霞"偏偏盯上珠江口以东</h3>
+<p>中央气象台判定"红霞"是近十年以来登陆珠江口以东的最强台风。这个"珠江口以东"不是随便说的地理标签，而是中国海岸线上台风风险最高的一段。从地形上看，珠江口以东的惠州、汕尾、揭阳一带，海岸线呈东北—西南走向，与西北太平洋台风西行登陆的主流路径近乎垂直相交，台风几乎是"正面撞上来"，而不是擦边掠过。更关键的是，这一带背靠莲花山脉，台风登陆后携带的暖湿气流被山地强行抬升，极易酿成特大暴雨——这次预报粤东中部250-500毫米的特大暴雨，正是"台风+地形抬升"的经典组合。相比之下，珠江口以西的阳江、湛江一带地势相对平缓，风暴潮威胁更大但地形雨较弱。理解这一点就明白，为什么每次台风预报里"登陆点偏东"往往意味着"降雨更极端"。<strong>地理决定了风险的分布，而认知决定了应对的精度</strong>——这跟做用户分层是一个道理：不同区域的学员（地理、年龄、基础）面临不同的"流失地形"，运营动作必须因地制宜，不能一套话术打天下。</p>
+
+<h3>📜 历史："近十年最强"这个坐标，意味着什么</h3>
+<p>"近十年以来登陆珠江口以东的最强台风"——这个表述把"红霞"钉在了一个历史坐标上。台风是有记忆的自然现象，气象部门用历史极值来标定一次台风的量级，本质上是在告诉公众："这不是普通台风，请按最高规格防御。"回顾历史，登陆广东的强台风往往带来深刻的社会记忆：2018年"山竹"以强台风级登陆台山，造成广东直接经济损失巨大，也让"五停"机制在广东深入人心；再往前，2014年"威马逊"以超强台风级登陆，是当年西北太平洋的"风王"。每一次极端台风，都会推动一套应急机制的进化——"五停"从临时举措变成标准预案，转移安置从被动撤离变成主动网格化。这种"灾难驱动制度进化"的规律，在商业世界同样成立：很多公司最完善的危机预案，都是被一次真实的事故逼出来的。对Yara来说，与其等交付事故来"逼"出预案，不如主动复盘那1343退费、679延期背后的"台风时刻"——<strong>把每一次危机都变成制度进化的燃料，是组织成熟的标志</strong>。</p>
+
+<h3>🧘 国学：大暑第四天，读《孟子》的"顺势而为"</h3>
+<p>今天是大暑第四天。大暑是二十四节气中阳气最盛、湿热最重的时节，古人讲"大暑不暑，五谷不起"——最热的时候恰恰是作物灌浆成熟的关键期。这个时节的东方智慧，核心是四个字：<strong>顺势而为</strong>。《孟子·公孙丑上》讲"虽有智慧，不如乘势；虽有镃基，不如待时"——再有聪明才智，也不如顺应大势；再有农具，也不如等待农时。台风"红霞"就是最直观的"势"：人在14级风力面前，任何"逆势硬扛"都是徒劳，正确的做法是顺应它、避开它、等它过去。大暑养生也是如此，不是和高温对抗，而是顺应阳气外发的规律，"慢、凉、淡"地减少消耗。把这套智慧搬到运营上，就是分清"可为"与"不可为"：行业监管收紧是大势，逆势打擦边球是螳臂当车，顺势做合规是顺水行舟；AI替代知识传递是大势，逆势死守"讲课"是刻舟求剑，顺势转向"管学习、做陪伴"才是乘势而上。<strong>真正的操盘手，不是最能扛的人，而是最会借势的人</strong>。</p>
+
+<h3>🌏 旅游：台风季的"安全经济学"与杭州周末安排</h3>
+<p>台风"红霞"正面冲击华南，给所有暑期出行的人上了一堂"安全经济学"课。从旅游运营角度看，台风季出行的核心不是"能不能玩"，而是"风险定价"——一张便宜但不可退改的机票，在台风天可能变成全额损失；而一张贵几十元但可免费改签的票，本质上是给不确定性买的保险。这与知识付费的退费规则设计异曲同工：杨家成项目"7天全退、7天后扣已消耗"的规则，看似让渡了短期利益，实则是给学员的"决策保险"，降低了报名的心理门槛。具体到杭州这个周末：25日仍晴热，最高36-38℃，适合清晨或傍晚的西湖、西溪湿地等近水活动，避开正午高温；26日起受台风外围影响雨水增多，建议转为室内安排——浙江省博物馆、中国丝绸博物馆、各类美术馆都是避暑避雨的好去处。29日后高温回归，可规划莫干山、安吉等2小时车程圈的避暑短途游。<strong>最好的旅行和最好的运营一样，不是赌运气，而是把不确定性提前算进成本</strong>。</p>
+</div></section>
+
+<!-- ====== 模块7：五栏分析 ====== -->
+<section id="module-7" class="module"><div class="module-header"><span class="module-num">🧠</span><div><div class="module-title">五栏分析骨架</div><div class="module-subtitle">跨领域提炼 · 行业→用户→运营→管理→行动</div></div></div><div class="content">
+<h3>🅐 行业变化</h3>
+<p>今天三条主线同时指向教育行业的深层重构。其一，监管端：教育部暑期"五类禁令"持续清退擦边球机构，"合规"从成本项变成稀缺的信任资产，正规知识付费机构迎来结构性红利。其二，技术端：韩美1.5万亿美元AI基建、宇树390万人形机甲、AI垂直应用（婚恋、工业）融资活跃，共同宣告AI能力的边际成本正被巨头疯狂压低，"知识传递"环节加速被AI接管。其三，需求端：A股普跌、油价暴跌、金价跳涨、中美会谈在即，宏观信心处于修复前夜，而教育本质是"信心消费"。对Yara而言，行业的游戏规则正在从"流量套利"转向"信任复利"——谁能同时握住合规、AI工具、用户信任三张牌，谁就能在下一轮洗牌中活下来并做大。</p>
+
+<h3>🅑 用户洞察</h3>
+<p>把今天的新闻翻译成学员和家长的心理状态，能看到三个需求变化。第一，"确定性需求"上升：台风红色预警让物理世界停摆，家长对"课程不受干扰、老师稳定在线"的确定性溢价空前敏感，这是线上交付的核心卖点。第二，"被陪伴需求"凸显：A股暴跌里散户的恐慌，与学员在"学习曲线低谷"想放弃的心理同构——他们缺的不是道理，而是真实的人在低谷里拉一把，这是AI给不了的价值。第三，"安全感需求"强化：监管反复教育家长"看资质、看退费"，使透明退费规则（7天全退、扣已消耗）从合同条款变成转化利器。学员买的从来不是课时，而是"确定性+陪伴+安全感"的复合体验，398→3980→2980链路每次跳转都是这三种体验的兑现。</p>
+
+<h3>🅒 运营启发</h3>
+<p>三条可复制的方法浮出水面。方法一"交付连续性预案"：学广东"五停"的分级响应逻辑，给39名辅导建立属地风险台账，预警发布即主动告知学员"课程不受影响"，把危机变成展示确定性的舞台。方法二"低谷干预SOP"：把学员"学习曲线低谷"标注进5阶段用户旅程，在低谷节点插入安抚与帮助而非催费，直接压低退费率、抬高续费率。方法三"合规前置话术"：把办学资质、透明退费、可查课程体系搬到398转化话术第一屏，借监管红利建立差异化。这三条的共同内核是：<strong>把不确定性留给自己消化，把确定性交付给用户</strong>。续费率、二转续班率、用户生命周期价值，本质上都是"信任账户"的余额，而信任只能在一次次"别人慌你不慌"的时刻里存进去。</p>
+
+<h3>🅓 管理思考</h3>
+<p>对5位组长管39名辅导的团队管理，今天有两点直接价值。第一，用"市场宽度"诊断团队健康：A股4900股下跌提醒我们，平均续费率会掩盖结构问题——如果业绩靠1个尖子组撑、其余躺平，就是教育版的"普跌"，考核须从"看平均"转向"看宽度"。第二，重定义辅导能力模型：AI接管知识传递已是大势，辅导的核心价值正向"情感连接+学习管理+续费时机把握"迁移，考核权重应把"留住了多少人"置于"讲了多少课"之上。管理者角色也要从"监工"转向"编排者"：不是盯每个人有没有打卡，而是排兵布阵让39人的能力组合在本期1200人交付中产出最大二转续班率。这正是Yara从"教务执行者"走向"运营操盘手"的核心命题。</p>
+
+<h3>🅔 我的行动</h3>
+<p>落到今天和本周，三个场景立刻动手。场景一（今天，借台风）：盘点39名辅导的属地分布，标出粤闽沿海风险人员，给受影响学员发一条"课程不受天气影响，老师已就位"的主动告知，并预排顶替预案。场景二（本周，借A股暴跌启示）：从续费数据筛出最近一期处于"学习低谷"的学员，让对应辅导48小时内做一次"只安抚、不催费"的沟通，跟踪一个月后续费率，验证"低谷干预"有效性。场景三（本周，借AI垂直应用趋势）：用现有大模型喂入杨家成3980课程体系与历史续费数据，搭一个"二转续班话术助手"，先在一个组试点。这三件事零预算、可量化，每一件都在为"运营操盘手"新身份积累作品——<strong>转型不靠title，靠手上跑出来的成果</strong>。</p>
+</div></section>
+
+<div class="back-link"><a href="index.html">← 返回首页</a></div>
+<div class="footer"><p>生存知识日报 · 2026-07-25 · 星期六</p>
+<p>深度认知 · 理性判断 · 温情陪伴 · 为 Yara 量身定制</p></div>
+</body></html>
