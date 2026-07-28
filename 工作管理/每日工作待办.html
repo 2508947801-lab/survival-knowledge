@@ -131,7 +131,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 const LS_KEY = 'yara_daily_todo_v1';
 const WEEK = ['周日','周一','周二','周三','周四','周五','周六'];
 
-// 首次使用预置：2026-07-28 的 6 项任务
+// 首次使用预置：2026-07-28 的 8 项任务
 const SEED = {
   '2026-07-28': [
     {id:'seed1', title:'【0810期】3980 / 1980 / 2000 三品周期管理', minutes:60, done:false},
@@ -139,7 +139,9 @@ const SEED = {
     {id:'seed3', title:'钉钉走对公付款流程', minutes:30, done:false},
     {id:'seed4', title:'直播间配置', minutes:60, done:false},
     {id:'seed5', title:'录屏 · 高高40节赠送课', minutes:120, done:false},
-    {id:'seed6', title:'【0810期】确认接量人员 · 新建线索接入规则 · 新建招生计划', minutes:60, done:false}
+    {id:'seed6', title:'【0810期】确认接量人员 · 新建线索接入规则 · 新建招生计划', minutes:60, done:false},
+    {id:'seed7', title:'同步杨家成纠音课知识清单 · 高高2980知识清单', minutes:30, done:false},
+    {id:'seed8', title:'发放12期结业测试', minutes:10, done:false}
   ]
 };
 
@@ -152,8 +154,20 @@ function parseDate(s){ const p=s.split('-'); return new Date(+p[0], +p[1]-1, +p[
 function shiftDay(s, n){ const d=parseDate(s); d.setDate(d.getDate()+n); return fmtDate(d); }
 
 function load(){
-  try{ const s=JSON.parse(localStorage.getItem(LS_KEY)); if(s && s.tasks) return s; }catch(e){}
-  return {tasks: JSON.parse(JSON.stringify(SEED))};
+  let s;
+  try{ s=JSON.parse(localStorage.getItem(LS_KEY)); }catch(e){}
+  if(!s || !s.tasks) s = {tasks: JSON.parse(JSON.stringify(SEED)), deletedSeeds:[]};
+  if(!s.deletedSeeds) s.deletedSeeds=[];
+  // 合并新增的预置任务（按 id 判断，已删除的不再恢复）
+  for(const date in SEED){
+    if(!s.tasks[date]) s.tasks[date]=[];
+    SEED[date].forEach(seed=>{
+      const exists = s.tasks[date].some(t=>t.id===seed.id);
+      const deleted = s.deletedSeeds.indexOf(seed.id)>=0;
+      if(!exists && !deleted) s.tasks[date].push(JSON.parse(JSON.stringify(seed)));
+    });
+  }
+  return s;
 }
 function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
 
@@ -182,7 +196,10 @@ function toggleTask(id){
 function delTask(id){
   const arr=getTasks(current);
   const i=arr.findIndex(x=>x.id===id);
-  if(i>=0){ arr.splice(i,1); save(); render(); }
+  if(i>=0){
+    if(id.indexOf('seed')===0 && state.deletedSeeds.indexOf(id)<0) state.deletedSeeds.push(id);
+    arr.splice(i,1); save(); render();
+  }
 }
 
 function render(){
