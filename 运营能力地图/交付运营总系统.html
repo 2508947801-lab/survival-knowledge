@@ -447,7 +447,6 @@ function renderModules(){
     mod.items.forEach(it=>{
       const sv = state.scores[it.id]||0;
       const tv = state.texts[it.id+'-think']||'';
-      const av = state.texts[it.id+'-act']||'';
       html += `<div class="card">
         <div class="card-title">${it.t}</div>
         <div class="card-desc">${it.d}</div>
@@ -457,7 +456,6 @@ function renderModules(){
           </div>
         </div>
         <div class="ta-group"><label>当下想法</label><textarea data-tid="${it.id}-think" placeholder="我对这项的真实感受…">${tv}</textarea></div>
-        <div class="ta-group"><label>改进动作</label><textarea data-tid="${it.id}-act" placeholder="下一步具体做什么…">${av}</textarea></div>
         ${CALIBRATION[it.id] ? `<div class="calib">
           <div class="calib-head">
             <span class="calib-tag">AI校准</span>
@@ -641,7 +639,7 @@ function genRecs(){
   if(rated < totalItems*0.3){
     recs.push(`<strong>评估进度 ${Math.round(rated/totalItems*100)}%</strong><br>先完成所有评分再谈改进。建议每天评1个模块，一周内跑完。`);
   } else if(rated >= totalItems*0.8) {
-    recs.push(`<strong>评估接近完成</strong><br>现在进入"跑"的阶段：选3个最低分项，写改进动作，下周回验。`);
+    recs.push(`<strong>评估接近完成</strong><br>现在进入"跑"的阶段：选3个最低分项，对照AI校准的建议动作执行，下周回验。`);
   }
 
   // Linkage: if m5 low and m6 high
@@ -738,9 +736,7 @@ function exportAll(){
       const s = state.scores[it.id];
       lines.push(`  ◆ ${it.t}${s?' ['+s+'/5]':' [未评]'}`);
       const think = state.texts[it.id+'-think'];
-      const act = state.texts[it.id+'-act'];
       if(think) lines.push(`    想法：${think}`);
-      if(act) lines.push(`    动作：${act}`);
     });
   });
 
