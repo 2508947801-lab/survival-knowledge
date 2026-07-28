@@ -238,6 +238,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);}
 </div>
 
 <script>
+// 构建版本号：部署时由「一键部署.command」替换为时间戳，用于强制手机端拉取最新工具（防止缓存导致 web/手机不一致）。本地打开时保持 'DEV'。
+var BUILD_VERSION = '20260728172133';
+
 function toggleGroup(el){
   el.closest('.nav-group').classList.toggle('open');
 }
@@ -245,7 +248,8 @@ function toggleGroup(el){
 function openTool(src, name, group){
   var frame = document.getElementById('toolFrame');
   var home = document.getElementById('homePage');
-  frame.src = src;
+  // 线上环境追加版本号，强制刷新缓存，保证手机端与 web 端内容一致；本地(DEV)直接加载
+  frame.src = (BUILD_VERSION && BUILD_VERSION !== 'DEV') ? (src + (src.indexOf('?') >= 0 ? '&' : '?') + 'v=' + BUILD_VERSION) : src;
   frame.style.display = 'block';
   home.classList.add('hidden');
   document.getElementById('breadcrumb').innerHTML = group + ' / <strong>' + name + '</strong>';
