@@ -165,6 +165,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
     <div class="chart-box sm"><canvas id="acctChart"></canvas></div>
   </div>
 
+  <!-- 投资追踪 -->
+  <div class="card">
+    <div class="card-title">投资追踪 <span style="font-weight:400;color:var(--sub);font-size:.7rem">市值计入总资产</span></div>
+    <div class="sum-grid" id="invSum"></div>
+    <div id="invList" style="margin-top:10px"></div>
+    <div class="add-grid" style="margin-top:10px">
+      <div class="fld full"><label>投资名称（如：广发远见智选混合C）</label><input id="hName" type="text" maxlength="40" placeholder="基金 / 股票 / 理财名称"></div>
+      <div class="fld"><label>投入成本（元）</label><input id="hCost" type="number" step="0.01" min="0" placeholder="0.00"></div>
+      <div class="fld"><label>当前市值（元）</label><input id="hValue" type="number" step="0.01" min="0" placeholder="0.00"></div>
+      <div class="fld full"><label>备注（可选，如代码 / 仓位）</label><input id="hNote" type="text" maxlength="40" placeholder="如：016874"></div>
+      <button class="add-btn" id="hAddBtn">＋ 添加持仓</button>
+    </div>
+    <button class="add-btn" id="snapBtn" style="margin-top:9px;background:#0d9488">📍 记录今日市值</button>
+    <div class="card-title" style="margin-top:14px">市值走势</div>
+    <div class="chart-box sm" id="snapChartBox" style="display:none"><canvas id="snapChart"></canvas></div>
+    <div id="snapHint" style="font-size:.74rem;color:var(--sub);text-align:center;padding:14px 0">记录满 2 天后，这里会显示市值走势曲线 📈</div>
+  </div>
+
   <!-- 财务目标 -->
   <div class="card">
     <div class="card-title">财务目标（3-5 年规划）</div>
@@ -229,7 +247,8 @@ function defaultState(){
     categories: JSON.parse(JSON.stringify(DEFAULT_CATEGORIES)),
     accounts: DEFAULT_ACCOUNTS.slice(),
     budgets: {},
-    goal: { targetAmount:0, targetYear:0, currentSavings:0 }
+    goal: { targetAmount:0, targetYear:0, currentSavings:0 },
+    holdings: [], snapshots: []
   };
 }
 
@@ -263,6 +282,8 @@ function normalize(s){
   if(!s.accounts) s.accounts=DEFAULT_ACCOUNTS.slice();
   if(!s.budgets) s.budgets={};
   if(!s.goal) s.goal={targetAmount:0,targetYear:0,currentSavings:0};
+  if(!s.holdings) s.holdings=[];
+  if(!s.snapshots) s.snapshots=[];
   return s;
 }
 function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); scheduleCloudSave(); }
@@ -287,7 +308,11 @@ function cloudSave(){
   }).then(function(r){ if(r.ok){ lastSync=Date.parse(iso); } return r.ok; }).catch(function(){ return false; });
 }
 function scheduleCloudSave(){ if(saveTimer) clearTimeout(saveTimer); saveTimer=setTimeout(function(){ cloudSave(); },600); }
-function sig(s){ return s.transactions.length+':'+s.transactions.map(function(t){return t.id;}).sort().join(','); }
+function sig(s){
+  return s.transactions.length+':'+s.transactions.map(function(t){return t.id;}).sort().join(',')
+    + '|h:'+(s.holdings||[]).map(function(h){return h.id+':'+h.value;}).sort().join(',')
+    + '|s:'+(s.snapshots||[]).map(function(x){return x.id+':'+x.value;}).sort().join(',');
+}
 function unionArr(a,b){ const set=new Set(a); (b||[]).forEach(function(x){ set.add(x); }); return Array.from(set); }
 function sortTx(){ state.transactions.sort(function(a,b){ return (b.date||'').localeCompare(a.date||'') || (b.created||0)-(a.created||0); }); }
 
@@ -302,6 +327,16 @@ function adoptCloud(row){
     (cloud.transactions||[]).forEach(function(t){ byId[t.id]=t; });
     state.transactions=Object.keys(byId).map(function(k){ return byId[k]; }).filter(function(t){ return !delSet.has(t.id); });
     state.deletedIds=Array.from(delSet);
+    // 合并持仓（按 id 取并集）
+    const hById={};
+    state.holdings.forEach(function(h){ hById[h.id]=h; });
+    (cloud.holdings||[]).forEach(function(h){ hById[h.id]=h; });
+    state.holdings=Object.keys(hById).map(function(k){ return hById[k]; }).filter(function(h){ return !delSet.has(h.id); });
+    // 合并市值快照（id 含日期，天然按日去重）
+    const sById={};
+    state.snapshots.forEach(function(x){ sById[x.id]=x; });
+    (cloud.snapshots||[]).forEach(function(x){ sById[x.id]=x; });
+    state.snapshots=Object.keys(sById).map(function(k){ return sById[k]; }).filter(function(x){ return !delSet.has(x.id); }).sort(function(a,b){ return (a.date||'').localeCompare(b.date||''); });
     if(cloud.categories){
       state.categories.expense=unionArr(state.categories.expense, cloud.categories.expense);
       state.categories.income=unionArr(state.categories.income, cloud.categories.income);
@@ -352,6 +387,56 @@ function delTx(id){
   }
 }
 
+// ===== 投资追踪 =====
+let editHoldingId = null;
+function totalCost(){ return state.holdings.reduce(function(a,h){ return a+(h.cost||0); },0); }
+function totalValue(){ return state.holdings.reduce(function(a,h){ return a+(h.value||0); },0); }
+function netWorth(){ return (state.goal.currentSavings||0) + totalValue(); }
+// 记录今日市值快照（id 含日期，同日只留一条）
+function upsertSnapshot(){
+  const val=totalValue(), today=todayStr(), id='s-'+today;
+  const ex=state.snapshots.find(function(s){ return s.id===id; });
+  if(ex){ ex.value=val; } else { state.snapshots.push({id:id, date:today, value:val}); }
+  state.snapshots.sort(function(a,b){ return (a.date||'').localeCompare(b.date||''); });
+}
+function saveHolding(){
+  const name=document.getElementById('hName').value.trim();
+  const cost=parseFloat(document.getElementById('hCost').value)||0;
+  const value=parseFloat(document.getElementById('hValue').value)||0;
+  const note=document.getElementById('hNote').value.trim();
+  if(!name) return false;
+  if(editHoldingId){
+    const h=state.holdings.find(function(x){ return x.id===editHoldingId; });
+    if(h){ h.name=name; h.cost=cost; h.value=value; h.note=note; h.updated=todayStr(); }
+  } else {
+    state.holdings.push({id:'h'+Date.now()+Math.random().toString(36).slice(2,6), name:name, cost:cost, value:value, note:note, updated:todayStr()});
+  }
+  upsertSnapshot(); clearHoldingForm(); save(); render();
+  return true;
+}
+function editHolding(id){
+  const h=state.holdings.find(function(x){ return x.id===id; });
+  if(!h) return;
+  editHoldingId=id;
+  document.getElementById('hName').value=h.name;
+  document.getElementById('hCost').value=h.cost||'';
+  document.getElementById('hValue').value=h.value||'';
+  document.getElementById('hNote').value=h.note||'';
+  document.getElementById('hAddBtn').textContent='✓ 更新持仓';
+}
+function delHolding(id){
+  const i=state.holdings.findIndex(function(x){ return x.id===id; });
+  if(i>=0){ state.deletedIds.push(id); state.holdings.splice(i,1); upsertSnapshot(); save(); render(); }
+}
+function clearHoldingForm(){
+  document.getElementById('hName').value='';
+  document.getElementById('hCost').value='';
+  document.getElementById('hValue').value='';
+  document.getElementById('hNote').value='';
+  document.getElementById('hAddBtn').textContent='＋ 添加持仓';
+  editHoldingId=null;
+}
+
 // ===== 统计 =====
 function txOfMonth(ym){ return state.transactions.filter(function(t){ return (t.date||'').slice(0,7)===ym; }); }
 function sumBy(list,type){ return list.filter(function(t){return t.type===type;}).reduce(function(a,t){return a+t.amount;},0); }
@@ -392,6 +477,8 @@ function render(){
     '<div class="sum-cell wk"><div class="v">'+money(weekExpense())+'</div><div class="k">本周支出</div></div>';
   renderBudget(list, exp);
   renderGoal();
+  renderInvest();
+  renderInvestChart();
   renderFormOptions();
   renderTxList();
   renderSettings();
@@ -421,15 +508,17 @@ function renderBudget(list, exp){
 function renderGoal(){
   const body=document.getElementById('goalBody');
   const g=state.goal;
+  const invest=totalValue();
+  const net=(g.currentSavings||0)+invest;
   if(!g.targetAmount){
-    body.innerHTML='<div style="font-size:.8rem;color:var(--sub);margin-bottom:8px">设定你的财务目标，系统帮你推算每月需储蓄额和预计达成时间。</div>'+goalFormHtml();
+    body.innerHTML='<div style="font-size:.8rem;color:var(--sub);margin-bottom:8px">设定你的财务目标，系统按「现金储蓄 + 投资市值」的总资产帮你推算达成进度。</div>'+goalFormHtml();
     return;
   }
   const now=new Date();
   const monthsToTarget=Math.max(1,(g.targetYear-now.getFullYear())*12+(12-now.getMonth()));
-  const gap=Math.max(0,g.targetAmount-(g.currentSavings||0));
+  const gap=Math.max(0,g.targetAmount-net);
   const needPerMonth=gap/monthsToTarget;
-  const pct=g.targetAmount? Math.min(100,Math.round((g.currentSavings||0)/g.targetAmount*100)):0;
+  const pct=g.targetAmount? Math.min(100,Math.round(net/g.targetAmount*100)):0;
   const avg=avgMonthlyNet();
   let projText='—';
   if(avg>0){ const m=Math.ceil(gap/avg); const pd=new Date(now.getFullYear(),now.getMonth()+m,1); projText=pd.getFullYear()+'年'+(pd.getMonth()+1)+'月（约'+m+'个月）'; }
@@ -437,8 +526,9 @@ function renderGoal(){
   body.innerHTML=
     '<div class="goal-prog"><div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:4px"><span>目标 '+money(g.targetAmount)+' · '+g.targetYear+'年</span><span style="color:var(--primary);font-weight:700">'+pct+'%</span></div>'+
     '<div class="goal-bar"><div class="fill" style="width:'+pct+'%"></div></div></div>'+
+    '<div style="font-size:.74rem;color:var(--sub);margin:8px 0 2px">总资产 '+money(net)+' ＝ 现金 '+money(g.currentSavings||0)+' ＋ 投资市值 '+money(invest)+'</div>'+
     '<div class="goal-stats">'+
-      '<div class="goal-stat"><div class="v">'+money(g.currentSavings||0)+'</div><div class="k">当前存款</div></div>'+
+      '<div class="goal-stat"><div class="v">'+money(net)+'</div><div class="k">当前总资产</div></div>'+
       '<div class="goal-stat"><div class="v">'+money(gap)+'</div><div class="k">距离目标还差</div></div>'+
       '<div class="goal-stat"><div class="v">'+money(needPerMonth)+'</div><div class="k">按计划每月需存</div></div>'+
       '<div class="goal-stat"><div class="v" style="font-size:.8rem">'+projText+'</div><div class="k">按当前月均结余预计达成</div></div>'+
@@ -449,8 +539,48 @@ function goalFormHtml(){
   return '<div class="goal-form">'+
     '<div><label>目标金额（元）</label><input id="gTarget" type="number" min="0" value="'+(g.targetAmount||'')+'" placeholder="如 1000000"></div>'+
     '<div><label>目标年份</label><input id="gYear" type="number" min="2026" value="'+(g.targetYear||'')+'" placeholder="如 2030"></div>'+
-    '<div><label>当前存款（元）</label><input id="gSavings" type="number" min="0" value="'+(g.currentSavings||'')+'" placeholder="如 50000"></div>'+
+    '<div><label>现金储蓄（元）</label><input id="gSavings" type="number" min="0" value="'+(g.currentSavings||'')+'" placeholder="如 50000"></div>'+
   '</div><button class="add-btn" id="saveGoal" style="margin-top:9px">保存目标</button>';
+}
+
+function renderInvest(){
+  const cost=totalCost(), val=totalValue(), gain=val-cost;
+  const gpct=cost? (gain/cost*100):0;
+  document.getElementById('invSum').innerHTML=
+    '<div class="sum-cell"><div class="v">'+money(cost)+'</div><div class="k">投入成本</div></div>'+
+    '<div class="sum-cell bal"><div class="v">'+money(val)+'</div><div class="k">当前市值</div></div>'+
+    '<div class="sum-cell '+(gain>=0?'inc':'exp')+'"><div class="v">'+(gain>=0?'+':'')+money(gain)+'</div><div class="k">浮动盈亏</div></div>'+
+    '<div class="sum-cell '+(gain>=0?'inc':'exp')+'"><div class="v">'+(gain>=0?'+':'')+gpct.toFixed(2)+'%</div><div class="k">盈亏比例</div></div>';
+  const box=document.getElementById('invList');
+  if(!state.holdings.length){ box.innerHTML='<div class="empty">还没有持仓～把基金/理财的「投入成本」和「当前市值」记上来，自动算盈亏，并计入上方财务目标的总资产。</div>'; return; }
+  box.innerHTML=state.holdings.map(function(h){
+    const g=(h.value||0)-(h.cost||0);
+    const gp=h.cost? (g/h.cost*100):0;
+    return '<div class="tx" data-id="'+h.id+'">'+
+      '<div class="tx-ico">📈</div>'+
+      '<div class="tx-body"><div class="tx-cat">'+esc(h.name)+'</div>'+
+      '<div class="tx-meta">成本 '+money(h.cost||0)+(h.note?' · '+esc(h.note):'')+'</div></div>'+
+      '<div style="text-align:right"><div class="tx-amt">'+money(h.value||0)+'</div>'+
+      '<div class="tx-amt '+(g>=0?'inc':'exp')+'" style="font-size:.72rem">'+(g>=0?'+':'')+money(g)+'（'+(g>=0?'+':'')+gp.toFixed(1)+'%）</div></div>'+
+      '<button class="del" data-act="hedit" title="编辑" style="color:var(--primary)">✎</button>'+
+      '<button class="del" data-act="hdel" title="删除">×</button>'+
+    '</div>';
+  }).join('');
+}
+function renderInvestChart(){
+  if(typeof Chart==='undefined') return;
+  if(window.__snapChart){ try{ window.__snapChart.destroy(); }catch(e){} window.__snapChart=null; }
+  const snaps=state.snapshots||[];
+  const hint=document.getElementById('snapHint');
+  const box=document.getElementById('snapChartBox');
+  if(snaps.length<2){ if(hint) hint.style.display='block'; if(box) box.style.display='none'; return; }
+  if(hint) hint.style.display='none'; if(box) box.style.display='block';
+  window.__snapChart=new Chart(document.getElementById('snapChart'),{
+    type:'line',
+    data:{ labels:snaps.map(function(s){ return s.date.slice(5); }),
+      datasets:[{label:'总市值',data:snaps.map(function(s){ return Math.round(s.value); }),borderColor:'#059669',backgroundColor:'rgba(5,150,105,.12)',fill:true,tension:.3,pointRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}
+  });
 }
 
 function renderFormOptions(){
@@ -570,6 +700,16 @@ document.getElementById('txList').addEventListener('click',function(e){
   const tx=e.target.closest('.tx'); if(!tx) return;
   const act=e.target.closest('[data-act]'); if(!act) return;
   if(act.dataset.act==='del' && confirm('删除这笔记录？')) delTx(tx.dataset.id);
+});
+
+// 投资追踪事件
+document.getElementById('hAddBtn').addEventListener('click',function(){ saveHolding(); });
+document.getElementById('snapBtn').addEventListener('click',function(){ upsertSnapshot(); save(); render(); });
+document.getElementById('invList').addEventListener('click',function(e){
+  const tx=e.target.closest('.tx'); if(!tx) return;
+  const act=e.target.closest('[data-act]'); if(!act) return;
+  if(act.dataset.act==='hdel'){ if(confirm('删除这条持仓？')) delHolding(tx.dataset.id); }
+  else if(act.dataset.act==='hedit'){ editHolding(tx.dataset.id); }
 });
 
 document.getElementById('setToggle').addEventListener('click',function(){
