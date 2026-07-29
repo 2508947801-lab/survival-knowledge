@@ -194,6 +194,16 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);}
       </div>
     </div>
 
+    <!-- 一级：生活管理 -->
+    <div class="nav-group">
+      <div class="nav-group-title" onclick="toggleGroup(this)">
+        <span class="icon">🏠</span>生活管理<span class="arrow">▶</span>
+      </div>
+      <div class="nav-children">
+        <div class="nav-child" data-src="生活管理/每日生活待办.html" data-name="每日生活待办" data-group="生活管理"><span class="dot"></span>每日生活待办</div>
+      </div>
+    </div>
+
   </div>
   <div class="footer">Yara · 雅识教育 · 2026</div>
 </nav>
@@ -229,6 +239,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);}
           <div class="quick-btn" onclick="openTool('账号异常对帐工具/对账对比看板.html','对账对比看板','对帐工具')"><span class="qb-icon">🧾</span><span class="qb-name">对账看板</span></div>
           <div class="quick-btn" onclick="openTool('index.html','每日生存知识系统','日报系统')"><span class="qb-icon">📰</span><span class="qb-name">日报系统</span></div>
           <div class="quick-btn" onclick="openTool('工作管理/每日工作待办.html','每日工作待办','工作管理')"><span class="qb-icon">✅</span><span class="qb-name">每日待办</span></div>
+          <div class="quick-btn" onclick="openTool('生活管理/每日生活待办.html','每日生活待办','生活管理')"><span class="qb-icon">🏠</span><span class="qb-name">生活待办</span></div>
         </div>
       </div>
     </div>
@@ -239,7 +250,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);}
 
 <script>
 // 构建版本号：部署时由「一键部署.command」替换为时间戳，用于强制手机端拉取最新工具（防止缓存导致 web/手机不一致）。本地打开时保持 'DEV'。
-var BUILD_VERSION = '20260728191700';
+var BUILD_VERSION = '20260729114923';
 
 function toggleGroup(el){
   el.closest('.nav-group').classList.toggle('open');

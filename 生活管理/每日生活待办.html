@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>每日生活待办 · Yara</title>
+<style>
+:root{
+  --primary:#0d9488; --primary-l:#e6f6f4; --ink:#1e293b; --sub:#64748b;
+  --border:#e2e8f0; --bg:#f1f5f9; --success:#16a34a; --success-l:#eaf7ef;
+  --warning:#d97706; --warning-l:#fdf3e3; --danger:#dc2626;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;}
+.app{max-width:760px;margin:0 auto;padding:20px 16px 60px;}
+
+/* ===== HEADER ===== */
+.hd{text-align:center;padding:18px 0 10px;}
+.hd h1{font-size:1.45rem;font-weight:800;letter-spacing:.5px;}
+.hd .sub{font-size:.72rem;color:var(--sub);letter-spacing:2px;margin-top:2px;}
+.sync-tip{text-align:center;font-size:.7rem;color:var(--sub);margin:6px 0 2px;}
+.sync-tip .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--success);margin-right:4px;vertical-align:1px;}
+
+/* ===== SUMMARY ===== */
+.summary{background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin:14px 0;box-shadow:0 1px 3px rgba(15,23,42,.05);}
+.sum-row{display:flex;gap:10px;flex-wrap:wrap;}
+.sum-chip{flex:1;min-width:100px;background:var(--primary-l);border-radius:10px;padding:8px 12px;text-align:center;}
+.sum-chip .v{font-size:1.15rem;font-weight:800;color:var(--primary);}
+.sum-chip .k{font-size:.68rem;color:var(--sub);margin-top:1px;}
+.sum-chip.done .v{color:var(--success);}
+.sum-chip.done{background:var(--success-l);}
+.sum-note{font-size:.72rem;color:var(--sub);margin-top:8px;text-align:center;}
+
+/* ===== ADD BAR ===== */
+.addbar{background:#fff;border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:14px;box-shadow:0 1px 3px rgba(15,23,42,.05);}
+.add-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
+.add-row:last-child{margin-bottom:0;}
+#newTitle{flex:1;border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:.9rem;font-family:inherit;outline:none;transition:border .15s;}
+#newTitle:focus{border-color:var(--primary);}
+.add-btn{flex:0 0 auto;background:var(--primary);color:#fff;border:none;border-radius:10px;padding:10px 18px;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .15s;}
+.add-btn:hover{background:#0b7c72;}
+.field{flex:1;border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:.84rem;font-family:inherit;outline:none;transition:border .15s;}
+.field:focus{border-color:var(--primary);}
+#newTarget{flex:0 0 46%;}
+
+/* ===== SECTION LABEL ===== */
+.sec-label{font-size:.78rem;font-weight:700;color:var(--sub);margin:16px 2px 8px;letter-spacing:.5px;}
+.sec-label .cnt{color:var(--primary);}
+
+/* ===== TASK LIST ===== */
+.tasks{list-style:none;display:flex;flex-direction:column;gap:9px;}
+.task{display:flex;align-items:flex-start;gap:11px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px 13px;box-shadow:0 1px 2px rgba(15,23,42,.04);transition:all .18s;}
+.task.done{background:#fafbfc;border-color:#eef1f4;}
+.chk{width:23px;height:23px;flex:0 0 23px;margin-top:1px;border:2px solid #cbd5e1;border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#fff;transition:all .15s;background:#fff;}
+.chk:hover{border-color:var(--success);}
+.task.done .chk{background:var(--success);border-color:var(--success);}
+.t-body{flex:1;min-width:0;}
+.t-title{font-size:.92rem;font-weight:600;word-break:break-word;}
+.task.done .t-title{color:#94a3b8;text-decoration:line-through;}
+.t-notes{font-size:.78rem;color:var(--sub);margin-top:4px;word-break:break-word;white-space:pre-wrap;}
+.task.done .t-notes{color:#b6c0cd;}
+.t-target{display:inline-block;margin-top:6px;background:var(--warning-l);color:var(--warning);border-radius:20px;padding:2px 10px;font-size:.72rem;font-weight:700;}
+.task.done .t-target{background:#eef1f4;color:#94a3b8;}
+.del{flex:0 0 auto;width:26px;height:26px;border:none;background:transparent;color:#cbd5e1;font-size:1rem;cursor:pointer;border-radius:7px;transition:all .15s;line-height:1;}
+.del:hover{background:#fee2e2;color:var(--danger);}
+
+.empty{text-align:center;color:var(--sub);font-size:.85rem;padding:34px 20px;background:#fff;border:1px dashed var(--border);border-radius:14px;}
+
+.foot{text-align:center;font-size:.68rem;color:#94a3b8;margin-top:26px;letter-spacing:1px;}
+
+@media(max-width:560px){
+  .add-row{flex-wrap:wrap;}
+  #newTitle{flex:1 1 100%;}
+  #newTarget{flex:1 1 100%;}
+  .sum-chip{min-width:calc(50% - 5px);}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="hd">
+    <h1>每日生活待办</h1>
+    <p class="sub">DAILY LIFE TODO · YARA</p>
+    <p class="sync-tip"><span class="dot"></span>已开启云同步 · web 与手机实时一致</p>
+  </header>
+
+  <div class="summary" id="summary"></div>
+
+  <div class="addbar">
+    <div class="add-row">
+      <input id="newTitle" type="text" placeholder="想到什么就记下来… 如：驾驶证期满换证" maxlength="60">
+      <button class="add-btn" id="addBtn">＋ 记下</button>
+    </div>
+    <div class="add-row">
+      <input id="newTarget" class="field" type="text" placeholder="目标时间（可选）：2026年8月 / 10月22日前 / 时间待定" maxlength="40">
+      <input id="newNotes" class="field" type="text" placeholder="备注（可选）：证件号、医院、办理方式…" maxlength="200">
+    </div>
+  </div>
+
+  <div class="sec-label">待办 <span class="cnt" id="pendingCnt"></span></div>
+  <ul class="tasks" id="pendingList"></ul>
+  <div class="empty" id="emptyState" style="display:none;">暂无待办～想到什么随手记下来 ☕</div>
+
+  <div class="sec-label" id="doneLabel" style="display:none;">已完成 <span class="cnt" id="doneCnt"></span></div>
+  <ul class="tasks" id="doneList"></ul>
+
+  <div class="foot">Yara · 雅识教育 · 2026</div>
+</div>
+
+<script>
+// ===== 每日生活待办 =====
+const LS_KEY = 'yara_life_todo_v1';
+
+// 首次使用预置（后续想到新待办可直接在页面添加，或让 Yara 找我新增）
+const SEED = [
+  {id:'seed1', title:'驾驶证期满换证（异地续期）',
+   notes:'驾驶证 3401**********4609 将于 2026-10-22 到期。需先完成驾驶人体检（体检医院 / 警邮网点），再通过"交管12123"APP 或支付宝"网上车管所"视频办，线上申请期满换证。本人在杭州，需办理异地续期。逾期未换证不得驾驶机动车。',
+   target:'2026-10-22 前（时间待定）', done:false},
+  {id:'seed2', title:'乳腺彩超复查（乳腺结节）',
+   notes:'每半年做一次乳腺彩超，检查乳腺结节。医院：浙二滨江区。',
+   target:'2026年8月（时间待定）', done:false}
+];
+
+// ===== 云同步配置（Supabase，复用 yara_todo 表，行 id=life）=====
+const SB_URL = 'https://yyqnugidfwgstlcgvnep.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cW51Z2lkZndnc3RsY2d2bmVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyMzEzNTAsImV4cCI6MjEwMDgwNzM1MH0.ufK55TfjlF4w98x6Fj28oFjUnYGz4lsY7MRaHVV2aIA';
+const SB_ROW = 'life';
+const SB_POLL_MS = 15000;
+let lastSync = 0;
+let saveTimer = null;
+
+let state = load();
+
+function mergeSeeds(s){
+  if(!s.deletedSeeds) s.deletedSeeds=[];
+  if(!s.tasks) s.tasks=[];
+  SEED.forEach(function(seed){
+    const exists = s.tasks.some(function(t){ return t.id===seed.id; });
+    const deleted = s.deletedSeeds.indexOf(seed.id)>=0;
+    if(!exists && !deleted) s.tasks.push(JSON.parse(JSON.stringify(seed)));
+  });
+  return s;
+}
+function load(){
+  let s;
+  try{ s=JSON.parse(localStorage.getItem(LS_KEY)); }catch(e){}
+  if(!s || !s.tasks) s = {tasks: JSON.parse(JSON.stringify(SEED)), deletedSeeds:[]};
+  return mergeSeeds(s);
+}
+function save(){
+  localStorage.setItem(LS_KEY, JSON.stringify(state));
+  scheduleCloudSave();
+}
+
+// ===== 云同步 =====
+function sbHeaders(extra){
+  const h = {'apikey':SB_KEY, 'Authorization':'Bearer '+SB_KEY, 'Content-Type':'application/json'};
+  for(const k in (extra||{})) h[k]=extra[k];
+  return h;
+}
+function cloudLoad(){
+  return fetch(SB_URL+'/rest/v1/yara_todo?id=eq.'+SB_ROW+'&select=data,updated_at', {headers:sbHeaders()})
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(rows){ return (rows && rows.length) ? rows[0] : null; })
+    .catch(function(){ return null; });
+}
+function cloudSave(){
+  const iso = new Date().toISOString();
+  return fetch(SB_URL+'/rest/v1/yara_todo', {
+    method:'POST',
+    headers:sbHeaders({'Prefer':'resolution=merge-duplicates'}),
+    body:JSON.stringify({id:SB_ROW, data:state, updated_at:iso})
+  }).then(function(r){ if(r.ok){ lastSync = Date.parse(iso); } return r.ok; })
+    .catch(function(){ return false; });
+}
+function scheduleCloudSave(){
+  if(saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(function(){ cloudSave(); }, 600);
+}
+function adoptCloud(row){
+  const cloud = row.data;
+  if(!cloud || !cloud.tasks) return;
+  if(!cloud.deletedSeeds) cloud.deletedSeeds=[];
+  const localDone = {};
+  state.tasks.forEach(function(t){ if(t.done) localDone[t.id]=true; });
+  let changed = false;
+  cloud.tasks.forEach(function(t){
+    if(localDone[t.id] && !t.done){ t.done=true; changed=true; }
+  });
+  state = mergeSeeds(cloud);
+  localStorage.setItem(LS_KEY, JSON.stringify(state));
+  lastSync = Date.parse(row.updated_at)||0;
+  render();
+  if(changed) cloudSave();
+}
+function initCloud(){
+  cloudLoad().then(function(row){
+    if(!row || !row.data || !row.data.tasks){ cloudSave(); return; }
+    if((Date.parse(row.updated_at)||0) > lastSync) adoptCloud(row);
+  });
+  setInterval(pollCloud, SB_POLL_MS);
+}
+function pollCloud(){
+  cloudLoad().then(function(row){
+    if(!row || !row.data || !row.data.tasks) return;
+    const t = Date.parse(row.updated_at)||0;
+    if(t > lastSync) adoptCloud(row);
+  });
+}
+
+// ===== 增删改 =====
+function addTask(title, target, notes){
+  title = (title||'').trim();
+  if(!title) return false;
+  state.tasks.unshift({
+    id:'t'+Date.now()+Math.random().toString(36).slice(2,6),
+    title:title,
+    target:(target||'').trim(),
+    notes:(notes||'').trim(),
+    done:false
+  });
+  save(); render();
+  return true;
+}
+function toggleTask(id){
+  const t = state.tasks.find(function(x){ return x.id===id; });
+  if(t){ t.done=!t.done; save(); render(); }
+}
+function delTask(id){
+  const i = state.tasks.findIndex(function(x){ return x.id===id; });
+  if(i>=0){
+    if(id.indexOf('seed')===0 && state.deletedSeeds.indexOf(id)<0) state.deletedSeeds.push(id);
+    state.tasks.splice(i,1); save(); render();
+  }
+}
+
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function taskHtml(t){
+  return '<li class="task'+(t.done?' done':'')+'" data-id="'+t.id+'">'+
+    '<div class="chk" data-act="toggle">'+(t.done?'✓':'')+'</div>'+
+    '<div class="t-body">'+
+      '<div class="t-title">'+escHtml(t.title)+'</div>'+
+      (t.notes?'<div class="t-notes">'+escHtml(t.notes)+'</div>':'')+
+      (t.target?'<span class="t-target">⏰ '+escHtml(t.target)+'</span>':'')+
+    '</div>'+
+    '<button class="del" data-act="del" title="删除">×</button>'+
+  '</li>';
+}
+
+function render(){
+  const all = state.tasks;
+  const pending = all.filter(function(t){ return !t.done; });
+  const done = all.filter(function(t){ return t.done; });
+
+  document.getElementById('summary').innerHTML =
+    '<div class="sum-row">'+
+      '<div class="sum-chip"><div class="v">'+pending.length+'</div><div class="k">待办</div></div>'+
+      '<div class="sum-chip done"><div class="v">'+done.length+'</div><div class="k">已完成</div></div>'+
+      '<div class="sum-chip"><div class="v">'+all.length+'</div><div class="k">全部</div></div>'+
+    '</div>'+
+    '<div class="sum-note">'+(pending.length? '想到就记，别让灵感跑掉 💡' : '生活待办都搞定啦，给自己点个赞 🎉')+'</div>';
+
+  document.getElementById('pendingCnt').textContent = pending.length ? '· '+pending.length : '';
+  document.getElementById('pendingList').innerHTML = pending.map(taskHtml).join('');
+  document.getElementById('emptyState').style.display = pending.length ? 'none' : 'block';
+
+  document.getElementById('doneLabel').style.display = done.length ? 'block' : 'none';
+  document.getElementById('doneCnt').textContent = done.length ? '· '+done.length : '';
+  document.getElementById('doneList').innerHTML = done.map(taskHtml).join('');
+}
+
+// ===== EVENTS =====
+document.getElementById('addBtn').addEventListener('click', function(){
+  const ti=document.getElementById('newTitle');
+  if(addTask(ti.value, document.getElementById('newTarget').value, document.getElementById('newNotes').value)){
+    ti.value=''; document.getElementById('newTarget').value=''; document.getElementById('newNotes').value=''; ti.focus();
+  }
+});
+document.getElementById('newTitle').addEventListener('keydown', function(e){
+  if(e.key==='Enter'){
+    const ti=document.getElementById('newTitle');
+    if(addTask(ti.value, document.getElementById('newTarget').value, document.getElementById('newNotes').value)){
+      ti.value=''; document.getElementById('newTarget').value=''; document.getElementById('newNotes').value='';
+    }
+  }
+});
+
+function bindList(el){
+  el.addEventListener('click', function(e){
+    const li=e.target.closest('.task');
+    if(!li) return;
+    const id=li.dataset.id;
+    const act=e.target.closest('[data-act]');
+    if(!act) return;
+    if(act.dataset.act==='toggle') toggleTask(id);
+    else if(act.dataset.act==='del'){ if(confirm('删除这条待办？')) delTask(id); }
+  });
+}
+bindList(document.getElementById('pendingList'));
+bindList(document.getElementById('doneList'));
+
+// ===== INIT =====
+render();
+initCloud();
+</script>
+</body>
+</html>
