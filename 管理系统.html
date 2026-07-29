@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#172033">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Yara作战室">
+<link rel="alternate" media="only screen and (max-width: 768px)" href="手机端.html">
 <title>Yara作战室</title>
 <style>
 :root {
@@ -923,7 +927,7 @@ body.focus-mode .main{margin-left:0;}
 <script src="yara-system-core.js?v=1.1"></script>
 <script>
 // 构建版本号：部署时由「一键部署.command」替换为时间戳，用于强制手机端拉取最新工具（防止缓存导致 web/手机不一致）。本地打开时保持 'DEV'。
-var BUILD_VERSION = '20260730004737';
+var BUILD_VERSION = '20260730005339';
 
 function toggleGroup(el){
   var group = el.closest('.nav-group');
