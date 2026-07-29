@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#161b2e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="把把必中">
+  <title>把把必中 · 简历与JD匹配中心</title>
+  <link rel="alternate" media="only screen and (max-width: 760px)" href="mobile.html">
+  <link rel="stylesheet" href="app.css?v=1">
+</head>
+<body>
+  <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
+
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">必中</span>
+      <div>
+        <h1>把把必中</h1>
+        <p>RESUME × JD INTELLIGENCE CENTER</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <span class="privacy-pill" id="careerSyncStatus" data-state="connecting"><i></i><span id="careerSyncText">正在连接云端</span></span>
+      <button class="ghost-btn" type="button" data-action="open-jd-modal">＋ 新增 JD</button>
+      <button class="primary-btn" type="button" data-nav="resume">导入简历</button>
+    </div>
+  </header>
+
+  <nav class="section-nav" aria-label="求职中心导航">
+    <button class="active" type="button" data-nav="overview"><span>01</span>匹配总览</button>
+    <button type="button" data-nav="jobs"><span>02</span>岗位作战室</button>
+    <button type="button" data-nav="resume"><span>03</span>简历实验室</button>
+    <button type="button" data-nav="growth"><span>04</span>进阶路线</button>
+  </nav>
+
+  <main>
+    <section class="view active" id="view-overview">
+      <div class="hero-grid">
+        <article class="hero-card">
+          <div class="eyebrow">YARA CAREER RADAR · LIVE</div>
+          <h2>不是海投，是让每一次投递<br><em>都有证据、有策略、有胜算。</em></h2>
+          <p>基于你的真实履历、项目资产和意向岗位，拆解硬实力、软实力、证据充分度与下一步补强动作。</p>
+          <div class="hero-meta">
+            <span><strong id="heroResumeVersion">V1</strong> 当前简历</span>
+            <span><strong id="heroJobCount">3</strong> 个目标岗位</span>
+            <span><strong id="heroEvidenceCount">0</strong> 条履历证据</span>
+          </div>
+        </article>
+        <article class="best-match-card">
+          <div class="card-kicker">当前最优解</div>
+          <div class="score-orbit"><strong id="bestScore">--</strong><small>%</small></div>
+          <h3 id="bestJobTitle">正在计算…</h3>
+          <p id="bestJobReason">正在读取你的履历证据。</p>
+          <button type="button" class="text-btn" id="bestJobButton">查看匹配证据 →</button>
+        </article>
+      </div>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div><span class="section-no">MATCH / 03</span><h2>三个意向岗位的胜率雷达</h2></div>
+          <p>分数代表“简历中已有可验证证据”的覆盖度，不等于能力上限。</p>
+        </div>
+        <div class="job-grid" id="overviewJobs"></div>
+      </section>
+
+      <div class="overview-columns">
+        <section class="panel">
+          <div class="panel-head compact">
+            <div><span class="section-no">ADVANTAGE</span><h2>你的复利优势</h2></div>
+          </div>
+          <div class="strength-list" id="globalStrengths"></div>
+        </section>
+        <section class="panel">
+          <div class="panel-head compact">
+            <div><span class="section-no">PRIORITY</span><h2>本周最值得补的证据</h2></div>
+          </div>
+          <div class="priority-list" id="priorityActions"></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="view" id="view-jobs">
+      <div class="workspace-layout">
+        <aside class="job-sidebar">
+          <div class="aside-label">TARGET ROLES</div>
+          <div id="jobSelector"></div>
+        </aside>
+        <div class="job-workspace">
+          <section class="job-hero panel" id="jobHero"></section>
+          <div class="match-columns">
+            <section class="panel">
+              <div class="panel-head compact">
+                <div><span class="section-no">HARD SKILLS</span><h2>硬实力匹配</h2></div>
+              </div>
+              <div class="requirement-list" id="hardSkillList"></div>
+            </section>
+            <section class="panel">
+              <div class="panel-head compact">
+                <div><span class="section-no">SOFT SKILLS</span><h2>软实力匹配</h2></div>
+              </div>
+              <div class="requirement-list" id="softSkillList"></div>
+            </section>
+          </div>
+          <section class="panel">
+            <div class="panel-head">
+              <div><span class="section-no">GAP → ACTION</span><h2>差距不是结论，是行动清单</h2></div>
+              <button class="ghost-btn small" type="button" data-action="go-growth">生成进阶路线</button>
+            </div>
+            <div class="gap-grid" id="jobGapPlan"></div>
+          </section>
+          <details class="panel jd-source">
+            <summary>查看岗位原始 JD 文本</summary>
+            <pre id="jobRawText"></pre>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-resume">
+      <div class="resume-layout">
+        <aside class="panel version-panel">
+          <div class="panel-head compact">
+            <div><span class="section-no">VERSIONS</span><h2>简历版本库</h2></div>
+          </div>
+          <div id="resumeVersions" class="version-list"></div>
+          <button class="ghost-btn full" type="button" data-action="new-manual-version">＋ 新建文字版本</button>
+        </aside>
+
+        <div class="resume-main">
+          <section class="panel upload-panel">
+            <div class="panel-head">
+              <div><span class="section-no">IMPORT</span><h2>导入或更新你的简历</h2></div>
+              <span class="support-text">PDF · DOCX · DOC · TXT · MD · JSON · JPG/PNG</span>
+            </div>
+            <label class="drop-zone" id="resumeDropZone">
+              <input type="file" id="resumeFile" accept=".pdf,.doc,.docx,.txt,.md,.json,.csv,.jpg,.jpeg,.png,.webp">
+              <span class="drop-icon" aria-hidden="true">↥</span>
+              <strong>把简历拖到这里，或点击选择文件</strong>
+              <small>PDF、Word 与图片会在本机解析；若旧版 .doc 无法提取，可直接粘贴文字。</small>
+            </label>
+            <div class="import-progress" id="importProgress" hidden>
+              <span class="progress-bar"><i id="importProgressBar"></i></span>
+              <span id="importProgressText">正在读取文件…</span>
+            </div>
+            <textarea id="resumeTextInput" rows="9" placeholder="也可以直接粘贴完整简历、工作经历、项目成果或新增事实…"></textarea>
+            <div class="form-row">
+              <input id="resumeVersionName" type="text" placeholder="版本名称，例如：产品运营定向版">
+              <button class="primary-btn" type="button" data-action="save-resume-version">保存为新版本</button>
+            </div>
+          </section>
+
+          <section class="panel evidence-panel">
+            <div class="panel-head">
+              <div><span class="section-no">EVIDENCE VAULT</span><h2>工作证据库</h2></div>
+              <button class="ghost-btn small" type="button" data-action="add-evidence">＋ 添加事实</button>
+            </div>
+            <p class="panel-intro">进阶简历只使用这里已确认的事实。数字、成果和项目证据越完整，匹配结果越可信。</p>
+            <div id="evidenceVault" class="evidence-vault"></div>
+          </section>
+
+          <section class="panel generation-panel">
+            <div class="panel-head">
+              <div><span class="section-no">REBUILD</span><h2>重生进阶版简历</h2></div>
+              <span class="status-badge" id="generationStatus">等待生成</span>
+            </div>
+            <div class="target-switch" id="resumeTargetSwitch"></div>
+            <div class="generation-actions">
+              <button class="primary-btn large" type="button" data-action="generate-resume">生成定向进阶版</button>
+              <button class="ghost-btn" type="button" data-action="copy-resume">复制全文</button>
+              <button class="ghost-btn" type="button" data-action="export-word">导出 Word</button>
+              <button class="ghost-btn" type="button" data-action="export-pdf">导出 PDF</button>
+              <button class="ghost-btn" type="button" data-action="export-md">导出 Markdown</button>
+            </div>
+            <div class="resume-preview" id="resumePreview">
+              <div class="empty-preview">
+                <span>ING</span>
+                <h3>选择目标岗位，生成一份有证据的进阶简历</h3>
+                <p>系统会重排重点、强化关键词和成果表达，但不会编造不存在的经历。</p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-growth">
+      <section class="growth-hero panel">
+        <div>
+          <span class="section-no">30 / 60 / 90</span>
+          <h2>从“能做”到“简历有证据、面试能讲清”</h2>
+          <p>行动路线随当前选中岗位和简历版本自动更新。</p>
+        </div>
+        <div class="growth-target" id="growthTarget"></div>
+      </section>
+      <div class="roadmap" id="growthRoadmap"></div>
+      <section class="panel interview-panel">
+        <div class="panel-head">
+          <div><span class="section-no">INTERVIEW STORIES</span><h2>优先准备的面试故事</h2></div>
+        </div>
+        <div class="story-grid" id="interviewStories"></div>
+      </section>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" id="jdModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="jdModalTitle">
+      <div class="modal-head">
+        <div><span class="section-no">NEW TARGET</span><h2 id="jdModalTitle">新增意向岗位</h2></div>
+        <button class="close-btn" type="button" data-action="close-jd-modal" aria-label="关闭">×</button>
+      </div>
+      <div class="modal-grid">
+        <label>岗位名称<input id="newJobTitle" type="text" placeholder="例如：课程产品运营"></label>
+        <label>公司名称<input id="newJobCompany" type="text" placeholder="可稍后补充"></label>
+      </div>
+      <label>JD 原文<textarea id="newJobText" rows="12" placeholder="粘贴岗位职责与任职要求…"></textarea></label>
+      <label class="mini-upload">
+        <input id="newJobFile" type="file" accept=".pdf,.doc,.docx,.txt,.md,.jpg,.jpeg,.png,.webp">
+        <span>从 PDF / Word / 截图读取 JD</span>
+      </label>
+      <div class="modal-actions">
+        <button class="ghost-btn" type="button" data-action="close-jd-modal">取消</button>
+        <button class="primary-btn" type="button" data-action="save-new-jd">保存并开始匹配</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="careerToast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
+  <script src="app.js?v=1"></script>
+</body>
+</html>
