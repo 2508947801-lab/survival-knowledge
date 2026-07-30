@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="zh-CN" data-yara-theme="dawn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#eef5ed">
+  <title>成长花园 · Yara</title>
+  <style>
+    :root{
+      --bg:#eef4ed;--card:#fffdf8;--ink:#405047;--sub:#7c8981;--line:rgba(78,109,92,.13);
+      --mint:#67ad94;--mint-soft:#e6f2eb;--pink:#d985a1;--pink-soft:#f9eaf0;--lilac:#9d8cc9;
+      --peach:#e9aa73;--shadow:0 16px 45px rgba(70,95,81,.11);--r:22px;
+      --font:"Avenir Next","MiSans","HarmonyOS Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;background:var(--bg)}
+    body{min-height:100vh;font:400 15px/1.65 var(--font);color:var(--ink);background:
+      radial-gradient(circle at 4% 0,rgba(247,189,148,.22),transparent 27%),
+      radial-gradient(circle at 96% 2%,rgba(168,217,197,.28),transparent 30%),var(--bg)}
+    button,input,textarea,select{font:inherit}
+    button{cursor:pointer}
+    .app{width:min(1120px,100%);margin:auto;padding:28px clamp(14px,3vw,30px) 80px}
+    .hero{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;padding:25px 27px;border:1px solid rgba(255,255,255,.84);border-radius:28px;background:linear-gradient(135deg,rgba(255,250,239,.96),rgba(235,246,235,.95) 58%,rgba(249,236,241,.9));box-shadow:var(--shadow)}
+    .kicker{display:flex;align-items:center;gap:8px;color:#6b907f;font-size:.72rem;font-weight:800;letter-spacing:.11em}
+    .kicker i{display:grid;place-items:center;width:30px;height:30px;border-radius:11px;background:linear-gradient(145deg,#f4b7a5,#8fc8b2);color:#fff;font-style:normal}
+    h1{margin-top:10px;font-size:clamp(1.7rem,4vw,2.45rem);letter-spacing:-.045em}
+    .hero p{margin-top:6px;color:var(--sub);font-size:.78rem}
+    .hero-badges{display:flex;gap:7px;margin-top:14px;flex-wrap:wrap}
+    .hero-badge{padding:5px 10px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.6);color:#6f7d75;font-size:.64rem;font-weight:700}
+    .hero-plant{display:grid;place-items:center;width:120px;height:120px;border:1px solid var(--line);border-radius:38px;background:rgba(255,255,255,.58);font-size:3.8rem;filter:drop-shadow(0 10px 12px rgba(74,106,87,.1))}
+    .tabs{position:sticky;top:10px;z-index:20;display:flex;gap:7px;margin:18px 0;padding:7px;border:1px solid rgba(255,255,255,.8);border-radius:18px;background:rgba(249,251,246,.84);backdrop-filter:blur(16px);box-shadow:0 8px 28px rgba(67,92,77,.08);overflow-x:auto}
+    .tab{flex:1;min-width:130px;padding:10px 12px;border:0;border-radius:12px;background:transparent;color:#76827b;font-size:.73rem;font-weight:750;white-space:nowrap}
+    .tab.active{color:#4b7867;background:#fff;box-shadow:0 5px 15px rgba(78,104,89,.1)}
+    .panel{display:none;animation:rise .3s ease}
+    .panel.active{display:block}
+    @keyframes rise{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+    .section-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}
+    .card{padding:21px;border:1px solid var(--line);border-radius:var(--r);background:rgba(255,253,248,.93);box-shadow:var(--shadow)}
+    .card+.card{margin-top:14px}
+    .card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
+    .card-head h2{font-size:1rem;letter-spacing:-.02em}
+    .card-head p{margin-top:2px;color:var(--sub);font-size:.68rem}
+    .mini-tag{padding:4px 9px;border-radius:999px;background:var(--mint-soft);color:#4e806e;font-size:.6rem;font-weight:800;white-space:nowrap}
+    .form-row{display:grid;grid-template-columns:1fr 125px auto;gap:8px}
+    input,textarea,select{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);outline:0}
+    input,select{min-height:43px;padding:0 12px}
+    textarea{min-height:110px;padding:11px 12px;resize:vertical}
+    input:focus,textarea:focus,select:focus{border-color:#77b49d;box-shadow:0 0 0 3px rgba(103,173,148,.1)}
+    .primary{border:0;border-radius:12px;padding:0 15px;color:#fff;background:linear-gradient(135deg,#69ad95,#86c2ac);font-weight:750;box-shadow:0 8px 18px rgba(91,163,138,.18)}
+    .ghost{border:1px solid var(--line);border-radius:11px;padding:7px 11px;color:#6e7d75;background:#fff;font-size:.68rem;font-weight:700}
+    .task-list{display:flex;flex-direction:column;gap:9px;margin-top:14px}
+    .task{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.72);transition:.18s}
+    .task:hover{transform:translateY(-1px);box-shadow:0 9px 22px rgba(69,95,80,.08)}
+    .check{display:grid;place-items:center;flex:0 0 25px;width:25px;height:25px;border:2px solid #bdd2c6;border-radius:9px;color:#fff;background:#fff}
+    .task.done{opacity:.67;background:#f5f7f3}
+    .task.done .check{border-color:var(--mint);background:var(--mint)}
+    .task.done .task-title{text-decoration:line-through}
+    .task-copy{flex:1;min-width:0}
+    .task-title{font-size:.78rem;font-weight:720;word-break:break-word}
+    .task-meta{margin-top:2px;color:var(--sub);font-size:.62rem}
+    .task-delete{display:grid;place-items:center;width:31px;height:31px;border:0;border-radius:10px;background:transparent;color:#a0aaa4}
+    .task-delete:hover{color:#c9677d;background:#fbecef}
+    .empty{padding:30px 15px;text-align:center;color:#87928c;font-size:.72rem;border:1px dashed var(--line);border-radius:15px;background:rgba(255,255,255,.4)}
+    .progress-card{overflow:hidden}
+    .progress-score{font-size:2rem;font-weight:800;color:#558b77;letter-spacing:-.04em}
+    .progress-track{height:10px;margin:12px 0;border-radius:999px;background:#e6ece6;overflow:hidden}
+    .progress-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,#ef9fb4,#a795d0,#69b197);transition:width .5s}
+    .progress-note{color:var(--sub);font-size:.67rem}
+    .reward-note{display:flex;align-items:center;gap:9px;margin-top:13px;padding:10px;border-radius:14px;background:linear-gradient(135deg,#f9edf1,#edf6ef);color:#68776e;font-size:.65rem}
+    .reward-note strong{color:#52816f}
+    .focus-card{min-height:230px;background:linear-gradient(150deg,#fffaf0,#edf6ee)}
+    .focus-word{margin:15px 0 4px;font-size:1.65rem;font-weight:800;letter-spacing:-.03em}
+    .focus-meaning{color:#758179;font-size:.76rem}
+    .phrase{margin-top:14px;padding:12px;border-left:3px solid #e6a5b7;border-radius:0 12px 12px 0;background:rgba(255,255,255,.58);font-size:.74rem}
+    .phrase small{display:block;margin-top:3px;color:#8a948e}
+    .answer-box{margin-top:14px}
+    .answer-actions{display:flex;gap:8px;margin-top:8px}
+    .answer-actions button{min-height:40px}
+    .feedback{display:none;margin-top:11px;padding:10px 12px;border-radius:12px;font-size:.7rem}
+    .feedback.show{display:block}
+    .feedback.good{color:#4c7969;background:#e8f4ed}
+    .feedback.try{color:#9a6843;background:#fff1e4}
+    .review-form{display:grid;gap:12px}
+    .field-label{display:block;margin-bottom:5px;color:#68766e;font-size:.68rem;font-weight:750}
+    .energy-row{display:flex;gap:7px}
+    .energy-btn{flex:1;min-height:42px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:1.05rem}
+    .energy-btn.active{border-color:#e4a4b7;background:#fbedf2;box-shadow:0 0 0 3px rgba(217,133,161,.08)}
+    .review-history{display:flex;flex-direction:column;gap:9px}
+    .review-item{width:100%;padding:13px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.7);text-align:left}
+    .review-item strong{display:block;color:#526159;font-size:.75rem}
+    .review-item span{display:block;margin-top:3px;color:#87918b;font-size:.63rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .agent-layout{display:grid;grid-template-columns:280px 1fr;gap:16px}
+    .agent-profile{text-align:center}
+    .agent-orb{display:grid;place-items:center;width:105px;height:105px;margin:5px auto 14px;border-radius:35px;background:linear-gradient(145deg,#ffd8c0,#c9e5d8);font-size:3rem;box-shadow:0 16px 35px rgba(77,112,92,.13)}
+    .agent-profile h2{font-size:1rem}
+    .agent-profile p{margin-top:5px;color:var(--sub);font-size:.68rem}
+    .agent-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:15px}
+    .agent-stat{padding:9px;border-radius:13px;background:#f3f6f1}
+    .agent-stat strong{display:block;color:#51816f;font-size:.86rem}
+    .agent-stat span{font-size:.58rem;color:#87918b}
+    .chat{display:flex;flex-direction:column;min-height:480px;padding:0}
+    .chat-messages{flex:1;max-height:440px;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:10px}
+    .message{max-width:82%;padding:10px 12px;border-radius:15px;font-size:.72rem;line-height:1.65;white-space:pre-wrap}
+    .message.bot{align-self:flex-start;background:#eef4ed;border-bottom-left-radius:5px}
+    .message.user{align-self:flex-end;color:#fff;background:linear-gradient(135deg,#d985a1,#9d8cc9);border-bottom-right-radius:5px}
+    .chat-suggest{display:flex;gap:6px;padding:0 15px 10px;overflow:auto}
+    .chat-suggest button{flex:0 0 auto;padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#68776f;font-size:.62rem}
+    .chat-form{display:flex;gap:8px;padding:13px 15px;border-top:1px solid var(--line)}
+    .chat-form input{flex:1}
+    .dialog-backdrop{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:18px;background:rgba(62,82,70,.25);backdrop-filter:blur(7px)}
+    .dialog{width:min(520px,100%);max-height:80vh;overflow:auto;padding:22px;border-radius:22px;background:#fffdf8;box-shadow:0 25px 80px rgba(61,82,69,.25)}
+    .dialog h2{font-size:1.05rem}
+    .dialog section{margin-top:14px}
+    .dialog section strong{display:block;margin-bottom:4px;color:#5c6c63;font-size:.68rem}
+    .dialog section p{color:#6f7c74;font-size:.75rem;white-space:pre-wrap}
+    .dialog .ghost{margin-top:18px;width:100%}
+    .sync{display:inline-flex;align-items:center;gap:6px;margin-top:8px;color:#829087;font-size:.63rem}
+    .sync i{width:7px;height:7px;border-radius:50%;background:#70b79e;box-shadow:0 0 0 4px rgba(112,183,158,.12)}
+    @media(max-width:820px){
+      .section-grid,.agent-layout{grid-template-columns:1fr}
+      .hero-plant{width:90px;height:90px;font-size:3rem}
+      .agent-profile{text-align:left}
+      .agent-orb{margin-left:0}
+    }
+    @media(max-width:560px){
+      .app{padding:14px 10px 60px}
+      .hero{grid-template-columns:1fr;padding:21px 18px;border-radius:22px}
+      .hero-plant{display:none}
+      .tabs{top:6px;margin:12px 0}
+      .tab{min-width:112px}
+      .card{padding:16px 14px;border-radius:18px}
+      .form-row{grid-template-columns:1fr}
+      .primary{min-height:43px}
+      .chat{min-height:430px}
+    }
+  </style>
+  <link id="yaraSystemTheme" rel="stylesheet" href="yara-system-theme.css?v=3.0">
+  <script src="yara-module-ui.js?v=1.1"></script>
+  <script src="yara-growth-game.js?v=1.0"></script>
+</head>
+<body data-yara-module="growth">
+  <main class="app">
+    <header class="hero">
+      <div>
+        <div class="kicker"><i>✦</i> YARA COZY QUEST</div>
+        <h1>成长花园</h1>
+        <p>认真完成一件小事，就是在给未来的自己积攒阳光。</p>
+        <div class="hero-badges">
+          <span class="hero-badge" id="levelBadge">Lv.1</span>
+          <span class="hero-badge" id="coinBadge">🪙 24</span>
+          <span class="hero-badge" id="waterBadge">💧 3</span>
+          <span class="hero-badge" id="streakBadge">🔥 连续 1 天</span>
+        </div>
+        <span class="sync"><i></i>Web 与手机共用数据 · 自动同步</span>
+      </div>
+      <div class="hero-plant" id="heroPlant" aria-label="成长植物">🌱</div>
+    </header>
+
+    <nav class="tabs" aria-label="成长中心导航">
+      <button class="tab" data-tab="plan">📚 学习计划</button>
+      <button class="tab" data-tab="english">💬 英语练习</button>
+      <button class="tab" data-tab="review">🌙 每日复盘</button>
+      <button class="tab" data-tab="agent">✨ 智能伙伴</button>
+    </nav>
+
+    <section class="panel" id="panel-plan">
+      <div class="section-grid">
+        <div class="card">
+          <div class="card-head"><div><h2>本周学习清单</h2><p>少而具体，完成比完美更重要</p></div><span class="mini-tag">完成 +15 XP</span></div>
+          <div class="form-row">
+            <input id="planTitle" maxlength="80" placeholder="想学什么？如：看完活动策划第 2 章">
+            <select id="planMinutes" aria-label="预计时长"><option value="15">15 分钟</option><option value="30" selected>30 分钟</option><option value="45">45 分钟</option><option value="60">60 分钟</option><option value="90">90 分钟</option></select>
+            <button class="primary" id="addPlan">加入计划</button>
+          </div>
+          <div class="task-list" id="planList"></div>
+        </div>
+        <aside>
+          <div class="card progress-card">
+            <div class="card-head"><div><h2>本周进度</h2><p>把注意力放在已经前进的部分</p></div></div>
+            <div class="progress-score" id="planScore">0%</div>
+            <div class="progress-track"><div class="progress-fill" id="planFill" style="width:0"></div></div>
+            <p class="progress-note" id="planNote">还没有学习计划，先从 15 分钟开始吧。</p>
+            <div class="reward-note"><span>🌿</span><span>完成学习计划可获得 <strong>经验、金币和水滴</strong>，植物也会慢慢长大。</span></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><h2>温柔提醒</h2><p>不是每天都要满格</p></div></div>
+            <p class="progress-note">状态好时多走一步，疲惫时完成最小动作。连续性，比一次性的冲刺更有力量。</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-english">
+      <div class="section-grid">
+        <div class="card focus-card">
+          <div class="card-head"><div><h2>今日一句</h2><p>读一遍、说一遍、用自己的话写一遍</p></div><span class="mini-tag">练习 +12 XP</span></div>
+          <div class="focus-word" id="englishSentence"></div>
+          <div class="focus-meaning" id="englishMeaning"></div>
+          <div class="phrase" id="englishTip"></div>
+          <div class="answer-box">
+            <label class="field-label" for="englishAnswer">用这句话写一个与你有关的例句</label>
+            <textarea id="englishAnswer" placeholder="不用追求复杂，先自然地表达出来…"></textarea>
+            <div class="answer-actions">
+              <button class="primary" id="finishEnglish">完成今日练习</button>
+              <button class="ghost" id="nextEnglish">换一句</button>
+            </div>
+            <div class="feedback" id="englishFeedback"></div>
+          </div>
+        </div>
+        <aside>
+          <div class="card">
+            <div class="card-head"><div><h2>练习记录</h2><p>让输出痕迹留下来</p></div></div>
+            <div class="progress-score" id="englishCount">0 次</div>
+            <p class="progress-note" id="englishLatest">今天还没有完成练习。</p>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><h2>口语小技巧</h2><p>今天只练一个动作</p></div></div>
+            <p class="progress-note">先慢速读到顺口，再闭眼复述，最后把主语或场景换成你自己的。能用出来，才真正属于你。</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-review">
+      <div class="section-grid">
+        <div class="card">
+          <div class="card-head"><div><h2>今天过得怎么样？</h2><p>不评判，只记录事实、感受与下一步</p></div><span class="mini-tag">复盘 +18 XP</span></div>
+          <div class="review-form">
+            <label><span class="field-label">今天最值得肯定的一件事</span><textarea id="reviewWin" placeholder="哪怕只是一件很小的事…"></textarea></label>
+            <label><span class="field-label">今天卡住或消耗我的地方</span><textarea id="reviewBlock" placeholder="发生了什么？不需要责备自己。"></textarea></label>
+            <label><span class="field-label">明天最重要的一步</span><input id="reviewTomorrow" maxlength="100" placeholder="只写一件最值得优先完成的事"></label>
+            <div><span class="field-label">此刻的能量</span><div class="energy-row" id="energyRow"><button class="energy-btn" data-energy="1">😫</button><button class="energy-btn" data-energy="2">😔</button><button class="energy-btn active" data-energy="3">😌</button><button class="energy-btn" data-energy="4">🙂</button><button class="energy-btn" data-energy="5">🥰</button></div></div>
+            <button class="primary" id="saveReview" style="min-height:44px">保存今日复盘</button>
+          </div>
+        </div>
+        <aside class="card">
+          <div class="card-head"><div><h2>复盘足迹</h2><p>点击记录可查看完整内容</p></div></div>
+          <div class="review-history" id="reviewHistory"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-agent">
+      <div class="agent-layout">
+        <aside class="card agent-profile">
+          <div class="agent-orb">🌼</div>
+          <h2>小芽 · 成长伙伴</h2>
+          <p>了解你的待办、学习与复盘状态，陪你把大问题拆成今天能做的一小步。</p>
+          <div class="agent-stats"><div class="agent-stat"><strong id="agentLevel">Lv.1</strong><span>当前等级</span></div><div class="agent-stat"><strong id="agentPlant">🌱</strong><span>植物状态</span></div></div>
+        </aside>
+        <div class="card chat">
+          <div class="chat-messages" id="chatMessages"></div>
+          <div class="chat-suggest"><button data-prompt="帮我安排今天">帮我安排今天</button><button data-prompt="我有点累">我有点累</button><button data-prompt="学习怎么开始">学习怎么开始</button><button data-prompt="帮我复盘">帮我复盘</button></div>
+          <form class="chat-form" id="chatForm"><input id="chatInput" maxlength="300" placeholder="和小芽说说你现在在想什么…"><button class="primary" type="submit">发送</button></form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function(){
+      'use strict';
+      var LS_KEY='yara_growth_center_v1';
+      var SB_URL='https://yyqnugidfwgstlcgvnep.supabase.co';
+      var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cW51Z2lkZndnc3RsY2d2bmVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyMzEzNTAsImV4cCI6MjEwMDgwNzM1MH0.ufK55TfjlF4w98x6Fj28oFjUnYGz4lsY7MRaHVV2aIA';
+      var SB_ROW='growth-center';
+      var cloudTimer=0;
+      var state=loadState();
+      var energy=3;
+      var sentenceIndex=0;
+      var tabNames={plan:'学习计划',english:'英语练习',review:'每日复盘',agent:'智能伙伴'};
+
+      function ENGLISH_ITEM(en,zh,tip){return{en:en,zh:zh,tip:tip}}
+      function loadState(){
+        try{
+          var value=JSON.parse(localStorage.getItem(LS_KEY)||'null');
+          if(value&&Array.isArray(value.plans)&&Array.isArray(value.english)&&Array.isArray(value.reviews))return value;
+        }catch(e){}
+        return{plans:[],english:[],reviews:[],chats:[],updatedAt:''};
+      }
+      function saveState(){
+        state.updatedAt=new Date().toISOString();
+        localStorage.setItem(LS_KEY,JSON.stringify(state));
+        scheduleCloudSave();
+        if(window.YaraBridge)YaraBridge.snapshot();
+      }
+      function cloudHeaders(extra){
+        var headers={apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json'};
+        Object.keys(extra||{}).forEach(function(key){headers[key]=extra[key]});return headers;
+      }
+      function cloudSave(){
+        return fetch(SB_URL+'/rest/v1/yara_todo',{method:'POST',headers:cloudHeaders({Prefer:'resolution=merge-duplicates'}),body:JSON.stringify({id:SB_ROW,data:state,updated_at:state.updatedAt||new Date().toISOString()})}).catch(function(){return null});
+      }
+      function scheduleCloudSave(){clearTimeout(cloudTimer);cloudTimer=setTimeout(cloudSave,650)}
+      function cloudSync(){
+        return fetch(SB_URL+'/rest/v1/yara_todo?id=eq.'+SB_ROW+'&select=data,updated_at',{headers:cloudHeaders()})
+          .then(function(response){return response.ok?response.json():null})
+          .then(function(rows){
+            if(!rows||!rows.length||!rows[0].data){cloudSave();return}
+            var remote=rows[0].data,remoteTime=Date.parse(remote.updatedAt||rows[0].updated_at||0)||0,localTime=Date.parse(state.updatedAt||0)||0;
+            if(remoteTime>localTime&&Array.isArray(remote.plans)&&Array.isArray(remote.english)&&Array.isArray(remote.reviews)){
+              state=remote;localStorage.setItem(LS_KEY,JSON.stringify(state));renderPlans();renderEnglish();renderReviews();initChat();
+            }else if(localTime>remoteTime)cloudSave();
+          }).catch(function(){});
+      }
+      function escapeHtml(value){return String(value==null?'':value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+      function today(){return YaraGame.dayKey()}
+      function reward(key,data){
+        var result=YaraGame.reward(key,data);
+        if(result.awarded&&window.YaraModuleUI)YaraModuleUI.notify('获得 '+data.xp+' XP · '+data.coins+' 金币 · '+data.water+' 水滴');
+        renderGame();
+      }
+      function renderGame(){
+        var game=YaraGame.load(),level=YaraGame.levelInfo(game),plant=YaraGame.plantInfo(game);
+        document.getElementById('levelBadge').textContent='Lv.'+level.level+' · '+level.current+'/100 XP';
+        document.getElementById('coinBadge').textContent='🪙 '+game.coins;
+        document.getElementById('waterBadge').textContent='💧 '+game.water;
+        document.getElementById('streakBadge').textContent='🔥 连续 '+game.streak+' 天';
+        document.getElementById('heroPlant').textContent=plant.icon;
+        document.getElementById('agentLevel').textContent='Lv.'+level.level;
+        document.getElementById('agentPlant').textContent=plant.icon;
+      }
+      function setTab(name,fromHash){
+        if(!tabNames[name])name='plan';
+        document.querySelectorAll('.tab').forEach(function(el){el.classList.toggle('active',el.dataset.tab===name);el.setAttribute('aria-selected',String(el.dataset.tab===name))});
+        document.querySelectorAll('.panel').forEach(function(el){el.classList.toggle('active',el.id==='panel-'+name)});
+        if(!fromHash&&location.hash!=='#'+name)history.replaceState(null,'','#'+name);
+        document.title=tabNames[name]+' · 成长花园';
+        if(window.YaraBridge)YaraBridge.route(tabNames[name],3,{tab:name});
+      }
+      function renderPlans(){
+        var root=document.getElementById('planList');
+        if(!state.plans.length)root.innerHTML='<div class="empty">还没有计划。先写下一件 15 分钟可以开始的小事吧 🌱</div>';
+        else root.innerHTML=state.plans.map(function(item){return '<article class="task '+(item.done?'done':'')+'" data-id="'+escapeHtml(item.id)+'"><button class="check" data-action="toggle" aria-label="'+(item.done?'恢复':'完成')+'计划">'+(item.done?'✓':'')+'</button><div class="task-copy"><div class="task-title">'+escapeHtml(item.title)+'</div><div class="task-meta">'+escapeHtml(item.minutes)+' 分钟 · '+escapeHtml(item.created.slice(0,10))+'</div></div><button class="task-delete" data-action="delete" aria-label="删除学习计划">×</button></article>'}).join('');
+        var total=state.plans.length,done=state.plans.filter(function(item){return item.done}).length,pct=total?Math.round(done/total*100):0;
+        document.getElementById('planScore').textContent=pct+'%';
+        document.getElementById('planFill').style.width=pct+'%';
+        document.getElementById('planNote').textContent=total?'已完成 '+done+' / '+total+' 项。'+(pct===100?'这一周的努力都被看见了。':'不用赶，继续完成下一小步。'):'还没有学习计划，先从 15 分钟开始吧。';
+      }
+      function addPlan(){
+        var title=document.getElementById('planTitle').value.trim();
+        if(!title){YaraModuleUI.notify('先写下想学的内容','warning');return}
+        state.plans.unshift({id:'p'+Date.now(),title:title,minutes:Number(document.getElementById('planMinutes').value)||30,done:false,created:new Date().toISOString()});
+        document.getElementById('planTitle').value='';
+        saveState();renderPlans();YaraModuleUI.notify('学习计划已加入');
+      }
+      function togglePlan(id){
+        var item=state.plans.find(function(row){return row.id===id});
+        if(!item)return;
+        item.done=!item.done;saveState();renderPlans();
+        if(item.done)reward('plan:'+item.id,{xp:15,coins:8,water:1,label:'完成学习计划 · '+item.title});
+        else YaraModuleUI.notify('计划已恢复');
+      }
+      function deletePlan(id,button){
+        YaraModuleUI.requestDelete(button,{title:'删除这项学习计划？',message:'删除后不会影响已经获得的成长奖励。'},function(){
+          state.plans=state.plans.filter(function(item){return item.id!==id});saveState();renderPlans();YaraModuleUI.notify('学习计划已删除');
+        });
+      }
+
+      var ENGLISH=[
+        ENGLISH_ITEM('I am making progress, even if it is not obvious yet.','我正在进步，即使现在还不明显。','making progress 表示“正在取得进展”，比 become better 更自然。'),
+        ENGLISH_ITEM('Let me break this down into smaller steps.','让我把这件事拆成更小的步骤。','break something down 常用于把复杂问题拆解清楚。'),
+        ENGLISH_ITEM('I would rather be consistent than perfect.','我宁愿保持稳定，也不追求完美。','would rather A than B：宁愿 A，也不愿 B。'),
+        ENGLISH_ITEM('What is the most important thing I can finish today?','今天我最应该完成的一件事是什么？','用 the most important thing 聚焦真正的优先级。'),
+        ENGLISH_ITEM('I need a short break before I continue.','继续之前，我需要短暂休息一下。','need a break 是自然表达需求，不等于放弃。'),
+        ENGLISH_ITEM('I did better than I expected.','我做得比自己预期的更好。','better than I expected 可用于复盘积极结果。')
+      ];
+      sentenceIndex=Math.floor(Math.random()*ENGLISH.length);
+      function renderEnglish(){
+        var item=ENGLISH[sentenceIndex%ENGLISH.length];
+        document.getElementById('englishSentence').textContent=item.en;
+        document.getElementById('englishMeaning').textContent=item.zh;
+        document.getElementById('englishTip').innerHTML=escapeHtml(item.tip)+'<small>先大声读 3 遍，再写自己的例句。</small>';
+        document.getElementById('englishCount').textContent=state.english.length+' 次';
+        document.getElementById('englishLatest').textContent=state.english.length?'最近一次：'+state.english[0].answer:'今天还没有完成练习。';
+        document.getElementById('englishFeedback').className='feedback';
+      }
+      function finishEnglish(){
+        var answer=document.getElementById('englishAnswer').value.trim(),feedback=document.getElementById('englishFeedback');
+        if(answer.length<8){feedback.textContent='再多写一点点吧，至少写出一个完整的英文短句。';feedback.className='feedback show try';return}
+        var hasLetters=/[a-zA-Z]{4}/.test(answer);
+        if(!hasLetters){feedback.textContent='这次练习需要写英文例句哦，可以从 “I…” 开始。';feedback.className='feedback show try';return}
+        var item=ENGLISH[sentenceIndex%ENGLISH.length],id='e'+Date.now();
+        state.english.unshift({id:id,date:today(),sentence:item.en,answer:answer});state.english=state.english.slice(0,120);
+        saveState();feedback.textContent='表达完成！不追求一次写到完美，能主动输出就是有效练习。';feedback.className='feedback show good';
+        reward('english:'+id,{xp:12,coins:6,water:1,label:'完成英语输出练习'});
+        renderEnglish();
+        document.getElementById('englishFeedback').textContent='表达完成！不追求一次写到完美，能主动输出就是有效练习。';
+        document.getElementById('englishFeedback').className='feedback show good';
+      }
+
+      function renderReviews(){
+        var root=document.getElementById('reviewHistory');
+        if(!state.reviews.length){root.innerHTML='<div class="empty">还没有复盘记录。今晚为自己留三分钟吧 🌙</div>';return}
+        root.innerHTML=state.reviews.slice(0,14).map(function(item){return '<button class="review-item" data-review="'+escapeHtml(item.id)+'"><strong>'+escapeHtml(item.date)+' · '+['','😫','😔','😌','🙂','🥰'][item.energy]+'</strong><span>'+escapeHtml(item.win||'今天也认真生活了')+'</span></button>'}).join('');
+      }
+      function saveReview(){
+        var win=document.getElementById('reviewWin').value.trim(),block=document.getElementById('reviewBlock').value.trim(),tomorrow=document.getElementById('reviewTomorrow').value.trim();
+        if(!win&&!block&&!tomorrow){YaraModuleUI.notify('至少写下一点今天的感受','warning');return}
+        var existing=state.reviews.find(function(item){return item.date===today()}),id=existing?existing.id:'r'+Date.now();
+        var record={id:id,date:today(),win:win,block:block,tomorrow:tomorrow,energy:energy,updatedAt:new Date().toISOString()};
+        if(existing)Object.assign(existing,record);else state.reviews.unshift(record);
+        saveState();renderReviews();reward('review:'+today(),{xp:18,coins:10,water:2,label:'完成每日复盘'});
+        YaraModuleUI.notify(existing?'今日复盘已更新':'今日复盘已保存');
+      }
+      function openReview(id){
+        var item=state.reviews.find(function(row){return row.id===id});if(!item)return;
+        var backdrop=document.createElement('div');backdrop.className='dialog-backdrop';
+        backdrop.innerHTML='<div class="dialog" role="dialog" aria-modal="true"><h2>'+escapeHtml(item.date)+' · 今日复盘</h2><section><strong>值得肯定</strong><p>'+escapeHtml(item.win||'—')+'</p></section><section><strong>卡住或消耗</strong><p>'+escapeHtml(item.block||'—')+'</p></section><section><strong>明天最重要的一步</strong><p>'+escapeHtml(item.tomorrow||'—')+'</p></section><section><strong>能量状态</strong><p>'+['','😫 很疲惫','😔 有点低落','😌 平稳','🙂 不错','🥰 很有能量'][item.energy]+'</p></section><button class="ghost" data-close>关闭</button></div>';
+        function closeDialog(){
+          document.removeEventListener('keydown',onKey);
+          backdrop.remove();
+          if(window.YaraBridge)YaraBridge.route('每日复盘',3,{tab:'review'});
+        }
+        function onKey(event){if(event.key==='Escape')closeDialog()}
+        backdrop.addEventListener('click',function(event){if(event.target===backdrop||event.target.closest('[data-close]'))closeDialog()});
+        document.addEventListener('keydown',onKey);
+        document.body.appendChild(backdrop);
+        if(window.YaraBridge)YaraBridge.route('复盘详情 · '+item.date,4);
+      }
+
+      function botReply(text){
+        var game=YaraGame.load(),level=YaraGame.levelInfo(game),pendingPlans=state.plans.filter(function(item){return !item.done}).length;
+        var work=readJson('yara_daily_todo_v1',{tasks:{}}),todayTasks=(work.tasks&&work.tasks[today()])||[],workPending=todayTasks.filter(function(item){return !item.done}).length;
+        if(/今天|安排|待办|任务/.test(text))return '今天还有 '+workPending+' 项工作待办、'+pendingPlans+' 项学习计划。建议先选一件 30 分钟内能完成的事，完成后休息 5 分钟。你不需要一次清空所有任务，只要让最重要的那件事往前走。';
+        if(/累|烦|焦虑|压力|不想/.test(text))return '听起来你现在的能量不太够。先不要逼自己做完整计划：喝点水、离开屏幕两分钟，然后只完成一个“最小动作”。哪怕只是打开资料、写下标题，也算今天在前进。';
+        if(/学习|开始|计划/.test(text))return pendingPlans?'你已经有 '+pendingPlans+' 项未完成学习计划。挑最短的一项，先设 15 分钟计时；时间到了可以停，也可以继续。':'先写一个 15 分钟能完成的学习动作，例如“读 3 页并记下 1 个观点”。目标越小，越容易真正开始。';
+        if(/英语|口语/.test(text))return '今天的英语练习只需要三步：朗读今日一句 3 遍、换成自己的场景、写下一个例句。完成比语法完美更重要。';
+        if(/复盘|总结/.test(text))return '用三句话就够：今天做对了什么？什么在消耗我？明天只推进哪一步？如果你愿意，现在切到“每日复盘”就可以直接记录。';
+        if(/金币|经验|植物|浇水|等级/.test(text))return '你现在是 Lv.'+level.level+'，有 '+game.coins+' 枚金币和 '+game.water+' 滴水。完成待办、学习、英语或复盘都会获得奖励；回到系统首页就能给植物浇水。';
+        return '我听见了。我们可以把这件事拆小一点：你现在最希望解决的是“开始不了”“事情太多”，还是“做完却没有成就感”？告诉我一个最具体的场景，我陪你找下一步。';
+      }
+      function readJson(key,fallback){try{return JSON.parse(localStorage.getItem(key)||'null')||fallback}catch(e){return fallback}}
+      function addMessage(role,text,persist){
+        var root=document.getElementById('chatMessages'),node=document.createElement('div');node.className='message '+role;node.textContent=text;root.appendChild(node);root.scrollTop=root.scrollHeight;
+        if(persist!==false){state.chats.push({role:role,text:text,at:new Date().toISOString()});state.chats=state.chats.slice(-40);saveState()}
+      }
+      function initChat(){
+        var root=document.getElementById('chatMessages');root.innerHTML='';
+        if(!state.chats.length)addMessage('bot','嗨，我是小芽 🌼\n我会结合你的任务、学习和成长状态，陪你把今天过得更轻松一点。',false);
+        else state.chats.slice(-20).forEach(function(item){addMessage(item.role,item.text,false)});
+      }
+      function sendChat(text){
+        text=String(text||'').trim();if(!text)return;
+        addMessage('user',text);setTimeout(function(){addMessage('bot',botReply(text))},260);
+      }
+
+      document.querySelectorAll('.tab').forEach(function(button){button.addEventListener('click',function(){setTab(button.dataset.tab)})});
+      window.addEventListener('hashchange',function(){setTab(location.hash.slice(1),true)});
+      document.getElementById('addPlan').addEventListener('click',addPlan);
+      document.getElementById('planTitle').addEventListener('keydown',function(event){if(event.key==='Enter')addPlan()});
+      document.getElementById('planList').addEventListener('click',function(event){var task=event.target.closest('[data-id]');if(!task)return;if(event.target.closest('[data-action="toggle"]'))togglePlan(task.dataset.id);if(event.target.closest('[data-action="delete"]'))deletePlan(task.dataset.id,event.target.closest('button'))});
+      document.getElementById('finishEnglish').addEventListener('click',finishEnglish);
+      document.getElementById('nextEnglish').addEventListener('click',function(){sentenceIndex=(sentenceIndex+1)%ENGLISH.length;document.getElementById('englishAnswer').value='';renderEnglish()});
+      document.querySelectorAll('.energy-btn').forEach(function(button){button.addEventListener('click',function(){energy=Number(button.dataset.energy);document.querySelectorAll('.energy-btn').forEach(function(item){item.classList.toggle('active',item===button)})})});
+      document.getElementById('saveReview').addEventListener('click',saveReview);
+      document.getElementById('reviewHistory').addEventListener('click',function(event){var button=event.target.closest('[data-review]');if(button)openReview(button.dataset.review)});
+      document.getElementById('chatForm').addEventListener('submit',function(event){event.preventDefault();var input=document.getElementById('chatInput'),value=input.value;input.value='';sendChat(value)});
+      document.querySelectorAll('[data-prompt]').forEach(function(button){button.addEventListener('click',function(){sendChat(button.dataset.prompt)})});
+      window.addEventListener('yara:game-updated',renderGame);
+      window.addEventListener('message',function(event){var message=event.data||{};if(message.source==='yara-shell'&&message.type==='theme')document.documentElement.dataset.yaraTheme=message.theme||'dawn'});
+
+      renderGame();renderPlans();renderEnglish();renderReviews();initChat();setTab(location.hash.slice(1)||'plan',true);cloudSync();setInterval(cloudSync,20000);
+    })();
+  </script>
+</body>
+</html>

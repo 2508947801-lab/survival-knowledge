@@ -140,6 +140,7 @@
     if (moduleType === 'todo-life') snapshot.life = safeJson('yara_life_todo_v1', { tasks: [] });
     if (moduleType === 'finance') snapshot.finance = safeJson('yara_ledger_v1', { transactions: [], budgets: {} });
     if (moduleType === 'opsos') snapshot.capability = safeJson('yara_ops_os_v1', { scores: {} });
+    if (moduleType === 'growth') snapshot.growth = safeJson('yara_growth_center_v1', { plans: [], english: [], reviews: [] });
     if (moduleType === 'reconcile') snapshot.reconcile = reconcileSnapshot();
     return snapshot;
   }
@@ -254,6 +255,7 @@
       !!control.closest('nav, aside');
     var label = isNavigation ? cleanLabel(control.getAttribute('aria-label') || control.textContent) : '';
     reportRoute(label);
+    reportSnapshot(240);
   }, true);
 
   document.addEventListener('change', function (event) {
@@ -261,6 +263,7 @@
       post('operation', { kind: 'import', status: 'started', message: '已接收文件，正在校验并导入' });
       reportSnapshot(300);
     }
+    reportSnapshot(260);
   }, true);
 
   window.addEventListener('hashchange', function () { reportRoute(); });

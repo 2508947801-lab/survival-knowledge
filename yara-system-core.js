@@ -6,7 +6,8 @@
     work: 'yara_daily_todo_v1',
     life: 'yara_life_todo_v1',
     finance: 'yara_ledger_v1',
-    capability: 'yara_ops_os_v1'
+    capability: 'yara_ops_os_v1',
+    growth: 'yara_growth_center_v1'
   };
 
   function safeJson(raw, fallback) {
@@ -129,6 +130,18 @@
     };
   }
 
+  function buildGrowthSummary(growth, today) {
+    var plans = growth && Array.isArray(growth.plans) ? growth.plans : [];
+    var english = growth && Array.isArray(growth.english) ? growth.english : [];
+    var reviews = growth && Array.isArray(growth.reviews) ? growth.reviews : [];
+    return {
+      plans: plans,
+      pendingPlans: plans.filter(function (item) { return !item.done; }),
+      englishToday: english.some(function (item) { return item.date === today; }),
+      reviewToday: reviews.some(function (item) { return item.date === today; })
+    };
+  }
+
   function createAction(id, level, title, detail, target) {
     return { id: id, level: level, title: title, detail: detail, target: target };
   }
@@ -143,6 +156,7 @@
       life: {},
       finance: {},
       capability: {},
+      growth: {},
       reconcile: null,
       actions: [],
       risks: []
@@ -155,11 +169,13 @@
       var life = readSource(SOURCE_KEYS.life, { tasks: [] });
       var finance = readSource(SOURCE_KEYS.finance, { transactions: [], budgets: {} });
       var capability = readSource(SOURCE_KEYS.capability, { scores: {} });
+      var growth = readSource(SOURCE_KEYS.growth, { plans: [], english: [], reviews: [] });
       var courses = buildCourseSummary(courseData || {}, today);
       var workSummary = buildWorkSummary(work, today);
       var lifeTasks = Array.isArray(life.tasks) ? life.tasks : [];
       var financeSummary = buildFinanceSummary(finance, now);
       var capabilitySummary = buildCapabilitySummary(capability);
+      var growthSummary = buildGrowthSummary(growth, today);
       var cached = readSource(CACHE_KEY, {});
       var reconcile = this.state.reconcile || cached.reconcile || null;
       var actions = [];
@@ -199,6 +215,33 @@
           '完成一次运营能力自评',
           '建立本周能力基线',
           { src: '运营能力地图/交付运营总系统.html', name: '自查总系统', group: '运营能力' }
+        ));
+      }
+      if (growthSummary.pendingPlans.length) {
+        actions.push(createAction(
+          'growth-plan-' + growthSummary.pendingPlans[0].id,
+          'low',
+          growthSummary.pendingPlans[0].title || '继续学习计划',
+          (growthSummary.pendingPlans[0].minutes || 15) + ' 分钟 · 成长花园',
+          { src: '成长花园.html#plan', name: '学习计划', group: '成长花园' }
+        ));
+      }
+      if (!growthSummary.englishToday) {
+        actions.push(createAction(
+          'growth-english-today',
+          'low',
+          '完成一次英语输出',
+          '今日一句 · 约 5 分钟',
+          { src: '成长花园.html#english', name: '英语练习', group: '成长花园' }
+        ));
+      }
+      if (!growthSummary.reviewToday && now.getHours() >= 18) {
+        actions.push(createAction(
+          'growth-review-today',
+          'low',
+          '为今天做一次温柔复盘',
+          '记录收获、消耗与明日一步',
+          { src: '成长花园.html#review', name: '每日复盘', group: '成长花园' }
         ));
       }
 
@@ -241,7 +284,8 @@
           life: !!localStorage.getItem(SOURCE_KEYS.life),
           finance: !!localStorage.getItem(SOURCE_KEYS.finance),
           capability: !!localStorage.getItem(SOURCE_KEYS.capability),
-          reconcile: !!reconcile
+          reconcile: !!reconcile,
+          growth: !!localStorage.getItem(SOURCE_KEYS.growth)
         },
         courses: courses,
         work: workSummary,
@@ -251,6 +295,7 @@
         },
         finance: financeSummary,
         capability: capabilitySummary,
+        growth: growthSummary,
         reconcile: reconcile,
         actions: actions,
         risks: risks

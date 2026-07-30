@@ -895,3 +895,164 @@ body[data-yara-module="finance"] .chip{
     scroll-behavior:auto!important;
   }
 }
+
+/* ===== Yara Cozy Quest 3.0 · every module and nested detail ===== */
+html[data-yara-theme]{
+  --ys-primary:#62a98f;
+  --ys-primary-strong:#478975;
+  --ys-primary-soft:#e7f2eb;
+  --ys-cyan:#6eb49e;
+  --ys-blue:#78a6c2;
+  --ys-amber:#d39058;
+  --ys-red:#cb647b;
+  --ys-green:#559a7d;
+  --ys-bg:#eef3ed;
+  --ys-surface:#fffdf8;
+  --ys-surface-2:#f5f7f2;
+  --ys-ink:#405047;
+  --ys-ink-2:#637168;
+  --ys-ink-3:#87928b;
+  --ys-line:rgba(79,108,92,.13);
+  --ys-line-strong:rgba(79,108,92,.2);
+  --ys-shadow:0 12px 36px rgba(67,91,77,.09),0 1px 2px rgba(67,91,77,.04);
+  --ys-shadow-hover:0 19px 48px rgba(67,91,77,.14),0 2px 5px rgba(67,91,77,.05);
+  --ys-radius:18px;
+  --ys-radius-sm:12px;
+  background:#eef3ed;
+}
+html[data-yara-theme] body{
+  color-scheme:light;
+  background:
+    radial-gradient(circle at 3% 0,rgba(247,189,148,.18),transparent 27%),
+    radial-gradient(circle at 97% 2%,rgba(168,217,197,.24),transparent 29%),
+    var(--ys-bg);
+}
+html[data-yara-theme] h1,
+html[data-yara-theme] h2,
+html[data-yara-theme] h3{letter-spacing:-.025em}
+html[data-yara-theme] button{border-radius:11px}
+html[data-yara-theme] table{border-collapse:separate;border-spacing:0}
+html[data-yara-theme] thead th{color:#64746b!important;background:#f2f5ef!important}
+html[data-yara-theme] tbody tr:hover{background:#f5f8f3!important}
+html[data-yara-theme] dialog,
+html[data-yara-theme] [role="dialog"]{border-color:rgba(79,108,92,.13)}
+
+/* Turn formerly dark product canvases into warm, legible garden surfaces. */
+html[data-yara-theme] body[data-yara-module="career-match"]{
+  --bg:#edf3ed;
+  --bg-2:#f5f7f2;
+  --surface:rgba(255,253,248,.92);
+  --surface-strong:#fffdf8;
+  --surface-soft:rgba(93,136,114,.06);
+  --line:rgba(77,108,91,.14);
+  --ink:#405047;
+  --ink-soft:#637168;
+  --muted:#87928b;
+  --violet:#9a87c7;
+  --pink:#d985a1;
+  --mint:#5da88d;
+  --gold:#d3945e;
+  --danger:#cb647b;
+  --grad:linear-gradient(135deg,#d985a1,#a18dca 50%,#63ae93);
+  --shadow:0 18px 52px rgba(67,91,77,.11);
+  color-scheme:light!important;
+  background:
+    radial-gradient(circle at 8% 0,rgba(247,189,148,.2),transparent 30%),
+    radial-gradient(circle at 100% 36%,rgba(168,217,197,.2),transparent 27%),
+    var(--bg)!important;
+}
+body[data-yara-module="career-match"] .app-header,
+body[data-yara-module="career-match"] .section-nav{
+  background:rgba(248,250,245,.85)!important;
+  border-color:var(--line)!important;
+}
+body[data-yara-module="career-match"] .panel,
+body[data-yara-module="career-match"] .hero-card,
+body[data-yara-module="career-match"] .best-match-card,
+body[data-yara-module="career-match"] .job-sidebar{
+  background:linear-gradient(145deg,rgba(255,253,248,.96),rgba(244,248,242,.9))!important;
+  border-color:var(--line)!important;
+  box-shadow:var(--shadow)!important;
+}
+body[data-yara-module="career-match"] textarea,
+body[data-yara-module="career-match"] input{background:#fff!important;color:var(--ink)!important}
+body[data-yara-module="career-match"] input::placeholder,
+body[data-yara-module="career-match"] textarea::placeholder{color:#9aa49e!important}
+body[data-yara-module="career-match"] .score-orbit::before{background:var(--surface-strong)!important}
+body[data-yara-module="career-match"] .hero-card::after{-webkit-text-stroke-color:rgba(85,120,101,.06)!important}
+
+/* Calm, consistent navigation for complex second- and third-level systems. */
+body[data-yara-module="academic"] .sidebar,
+body[data-yara-module="opsos"] .sidebar{
+  background:linear-gradient(180deg,#f5f8f2,#e9f1e9)!important;
+  border-right:1px solid rgba(79,108,92,.12)!important;
+  box-shadow:14px 0 42px rgba(67,91,77,.08)!important;
+}
+body[data-yara-module="academic"] .sidebar-title .zh,
+body[data-yara-module="academic"] .sidebar-footer .user-name,
+body[data-yara-module="opsos"] .sidebar .logo{color:#46574d!important}
+body[data-yara-module="academic"] .sidebar-title .en,
+body[data-yara-module="academic"] .nav-group-label,
+body[data-yara-module="academic"] .sidebar-footer .user-role,
+body[data-yara-module="opsos"] .sidebar .logo small,
+body[data-yara-module="opsos"] .sidebar .save-status{color:#829087!important}
+body[data-yara-module="academic"] .nav-item,
+body[data-yara-module="opsos"] .nav-item{color:#6f7e75!important}
+body[data-yara-module="academic"] .nav-item:hover,
+body[data-yara-module="opsos"] .nav-item:hover{color:#46574d!important;background:rgba(255,255,255,.7)!important}
+body[data-yara-module="academic"] .nav-item.active,
+body[data-yara-module="opsos"] .nav-item.active{
+  color:#4e806d!important;
+  background:linear-gradient(90deg,rgba(168,217,197,.3),rgba(255,255,255,.68))!important;
+  box-shadow:none!important;
+}
+body[data-yara-module="academic"] .sidebar-header,
+body[data-yara-module="academic"] .sidebar-footer,
+body[data-yara-module="opsos"] .sidebar .logo,
+body[data-yara-module="opsos"] .sidebar .save-status{border-color:rgba(79,108,92,.1)!important}
+body[data-yara-module="academic"] .topbar{background:rgba(255,253,248,.88)!important}
+body[data-yara-module="academic"] .content,
+body[data-yara-module="opsos"]{background:var(--ys-bg)!important}
+
+/* Shared personal and growth modules use the same soft hierarchy. */
+body[data-yara-module="todo-work"],
+body[data-yara-module="todo-life"],
+body[data-yara-module="finance"],
+body[data-yara-module="growth"]{
+  --module-accent:#62a98f;
+  --module-accent-2:#88c1ac;
+  --module-soft:#e9f3ec;
+  --module-halo:rgba(98,169,143,.13);
+  background:
+    radial-gradient(circle at 10% -3%,rgba(247,189,148,.18),transparent 27%),
+    radial-gradient(circle at 92% 3%,rgba(168,217,197,.22),transparent 26%),
+    var(--ys-bg)!important;
+}
+body[data-yara-module="todo-work"] .hd,
+body[data-yara-module="todo-life"] .hd,
+body[data-yara-module="finance"] .hd{
+  background:linear-gradient(135deg,rgba(255,250,239,.97),rgba(235,246,235,.94))!important;
+  border-color:rgba(255,255,255,.82)!important;
+}
+body[data-yara-module="todo-work"] .module-icon{background:linear-gradient(135deg,#d985a1,#b09bd2)!important}
+body[data-yara-module="todo-life"] .module-icon{background:linear-gradient(135deg,#68ad95,#8bc5b0)!important}
+body[data-yara-module="finance"] .module-icon{background:linear-gradient(135deg,#e0a36f,#73af96)!important}
+
+/* Generic fallback means an overlooked deep page still belongs to the system. */
+body[data-yara-module="generic"]{
+  background:
+    radial-gradient(circle at 4% 0,rgba(247,189,148,.16),transparent 25%),
+    radial-gradient(circle at 96% 0,rgba(168,217,197,.2),transparent 28%),
+    var(--ys-bg)!important;
+  color:var(--ys-ink);
+}
+body[data-yara-module="generic"] :is(.card,.panel,.section,.module,article){
+  border-color:rgba(79,108,92,.13)!important;
+  border-radius:var(--ys-radius)!important;
+}
+
+@media(max-width:768px){
+  body[data-yara-module="career-match"] .app-header{background:rgba(248,250,245,.95)!important}
+  body[data-yara-module="academic"] .sidebar,
+  body[data-yara-module="opsos"] .sidebar{box-shadow:18px 0 44px rgba(67,91,77,.14)!important}
+}

@@ -1,0 +1,233 @@
+/* Yara Cozy Quest · shell-wide healing game layer */
+:root{
+  --cozy-cream:#fffaf2;
+  --cozy-mint:#a8d9c5;
+  --cozy-mint-strong:#58a98e;
+  --cozy-peach:#f7bd94;
+  --cozy-pink:#ef9fb4;
+  --cozy-lilac:#b8a9dc;
+  --cozy-ink:#3c4852;
+  --cozy-sub:#77838b;
+  --cozy-line:rgba(77,101,92,.13);
+  --cozy-card:rgba(255,252,246,.88);
+  --cozy-shadow:0 16px 48px rgba(84,105,94,.12);
+}
+body,
+body[data-theme="twilight"],
+body[data-theme="dawn"]{
+  --bg-deep:#e8f0e8;
+  --bg:#f2f5ee;
+  --surface:rgba(255,252,246,.84);
+  --surface-strong:rgba(255,253,248,.96);
+  --surface-soft:rgba(255,255,255,.58);
+  --primary:#d87998;
+  --primary-2:#9c88cf;
+  --teal:#63b39a;
+  --peach:#e9aa73;
+  --blue:#79a6c7;
+  --ink:var(--cozy-ink);
+  --ink-l:#5f6b73;
+  --sub:var(--cozy-sub);
+  --glass:rgba(255,252,246,.72);
+  --glass-2:rgba(255,255,255,.8);
+  --glass-bd:var(--cozy-line);
+  --border:var(--cozy-line);
+  --grad:linear-gradient(135deg,#e789a7 0%,#b19bd8 46%,#68b79e 100%);
+  --glow:var(--cozy-shadow);
+  color-scheme:light;
+  background:
+    radial-gradient(circle at 6% 0,rgba(247,189,148,.25),transparent 28%),
+    radial-gradient(circle at 92% 2%,rgba(168,217,197,.28),transparent 30%),
+    linear-gradient(145deg,#f7f3ea,#edf4ed 55%,#f6f0f2)!important;
+}
+.atmosphere{opacity:.46;filter:saturate(.76);}
+.grain{opacity:.025;}
+.cursor-glow{background:radial-gradient(circle,rgba(99,179,154,.13),transparent 65%);}
+.sidebar{
+  background:rgba(247,249,242,.82)!important;
+  border:1px solid rgba(255,255,255,.78)!important;
+  box-shadow:18px 0 55px rgba(69,91,80,.1)!important;
+}
+.brand-mark{
+  color:#fff!important;
+  background:linear-gradient(145deg,#e795ad,#71b89f)!important;
+  box-shadow:0 8px 22px rgba(93,149,129,.22)!important;
+}
+.sidebar .logo h1{
+  color:#425249!important;
+  background:none!important;
+  -webkit-text-fill-color:currentColor!important;
+}
+.sidebar .logo small{color:#8c978f!important;}
+.nav-group-title{color:#5d6c64!important;}
+.nav-group-title:hover,
+.nav-group.open>.nav-group-title{background:rgba(255,255,255,.62)!important;color:#35453c!important;}
+.nav-group-title .icon{
+  background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(225,238,228,.92))!important;
+  border-color:rgba(90,132,113,.12)!important;
+  box-shadow:0 5px 14px rgba(90,120,103,.07);
+}
+.nav-child{color:#7b867f!important;}
+.nav-child:hover{background:rgba(255,255,255,.72)!important;color:#48564e!important;}
+.nav-child.active{
+  color:#4d806f!important;
+  background:linear-gradient(90deg,rgba(168,217,197,.3),rgba(255,255,255,.6))!important;
+  border-left-color:#67af96!important;
+  box-shadow:none!important;
+}
+.nav-child.active .dot{background:#67af96!important;box-shadow:0 0 0 4px rgba(103,175,150,.13)!important;}
+.sidebar-status,.sidebar .footer{border-color:rgba(89,115,101,.1)!important;color:#8a958e!important;}
+.status-signal{background:#75b89e!important;box-shadow:0 0 0 5px rgba(117,184,158,.12)!important;}
+.topbar{
+  background:rgba(250,249,243,.74)!important;
+  border-color:rgba(86,112,98,.12)!important;
+  box-shadow:0 8px 32px rgba(67,89,77,.06);
+}
+.topbar .btn-home,.icon-btn,.clock-pill{
+  color:#5f6d65!important;
+  background:rgba(255,255,255,.66)!important;
+  border-color:rgba(86,112,98,.13)!important;
+}
+.hero-panel{
+  background:
+    radial-gradient(circle at 85% 12%,rgba(255,255,255,.62),transparent 25%),
+    linear-gradient(135deg,rgba(255,246,231,.94),rgba(236,247,237,.95) 54%,rgba(248,236,241,.9))!important;
+  border-color:rgba(255,255,255,.84)!important;
+  box-shadow:var(--cozy-shadow)!important;
+}
+.hero-panel::before{background:linear-gradient(90deg,#f1a8b8,#a8d9c5,#d7b8e0)!important;}
+.hero-panel::after{
+  opacity:.35;
+  background-image:radial-gradient(circle,rgba(79,119,99,.34) 1px,transparent 1px)!important;
+}
+.eyebrow{color:#67907f!important;}
+.dash-greeting h2{
+  color:#3f5148!important;
+  background:none!important;
+  -webkit-text-fill-color:currentColor!important;
+}
+.hero-chip{color:#6e7c74!important;background:rgba(255,255,255,.62)!important;border-color:rgba(85,114,99,.11)!important;}
+.hero-chip strong{color:#4c7f6c!important;}
+.hero-emblem{
+  background:linear-gradient(145deg,rgba(255,255,255,.78),rgba(224,240,226,.75))!important;
+  border-color:rgba(102,150,129,.12)!important;
+  box-shadow:0 18px 40px rgba(86,126,107,.14)!important;
+}
+.hero-emblem span{color:#73ae98!important;background:none!important;-webkit-text-fill-color:currentColor!important;}
+.action-center,.risk-center,.stat-card,.quick-btn,.class-list,.cap-summary,#dashProgress{
+  background:var(--cozy-card)!important;
+  border-color:rgba(87,111,98,.12)!important;
+  box-shadow:var(--cozy-shadow)!important;
+}
+.stat-card::before{background:linear-gradient(180deg,#ef9fb4,#a8d9c5)!important;}
+.action-item,.risk-card{background:rgba(255,255,255,.64)!important;border-color:rgba(87,111,98,.11)!important;}
+.quick-btn:hover,.stat-card:hover,.home-card:hover{
+  border-color:rgba(99,174,149,.35)!important;
+  box-shadow:0 18px 40px rgba(78,107,91,.14)!important;
+}
+.quick-btn .qb-icon{
+  display:grid;place-items:center;width:42px;height:42px;border-radius:14px;
+  background:linear-gradient(145deg,#fff,#edf4ec);box-shadow:0 7px 18px rgba(79,107,92,.09);
+}
+.command-backdrop{background:rgba(75,91,82,.22)!important;}
+.command-panel{background:#fffdf8!important;box-shadow:0 30px 90px rgba(72,91,80,.22)!important;}
+
+/* Growth HUD */
+.game-hud{display:flex;align-items:center;gap:6px;}
+.game-pill{
+  display:flex;align-items:center;gap:5px;height:34px;padding:0 10px;border:1px solid rgba(91,119,103,.12);
+  border-radius:999px;background:rgba(255,255,255,.68);color:#66736c;font-size:.62rem;font-weight:750;
+}
+.game-pill strong{color:#466f60;font-size:.68rem;}
+.assistant-launch{position:relative;}
+.assistant-launch::after{
+  content:"";position:absolute;right:4px;top:4px;width:7px;height:7px;border-radius:50%;
+  background:#70b79e;box-shadow:0 0 0 3px rgba(112,183,158,.14);
+}
+
+/* Home garden */
+.garden-card{
+  display:grid;grid-template-columns:minmax(250px,.9fr) minmax(300px,1.2fr);gap:20px;
+  margin:18px 0 20px;padding:22px;border:1px solid rgba(88,116,101,.12);border-radius:26px;
+  background:linear-gradient(145deg,rgba(255,253,247,.94),rgba(234,244,234,.92));
+  box-shadow:var(--cozy-shadow);overflow:hidden;position:relative;
+}
+.garden-card::after{
+  content:"";position:absolute;right:-70px;bottom:-90px;width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle,rgba(247,189,148,.25),transparent 66%);pointer-events:none;
+}
+.plant-zone{display:flex;align-items:center;gap:18px;min-width:0;}
+.plant-pot{
+  display:grid;place-items:center;flex:0 0 112px;width:112px;height:112px;border-radius:36px 36px 48px 48px;
+  background:linear-gradient(145deg,#fff9ed,#e9efe3);border:1px solid rgba(100,130,113,.12);
+  box-shadow:inset 0 -18px 24px rgba(178,147,119,.08),0 13px 30px rgba(74,104,87,.12);
+}
+.plant-emoji{font-size:3.5rem;filter:drop-shadow(0 8px 8px rgba(62,98,77,.13));transition:transform .35s cubic-bezier(.22,1,.36,1);}
+.plant-pot.is-watered .plant-emoji{animation:plant-happy .65s ease;}
+@keyframes plant-happy{35%{transform:translateY(-8px) rotate(-5deg) scale(1.08)}65%{transform:translateY(-3px) rotate(5deg)}}
+.plant-copy h3{font-size:1.05rem;color:#415249;margin-bottom:5px;}
+.plant-copy p{font-size:.7rem;color:#7b877f;line-height:1.6;}
+.water-btn{
+  margin-top:10px;padding:8px 13px;border:0;border-radius:12px;color:#fff;
+  background:linear-gradient(135deg,#70b89f,#8bc6b1);font-size:.7rem;font-weight:750;cursor:pointer;
+  box-shadow:0 8px 18px rgba(92,163,139,.2);
+}
+.growth-zone{display:flex;flex-direction:column;justify-content:center;gap:12px;min-width:0;}
+.growth-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;}
+.growth-head h3{font-size:.92rem;color:#45544c;}
+.growth-head span{font-size:.62rem;color:#7f8a84;}
+.xp-track{height:10px;border-radius:999px;background:rgba(112,145,126,.12);overflow:hidden;}
+.xp-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,#ef9fb4,#ad9bd7,#70b89f);transition:width .55s ease;}
+.reward-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.reward-cell{padding:10px;border-radius:14px;background:rgba(255,255,255,.62);border:1px solid rgba(91,118,104,.1);}
+.reward-cell strong{display:block;font-size:.88rem;color:#4a695c;}
+.reward-cell span{font-size:.6rem;color:#849087;}
+.growth-tip{font-size:.65rem;color:#758179;line-height:1.55;}
+
+/* Companion */
+.companion-backdrop{
+  position:fixed;inset:0;z-index:1000;background:rgba(63,82,71,.2);backdrop-filter:blur(5px);
+  opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.companion-backdrop.open{opacity:1;pointer-events:auto;}
+.companion-panel{
+  position:absolute;right:18px;top:18px;bottom:18px;width:min(410px,calc(100vw - 36px));
+  display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.85);border-radius:26px;
+  background:rgba(255,253,248,.97);box-shadow:0 28px 90px rgba(64,83,72,.25);
+  transform:translateX(24px);transition:transform .28s cubic-bezier(.22,1,.36,1);overflow:hidden;
+}
+.companion-backdrop.open .companion-panel{transform:none;}
+.companion-head{display:flex;align-items:center;gap:11px;padding:17px;border-bottom:1px solid rgba(83,111,96,.1);}
+.companion-avatar{display:grid;place-items:center;width:42px;height:42px;border-radius:15px;background:linear-gradient(145deg,#f7c7a4,#b8dfcf);font-size:1.3rem;}
+.companion-title{flex:1;}
+.companion-title strong{display:block;color:#435249;font-size:.82rem;}
+.companion-title span{font-size:.6rem;color:#859087;}
+.companion-close{width:34px;height:34px;border:0;border-radius:11px;background:#f0f3ed;color:#718078;cursor:pointer;}
+.companion-messages{flex:1;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:11px;}
+.companion-message{max-width:84%;padding:10px 12px;border-radius:15px;font-size:.72rem;line-height:1.65;white-space:pre-wrap;}
+.companion-message.bot{align-self:flex-start;color:#536159;background:#eef4ed;border-bottom-left-radius:5px;}
+.companion-message.user{align-self:flex-end;color:#fff;background:linear-gradient(135deg,#d985a1,#a594cf);border-bottom-right-radius:5px;}
+.companion-suggestions{display:flex;gap:6px;overflow:auto;padding:0 16px 10px;}
+.companion-suggestions button{flex:0 0 auto;padding:7px 10px;border:1px solid rgba(91,119,103,.12);border-radius:999px;background:#fff;color:#607068;font-size:.62rem;cursor:pointer;}
+.companion-form{display:flex;gap:8px;padding:13px 15px calc(13px + env(safe-area-inset-bottom));border-top:1px solid rgba(83,111,96,.1);}
+.companion-form input{flex:1;min-width:0;padding:11px 12px;border:1px solid rgba(91,119,103,.16);border-radius:13px;background:#fff;color:#435249;outline:none;}
+.companion-form button{padding:0 15px;border:0;border-radius:13px;background:linear-gradient(135deg,#73b49c,#9acbb9);color:#fff;font-weight:750;cursor:pointer;}
+
+@media(max-width:1080px){
+  .game-pill:nth-child(2),.game-pill:nth-child(3){display:none;}
+}
+@media(max-width:768px){
+  .game-hud{margin-left:auto;}
+  .game-pill{height:32px;padding:0 8px;}
+  .search-toggle{display:none;}
+  .garden-card{grid-template-columns:1fr;padding:18px;border-radius:22px;}
+  .plant-zone{align-items:flex-start;}
+  .plant-pot{flex-basis:88px;width:88px;height:88px;border-radius:28px 28px 38px 38px;}
+  .plant-emoji{font-size:2.8rem;}
+  .companion-panel{inset:0;width:100%;height:100%;border-radius:0;}
+}
+@media(max-width:430px){
+  .game-pill span{display:none;}
+  .reward-grid{gap:6px;}
+  .reward-cell{padding:9px 7px;}
+}
