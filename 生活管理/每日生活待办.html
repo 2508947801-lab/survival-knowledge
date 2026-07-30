@@ -76,6 +76,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 }
 </style>
 <link id="yaraSystemTheme" rel="stylesheet" href="../yara-system-theme.css?v=3.0">
+<script src="../yara-runtime-config.js?v=1.0"></script>
 <script src="../yara-module-ui.js?v=1.0"></script>
 </head>
 <body data-yara-module="todo-life">
@@ -84,7 +85,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
     <div class="module-kicker"><span class="module-icon">⌂</span><span>生活管理</span></div>
     <h1>每日生活待办</h1>
     <p class="sub">DAILY LIFE TODO · YARA</p>
-    <p class="sync-tip"><span class="dot"></span>云端已连接 · Web 与手机保持同步</p>
+    <p class="sync-tip"><span class="dot"></span>本机数据已就绪 · 配置后可跨设备同步</p>
   </header>
 
   <div class="summary" id="summary"></div>
@@ -125,8 +126,9 @@ const SEED = [
 ];
 
 // ===== 云同步配置（Supabase，复用 yara_todo 表，行 id=life）=====
-const SB_URL = 'https://yyqnugidfwgstlcgvnep.supabase.co';
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cW51Z2lkZndnc3RsY2d2bmVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyMzEzNTAsImV4cCI6MjEwMDgwNzM1MH0.ufK55TfjlF4w98x6Fj28oFjUnYGz4lsY7MRaHVV2aIA';
+const SB_CONFIG = window.YaraRuntimeConfig ? window.YaraRuntimeConfig.supabase() : {url:'',anonKey:'',ready:false};
+const SB_URL = SB_CONFIG.url;
+const SB_KEY = SB_CONFIG.anonKey;
 const SB_ROW = 'life';
 const SB_POLL_MS = 15000;
 let lastSync = 0;
@@ -162,12 +164,14 @@ function sbHeaders(extra){
   return h;
 }
 function cloudLoad(){
+  if(!SB_CONFIG.ready) return Promise.resolve(null);
   return fetch(SB_URL+'/rest/v1/yara_todo?id=eq.'+SB_ROW+'&select=data,updated_at', {headers:sbHeaders()})
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(rows){ return (rows && rows.length) ? rows[0] : null; })
     .catch(function(){ return null; });
 }
 function cloudSave(){
+  if(!SB_CONFIG.ready) return Promise.resolve(false);
   const iso = new Date().toISOString();
   return fetch(SB_URL+'/rest/v1/yara_todo', {
     method:'POST',
@@ -197,6 +201,7 @@ function adoptCloud(row){
   if(changed) cloudSave();
 }
 function initCloud(){
+  if(!SB_CONFIG.ready) return;
   cloudLoad().then(function(row){
     if(!row || !row.data || !row.data.tasks){ cloudSave(); return; }
     if((Date.parse(row.updated_at)||0) > lastSync) adoptCloud(row);

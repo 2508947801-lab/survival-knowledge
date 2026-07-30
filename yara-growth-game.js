@@ -4,8 +4,9 @@
   if (window.YaraGame) return;
 
   var KEY = 'yara_growth_game_v1';
-  var SB_URL = 'https://yyqnugidfwgstlcgvnep.supabase.co';
-  var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5cW51Z2lkZndnc3RsY2d2bmVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUyMzEzNTAsImV4cCI6MjEwMDgwNzM1MH0.ufK55TfjlF4w98x6Fj28oFjUnYGz4lsY7MRaHVV2aIA';
+  var SB_CONFIG = window.YaraRuntimeConfig ? window.YaraRuntimeConfig.supabase() : { url: '', anonKey: '', ready: false };
+  var SB_URL = SB_CONFIG.url;
+  var SB_KEY = SB_CONFIG.anonKey;
   var SB_ROW = 'growth-game';
   var cloudTimer = 0;
   var syncing = false;
@@ -70,7 +71,7 @@
   }
 
   function pushCloud(state) {
-    if (!window.fetch || syncing) return Promise.resolve(false);
+    if (!SB_CONFIG.ready || !window.fetch || syncing) return Promise.resolve(false);
     syncing = true;
     return fetch(SB_URL + '/rest/v1/yara_todo', {
       method: 'POST',
@@ -91,7 +92,7 @@
   }
 
   function syncCloud() {
-    if (!window.fetch) return Promise.resolve(load());
+    if (!SB_CONFIG.ready || !window.fetch) return Promise.resolve(load());
     return fetch(SB_URL + '/rest/v1/yara_todo?id=eq.' + SB_ROW + '&select=data,updated_at', {
       headers: cloudHeaders()
     }).then(function (response) {

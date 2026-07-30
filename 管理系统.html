@@ -765,7 +765,7 @@ body.focus-mode .main{margin-left:0;}
         <span class="icon">🧾</span>对帐工具<span class="arrow">▶</span>
       </div>
       <div class="nav-children">
-        <div class="nav-child" data-src="账号异常对帐工具/对账对比看板.html" data-name="对账对比看板" data-group="对帐工具"><span class="dot"></span>对账对比看板</div>
+        <div class="nav-child" data-src="私密模块说明.html#reconcile" data-name="对账对比看板" data-group="对帐工具"><span class="dot"></span>对账对比看板</div>
       </div>
     </div>
 
@@ -798,7 +798,7 @@ body.focus-mode .main{margin-left:0;}
         <span class="icon">🎯</span>职业发展<span class="arrow">▶</span>
       </div>
       <div class="nav-children">
-        <div class="nav-child" data-src="把把必中/index.html" data-name="把把必中" data-group="职业发展"><span class="dot"></span>简历 × JD 匹配中心</div>
+        <div class="nav-child" data-src="私密模块说明.html#career" data-name="把把必中" data-group="职业发展"><span class="dot"></span>简历 × JD 匹配中心</div>
       </div>
     </div>
 
@@ -829,6 +829,16 @@ body.focus-mode .main{margin-left:0;}
       </div>
       <div class="nav-children">
         <div class="nav-child" data-src="财务管理/记账本.html" data-name="记账本" data-group="财务管理"><span class="dot"></span>记账本</div>
+      </div>
+    </div>
+
+    <!-- 一级：系统设置 -->
+    <div class="nav-group">
+      <div class="nav-group-title" onclick="toggleGroup(this)">
+        <span class="icon">⚙️</span>系统设置<span class="arrow">▶</span>
+      </div>
+      <div class="nav-children">
+        <div class="nav-child" data-src="系统设置.html" data-name="运行配置" data-group="系统设置"><span class="dot"></span>运行配置与云同步</div>
       </div>
     </div>
 
@@ -934,9 +944,9 @@ body.focus-mode .main{margin-left:0;}
           <div class="quick-btn" onclick="openTool('杨家成课表管理工具/高高2980课表生成工具.html','高高2980排课','教务管理')"><span class="qb-icon">📅</span><span class="qb-name">高高排课</span></div>
           <div class="quick-btn" onclick="openTool('运营能力地图/运营能力地图.html','能力地图','运营能力')"><span class="qb-icon">🗺️</span><span class="qb-name">能力地图</span></div>
           <div class="quick-btn" onclick="openTool('运营能力地图/交付运营总系统.html','自查总系统','运营能力')"><span class="qb-icon">⚡</span><span class="qb-name">自查总系统</span></div>
-          <div class="quick-btn" onclick="openTool('账号异常对帐工具/对账对比看板.html','对账对比看板','对帐工具')"><span class="qb-icon">🧾</span><span class="qb-name">对账看板</span></div>
+          <div class="quick-btn" onclick="openTool('私密模块说明.html#reconcile','对账对比看板','对帐工具')"><span class="qb-icon">🧾</span><span class="qb-name">对账看板</span></div>
           <div class="quick-btn" onclick="openTool('index.html','每日生存知识系统','日报系统')"><span class="qb-icon">📰</span><span class="qb-name">日报系统</span></div>
-          <div class="quick-btn" onclick="openTool('把把必中/index.html','把把必中','职业发展')"><span class="qb-icon">🎯</span><span class="qb-name">把把必中</span></div>
+          <div class="quick-btn" onclick="openTool('私密模块说明.html#career','把把必中','职业发展')"><span class="qb-icon">🎯</span><span class="qb-name">把把必中</span></div>
           <div class="quick-btn" onclick="openTool('工作管理/每日工作待办.html','每日工作待办','工作管理')"><span class="qb-icon">✅</span><span class="qb-name">每日待办</span></div>
           <div class="quick-btn" onclick="openTool('生活管理/每日生活待办.html','每日生活待办','生活管理')"><span class="qb-icon">🏠</span><span class="qb-name">生活待办</span></div>
           <div class="quick-btn" onclick="openTool('财务管理/记账本.html','记账本','财务管理')"><span class="qb-icon">💰</span><span class="qb-name">记账本</span></div>
@@ -989,11 +999,12 @@ body.focus-mode .main{margin-left:0;}
   </aside>
 </div>
 
+<script src="yara-runtime-config.js?v=1.0"></script>
 <script src="yara-system-core.js?v=1.2"></script>
 <script src="yara-growth-game.js?v=1.0"></script>
 <script>
 // 构建版本号：部署时由「一键部署.command」替换为时间戳，用于强制手机端拉取最新工具（防止缓存导致 web/手机不一致）。本地打开时保持 'DEV'。
-var BUILD_VERSION = '20260730183242';
+var BUILD_VERSION = '20260730191809';
 
 function toggleGroup(el){
   var group = el.closest('.nav-group');

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN" data-yara-theme="dawn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#eef4ed">
+  <title>系统设置 · Yara</title>
+  <style>
+    :root{--bg:#eef4ed;--card:#fffdf8;--ink:#405047;--sub:#7c8981;--line:rgba(78,109,92,.14);--mint:#62a98f;--danger:#c95d76;--shadow:0 16px 45px rgba(70,95,81,.11);--font:"Avenir Next","MiSans","HarmonyOS Sans SC","PingFang SC",sans-serif}
+    *{box-sizing:border-box;margin:0;padding:0}body{min-height:100vh;padding:30px 16px 70px;color:var(--ink);font:400 14px/1.7 var(--font);background:radial-gradient(circle at 6% 0,rgba(247,189,148,.2),transparent 28%),radial-gradient(circle at 96% 2%,rgba(168,217,197,.26),transparent 30%),var(--bg)}
+    .wrap{width:min(760px,100%);margin:auto}.hero,.card{border:1px solid rgba(255,255,255,.8);border-radius:24px;background:rgba(255,253,248,.94);box-shadow:var(--shadow)}
+    .hero{padding:24px;background:linear-gradient(135deg,#fff7eb,#eaf5ec)}.kicker{color:#5b917d;font-size:.68rem;font-weight:800;letter-spacing:.1em}.hero h1{margin-top:8px;font-size:1.8rem;letter-spacing:-.04em}.hero p{margin-top:5px;color:var(--sub);font-size:.74rem}
+    .card{margin-top:16px;padding:22px}.card h2{font-size:1rem}.card>p{margin-top:5px;color:var(--sub);font-size:.7rem}.field{margin-top:14px}.field label{display:block;margin-bottom:5px;color:#65746b;font-size:.68rem;font-weight:750}
+    input{width:100%;min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);font:inherit;outline:0}input:focus{border-color:var(--mint);box-shadow:0 0 0 3px rgba(98,169,143,.1)}
+    .actions{display:flex;gap:8px;margin-top:17px}.btn{min-height:42px;padding:0 15px;border:1px solid var(--line);border-radius:12px;background:#fff;color:#66756c;font:750 .72rem var(--font);cursor:pointer}.btn.primary{border:0;color:#fff;background:linear-gradient(135deg,#62a98f,#84c0aa)}.btn.danger{color:var(--danger)}
+    .status{display:flex;align-items:center;gap:8px;margin-top:16px;padding:11px 12px;border-radius:13px;background:#f2f5ef;color:#748178;font-size:.68rem}.status i{width:8px;height:8px;border-radius:50%;background:#a7b0aa}.status.ready i{background:#62a98f;box-shadow:0 0 0 4px rgba(98,169,143,.12)}
+    .notice{margin-top:16px;padding:13px;border-left:3px solid #dfa575;border-radius:0 12px 12px 0;background:#fff3e8;color:#80664f;font-size:.68rem}.code{margin-top:12px;padding:12px;border-radius:12px;background:#f3f5f1;color:#5f6f65;font:600 .66rem/1.7 ui-monospace,SFMono-Regular,Menlo,monospace;word-break:break-all}
+    @media(max-width:560px){body{padding:14px 10px 60px}.hero,.card{padding:18px;border-radius:19px}.actions{flex-direction:column}}
+  </style>
+  <link id="yaraSystemTheme" rel="stylesheet" href="yara-system-theme.css?v=3.1">
+  <script src="yara-runtime-config.js?v=1.0"></script>
+  <script src="yara-module-ui.js?v=1.1"></script>
+</head>
+<body data-yara-module="settings">
+  <main class="wrap">
+    <header class="hero">
+      <div class="kicker">YARA PRIVATE RUNTIME</div>
+      <h1>系统设置</h1>
+      <p>连接信息只保存在当前浏览器，不写入公开源码，也不会出现在 GitHub Pages 文件中。</p>
+    </header>
+    <section class="card">
+      <h2>Supabase 云同步</h2>
+      <p>换电脑或浏览器后需要配置一次。只允许使用 anon/public key，严禁填写 service_role key。</p>
+      <div class="field"><label for="supabaseUrl">Project URL</label><input id="supabaseUrl" placeholder="https://xxxx.supabase.co" autocomplete="off"></div>
+      <div class="field"><label for="supabaseKey">Anon / Public Key</label><input id="supabaseKey" type="password" placeholder="粘贴 Supabase anon key" autocomplete="off"></div>
+      <div class="actions"><button class="btn primary" id="saveConfig">保存到本机</button><button class="btn" id="toggleKey">显示/隐藏密钥</button><button class="btn danger" id="clearConfig">清除本机配置</button></div>
+      <div class="status" id="configStatus"><i></i><span>尚未配置，系统将使用本机离线数据。</span></div>
+      <div class="notice">静态网页无法真正隐藏浏览器正在使用的 anon key。安全边界必须由 Supabase RLS策略承担；service_role等高权限密钥永远不能放进网页或 Skill。</div>
+    </section>
+    <section class="card">
+      <h2>换电脑提示</h2>
+      <p>克隆私有源码后，先按照 <strong>docs/RESTORE-CHECKLIST.md</strong> 完成恢复，再在此页配置云同步。</p>
+      <div class="code">先读取项目根目录的 AGENTS.md，并使用 yara-system-maintainer Skill 维护系统，不得修改既有数据键和业务逻辑。</div>
+    </section>
+  </main>
+  <script>
+    (function(){
+      var url=document.getElementById('supabaseUrl'),key=document.getElementById('supabaseKey'),status=document.getElementById('configStatus');
+      function render(){
+        var config=YaraRuntimeConfig.load();
+        url.value=config.supabaseUrl||'';
+        key.value=config.supabaseAnonKey||'';
+        status.classList.toggle('ready',!!(config.supabaseUrl&&config.supabaseAnonKey));
+        status.querySelector('span').textContent=config.supabaseUrl&&config.supabaseAnonKey?'已配置 · '+config.supabaseUrl.replace(/^https?:\/\//,''):'尚未配置，系统将使用本机离线数据。';
+      }
+      document.getElementById('saveConfig').addEventListener('click',function(){
+        try{YaraRuntimeConfig.save({supabaseUrl:url.value,supabaseAnonKey:key.value});render();YaraModuleUI.notify('云同步配置已保存在当前浏览器');}
+        catch(error){YaraModuleUI.notify(error.message||'配置保存失败','warning');}
+      });
+      document.getElementById('toggleKey').addEventListener('click',function(){key.type=key.type==='password'?'text':'password';});
+      document.getElementById('clearConfig').addEventListener('click',function(){
+        YaraModuleUI.confirm({title:'清除当前浏览器的云同步配置？',message:'不会删除云端数据，但本机将暂停同步。',confirmText:'确认清除'}).then(function(ok){if(ok){YaraRuntimeConfig.clear();render();YaraModuleUI.notify('本机配置已清除');}});
+      });
+      render();
+    })();
+  </script>
+</body>
+</html>
