@@ -103,8 +103,10 @@ tr.changed-row td:first-child{border-left:3px solid var(--warning)}
 input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--info)}
 .date-input-inline{padding:4px 8px;border:1px solid var(--border2);border-radius:4px;background:var(--bg);color:var(--text);font-size:13px}
 </style>
+<link id="yaraSystemTheme" rel="stylesheet" href="../yara-system-theme.css?v=3.1">
+<link rel="stylesheet" href="../yara-deep-module.css?v=1.5">
 </head>
-<body>
+<body data-yara-module="schedule-gaogao">
 <h1>高高2980·课表管理工具</h1>
 <h2>导入模板 → 编辑课表 → 生成课节管理 → 生成章节关联课节</h2>
 
@@ -1204,5 +1206,7 @@ function formatDateNoPad(d) {
 // ==================== Init ====================
 renderHolidayList();
 </script>
+<script id="yaraSystemBridge" src="../yara-system-bridge.js?v=1.4"></script>
+<script src="../yara-deep-module.js?v=1.5"></script>
 </body>
 </html>

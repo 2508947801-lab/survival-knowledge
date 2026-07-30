@@ -239,8 +239,10 @@
   .deferred-row td { background: #f8ece7 !important; }
   .deferred-row:hover td { background: #f5e3de !important; }
 </style>
+<link id="yaraSystemTheme" rel="stylesheet" href="../yara-system-theme.css?v=3.1">
+<link rel="stylesheet" href="../yara-deep-module.css?v=1.5">
 </head>
-<body>
+<body data-yara-module="academic">
 <div class="app">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
@@ -1027,5 +1029,7 @@ document.addEventListener('DOMContentLoaded', () => {
   switchModule('dashboard');
 });
 </script>
+<script id="yaraSystemBridge" src="../yara-system-bridge.js?v=1.4"></script>
+<script src="../yara-deep-module.js?v=1.5"></script>
 </body>
 </html>
