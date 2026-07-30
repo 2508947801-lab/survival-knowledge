@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>语言事业部主课表中心</title>
+  <link rel="stylesheet" href="../yara-system-theme.css?v=3.1">
+  <link rel="stylesheet" href="../yara-deep-module.css?v=1.6">
+  <link rel="stylesheet" href="../yara-master-schedule.css?v=1.0">
+</head>
+<body data-yara-module="master-schedule">
+  <main class="master-shell">
+    <header class="master-hero">
+      <div>
+        <div class="master-kicker">YARA ACADEMIC SOURCE · SINGLE SOURCE OF TRUTH</div>
+        <h1>语言事业部主课表</h1>
+        <p>系统内直接维护章节、课节、时间与各类 ID；保存后，教务首页、今日课程与关联排课模块同步刷新。</p>
+      </div>
+      <div class="master-meta">
+        <span class="master-chip" id="cloudChip" data-status="local">本机数据已保存</span>
+        <span class="master-chip" id="revisionChip">修订 1</span>
+      </div>
+    </header>
+
+    <section class="master-stats" aria-label="主课表摘要">
+      <article class="master-stat"><span>项目</span><strong id="statProjects">—</strong></article>
+      <article class="master-stat"><span>期班</span><strong id="statPeriods">—</strong></article>
+      <article class="master-stat"><span>课节</span><strong id="statLessons">—</strong></article>
+      <article class="master-stat"><span>当前筛选</span><strong id="statVisible">—</strong></article>
+    </section>
+
+    <section class="master-workbook" aria-label="可编辑主课表">
+      <div class="master-toolbar">
+        <label class="master-field"><span>项目</span><select id="projectSelect"></select></label>
+        <label class="master-field"><span>期班</span><select id="periodSelect"></select></label>
+        <label class="master-field master-search"><span>搜索</span><input id="searchInput" placeholder="课节、章节、课节ID、作业ID…"></label>
+        <label class="master-field"><span>状态</span>
+          <select id="statusSelect">
+            <option value="">全部状态</option>
+            <option value="待上">待上</option>
+            <option value="今日待上">今日待上</option>
+            <option value="已完成">已完成</option>
+            <option value="未排">未排</option>
+            <option value="赠课">赠课</option>
+          </select>
+        </label>
+        <div class="master-actions">
+          <button class="master-btn primary" id="addButton" type="button" data-yara-operation="save">＋ 新增课节</button>
+          <button class="master-btn" id="duplicateButton" type="button" disabled>复制所选</button>
+          <button class="master-btn" id="undoButton" type="button">撤销</button>
+          <button class="master-btn" id="syncButton" type="button">立即云同步</button>
+          <button class="master-btn" id="exportButton" type="button" data-yara-operation="export">导出 CSV</button>
+          <button class="master-btn danger" id="deleteButton" type="button" disabled>删除所选</button>
+        </div>
+      </div>
+
+      <nav class="master-sheet-tabs" id="periodTabs" aria-label="期班工作表"></nav>
+
+      <div class="master-table-wrap">
+        <table class="master-table">
+          <colgroup>
+            <col style="width:46px"><col style="width:72px"><col style="width:260px">
+            <col style="width:350px"><col style="width:154px"><col style="width:105px">
+            <col style="width:105px"><col style="width:150px"><col style="width:88px">
+            <col style="width:116px">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>#</th><th>序号</th><th>章节</th><th>课节名称</th><th>行课时间</th>
+              <th>课节ID</th><th>作业ID</th><th>视频ID</th><th>状态</th><th>来源</th>
+            </tr>
+          </thead>
+          <tbody id="scheduleBody"></tbody>
+        </table>
+        <div class="master-empty" id="emptyState" hidden>当前筛选没有课节。</div>
+      </div>
+
+      <footer class="master-footer">
+        <span id="sourceNote">数据源：语言事业部总课表.xlsx</span>
+        <span>修改单元格后自动保存 · 状态随行课时间自动计算 · 删除支持撤销</span>
+      </footer>
+    </section>
+  </main>
+
+  <div class="master-toast" id="masterToast" role="status" aria-live="polite"></div>
+
+  <script src="../yara-runtime-config.js?v=1.0"></script>
+  <script src="../yara-master-schedule-seed.js?v=1.0"></script>
+  <script src="../yara-master-schedule.js?v=1.0"></script>
+  <script src="../yara-module-ui.js?v=1.0"></script>
+  <script src="../yara-master-schedule-editor.js?v=1.0"></script>
+  <script id="yaraSystemBridge" src="../yara-system-bridge.js?v=1.4"></script>
+</body>
+</html>

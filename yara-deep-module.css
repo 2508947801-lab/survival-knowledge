@@ -563,7 +563,29 @@ body[data-yara-module="career"] .jd-source pre{margin:0 18px 18px;padding:18px;b
   .yara-detail-backdrop.open .yara-detail-drawer{transform:translateY(0)}
 }
 
+/* 主课表与排课工具的双向联动入口 */
+.yara-master-link{display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:14px 20px;align-items:center;margin:14px 0 22px;padding:18px 20px;border:1px solid rgba(91,91,214,.18);border-radius:18px;background:radial-gradient(circle at 5% 10%,rgba(114,188,154,.17),transparent 32%),linear-gradient(135deg,rgba(255,255,255,.98),rgba(244,244,255,.96));box-shadow:0 12px 34px rgba(59,64,105,.09)}
+.yara-master-link-copy{min-width:0}
+.yara-master-link-copy strong{display:block;margin-top:3px;color:#29304a;font-size:16px}
+.yara-master-link-copy p{margin:5px 0 0;color:#70758a;font-size:13px}
+.yara-master-kicker{color:#6a6bd7;font-size:10px;font-weight:800;letter-spacing:.16em}
+.yara-master-actions{display:flex;align-items:end;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.yara-master-actions label{display:grid;gap:4px;color:#70758a;font-size:11px;font-weight:700}
+.yara-master-actions select,.yara-master-actions button{min-height:38px;border:1px solid rgba(91,91,214,.2);border-radius:11px;background:#fff;color:#30364c;font:inherit}
+.yara-master-actions select{min-width:118px;padding:0 32px 0 11px}
+.yara-master-actions button{padding:0 13px;cursor:pointer;font-size:12px;font-weight:750;transition:transform .18s ease,box-shadow .18s ease}
+.yara-master-actions button:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(59,64,105,.12)}
+.yara-master-actions button.is-primary{border-color:transparent;background:linear-gradient(135deg,#6b6cdb,#55af93);color:#fff}
+.yara-master-status{grid-column:1/-1;min-height:26px;padding:6px 10px;border-radius:9px;background:rgba(85,175,147,.1);color:#397965;font-size:12px}
+.yara-master-status[data-tone="warning"]{background:rgba(232,168,74,.13);color:#a36715}
+.yara-master-status[data-tone="success"]{background:rgba(85,175,147,.13);color:#397965}
+@media(max-width:760px){
+  .yara-master-link{grid-template-columns:1fr;padding:16px}
+  .yara-master-actions{display:grid;grid-template-columns:1fr 1fr;justify-content:stretch}
+  .yara-master-actions label{grid-column:1/-1}
+  .yara-master-actions select,.yara-master-actions button{width:100%}
+}
+
 @media(prefers-reduced-motion:reduce){
   body[data-yara-module] *,body[data-yara-module] *::before,body[data-yara-module] *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
-

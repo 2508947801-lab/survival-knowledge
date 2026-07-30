@@ -742,6 +742,7 @@ body.focus-mode .main{margin-left:0;}
       </div>
       <div class="nav-children">
         <div class="nav-child" data-src="运营能力地图/academic-system.html" data-name="建课系统" data-group="教务管理"><span class="dot"></span>建课系统</div>
+        <div class="nav-child" data-src="运营能力地图/master-schedule.html" data-name="主课表中心" data-group="教务管理"><span class="dot"></span>主课表中心</div>
         <div class="nav-child" data-src="杨家成课表管理工具/课表批量生成工具.html" data-name="杨家成排课" data-group="教务管理"><span class="dot"></span>杨家成3980排课</div>
         <div class="nav-child" data-src="杨家成课表管理工具/之昊3980课表生成工具.html" data-name="之昊排课" data-group="教务管理"><span class="dot"></span>之昊3980排课</div>
         <div class="nav-child" data-src="杨家成课表管理工具/高高2980课表生成工具.html" data-name="高高排课" data-group="教务管理"><span class="dot"></span>高高2980排课</div>
@@ -938,6 +939,7 @@ body.focus-mode .main{margin-left:0;}
       <div class="dash-section">
         <div class="dash-section-title"><span class="icon">🔧</span>快捷入口</div>
         <div class="quick-grid">
+          <div class="quick-btn" onclick="openTool('运营能力地图/master-schedule.html','主课表中心','教务管理')"><span class="qb-icon">🧾</span><span class="qb-name">主课表中心</span></div>
           <div class="quick-btn" onclick="openTool('运营能力地图/academic-system.html','建课系统','教务管理')"><span class="qb-icon">📚</span><span class="qb-name">建课系统</span></div>
           <div class="quick-btn" onclick="openTool('杨家成课表管理工具/课表批量生成工具.html','杨家成3980排课','教务管理')"><span class="qb-icon">📅</span><span class="qb-name">杨家成排课</span></div>
           <div class="quick-btn" onclick="openTool('杨家成课表管理工具/之昊3980课表生成工具.html','之昊3980排课','教务管理')"><span class="qb-icon">📅</span><span class="qb-name">之昊排课</span></div>
@@ -1000,11 +1002,13 @@ body.focus-mode .main{margin-left:0;}
 </div>
 
 <script src="yara-runtime-config.js?v=1.0"></script>
+<script src="yara-master-schedule-seed.js?v=1.0"></script>
+<script src="yara-master-schedule.js?v=1.0"></script>
 <script src="yara-system-core.js?v=1.2"></script>
 <script src="yara-growth-game.js?v=1.0"></script>
 <script>
 // 构建版本号：部署时由「一键部署.command」替换为时间戳，用于强制手机端拉取最新工具（防止缓存导致 web/手机不一致）。本地打开时保持 'DEV'。
-var BUILD_VERSION = '20260730200227';
+var BUILD_VERSION = '20260730204425';
 
 function toggleGroup(el){
   var group = el.closest('.nav-group');
@@ -1086,6 +1090,7 @@ function closeFrameLoader(){
 
 function detectModuleType(pathname, title){
   var source = decodeURIComponent((pathname || '') + ' ' + (title || ''));
+  if(source.indexOf('master-schedule') >= 0 || source.indexOf('语言事业部主课表') >= 0) return 'academic';
   if(source.indexOf('academic-system') >= 0 || source.indexOf('智能化教务管理系统') >= 0) return 'academic';
   if(source.indexOf('课表生成工具') >= 0 || source.indexOf('课表批量生成工具') >= 0) return 'schedule';
   if(source.indexOf('交付运营总系统') >= 0) return 'opsos';
@@ -1719,6 +1724,9 @@ async function loadDashboard(){
     var m = txt.match(/const COURSE_DATA = (\{.+\});/);
     if(m) DASH_DATA = JSON.parse(m[1]);
   }catch(e){}
+  if(window.YaraMasterSchedule){
+    DASH_DATA = window.YaraMasterSchedule.getCourseData(DASH_DATA || {});
+  }
   if(!DASH_DATA){
     document.getElementById('dashStats').innerHTML = '<div class="dash-loading">课表数据暂无法加载</div>';
     return;
@@ -1734,6 +1742,11 @@ async function loadDashboard(){
 }
 
 loadDashboard();
+if(window.YaraMasterSchedule){
+  window.YaraMasterSchedule.subscribe(function(){
+    loadDashboard();
+  });
+}
 </script>
 </body>
 </html>
