@@ -189,6 +189,69 @@
     });
   }
 
+  function navigateBack(message) {
+    var payload = (message && message.payload) || {};
+    var detail = {
+      targetLevel: Math.max(2, Number(payload.targetLevel) || 2),
+      target: payload.target || null
+    };
+
+    if (window.YaraDeepModule && typeof window.YaraDeepModule.back === 'function') {
+      if (window.YaraDeepModule.back(detail) !== false) return;
+    }
+
+    var navigationEvent;
+    try {
+      navigationEvent = new CustomEvent('yara:navigate-back', {
+        cancelable: true,
+        detail: detail
+      });
+      if (!document.dispatchEvent(navigationEvent)) return;
+    } catch (error) {}
+
+    var openDetails = Array.prototype.slice.call(document.querySelectorAll('details[open]')).pop();
+    if (openDetails) {
+      openDetails.open = false;
+      reportRoute();
+      return;
+    }
+
+    var openLayer = Array.prototype.slice.call(document.querySelectorAll(
+      'dialog[open],.modal.open,.modal.show,.modal-backdrop.open,.drawer.open,[aria-modal="true"].open'
+    )).pop();
+    if (openLayer) {
+      var closeControl = openLayer.querySelector(
+        '[data-action*="close"],[data-close],.modal-close,.drawer-close,[aria-label*="关闭"],[aria-label*="返回"]'
+      );
+      if (closeControl) {
+        closeControl.click();
+        reportRoute();
+        return;
+      }
+    }
+
+    if (detail.targetLevel <= 2) {
+      post('route', {
+        label: document.body.dataset.yaraName || document.title,
+        level: 2,
+        path: location.pathname,
+        hash: location.hash
+      });
+      return;
+    }
+
+    if (window.history && history.length > 1) {
+      history.back();
+    } else {
+      post('route', Object.assign({
+        label: document.title,
+        level: detail.targetLevel,
+        path: location.pathname,
+        hash: location.hash
+      }, detail.target || {}));
+    }
+  }
+
   window.addEventListener('message', function (event) {
     if (event.source !== window.parent) return;
     var message = event.data || {};
@@ -202,7 +265,7 @@
       document.documentElement.dataset.yaraTheme = message.theme || 'twilight';
     }
     if (message.type === 'refresh-snapshot') reportSnapshot(0);
-    if (message.type === 'navigate-back') history.back();
+    if (message.type === 'navigate-back') navigateBack(message);
   });
 
   document.addEventListener('click', function (event) {

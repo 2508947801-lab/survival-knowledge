@@ -67,7 +67,8 @@
     backdrop.setAttribute('aria-hidden', 'true');
     backdrop.innerHTML =
       '<aside class="yara-detail-drawer" role="dialog" aria-modal="true" aria-labelledby="yaraDetailTitle">' +
-        '<header class="yara-detail-head"><div><div class="yara-detail-kicker">DETAIL / 04</div><h2 id="yaraDetailTitle">详情</h2></div>' +
+        '<header class="yara-detail-head"><button class="yara-detail-parent" type="button" aria-label="返回上一级">← <span>返回上一级</span></button>' +
+        '<div class="yara-detail-heading"><div class="yara-detail-kicker">DETAIL / 04</div><h2 id="yaraDetailTitle">详情</h2></div>' +
         '<button class="yara-detail-close" type="button" aria-label="关闭详情">×</button></header>' +
         '<div class="yara-detail-grid"></div><p class="yara-detail-hint">该详情层只读取当前页面信息，不修改任何底层数据。</p>' +
       '</aside>';
@@ -78,6 +79,7 @@
       backdrop.setAttribute('aria-hidden', 'true');
       returnToParent();
     }
+    backdrop.querySelector('.yara-detail-parent').addEventListener('click', close);
     backdrop.querySelector('.yara-detail-close').addEventListener('click', close);
     backdrop.addEventListener('click', function (event) {
       if (event.target === backdrop) close();
@@ -86,6 +88,8 @@
       if (event.key === 'Escape' && backdrop.classList.contains('open')) close();
     });
     return {
+      close: close,
+      isOpen: function () { return backdrop.classList.contains('open'); },
       open: function (title, fields) {
         backdrop.querySelector('#yaraDetailTitle').textContent = clean(title) || '详情';
         backdrop.querySelector('.yara-detail-grid').innerHTML = fields.map(function (field) {
@@ -107,6 +111,45 @@
   }
 
   var drawer = makeDrawer();
+
+  function navigateBack(detail) {
+    detail = detail || {};
+    if (drawer.isOpen()) {
+      drawer.close();
+      return true;
+    }
+
+    var openDetails = Array.prototype.slice.call(document.querySelectorAll('details[open]')).pop();
+    if (openDetails) {
+      openDetails.open = false;
+      returnToParent();
+      return true;
+    }
+
+    var openLayer = Array.prototype.slice.call(document.querySelectorAll(
+      '.modal.open,.modal.show,.modal-backdrop.open,.modal-backdrop.show,[aria-modal="true"].open'
+    )).pop();
+    if (openLayer) {
+      var closeControl = openLayer.querySelector(
+        '[data-action="close-jd-modal"],[data-action*="close"],[data-close],.modal-close,[aria-label*="关闭"]'
+      );
+      if (closeControl) {
+        closeControl.click();
+        setTimeout(returnToParent, 0);
+        return true;
+      }
+    }
+
+    if (Number(detail.targetLevel) <= 2) {
+      clearHash('detail');
+      clearHash('job');
+      route(document.body.dataset.yaraName || document.title, 2, { detail: false, parent: true });
+      return true;
+    }
+
+    returnToParent();
+    return true;
+  }
 
   function tableDetails(row) {
     if (!row || row.classList.contains('chapter-row')) return;
@@ -321,6 +364,11 @@
   if (moduleType === 'academic') enhanceAcademic();
   if (moduleType.indexOf('schedule-') === 0) enhanceSchedule();
   if (moduleType === 'career') enhanceCareer();
+
+  window.YaraDeepModule = {
+    back: navigateBack,
+    returnToParent: returnToParent
+  };
 
   enhanceTableRows(document);
   var enhanceTimer = 0;

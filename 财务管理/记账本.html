@@ -86,6 +86,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 /* ledger */
 .filter-row{display:flex;gap:8px;margin-bottom:10px;}
 .filter-row select{flex:1;border:1px solid var(--border);border-radius:9px;padding:7px 9px;font-size:.8rem;font-family:inherit;background:#fff;}
+.import-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 11px;padding:10px 11px;border:1px dashed rgba(5,150,105,.32);border-radius:11px;background:linear-gradient(135deg,rgba(231,246,240,.88),rgba(255,255,255,.92));}
+.import-copy{min-width:0;}
+.import-copy strong{display:block;font-size:.78rem;color:var(--ink);}
+.import-copy span{display:block;margin-top:1px;font-size:.68rem;color:var(--sub);line-height:1.45;}
+.import-btn{flex:0 0 auto;border:1px solid rgba(5,150,105,.28);background:#fff;color:var(--primary);border-radius:9px;padding:7px 11px;font-size:.76rem;font-weight:750;font-family:inherit;cursor:pointer;}
+.import-btn:hover{background:var(--primary);border-color:var(--primary);color:#fff;}
 .tx{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid #f1f5f9;}
 .tx:last-child{border-bottom:none;}
 .tx-ico{width:34px;height:34px;flex:0 0 34px;border-radius:9px;background:var(--primary-l);display:flex;align-items:center;justify-content:center;font-size:1rem;}
@@ -120,6 +126,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 @media(max-width:560px){
   .sum-grid{grid-template-columns:repeat(2,1fr);}
   .goal-form{grid-template-columns:1fr;}
+  .import-row{align-items:flex-start;}
+  .import-copy span{max-width:220px;}
 }
 </style>
 <link id="yaraSystemTheme" rel="stylesheet" href="../yara-system-theme.css?v=3.0">
@@ -220,6 +228,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
         <option value="income">只看收入</option>
       </select>
       <select id="filterCat"><option value="all">全部分类</option></select>
+    </div>
+    <div class="import-row">
+      <div class="import-copy">
+        <strong>批量导入流水</strong>
+        <span>使用 Yara 账本 JSON；固定交易 ID 自动跳过重复记录</span>
+      </div>
+      <button class="import-btn" id="importLedgerBtn" type="button">选择文件</button>
+      <input id="ledgerImportFile" type="file" accept=".json,application/json" hidden>
     </div>
     <div id="txList"></div>
   </div>
@@ -385,6 +401,73 @@ function addTx(type, amount, date, category, account, note){
   });
   sortTx(); save(); render(); YaraModuleUI.notify(type==='expense'?'支出记录已保存':'收入记录已保存');
   return true;
+}
+function validateImportTx(tx){
+  if(!tx || typeof tx!=='object') return null;
+  const type=tx.type==='income'?'income':tx.type==='expense'?'expense':'';
+  const amount=Math.round(parseFloat(tx.amount)*100)/100;
+  const date=String(tx.date||'').slice(0,10);
+  const id=String(tx.id||'').trim();
+  if(!id || !type || !amount || amount<=0 || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return null;
+  return Object.assign({}, tx, {
+    id:id, type:type, amount:amount, date:date,
+    category:String(tx.category||'其他').trim()||'其他',
+    account:String(tx.account||'其他').trim()||'其他',
+    note:String(tx.note||'').trim(),
+    created:Number(tx.created)||Date.now()
+  });
+}
+function prepareLedgerImport(payload){
+  if(!payload || payload.kind!=='yara-ledger-import' || !Array.isArray(payload.transactions)){
+    throw new Error('这不是有效的 Yara 账本导入文件');
+  }
+  const seen=new Set();
+  const valid=[];
+  let invalid=0;
+  payload.transactions.forEach(function(raw){
+    const tx=validateImportTx(raw);
+    if(!tx || seen.has(tx.id)){ invalid++; return; }
+    seen.add(tx.id); valid.push(tx);
+  });
+  const existing=new Set(state.transactions.map(function(tx){ return tx.id; }));
+  const deleted=new Set(state.deletedIds||[]);
+  const fresh=valid.filter(function(tx){ return !existing.has(tx.id) && !deleted.has(tx.id); });
+  return {
+    valid:valid, fresh:fresh, invalid:invalid,
+    duplicate:valid.length-fresh.length,
+    categories:payload.categories||{},
+    accounts:Array.isArray(payload.accounts)?payload.accounts:[]
+  };
+}
+function commitLedgerImport(batch){
+  if(!batch.fresh.length) return 0;
+  batch.fresh.forEach(function(tx){ state.transactions.push(tx); });
+  state.categories.expense=unionArr(state.categories.expense, batch.categories.expense||[]);
+  state.categories.income=unionArr(state.categories.income, batch.categories.income||[]);
+  state.accounts=unionArr(state.accounts, batch.accounts);
+  sortTx(); save(); render();
+  return batch.fresh.length;
+}
+function loadPendingLocalLedgerImport(){
+  const isLocal=location.protocol==='file:' || location.hostname==='127.0.0.1' || location.hostname==='localhost';
+  if(!isLocal) return;
+  const loader=document.createElement('script');
+  loader.src='../private-data/'+'ledger-pending-import.js?v='+Date.now();
+  loader.onload=function(){
+    const payload=window.YaraPendingLedgerImport;
+    delete window.YaraPendingLedgerImport;
+    if(!payload) return;
+    try{
+      const batch=prepareLedgerImport(payload);
+      if(!batch.fresh.length) return;
+      const count=commitLedgerImport(batch);
+      YaraModuleUI.notify('本机账单已自动导入 '+count+' 条，重复记录已跳过');
+    }catch(error){
+      YaraModuleUI.notify('本机账单自动导入失败，请改用“选择文件”导入','error');
+    }
+  };
+  loader.onerror=function(){ loader.remove(); };
+  document.head.appendChild(loader);
 }
 function delTx(id){
   const i=state.transactions.findIndex(function(x){ return x.id===id; });
@@ -704,6 +787,34 @@ function shiftMonth(n){
 
 document.getElementById('filterType').addEventListener('change',renderTxList);
 document.getElementById('filterCat').addEventListener('change',renderTxList);
+document.getElementById('importLedgerBtn').addEventListener('click',function(){
+  document.getElementById('ledgerImportFile').click();
+});
+document.getElementById('ledgerImportFile').addEventListener('change',function(event){
+  const input=event.currentTarget;
+  const file=input.files&&input.files[0];
+  if(!file) return;
+  file.text().then(function(text){
+    const payload=JSON.parse(text);
+    const batch=prepareLedgerImport(payload);
+    if(!batch.fresh.length){
+      YaraModuleUI.notify('没有需要新增的流水：文件中的记录已导入或曾被删除');
+      return;
+    }
+    return YaraModuleUI.confirm({
+      title:'导入 '+batch.fresh.length+' 条新流水？',
+      message:'已识别 '+batch.valid.length+' 条有效记录；'+batch.duplicate+' 条重复/已删除记录会跳过，'+batch.invalid+' 条无效记录不会导入。确认后将保存到本机，并沿用现有云同步。',
+      confirmText:'确认导入',
+      cancelText:'取消'
+    }).then(function(confirmed){
+      if(!confirmed) return;
+      const count=commitLedgerImport(batch);
+      YaraModuleUI.notify('已导入 '+count+' 条流水，重复记录已自动跳过');
+    });
+  }).catch(function(error){
+    YaraModuleUI.notify(error&&error.message?error.message:'导入失败，请检查文件格式','error');
+  }).finally(function(){ input.value=''; });
+});
 
 document.getElementById('txList').addEventListener('click',function(e){
   const tx=e.target.closest('.tx'); if(!tx) return;
@@ -787,7 +898,8 @@ function saveGoal(){
 document.getElementById('fDate').value=todayStr();
 render();
 initCloud();
+loadPendingLocalLedgerImport();
 </script>
-<script id="yaraSystemBridge" src="../yara-system-bridge.js?v=1.4"></script>
+<script id="yaraSystemBridge" src="../yara-system-bridge.js?v=1.5"></script>
 </body>
 </html>

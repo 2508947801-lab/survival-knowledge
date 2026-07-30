@@ -248,6 +248,25 @@ body.pointer-active .cursor-glow{opacity:1;}
   box-shadow:24px 0 70px rgba(4,8,20,.18);
   transition:transform .35s cubic-bezier(.22,1,.36,1),width .35s ease;
 }
+.sidebar-collapse-btn{
+  position:absolute;
+  z-index:3;
+  top:112px;
+  right:-15px;
+  width:30px;
+  height:46px;
+  display:grid;
+  place-items:center;
+  border:1px solid var(--glass-bd);
+  border-radius:0 14px 14px 0;
+  background:var(--surface-strong);
+  color:var(--ink-l);
+  box-shadow:10px 7px 25px rgba(5,9,22,.22);
+  cursor:pointer;
+  transition:transform .3s cubic-bezier(.22,1,.36,1),color .2s,background .2s;
+}
+.sidebar-collapse-btn:hover{color:var(--teal);background:var(--glass-2);}
+.sidebar-collapse-btn svg{width:15px;height:15px;transition:transform .35s cubic-bezier(.22,1,.36,1);}
 body[data-theme="dawn"] .sidebar{background:linear-gradient(180deg,rgba(245,248,255,.9),rgba(232,238,249,.84));}
 .sidebar .logo{
   min-height:90px;
@@ -356,6 +375,34 @@ body[data-theme="dawn"] .topbar{background:linear-gradient(180deg,rgba(246,249,2
 .breadcrumb-wrap{display:flex;align-items:center;gap:11px;min-width:0;}
 .breadcrumb-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:12px;background:var(--surface-soft);border:1px solid var(--glass-bd);}
 .topbar .breadcrumb{font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.route-back{
+  flex:0 0 auto;
+  min-width:112px;
+  height:38px;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  padding:0 13px;
+  border:1px solid var(--glass-bd);
+  border-radius:13px;
+  background:linear-gradient(145deg,rgba(155,140,255,.13),rgba(93,229,210,.055));
+  color:var(--ink-l);
+  font-size:.65rem;
+  font-weight:750;
+  cursor:pointer;
+  transition:transform .2s,border-color .2s,background .2s,box-shadow .2s;
+}
+.route-back.show{display:inline-flex;}
+.route-back:hover{
+  transform:translateX(-2px);
+  color:var(--ink);
+  border-color:rgba(93,229,210,.4);
+  background:linear-gradient(145deg,rgba(155,140,255,.2),rgba(93,229,210,.1));
+  box-shadow:0 9px 24px rgba(6,10,24,.16);
+}
+.route-back .route-back-icon{font-size:1rem;line-height:1;transition:transform .2s;}
+.route-back:hover .route-back-icon{transform:translateX(-2px);}
 .top-actions{margin-left:auto;display:flex;align-items:center;gap:8px;}
 .clock-pill{
   min-width:92px;
@@ -662,6 +709,33 @@ body[data-theme="dawn"] .topbar{background:linear-gradient(180deg,rgba(246,249,2
 body.focus-mode .sidebar{transform:translateX(-100%);}
 body.focus-mode .main{margin-left:0;}
 
+/* 桌面端：左侧菜单收起为图标轨道，保留模块识别和展开入口。 */
+body.sidebar-collapsed{--sidebar-w:82px;}
+body.sidebar-collapsed .sidebar{width:82px;padding-inline:9px;}
+body.sidebar-collapsed .sidebar .logo{min-height:72px;padding:12px 8px;justify-content:center;}
+body.sidebar-collapsed .sidebar .brand-copy,
+body.sidebar-collapsed .sidebar .nav-children,
+body.sidebar-collapsed .sidebar .nav-group-title .arrow,
+body.sidebar-collapsed .sidebar .status-copy,
+body.sidebar-collapsed .sidebar .footer{display:none!important;}
+body.sidebar-collapsed .sidebar .nav-scroll{overflow-x:hidden;padding-top:17px;}
+body.sidebar-collapsed .sidebar .nav-group{margin-bottom:8px;}
+body.sidebar-collapsed .sidebar .nav-group-title{
+  min-height:48px;
+  justify-content:center;
+  padding:7px;
+  font-size:0;
+}
+body.sidebar-collapsed .sidebar .nav-group-title .icon{
+  width:34px;
+  height:34px;
+  flex-basis:34px;
+  font-size:1rem;
+}
+body.sidebar-collapsed .sidebar-status{justify-content:center;padding:12px 8px;}
+body.sidebar-collapsed .sidebar-collapse-btn svg{transform:rotate(180deg);}
+body.sidebar-collapsed .main{margin-left:82px;}
+
 @media(max-width:1040px){
   :root{--sidebar-w:248px;}
   .hero-emblem{right:35px;width:92px;height:92px;}
@@ -670,6 +744,19 @@ body.focus-mode .main{margin-left:0;}
   .risk-list{grid-template-columns:repeat(2,minmax(0,1fr));}
 }
 @media(max-width:768px){
+  body.sidebar-collapsed{--sidebar-w:248px;}
+  body.sidebar-collapsed .sidebar{width:min(290px,86vw);padding:10px;}
+  body.sidebar-collapsed .sidebar .brand-copy,
+  body.sidebar-collapsed .sidebar .footer{display:block!important;}
+  body.sidebar-collapsed .sidebar .nav-group-title .arrow{display:inline!important;}
+  body.sidebar-collapsed .sidebar .status-copy{display:flex!important;}
+  body.sidebar-collapsed .sidebar .nav-children{display:none!important;}
+  body.sidebar-collapsed .sidebar .nav-group.open .nav-children{display:block!important;}
+  body.sidebar-collapsed .sidebar .logo{min-height:90px;padding:16px 12px 17px;justify-content:flex-start;}
+  body.sidebar-collapsed .sidebar .nav-group-title{justify-content:flex-start;padding:8px 10px;font-size:.8rem;}
+  body.sidebar-collapsed .sidebar .nav-group-title .icon{width:32px;height:32px;flex-basis:32px;font-size:.95rem;}
+  body.sidebar-collapsed .sidebar-status{justify-content:flex-start;padding:12px;}
+  .sidebar-collapse-btn{display:none;}
   .sidebar{width:min(290px,86vw);padding:10px;}
   .sidebar.open{transform:translateX(0);}
   .sidebar.open~.main{pointer-events:none;}
@@ -677,6 +764,8 @@ body.focus-mode .main{margin-left:0;}
   .sidebar-overlay.show{display:block;}
   .menu-toggle{display:grid;place-items:center;}
   .topbar{height:66px;padding:0 12px 0 62px;}
+  .route-back{min-width:38px;width:38px;padding:0;border-radius:12px;}
+  .route-back-label{display:none;}
   .breadcrumb-icon{display:none;}
   .clock-pill,.focus-toggle,.topbar .btn-home span{display:none;}
   .topbar .btn-home{width:36px;padding:0;display:grid;place-items:center;font-size:0;}
@@ -733,6 +822,11 @@ body.focus-mode .main{margin-left:0;}
       <small>COZY LIFE QUEST</small>
     </div>
   </div>
+  <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" type="button"
+          aria-label="收起左侧菜单" aria-expanded="true" title="收起左侧菜单"
+          onclick="toggleSidebarCollapse()">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5 7.5 12l7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
   <div class="nav-scroll">
 
     <!-- 一级：教务管理 -->
@@ -854,6 +948,10 @@ body.focus-mode .main{margin-left:0;}
 <!-- MAIN -->
 <div class="main">
   <div class="topbar">
+    <button class="route-back" id="routeBackBtn" type="button" onclick="goBackLevel()" aria-label="返回上一级">
+      <span class="route-back-icon" aria-hidden="true">←</span>
+      <span class="route-back-label">返回上一级</span>
+    </button>
     <div class="breadcrumb-wrap">
       <span class="breadcrumb-icon" id="breadcrumbIcon" aria-hidden="true">✦</span>
       <div class="breadcrumb" id="breadcrumb"><strong>首页</strong></div>
@@ -1008,12 +1106,99 @@ body.focus-mode .main{margin-left:0;}
 <script src="yara-growth-game.js?v=1.0"></script>
 <script>
 // 构建版本号：部署时由「一键部署.command」替换为时间戳，用于强制手机端拉取最新工具（防止缓存导致 web/手机不一致）。本地打开时保持 'DEV'。
-var BUILD_VERSION = '20260730204425';
+var BUILD_VERSION = '20260731001643';
+var shellRouteLevels = {};
 
 function toggleGroup(el){
   var group = el.closest('.nav-group');
+  if(document.body.classList.contains('sidebar-collapsed')){
+    document.body.classList.remove('sidebar-collapsed');
+    syncSidebarCollapseButton();
+    group.classList.add('open');
+    el.setAttribute('aria-expanded', 'true');
+    return;
+  }
   var isOpen = group.classList.toggle('open');
   el.setAttribute('aria-expanded', String(isOpen));
+}
+
+function syncSidebarCollapseButton(){
+  var button = document.getElementById('sidebarCollapseBtn');
+  if(!button) return;
+  var collapsed = document.body.classList.contains('sidebar-collapsed');
+  button.setAttribute('aria-expanded', String(!collapsed));
+  button.setAttribute('aria-label', collapsed ? '展开左侧菜单' : '收起左侧菜单');
+  button.title = collapsed ? '展开左侧菜单' : '收起左侧菜单';
+}
+
+function toggleSidebarCollapse(){
+  if(window.matchMedia('(max-width: 768px)').matches){
+    toggleSidebar();
+    return;
+  }
+  document.body.classList.toggle('sidebar-collapsed');
+  document.body.classList.remove('focus-mode');
+  syncSidebarCollapseButton();
+}
+
+function rememberShellRoute(route){
+  route = route || {};
+  var level = Math.max(2, Number(route.level) || 3);
+  shellRouteLevels[level] = Object.assign({}, route, {level:level});
+  Object.keys(shellRouteLevels).forEach(function(key){
+    if(Number(key) > level) delete shellRouteLevels[key];
+  });
+  updateRouteBackButton();
+}
+
+function updateRouteBackButton(){
+  var button = document.getElementById('routeBackBtn');
+  if(!button) return;
+  var level = window.YaraSystem ? Number(YaraSystem.Router.current.level) || 1 :
+    (document.getElementById('toolFrame').style.display === 'none' ? 1 : 2);
+  var visible = level > 1;
+  button.classList.toggle('show', visible);
+  button.setAttribute('aria-hidden', String(!visible));
+  var label = level <= 2 ? '返回首页' : '返回上一级';
+  button.setAttribute('aria-label', label);
+  button.title = label;
+  button.querySelector('.route-back-label').textContent = label;
+}
+
+function goBackLevel(){
+  var frame = document.getElementById('toolFrame');
+  var current = window.YaraSystem ? YaraSystem.Router.current : {level:2};
+  var level = Math.max(1, Number(current.level) || 1);
+  if(level <= 2){
+    goHome();
+    return;
+  }
+  var targetLevel = level - 1;
+  var target = shellRouteLevels[targetLevel] || {
+    label: targetLevel === 2 ? current.name : current.child || current.name,
+    level: targetLevel
+  };
+  try{
+    frame.contentWindow.postMessage({
+      source:'yara-shell',
+      type:'navigate-back',
+      payload:{targetLevel:targetLevel,target:target}
+    }, location.origin === 'null' ? '*' : location.origin);
+  }catch(error){}
+
+  Object.keys(shellRouteLevels).forEach(function(key){
+    if(Number(key) > targetLevel) delete shellRouteLevels[key];
+  });
+  if(window.YaraSystem){
+    if(targetLevel === 2){
+      YaraSystem.Router.current.child = '';
+      YaraSystem.Router.current.level = 2;
+      YaraSystem.Router.render();
+    }else{
+      YaraSystem.Router.child(target);
+    }
+  }
+  updateRouteBackButton();
 }
 
 function openTool(src, name, group){
@@ -1028,8 +1213,10 @@ function openTool(src, name, group){
   frame.src = versionedModuleSrc(src);
   frame.style.display = 'block';
   home.classList.add('hidden');
+  shellRouteLevels = {2:{label:name,name:name,group:group,src:src,level:2}};
   if(window.YaraSystem) YaraSystem.Router.open({src:src,name:name,group:group,level:2});
   else document.getElementById('breadcrumb').innerHTML = group + ' / <strong>' + name + '</strong>';
+  updateRouteBackButton();
   document.getElementById('breadcrumbIcon').textContent = '◆';
   // Update nav active state
   document.querySelectorAll('.nav-child').forEach(function(c){ c.classList.remove('active'); });
@@ -1058,10 +1245,12 @@ function goHome(){
   frame.src = '';
   frame.style.display = 'none';
   home.classList.remove('hidden');
+  shellRouteLevels = {};
   if(window.YaraSystem) YaraSystem.Router.home();
   else document.getElementById('breadcrumb').innerHTML = '<strong>首页</strong>';
   document.getElementById('breadcrumbIcon').textContent = '✦';
   document.querySelectorAll('.nav-child').forEach(function(c){ c.classList.remove('active'); });
+  updateRouteBackButton();
   if(window.YaraSystem && typeof DASH_DATA !== 'undefined'){
     YaraSystem.DataHub.refresh(DASH_DATA);
     renderCommandCenters(YaraSystem.DataHub.state);
@@ -1073,6 +1262,18 @@ function goHome(){
 document.querySelectorAll('.nav-child').forEach(function(child){
   child.addEventListener('click', function(){
     openTool(child.dataset.src, child.dataset.name, child.dataset.group);
+  });
+});
+document.querySelectorAll('.nav-group-title').forEach(function(title){
+  title.setAttribute('role','button');
+  title.setAttribute('tabindex','0');
+  title.setAttribute('aria-expanded',String(title.closest('.nav-group').classList.contains('open')));
+  title.title = String(title.textContent || '').replace('▶','').trim();
+  title.addEventListener('keydown',function(event){
+    if(event.key === 'Enter' || event.key === ' '){
+      event.preventDefault();
+      toggleGroup(title);
+    }
   });
 });
 
@@ -1146,7 +1347,7 @@ function applySystemThemeToFrame(){
     if(!bridge){
       bridge = doc.createElement('script');
       bridge.id = 'yaraSystemBridge';
-      bridge.src = new URL('yara-system-bridge.js?v=1.4', window.location.href).href;
+      bridge.src = new URL('yara-system-bridge.js?v=1.5', window.location.href).href;
       bridge.addEventListener('load', closeFrameLoader, {once:true});
       bridge.addEventListener('error', closeFrameLoader, {once:true});
       doc.body.appendChild(bridge);
@@ -1176,7 +1377,9 @@ window.addEventListener('message', function(event){
     document.getElementById('sidebarStatusText').textContent = '通信已连接 · ' + (payload.title || '当前模块');
   }
   if(message.type === 'route' && window.YaraSystem){
+    rememberShellRoute(payload);
     YaraSystem.Router.child(payload);
+    updateRouteBackButton();
   }
   if(message.type === 'snapshot' && window.YaraSystem){
     if(window.YaraGame){
@@ -1231,6 +1434,8 @@ window.addEventListener('storage', function(event){
 });
 
 function toggleSidebar(){
+  document.body.classList.remove('sidebar-collapsed');
+  syncSidebarCollapseButton();
   var sidebar = document.querySelector('.sidebar');
   var toggle = document.querySelector('.menu-toggle');
   var isOpen = sidebar.classList.toggle('open');
@@ -1741,6 +1946,8 @@ async function loadDashboard(){
   }
 }
 
+syncSidebarCollapseButton();
+updateRouteBackButton();
 loadDashboard();
 if(window.YaraMasterSchedule){
   window.YaraMasterSchedule.subscribe(function(){
