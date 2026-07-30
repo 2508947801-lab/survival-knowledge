@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-yara-theme="twilight">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -75,13 +75,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
   .sum-chip{min-width:calc(50% - 5px);}
 }
 </style>
+<link id="yaraSystemTheme" rel="stylesheet" href="../yara-system-theme.css?v=2.3">
+<script src="../yara-module-ui.js?v=1.0"></script>
 </head>
-<body>
+<body data-yara-module="todo-life">
 <div class="app">
   <header class="hd">
+    <div class="module-kicker"><span class="module-icon">⌂</span><span>生活管理</span></div>
     <h1>每日生活待办</h1>
     <p class="sub">DAILY LIFE TODO · YARA</p>
-    <p class="sync-tip"><span class="dot"></span>已开启云同步 · web 与手机实时一致</p>
+    <p class="sync-tip"><span class="dot"></span>云端已连接 · Web 与手机保持同步</p>
   </header>
 
   <div class="summary" id="summary"></div>
@@ -220,17 +223,18 @@ function addTask(title, target, notes){
     done:false
   });
   save(); render();
+  YaraModuleUI.notify('生活待办已记下');
   return true;
 }
 function toggleTask(id){
   const t = state.tasks.find(function(x){ return x.id===id; });
-  if(t){ t.done=!t.done; save(); render(); }
+  if(t){ t.done=!t.done; save(); render(); YaraModuleUI.notify(t.done?'待办已完成':'待办已恢复'); }
 }
 function delTask(id){
   const i = state.tasks.findIndex(function(x){ return x.id===id; });
   if(i>=0){
     if(id.indexOf('seed')===0 && state.deletedSeeds.indexOf(id)<0) state.deletedSeeds.push(id);
-    state.tasks.splice(i,1); save(); render();
+    state.tasks.splice(i,1); save(); render(); YaraModuleUI.notify('待办已删除');
   }
 }
 
@@ -294,7 +298,13 @@ function bindList(el){
     const act=e.target.closest('[data-act]');
     if(!act) return;
     if(act.dataset.act==='toggle') toggleTask(id);
-    else if(act.dataset.act==='del'){ if(confirm('删除这条待办？')) delTask(id); }
+    else if(act.dataset.act==='del'){
+      YaraModuleUI.requestDelete(act, {
+        title:'删除这条生活待办？',
+        message:'删除后会同步到 Web 与手机端，相关备注和目标时间也会一并移除。',
+        confirmText:'确认删除'
+      }, function(){ delTask(id); });
+    }
   });
 }
 bindList(document.getElementById('pendingList'));
@@ -304,5 +314,6 @@ bindList(document.getElementById('doneList'));
 render();
 initCloud();
 </script>
+<script id="yaraSystemBridge" src="../yara-system-bridge.js?v=1.3"></script>
 </body>
 </html>

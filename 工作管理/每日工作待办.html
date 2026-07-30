@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-yara-theme="twilight">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -84,12 +84,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
   .sum-chip{min-width:calc(50% - 5px);}
 }
 </style>
+<link id="yaraSystemTheme" rel="stylesheet" href="../yara-system-theme.css?v=2.3">
+<script src="../yara-module-ui.js?v=1.0"></script>
 </head>
-<body>
+<body data-yara-module="todo-work">
 <div class="app">
   <header class="hd">
+    <div class="module-kicker"><span class="module-icon">✓</span><span>工作管理</span></div>
     <h1>每日工作待办</h1>
     <p class="sub">DAILY WORK TODO · YARA</p>
+    <p class="sync-tip"><span class="dot"></span>云端已连接 · Web 与手机保持同步</p>
   </header>
 
   <div class="datebar">
@@ -264,18 +268,19 @@ function addTask(title, minutes){
   minutes = Math.max(5, Math.round(+minutes)||30);
   getTasks(current).push({id:'t'+Date.now()+Math.random().toString(36).slice(2,6), title:title, minutes:minutes, done:false});
   save(); render();
+  YaraModuleUI.notify('任务已添加');
   return true;
 }
 function toggleTask(id){
   const t=getTasks(current).find(x=>x.id===id);
-  if(t){ t.done=!t.done; save(); render(); }
+  if(t){ t.done=!t.done; save(); render(); YaraModuleUI.notify(t.done?'任务已完成':'任务已恢复'); }
 }
 function delTask(id){
   const arr=getTasks(current);
   const i=arr.findIndex(x=>x.id===id);
   if(i>=0){
     if(id.indexOf('seed')===0 && state.deletedSeeds.indexOf(id)<0) state.deletedSeeds.push(id);
-    arr.splice(i,1); save(); render();
+    arr.splice(i,1); save(); render(); YaraModuleUI.notify('任务已删除');
   }
 }
 
@@ -351,12 +356,19 @@ document.getElementById('taskList').addEventListener('click', e=>{
   const act=e.target.closest('[data-act]');
   if(!act) return;
   if(act.dataset.act==='toggle') toggleTask(id);
-  else if(act.dataset.act==='del'){ if(confirm('删除这条任务？')) delTask(id); }
+  else if(act.dataset.act==='del'){
+    YaraModuleUI.requestDelete(act, {
+      title:'删除这条工作任务？',
+      message:'删除后会同步到 Web 与手机端，且不会保留在当天任务中。',
+      confirmText:'确认删除'
+    }, function(){ delTask(id); });
+  }
 });
 
 // ===== INIT =====
 render();
 initCloud();
 </script>
+<script id="yaraSystemBridge" src="../yara-system-bridge.js?v=1.3"></script>
 </body>
 </html>

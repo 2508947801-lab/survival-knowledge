@@ -927,7 +927,7 @@ body.focus-mode .main{margin-left:0;}
 <script src="yara-system-core.js?v=1.1"></script>
 <script>
 // 构建版本号：部署时由「一键部署.command」替换为时间戳，用于强制手机端拉取最新工具（防止缓存导致 web/手机不一致）。本地打开时保持 'DEV'。
-var BUILD_VERSION = '20260730005339';
+var BUILD_VERSION = '20260730160903';
 
 function toggleGroup(el){
   var group = el.closest('.nav-group');
@@ -1045,7 +1045,7 @@ function applySystemThemeToFrame(){
       link = doc.createElement('link');
       link.id = 'yaraSystemTheme';
       link.rel = 'stylesheet';
-      link.href = new URL('yara-system-theme.css?v=2.2', window.location.href).href;
+      link.href = new URL('yara-system-theme.css?v=2.3', window.location.href).href;
       link.addEventListener('load', closeFrameLoader, {once:true});
       link.addEventListener('error', closeFrameLoader, {once:true});
       doc.head.appendChild(link);
@@ -1055,7 +1055,7 @@ function applySystemThemeToFrame(){
     if(!bridge){
       bridge = doc.createElement('script');
       bridge.id = 'yaraSystemBridge';
-      bridge.src = new URL('yara-system-bridge.js?v=1.2', window.location.href).href;
+      bridge.src = new URL('yara-system-bridge.js?v=1.3', window.location.href).href;
       bridge.addEventListener('load', closeFrameLoader, {once:true});
       bridge.addEventListener('error', closeFrameLoader, {once:true});
       doc.body.appendChild(bridge);

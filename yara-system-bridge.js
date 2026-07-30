@@ -52,10 +52,11 @@
       }
     }
     var headings = document.querySelectorAll('main h1, main h2, .main h1, .main h2, h1, h2');
+    var documentTitle = cleanLabel(document.title);
     for (var k = 0; k < headings.length; k += 1) {
       if (visible(headings[k])) {
         var heading = cleanLabel(headings[k].textContent);
-        if (heading && heading !== cleanLabel(document.title)) return heading;
+        if (heading && documentTitle.indexOf(heading) !== 0) return heading;
       }
     }
     return '';

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-yara-theme="twilight">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -122,13 +122,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
   .goal-form{grid-template-columns:1fr;}
 }
 </style>
+<link id="yaraSystemTheme" rel="stylesheet" href="../yara-system-theme.css?v=2.3">
+<script src="../yara-module-ui.js?v=1.0"></script>
 </head>
-<body>
+<body data-yara-module="finance">
 <div class="app">
   <header class="hd">
+    <div class="module-kicker"><span class="module-icon">¥</span><span>财务管理</span></div>
     <h1>记账本</h1>
     <p class="sub">DAILY LEDGER · YARA</p>
-    <p class="sync-tip"><span class="dot"></span>已开启云同步 · web 与手机实时一致</p>
+    <p class="sync-tip"><span class="dot"></span>云端已连接 · Web 与手机保持同步</p>
   </header>
 
   <div class="monthbar">
@@ -375,7 +378,7 @@ function addTx(type, amount, date, category, account, note){
     type:type, amount:amount, date:date||todayStr(),
     category:category||'其他', account:account||'其他', note:(note||'').trim(), created:Date.now()
   });
-  sortTx(); save(); render();
+  sortTx(); save(); render(); YaraModuleUI.notify(type==='expense'?'支出记录已保存':'收入记录已保存');
   return true;
 }
 function delTx(id){
@@ -383,7 +386,7 @@ function delTx(id){
   if(i>=0){
     state.deletedIds.push(id);
     state.transactions.splice(i,1);
-    save(); render();
+    save(); render(); YaraModuleUI.notify('流水记录已删除');
   }
 }
 
@@ -400,6 +403,7 @@ function upsertSnapshot(){
   state.snapshots.sort(function(a,b){ return (a.date||'').localeCompare(b.date||''); });
 }
 function saveHolding(){
+  const wasEditing=!!editHoldingId;
   const name=document.getElementById('hName').value.trim();
   const cost=parseFloat(document.getElementById('hCost').value)||0;
   const value=parseFloat(document.getElementById('hValue').value)||0;
@@ -411,7 +415,7 @@ function saveHolding(){
   } else {
     state.holdings.push({id:'h'+Date.now()+Math.random().toString(36).slice(2,6), name:name, cost:cost, value:value, note:note, updated:todayStr()});
   }
-  upsertSnapshot(); clearHoldingForm(); save(); render();
+  upsertSnapshot(); clearHoldingForm(); save(); render(); YaraModuleUI.notify(wasEditing?'持仓已更新':'持仓已添加');
   return true;
 }
 function editHolding(id){
@@ -426,7 +430,7 @@ function editHolding(id){
 }
 function delHolding(id){
   const i=state.holdings.findIndex(function(x){ return x.id===id; });
-  if(i>=0){ state.deletedIds.push(id); state.holdings.splice(i,1); upsertSnapshot(); save(); render(); }
+  if(i>=0){ state.deletedIds.push(id); state.holdings.splice(i,1); upsertSnapshot(); save(); render(); YaraModuleUI.notify('持仓已删除'); }
 }
 function clearHoldingForm(){
   document.getElementById('hName').value='';
@@ -699,16 +703,28 @@ document.getElementById('filterCat').addEventListener('change',renderTxList);
 document.getElementById('txList').addEventListener('click',function(e){
   const tx=e.target.closest('.tx'); if(!tx) return;
   const act=e.target.closest('[data-act]'); if(!act) return;
-  if(act.dataset.act==='del' && confirm('删除这笔记录？')) delTx(tx.dataset.id);
+  if(act.dataset.act==='del'){
+    YaraModuleUI.requestDelete(act, {
+      title:'删除这笔流水？',
+      message:'删除后本月统计、预算和趋势图会同步更新到所有设备。',
+      confirmText:'确认删除'
+    }, function(){ delTx(tx.dataset.id); });
+  }
 });
 
 // 投资追踪事件
 document.getElementById('hAddBtn').addEventListener('click',function(){ saveHolding(); });
-document.getElementById('snapBtn').addEventListener('click',function(){ upsertSnapshot(); save(); render(); });
+document.getElementById('snapBtn').addEventListener('click',function(){ upsertSnapshot(); save(); render(); YaraModuleUI.notify('今日市值已记录'); });
 document.getElementById('invList').addEventListener('click',function(e){
   const tx=e.target.closest('.tx'); if(!tx) return;
   const act=e.target.closest('[data-act]'); if(!act) return;
-  if(act.dataset.act==='hdel'){ if(confirm('删除这条持仓？')) delHolding(tx.dataset.id); }
+  if(act.dataset.act==='hdel'){
+    YaraModuleUI.requestDelete(act, {
+      title:'删除这条持仓？',
+      message:'删除后持仓市值与财务目标中的总资产会同步重新计算。',
+      confirmText:'确认删除'
+    }, function(){ delHolding(tx.dataset.id); });
+  }
   else if(act.dataset.act==='hedit'){ editHolding(tx.dataset.id); }
 });
 
@@ -751,7 +767,7 @@ function saveBudgets(){
   const inputs=document.querySelectorAll('[data-bud]');
   const b={};
   inputs.forEach(function(inp){ const v=parseFloat(inp.value); if(v>0) b[inp.dataset.bud]=v; });
-  state.budgets=b; save(); render();
+  state.budgets=b; save(); render(); YaraModuleUI.notify('预算设置已保存');
 }
 function saveGoal(){
   state.goal={
@@ -759,7 +775,7 @@ function saveGoal(){
     targetYear:parseInt(document.getElementById('gYear').value)||0,
     currentSavings:parseFloat(document.getElementById('gSavings').value)||0
   };
-  save(); render();
+  save(); render(); YaraModuleUI.notify('财务目标已保存');
 }
 
 // ===== INIT =====
@@ -767,5 +783,6 @@ document.getElementById('fDate').value=todayStr();
 render();
 initCloud();
 </script>
+<script id="yaraSystemBridge" src="../yara-system-bridge.js?v=1.3"></script>
 </body>
 </html>
