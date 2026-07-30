@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f7f7fa">
+<title>生存知识日报 · 2026-07-30 · 星期四</title>
+<style>
+:root{
+    --bg:#f7f7fa;--card:rgba(255,255,255,.78);--ink:#0f0f15;--muted:#5a5a6a;
+    --soft:#9a9aa8;--line:rgba(15,15,25,.08);--red:#ff2d55;--pink:#ff2dc8;
+    --grad:linear-gradient(135deg,#ff2d55 0%,#ff375f 52%,#ff2dc8 100%);
+    --radius:28px;--ease:cubic-bezier(.4,0,.2,1)
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.85;-webkit-font-smoothing:antialiased}
+.nav-bar{position:sticky;top:0;z-index:20;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:14px 18px;background:rgba(255,255,255,.76);backdrop-filter:blur(28px) saturate(180%);border-bottom:1px solid var(--line)}
+.nav-bar a,.toc-grid a{color:var(--muted);text-decoration:none;border:1px solid transparent;background:rgba(255,255,255,.72);border-radius:999px;padding:8px 15px;font-size:.82rem;transition:.25s var(--ease)}
+.nav-bar a:hover,.toc-grid a:hover{color:var(--red);border-color:rgba(255,45,85,.28);transform:translateY(-1px)}
+.hero{position:relative;overflow:hidden;text-align:center;padding:86px 22px 66px;border-bottom:1px solid var(--line)}
+.hero:before{content:"";position:absolute;inset:-40%;background:radial-gradient(ellipse at 30% 28%,rgba(255,45,85,.16),transparent 40%),radial-gradient(ellipse at 72% 34%,rgba(255,45,200,.13),transparent 38%);filter:blur(45px);animation:float 10s ease-in-out infinite alternate}
+@keyframes float{to{transform:translate(-2%,3%) scale(1.08)}}
+.hero>*{position:relative}
+.hero h1{font-size:3rem;letter-spacing:4px;font-weight:650}
+.hero .date-info{margin-top:13px;color:var(--muted);font-size:1.02rem}
+.hero .lead{max-width:760px;margin:18px auto 0;color:#333342;font-size:1rem}
+.hero .lead strong{color:var(--red)}
+.toc{max-width:1080px;margin:auto;padding:34px 22px}
+.toc-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:9px}
+.toc-grid a{text-align:center;border-radius:16px;padding:12px 8px}
+.module{max-width:1080px;margin:26px auto;padding:44px 40px;background:var(--card);backdrop-filter:blur(28px) saturate(150%);border:1px solid rgba(15,15,25,.06);border-radius:var(--radius);box-shadow:0 2px 5px rgba(15,15,25,.03),0 14px 36px rgba(15,15,25,.035);transition:.3s var(--ease)}
+.module:hover{border-color:rgba(255,45,85,.2);box-shadow:0 16px 44px rgba(255,45,85,.08)}
+.module-header{display:flex;gap:17px;align-items:flex-start;padding-bottom:20px;margin-bottom:27px;border-bottom:1px solid var(--line)}
+.module-num{font-size:2.35rem;line-height:1;background:var(--grad);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.module-title{font-size:1.6rem;font-weight:650}
+.module-subtitle{color:var(--muted);font-size:.92rem;margin-top:4px}
+.content{font-size:1rem}
+.content h3{font-size:1.12rem;color:var(--red);margin:27px 0 11px}
+.content p{color:rgba(15,15,25,.84);margin-bottom:16px;text-indent:2em}
+.content strong{background:var(--grad);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.content ul{list-style:none;margin:12px 0 22px}
+.content li{position:relative;padding:7px 0 7px 25px;color:#30303d}
+.content li:before{content:"";position:absolute;left:5px;top:18px;width:7px;height:7px;border-radius:50%;background:var(--grad)}
+.highlight{padding:22px 25px;margin:22px 0;border:1px solid rgba(255,45,85,.17);border-radius:20px;background:linear-gradient(135deg,rgba(255,45,85,.06),rgba(255,45,200,.045))}
+.highlight h4{color:var(--red);font-size:1.02rem;margin-bottom:9px}
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:22px 0}
+.metric{padding:18px 14px;border-radius:18px;background:#fff;border:1px solid var(--line);text-align:center}
+.metric b{display:block;font-size:1.55rem;color:var(--red)}
+.metric span{font-size:.76rem;color:var(--muted)}
+.source-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px;padding-top:18px;border-top:1px dashed var(--line)}
+.source-list span{font-size:.76rem;color:var(--soft);padding:5px 0}
+.source-list a{font-size:.76rem;color:#6b3fc4;text-decoration:none;padding:5px 10px;border-radius:999px;background:#f2edff;border:1px solid #e3d9ff}
+.source-list a:hover{color:var(--red);border-color:rgba(255,45,85,.25)}
+.action-board{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.action{padding:20px;border-radius:18px;background:#fff;border:1px solid var(--line)}
+.action em{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:9px;background:var(--grad);color:#fff;font-style:normal;font-weight:700;margin-bottom:10px}
+.action b{display:block;margin-bottom:5px}
+.action p{font-size:.86rem;text-indent:0;margin:0;color:var(--muted)}
+.back-link{text-align:center;padding:54px 20px 38px}
+.back-link a{display:inline-block;color:#fff;text-decoration:none;font-weight:650;padding:15px 44px;border-radius:999px;background:var(--grad);box-shadow:0 10px 26px rgba(255,45,85,.28);transition:.25s}
+.back-link a:hover{transform:translateY(-3px)}
+.footer{text-align:center;color:var(--soft);padding:42px 20px;border-top:1px solid var(--line);font-size:.88rem}
+@media(max-width:850px){.toc-grid{grid-template-columns:repeat(4,1fr)}.metric-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:680px){
+    .hero{padding:58px 17px 46px}.hero h1{font-size:2rem;letter-spacing:2px}.hero .date-info{font-size:.88rem}
+    .hero .lead{font-size:.9rem}.nav-bar{justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto}.nav-bar a{flex:0 0 auto;font-size:.72rem;padding:6px 10px}
+    .toc{padding:24px 13px}.toc-grid{grid-template-columns:repeat(2,1fr)}.module{margin:15px 11px;padding:29px 20px;border-radius:20px}
+    .module-header{gap:11px}.module-num{font-size:1.85rem}.module-title{font-size:1.27rem}.module-subtitle{font-size:.82rem}
+    .content{font-size:.96rem}.content p{text-indent:1.5em}.action-board{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<nav class="nav-bar">
+    <a href="#module-1">①运营精华</a><a href="#module-2">②今日信号</a><a href="#module-3">③科技×AI</a>
+    <a href="#module-4">④商业趋势</a><a href="#module-5">⑤职场教育</a><a href="#module-6">⑥深度阅读</a><a href="#module-7">⑦五栏分析</a>
+</nav>
+
+<header class="hero">
+    <h1>📰 生存知识日报</h1>
+    <div class="date-info">2026-07-30 · 星期四 · 农历六月十七 · 大暑第九天 · 第 30 期</div>
+    <div class="lead">今天不讨论“哪个AI更聪明”，而讨论更重要的问题：<strong>如何让数据、智能体、流程和负责人真正协作闭环。</strong></div>
+</header>
+
+<div class="toc"><div class="toc-grid">
+    <a href="#module-1">运营精华</a><a href="#module-2">今日信号</a><a href="#module-3">科技×AI</a>
+    <a href="#module-4">商业趋势</a><a href="#module-5">职场教育</a><a href="#module-6">深度阅读</a><a href="#module-7">今日行动</a>
+</div></div>
+
+<section id="module-1" class="module">
+    <div class="module-header"><span class="module-num">①</span><div><div class="module-title">运营精华</div><div class="module-subtitle">从“会用AI”升级为“会编排业务” · 你的真正壁垒是闭环率，不是工具数量</div></div></div>
+    <div class="content">
+        <h3>📌 智能体开始互联，运营岗位也要从“执行单点”升级为“编排系统”</h3>
+        <p>国家网信办7月17日提出智能体互信、互联、互操作倡议，强调身份标识、协作互认、接口协议、语义与流程兼容。这个信号并不是只对技术公司有用。它说明AI竞争正在从“单个模型能回答什么”，进入“多个智能体能否围绕一个目标协同完成任务”。</p>
+        <p>映射到你的管理系统：课程、营期、异常、任务、负责人和学员反馈，不能只是六张彼此独立的表。如果“异常账号”被发现后，还需要你手动复制学员信息、私聊负责人、再建立待办，系统虽然数字化了，<strong>业务仍然没有形成闭环</strong>。真正的智能化应该是：异常触发 → 自动匹配营期和负责人 → 生成处理任务 → 到期提醒 → 记录处理结果 → 回写风险状态。</p>
+
+        <div class="highlight">
+            <h4>今天最值得记住的运营公式</h4>
+            <p style="text-indent:0;margin:0"><strong>智能化价值 = 可被系统识别的事件 × 可复用的判断规则 × 可追踪的责任闭环。</strong><br>只有AI回答，没有状态变化，叫“咨询工具”；能推动业务对象从一个状态进入下一个状态，才叫“运营系统”。</p>
+        </div>
+
+        <h3>📌 先做一条“最小闭环”，比一次性建设万能系统更有效</h3>
+        <p>建议你先选一条高频且高损耗的链路作为试点：<strong>异常学员处理链</strong>。统一五个状态——待识别、待分派、处理中、待复核、已闭环；统一四个必要字段——学员/账号、营期课程、负责人、截止时间；统一三个指标——首次响应时长、按时完成率、二次复发率。只要这条链跑通，你就拥有了课程、营期、异常、任务和负责人之间第一条真正可复制的“业务协议”。</p>
+        <div class="source-list"><span>原始来源：</span>
+            <a href="https://www.cac.gov.cn/2026-07/17/c_1786032877362241.htm" target="_blank" rel="noopener">网信办·智能体互操作倡议</a>
+            <a href="https://www.mohrss.gov.cn/wap/xw/rsxw/202607/t20260708_579825.html" target="_blank" rel="noopener">人社部·AI+人社实施意见</a>
+        </div>
+    </div>
+</section>
+
+<section id="module-2" class="module">
+    <div class="module-header"><span class="module-num">②</span><div><div class="module-title">今日信号</div><div class="module-subtitle">政策、产业与人才市场正在同时指向：智能体、服务业与复合能力</div></div></div>
+    <div class="content">
+        <h3>① 智能体不再只比“能力”，开始比“能否合作”</h3>
+        <p>网信办倡议提出推动多智能体从可控交互走向自主协同，并在接口、协议、语义和流程层实现兼容。这意味着未来优秀的业务人员不一定亲自开发模型，但必须能定义目标、拆分任务、设置交接标准并验证结果。</p>
+
+        <h3>② “AI+人社”已经拆出67个细分场景</h3>
+        <p>人社部等四部门提出：2026年建设应用基础设施并打造20个场景，2027年探索约50个高价值场景，同时形成包含67个细分场景的全景图。政策的关键词不是“聊天”，而是就业服务、人才供给、劳动关系、人力资源服务和治理流程。</p>
+
+        <h3>③ 深圳开始常态化征集新职业，岗位标准将追着产业变化跑</h3>
+        <p>深圳市人社局7月28日发布通知，聚焦现代服务、数字经济、人工智能等领域征集新职业线索，并要求通过问卷、访谈、数据分析、可行性论证形成职业标准。对求职者的启示是：不要只盯着旧岗位名称，要关注企业正在形成但尚未被统一命名的“能力组合”。</p>
+
+        <h3>④ 服务业仍是经济与职业机会的重要增量区</h3>
+        <p>国家统计局数据显示，上半年服务业增加值同比增长5.2%，对国民经济增长贡献率为66.1%；信息传输、软件和信息技术服务业增加值增长10.7%，租赁和商务服务业增长11.9%。懂业务、懂数据、又能用AI提升服务效率的人，正在两个增长较快的领域交叉处。</p>
+
+        <div class="metric-grid">
+            <div class="metric"><b>66.1%</b><span>服务业对经济增长贡献率</span></div>
+            <div class="metric"><b>10.7%</b><span>信息软件服务业增加值增速</span></div>
+            <div class="metric"><b>11.9%</b><span>租赁与商务服务业增加值增速</span></div>
+            <div class="metric"><b>67</b><span>AI+人社细分应用场景</span></div>
+        </div>
+        <div class="source-list"><span>原始来源：</span>
+            <a href="https://www.sz.gov.cn/cn/xxgk/zfxxgj/tzgg/content/post_12912720.html" target="_blank" rel="noopener">深圳市政府·新职业征集</a>
+            <a href="https://www.stats.gov.cn/sj/zxfbhjd/202607/t20260716_1964144.html" target="_blank" rel="noopener">国家统计局·服务业数据</a>
+            <a href="https://www.mohrss.gov.cn/wap/xw/rsxw/202607/t20260708_579825.html" target="_blank" rel="noopener">人社部·67个AI场景</a>
+        </div>
+    </div>
+</section>
+
+<section id="module-3" class="module">
+    <div class="module-header"><span class="module-num">③</span><div><div class="module-title">科技 × AI 前沿</div><div class="module-subtitle">互操作、可信交互与人机边界，正在成为AI产品的新基础设施</div></div></div>
+    <div class="content">
+        <h3>📌 AI产品的下一层竞争：身份、协议、记录与责任</h3>
+        <p>当一个智能体负责读取简历、另一个分析JD、第三个生成行动计划时，最难的不是让它们各自输出一段文字，而是保证它们使用同一份候选人数据、同一套能力定义和同一个版本。否则，三个智能体越努力，信息越混乱。未来AI系统的关键组件会越来越像企业管理：统一身份、统一字段、标准交接、版本记录和异常回滚。</p>
+
+        <h3>📌 “像人”不是越像越好，必须保留清晰的人机边界</h3>
+        <p>《人工智能拟人化互动服务管理暂行办法》已于7月15日起施行，强调未成年人、个人信息、用户权益与安全管理。虽然普通知识问答、工作助手和学习教育服务在不涉及持续情感互动的情况下有明确适用边界，但对教育运营仍有一个重要原则：<strong>AI可以提供陪练与提醒，却不能用“伪装真人”换取信任。</strong></p>
+        <ul>
+            <li>AI辅导必须明确身份，不能让学员误以为是真人老师。</li>
+            <li>涉及学情、联系方式、支付和健康信息时，坚持最小必要数据。</li>
+            <li>退费、处罚、风险标签等高影响决策保留人工复核。</li>
+            <li>每次自动动作留下来源、时间、规则与负责人，方便追溯。</li>
+        </ul>
+
+        <h3>📌 教育智能化的重点不是“多一个入口”，而是贯穿教、学、管、评</h3>
+        <p>教育部《“人工智能+教育”行动计划》强调全要素融合、全过程贯通、全场景覆盖。这与管理系统建设的逻辑一致：真正的个性化不是首页放一个聊天框，而是从入学建档、学习节奏、异常识别、辅导动作到续费判断都使用一致的数据，并允许人在关键节点校正系统。</p>
+        <div class="source-list"><span>原始来源：</span>
+            <a href="https://www.cac.gov.cn/2026-04/10/c_1777558395023172.htm" target="_blank" rel="noopener">网信办·拟人化AI管理办法</a>
+            <a href="https://www.moe.gov.cn/srcsite/A16/s3342/202604/t20260410_1433240.html" target="_blank" rel="noopener">教育部·AI+教育行动计划</a>
+            <a href="https://www.cac.gov.cn/2026-07/24/c_1786639246282926.htm" target="_blank" rel="noopener">APEC·负责任普及AI</a>
+        </div>
+    </div>
+</section>
+
+<section id="module-4" class="module">
+    <div class="module-header"><span class="module-num">④</span><div><div class="module-title">商业趋势</div><div class="module-subtitle">技术价值正在从“卖工具”转向“交付结果”，复合型运营处在增长交叉点</div></div></div>
+    <div class="content">
+        <h3>📌 服务业增长告诉我们：未来值钱的是“技术 × 真实服务”</h3>
+        <p>上半年信息软件服务业和商务服务业保持较快增长。对于个人职业选择，这比追逐某一只热门股票更有长期参考价值：如果只懂教务流程，容易停留在执行层；只懂AI工具，又容易脱离真实业务。把两者结合，成为能定义需求、搭建流程、看懂数据、推动团队执行的人，才是更稀缺的角色。</p>
+
+        <h3>📌 从工具订阅到结果交付：系统必须能证明“它改变了什么”</h3>
+        <p>“用了AI”不是商业结果。课程运营真正可收费、可晋升、可复制的结果是：响应时间下降、异常闭环率提高、退费率下降、续费预测更准确、负责人负荷更均衡。以后评估任何AI功能，都可以先问一句：<strong>它改变了哪个业务指标？</strong>如果回答不出来，就先不要扩功能。</p>
+
+        <div class="highlight">
+            <h4>对Yara职业定位的启示</h4>
+            <p style="text-indent:0;margin:0">你更适合把自己的目标岗位定义为“AI时代的课程产品运营 / 交付运营产品经理 / 智能运营编排者”，而不是仅仅写“熟练使用AI工具”。前者描述业务结果，后者只描述工具动作。</p>
+        </div>
+        <div class="source-list"><span>原始来源：</span>
+            <a href="https://www.stats.gov.cn/sj/zxfbhjd/202607/t20260716_1964144.html" target="_blank" rel="noopener">国家统计局·现代服务业增长</a>
+            <a href="https://www.cac.gov.cn/2026-07/24/c_1786639246282926.htm" target="_blank" rel="noopener">APEC·AI提升企业竞争力</a>
+        </div>
+    </div>
+</section>
+
+<section id="module-5" class="module">
+    <div class="module-header"><span class="module-num">⑤</span><div><div class="module-title">职场教育</div><div class="module-subtitle">少数人需要开发模型，多数人需要用数据、管理和判断驾驭AI</div></div></div>
+    <div class="content">
+        <h3>📌 OECD给出一个反直觉结论：高级AI技能不是大多数人的必修课</h3>
+        <p>OECD 2026年6月发布的《AI与技能》指出，需要编程或模型开发等高级AI专门技能的劳动者比例不到1%；更广泛的岗位需要的是数字技能、数据使用与解释能力，同时问题解决、创造力、管理和人际能力仍然重要。AI提高的不是“人人都去当算法工程师”的必要性，而是“人人都要能和数据及自动化协作”的门槛。</p>
+
+        <h3>📌 把简历从职责清单改成“业务证据链”</h3>
+        <p>今天就可以把一段经历按四格重写：业务问题 → 你定义的规则 → 你推动的动作 → 指标结果。例如，不写“负责学员异常处理”，而写“统一异常账号五级状态与负责人机制，将分散在表格和群聊中的处理动作归并为可追踪任务；待补充：首次响应时长、超期率、复发率变化”。没有结果数据时不要编造，先把“待采集指标”写出来。</p>
+
+        <h3>📌 新职业的出现，本质是旧能力被重新组合</h3>
+        <p>深圳的新职业征集要求申报者证明社会需求、岗位创新、从业规模和技能独立性。这同样适用于个人职业升级：你不必等市场先给“智能教务运营”一个统一名称。只要课程交付、数据分析、AI自动化、跨团队沟通已经形成稳定组合，你就可以用作品集先证明这个岗位存在。</p>
+
+        <div class="highlight">
+            <h4>本周作品集建议</h4>
+            <p style="text-indent:0;margin:0">选“账号异常对账”或“课程排期”其中一项，制作一页案例：原流程耗时 → 关键判断规则 → 系统界面 → 自动化节点 → 人工复核点 → 可量化结果。它会比“熟练Excel、善于沟通、学习能力强”更能证明你的能力。</p>
+        </div>
+        <div class="source-list"><span>原始来源：</span>
+            <a href="https://www.oecd.org/en/publications/ai-and-skills_f843b352-en/full-report.html" target="_blank" rel="noopener">OECD·AI and skills</a>
+            <a href="https://www.sz.gov.cn/cn/xxgk/zfxxgj/tzgg/content/post_12912720.html" target="_blank" rel="noopener">深圳市政府·新职业标准</a>
+        </div>
+    </div>
+</section>
+
+<section id="module-6" class="module">
+    <div class="module-header"><span class="module-num">⑥</span><div><div class="module-title">深度阅读</div><div class="module-subtitle">“接口思维”：管理不是让所有人变得一样，而是让交接变得可靠</div></div></div>
+    <div class="content">
+        <h3>📖 为什么优秀管理者像一个好的协议设计者？</h3>
+        <p>不同智能体不需要内部结构完全相同，只要能在约定的接口上交换可信信息；不同岗位也不需要使用同一种工作方式，只要在交接点提供对方真正需要的内容。很多团队问题并不是能力不足，而是接口不清：辅导员不知道什么时候必须升级问题，组长不知道接到异常后需要补哪些证据，教务不知道“处理完成”由谁确认。</p>
+
+        <p>接口思维要求我们把模糊协作改写为四件事：输入是什么、输出是什么、截止时间是什么、失败时升级给谁。它不会消灭人的差异，反而让每个人可以在清晰边界内发挥判断力。<strong>标准化交接，个性化处理</strong>，是兼顾效率与温度的方式。</p>
+
+        <h3>📖 从“我已经说过了”到“系统已经确认了”</h3>
+        <p>口头通知只证明信息被发送，不证明对方理解、执行和完成。一个可靠闭环至少包含：发送、接收、执行、验收四个事件。今后在管理中少问“我有没有提醒”，多问“对象现在处于哪个状态、下一责任人是谁、系统里有没有证据”。这就是把个人勤奋升级为组织能力。</p>
+        <div class="source-list"><span>延伸来源：</span>
+            <a href="https://www.cac.gov.cn/2026-07/17/c_1786032877362241.htm" target="_blank" rel="noopener">智能体协议与流程互操作</a>
+            <a href="https://www.oecd.org/en/publications/ai-and-skills_f843b352-en/full-report.html" target="_blank" rel="noopener">AI时代的管理与人类技能</a>
+        </div>
+    </div>
+</section>
+
+<section id="module-7" class="module">
+    <div class="module-header"><span class="module-num">🧠</span><div><div class="module-title">五栏分析骨架</div><div class="module-subtitle">行业 → 用户 → 运营 → 管理 → 行动</div></div></div>
+    <div class="content">
+        <h3>🅐 行业变化</h3>
+        <p>AI正从单模型竞赛进入智能体协作和行业场景落地阶段。政策与产业同时强调互操作、可信、安全和普惠；企业真正需要的不是更多聊天入口，而是能够嵌入业务流程、连接数据并承担可追踪任务的智能系统。</p>
+
+        <h3>🅑 用户洞察</h3>
+        <p>用户不会因为系统“用了AI”就长期付费。用户愿意留下，是因为系统更快识别了问题、更准确理解了自己的状态，并让一个明确的人在明确时间内采取行动。对学员而言，最重要的不是被自动提醒，而是提醒之后真的有人解决困难。</p>
+
+        <h3>🅒 运营启发</h3>
+        <p>每增加一个模块，都要同时回答三个问题：它读取哪一份统一数据？它会触发谁的什么动作？它完成后回写哪个状态？如果答不出来，这个模块就仍是信息孤岛。首页“今日行动中心＋风险中心”应成为所有模块的共同出口，而不是另一张独立看板。</p>
+
+        <h3>🅓 管理思考</h3>
+        <p>管理者的高级能力不是亲自处理更多异常，而是定义清晰的业务协议：什么情况自动处理、什么情况需要组长判断、什么情况必须由你或负责人确认。规则越清楚，团队越能把精力放在真正需要人的复杂场景中。</p>
+
+        <h3>🅔 我的行动</h3>
+        <div class="action-board">
+            <div class="action"><em>1</em><b>画一条异常闭环</b><p>用五个状态画出“发现异常→分派→处理→复核→关闭”，标明每一步负责人。</p></div>
+            <div class="action"><em>2</em><b>补三个结果指标</b><p>为异常工具增加首次响应时长、按时完成率、二次复发率，先建立基线。</p></div>
+            <div class="action"><em>3</em><b>写一页职业案例</b><p>把这条闭环整理成简历证据：问题、规则、动作、结果；没有数据就标记待采集。</p></div>
+        </div>
+
+        <div class="source-list"><span>今日8个可靠来源：</span>
+            <a href="https://www.cac.gov.cn/2026-07/17/c_1786032877362241.htm" target="_blank" rel="noopener">网信办</a>
+            <a href="https://www.cac.gov.cn/2026-04/10/c_1777558395023172.htm" target="_blank" rel="noopener">AI互动办法</a>
+            <a href="https://www.cac.gov.cn/2026-07/24/c_1786639246282926.htm" target="_blank" rel="noopener">APEC</a>
+            <a href="https://www.mohrss.gov.cn/wap/xw/rsxw/202607/t20260708_579825.html" target="_blank" rel="noopener">人社部</a>
+            <a href="https://www.moe.gov.cn/srcsite/A16/s3342/202604/t20260410_1433240.html" target="_blank" rel="noopener">教育部</a>
+            <a href="https://www.stats.gov.cn/sj/zxfbhjd/202607/t20260716_1964144.html" target="_blank" rel="noopener">国家统计局</a>
+            <a href="https://www.sz.gov.cn/cn/xxgk/zfxxgj/tzgg/content/post_12912720.html" target="_blank" rel="noopener">深圳市政府</a>
+            <a href="https://www.oecd.org/en/publications/ai-and-skills_f843b352-en/full-report.html" target="_blank" rel="noopener">OECD</a>
+        </div>
+    </div>
+</section>
+
+<div class="back-link"><a href="index.html">← 返回日报首页</a></div>
+<footer class="footer">
+    <p>生存知识日报 · 2026-07-30 · 星期四</p>
+    <p>深度认知 · 理性判断 · 温情陪伴 · 为 Yara 量身定制</p>
+</footer>
+</body>
+</html>
