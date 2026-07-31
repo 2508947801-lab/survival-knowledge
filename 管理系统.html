@@ -267,6 +267,35 @@ body.pointer-active .cursor-glow{opacity:1;}
 }
 .sidebar-collapse-btn:hover{color:var(--teal);background:var(--glass-2);}
 .sidebar-collapse-btn svg{width:15px;height:15px;transition:transform .35s cubic-bezier(.22,1,.36,1);}
+.sidebar-flyout{
+  position:fixed;
+  z-index:180;
+  width:238px;
+  max-height:min(72vh,560px);
+  overflow:auto;
+  padding:10px;
+  border:1px solid var(--glass-bd);
+  border-radius:18px;
+  background:linear-gradient(155deg,rgba(31,42,65,.97),rgba(20,29,48,.95));
+  box-shadow:0 24px 62px rgba(2,6,18,.42),0 0 0 1px rgba(255,255,255,.025) inset;
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transform:translateX(-8px) scale(.98);
+  transform-origin:left top;
+  transition:opacity .18s ease,transform .22s cubic-bezier(.22,1,.36,1),visibility .18s;
+}
+body[data-theme="dawn"] .sidebar-flyout{background:linear-gradient(155deg,rgba(255,255,255,.98),rgba(238,244,252,.96));}
+.sidebar-flyout.open{opacity:1;visibility:visible;pointer-events:auto;transform:none;}
+.sidebar-flyout-title{display:flex;align-items:center;gap:9px;padding:7px 9px 10px;color:var(--ink);font-size:.72rem;font-weight:800;border-bottom:1px solid var(--glass-bd);margin-bottom:6px;}
+.sidebar-flyout-title span{width:28px;height:28px;display:grid;place-items:center;border-radius:9px;background:var(--surface-soft);border:1px solid var(--glass-bd);}
+.sidebar-flyout-item{width:100%;display:flex;align-items:center;gap:9px;padding:9px 10px;margin:2px 0;border:1px solid transparent;border-radius:11px;background:transparent;color:var(--ink-l);text-align:left;font-size:.7rem;cursor:pointer;transition:background .16s,border-color .16s,color .16s,transform .16s;}
+.sidebar-flyout-item::before{content:"";width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:rgba(255,255,255,.2);}
+.sidebar-flyout-item:hover,.sidebar-flyout-item:focus-visible{outline:0;color:var(--ink);background:var(--surface-soft);border-color:var(--glass-bd);transform:translateX(2px);}
+.sidebar-flyout-item.active{color:#ffd7e6;background:linear-gradient(90deg,rgba(255,122,168,.16),rgba(155,140,255,.11));border-color:rgba(255,122,168,.2);}
+.sidebar-flyout-item.active::before{background:var(--primary);box-shadow:0 0 8px var(--primary);}
 body[data-theme="dawn"] .sidebar{background:linear-gradient(180deg,rgba(245,248,255,.9),rgba(232,238,249,.84));}
 .sidebar .logo{
   min-height:90px;
@@ -364,17 +393,44 @@ body[data-theme="dawn"] .sidebar{background:linear-gradient(180deg,rgba(245,248,
 .status-copy span{font-size:.56rem;color:var(--sub);margin-top:2px;}
 .sidebar .footer{padding:9px 10px 2px;border:0;font-size:.55rem;text-align:center;letter-spacing:1.4px;}
 
-.main{margin-left:var(--sidebar-w);transition:margin .35s cubic-bezier(.22,1,.36,1);}
+.main{
+  margin-left:var(--sidebar-w);
+  padding:12px 14px 14px;
+  gap:12px;
+  transition:margin .35s cubic-bezier(.22,1,.36,1),padding .28s ease,gap .28s ease;
+}
 .topbar{
+  position:sticky;
+  top:12px;
+  z-index:70;
   height:68px;
   padding:0 24px;
   background:linear-gradient(180deg,rgba(18,26,43,.67),rgba(18,26,43,.48));
-  box-shadow:0 10px 36px rgba(2,6,18,.1);
+  border:1px solid var(--glass-bd);
+  border-radius:20px;
+  box-shadow:0 18px 46px rgba(2,6,18,.2),0 0 0 1px rgba(255,255,255,.025) inset;
+  transition:height .28s cubic-bezier(.22,1,.36,1),border-radius .28s ease,background .28s ease,box-shadow .28s ease,padding .28s ease;
 }
 body[data-theme="dawn"] .topbar{background:linear-gradient(180deg,rgba(246,249,255,.75),rgba(235,241,251,.62));}
 .breadcrumb-wrap{display:flex;align-items:center;gap:11px;min-width:0;}
 .breadcrumb-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:12px;background:var(--surface-soft);border:1px solid var(--glass-bd);}
 .topbar .breadcrumb{font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.breadcrumb-home{padding:0;border:0;background:transparent;color:var(--ink-l);font:inherit;cursor:pointer;}
+.breadcrumb-home:hover{color:var(--teal);}
+.breadcrumb-segment{color:var(--sub);}
+.route-separator{display:inline-block;margin:0 2px;color:rgba(146,157,185,.55);}
+body.shell-scrolled .topbar{
+  height:54px;
+  padding-inline:18px;
+  border-radius:16px;
+  background:linear-gradient(180deg,rgba(24,34,55,.93),rgba(20,29,48,.88));
+  box-shadow:0 15px 38px rgba(2,6,18,.3),0 0 0 1px rgba(255,255,255,.035) inset;
+}
+body[data-theme="dawn"].shell-scrolled .topbar{background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(239,244,252,.92));}
+body.shell-scrolled .breadcrumb-icon{width:30px;height:30px;border-radius:10px;}
+body.shell-scrolled .clock-pill{padding-block:5px;}
+body.shell-scrolled .clock-pill span{display:none;}
+body.shell-scrolled .icon-btn,body.shell-scrolled .topbar .btn-home{height:34px;}
 .route-back{
   flex:0 0 auto;
   min-width:112px;
@@ -433,7 +489,8 @@ body[data-theme="dawn"] .topbar{background:linear-gradient(180deg,rgba(246,249,2
   background:var(--glass-2);
   box-shadow:0 10px 24px rgba(6,10,24,.16),0 0 16px rgba(155,140,255,.11);
 }
-.frame-wrap{overflow:hidden;}
+.frame-wrap{overflow:hidden;border:1px solid var(--glass-bd);border-radius:22px;box-shadow:0 22px 58px rgba(2,6,18,.16);transition:border-radius .28s ease,box-shadow .28s ease;}
+body.shell-scrolled .frame-wrap{border-radius:18px;box-shadow:0 18px 48px rgba(2,6,18,.2);}
 .frame-wrap iframe{position:relative;z-index:2;background:var(--bg);opacity:1;transition:opacity .25s;}
 .frame-wrap iframe.is-loading{opacity:.28;}
 .frame-loader{
@@ -763,7 +820,11 @@ body.sidebar-collapsed .main{margin-left:82px;}
   .main{margin-left:0!important;}
   .sidebar-overlay.show{display:block;}
   .menu-toggle{display:grid;place-items:center;}
-  .topbar{height:66px;padding:0 12px 0 62px;}
+  .sidebar-flyout{display:none!important;}
+  .main{padding:8px;gap:8px;}
+  .menu-toggle{top:14px;left:14px;}
+  .topbar{top:8px;height:62px;padding:0 10px 0 54px;border-radius:18px;}
+  body.shell-scrolled .topbar{height:50px;padding:0 8px 0 50px;border-radius:15px;}
   .route-back{min-width:38px;width:38px;padding:0;border-radius:12px;}
   .route-back-label{display:none;}
   .breadcrumb-icon{display:none;}
@@ -791,6 +852,7 @@ body.sidebar-collapsed .main{margin-left:82px;}
   .progress-row .pr-pct,.progress-row .pr-count{grid-row:1;}
   .class-item{padding:13px 14px;gap:9px;}
   .command-backdrop{padding-top:8vh;}
+  .frame-wrap,body.shell-scrolled .frame-wrap{border-radius:17px;}
 }
 @media(max-width:430px){
   .quick-grid{grid-template-columns:repeat(2,1fr);}
@@ -812,6 +874,7 @@ body.sidebar-collapsed .main{margin-left:82px;}
 <div class="cursor-glow" aria-hidden="true"></div>
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 <button class="menu-toggle" type="button" aria-label="打开导航菜单" aria-expanded="false" onclick="toggleSidebar()">☰</button>
+<div class="sidebar-flyout" id="sidebarFlyout" aria-hidden="true"></div>
 
 <!-- SIDEBAR -->
 <nav class="sidebar" aria-label="系统导航">
@@ -952,10 +1015,10 @@ body.sidebar-collapsed .main{margin-left:82px;}
       <span class="route-back-icon" aria-hidden="true">←</span>
       <span class="route-back-label">返回上一级</span>
     </button>
-    <div class="breadcrumb-wrap">
+    <nav class="breadcrumb-wrap" aria-label="当前位置">
       <span class="breadcrumb-icon" id="breadcrumbIcon" aria-hidden="true">✦</span>
-      <div class="breadcrumb" id="breadcrumb"><strong>首页</strong></div>
-    </div>
+      <div class="breadcrumb" id="breadcrumb" aria-live="polite"><strong>首页</strong></div>
+    </nav>
     <div class="top-actions">
       <div class="clock-pill" aria-label="当前时间"><strong id="liveClock">--:--</strong><span>YARA TIME</span></div>
       <div class="game-hud" id="gameHud" aria-label="成长状态">
@@ -1106,8 +1169,86 @@ body.sidebar-collapsed .main{margin-left:82px;}
 <script src="yara-growth-game.js?v=1.0"></script>
 <script>
 // 构建版本号：部署时由「一键部署.command」替换为时间戳，用于强制手机端拉取最新工具（防止缓存导致 web/手机不一致）。本地打开时保持 'DEV'。
-var BUILD_VERSION = '20260731001643';
+var BUILD_VERSION = '20260731122141';
 var shellRouteLevels = {};
+var sidebarFlyoutTimer = null;
+var activeFlyoutTrigger = null;
+
+function isCollapsedDesktop(){
+  return document.body.classList.contains('sidebar-collapsed') &&
+    !window.matchMedia('(max-width: 768px)').matches;
+}
+
+function hideSidebarFlyout(immediate){
+  clearTimeout(sidebarFlyoutTimer);
+  var flyout = document.getElementById('sidebarFlyout');
+  if(!flyout) return;
+  var close = function(){
+    flyout.classList.remove('open');
+    flyout.setAttribute('aria-hidden','true');
+    activeFlyoutTrigger = null;
+  };
+  if(immediate) close();
+  else sidebarFlyoutTimer = setTimeout(close, 120);
+}
+
+function openSidebarFlyout(group){
+  if(!isCollapsedDesktop() || !group) return;
+  clearTimeout(sidebarFlyoutTimer);
+  var trigger = group.querySelector('.nav-group-title');
+  var children = Array.from(group.querySelectorAll(':scope > .nav-children > .nav-child'));
+  var flyout = document.getElementById('sidebarFlyout');
+  if(!trigger || !children.length || !flyout) return;
+  activeFlyoutTrigger = trigger;
+  flyout.innerHTML = '';
+
+  var heading = document.createElement('div');
+  heading.className = 'sidebar-flyout-title';
+  var icon = document.createElement('span');
+  var iconText = (trigger.querySelector('.icon') || {}).textContent || '✦';
+  icon.textContent = iconText;
+  var label = document.createElement('strong');
+  label.textContent = String(trigger.textContent || '').replace(iconText,'').replace('▶','').trim();
+  heading.appendChild(icon);
+  heading.appendChild(label);
+  flyout.appendChild(heading);
+
+  children.forEach(function(child){
+    var item = document.createElement('button');
+    item.type = 'button';
+    item.className = 'sidebar-flyout-item' + (child.classList.contains('active') ? ' active' : '');
+    item.textContent = String(child.textContent || '').trim();
+    item.addEventListener('click',function(){
+      hideSidebarFlyout(true);
+      openTool(child.dataset.src, child.dataset.name, child.dataset.group);
+    });
+    flyout.appendChild(item);
+  });
+
+  var rect = trigger.getBoundingClientRect();
+  flyout.style.left = Math.min(window.innerWidth - 250, rect.right + 12) + 'px';
+  flyout.style.top = Math.max(12, Math.min(rect.top, window.innerHeight - Math.min(560, 56 + children.length * 44) - 12)) + 'px';
+  flyout.classList.add('open');
+  flyout.setAttribute('aria-hidden','false');
+}
+
+function setShellScrolled(scrolled){
+  document.body.classList.toggle('shell-scrolled', Boolean(scrolled));
+}
+
+function bindFrameScroll(doc){
+  if(!doc || !doc.documentElement || doc.documentElement.dataset.yaraShellScrollBound === 'true') return;
+  doc.documentElement.dataset.yaraShellScrollBound = 'true';
+  var update = function(event){
+    var target = event && event.target;
+    var top = 0;
+    if(target && typeof target.scrollTop === 'number') top = target.scrollTop;
+    if(!top && doc.scrollingElement) top = doc.scrollingElement.scrollTop || 0;
+    setShellScrolled(top > 24);
+  };
+  doc.addEventListener('scroll', update, true);
+  if(doc.defaultView) doc.defaultView.addEventListener('scroll', update, {passive:true});
+}
 
 function toggleGroup(el){
   var group = el.closest('.nav-group');
@@ -1138,6 +1279,7 @@ function toggleSidebarCollapse(){
   }
   document.body.classList.toggle('sidebar-collapsed');
   document.body.classList.remove('focus-mode');
+  hideSidebarFlyout(true);
   syncSidebarCollapseButton();
 }
 
@@ -1149,6 +1291,32 @@ function rememberShellRoute(route){
     if(Number(key) > level) delete shellRouteLevels[key];
   });
   updateRouteBackButton();
+}
+
+function renderShellBreadcrumb(){
+  if(!window.YaraSystem) return;
+  var current = YaraSystem.Router.current;
+  if((Number(current.level) || 1) <= 2){
+    YaraSystem.Router.render();
+    return;
+  }
+  var pieces = ['首页', current.group, current.name];
+  Object.keys(shellRouteLevels)
+    .map(Number)
+    .filter(function(level){ return level >= 3 && level <= current.level; })
+    .sort(function(a,b){ return a-b; })
+    .forEach(function(level){
+      var route = shellRouteLevels[level] || {};
+      var label = route.label || route.name || route.child || '';
+      if(label && pieces[pieces.length - 1] !== label) pieces.push(label);
+    });
+  var el = document.getElementById('breadcrumb');
+  el.innerHTML = pieces.map(function(piece,index){
+    if(index === pieces.length - 1) return '<strong aria-current="page">' + YaraSystem.UI.escape(piece) + '</strong>';
+    if(index === 0) return '<button class="breadcrumb-home" type="button" data-breadcrumb-home="true">' + YaraSystem.UI.escape(piece) + '</button>';
+    return '<span class="breadcrumb-segment">' + YaraSystem.UI.escape(piece) + '</span>';
+  }).join(' <span class="route-separator">/</span> ');
+  el.title = pieces.join(' / ');
 }
 
 function updateRouteBackButton(){
@@ -1196,6 +1364,7 @@ function goBackLevel(){
       YaraSystem.Router.render();
     }else{
       YaraSystem.Router.child(target);
+      renderShellBreadcrumb();
     }
   }
   updateRouteBackButton();
@@ -1213,6 +1382,7 @@ function openTool(src, name, group){
   frame.src = versionedModuleSrc(src);
   frame.style.display = 'block';
   home.classList.add('hidden');
+  setShellScrolled(false);
   shellRouteLevels = {2:{label:name,name:name,group:group,src:src,level:2}};
   if(window.YaraSystem) YaraSystem.Router.open({src:src,name:name,group:group,level:2});
   else document.getElementById('breadcrumb').innerHTML = group + ' / <strong>' + name + '</strong>';
@@ -1245,6 +1415,7 @@ function goHome(){
   frame.src = '';
   frame.style.display = 'none';
   home.classList.remove('hidden');
+  setShellScrolled(home.scrollTop > 24);
   shellRouteLevels = {};
   if(window.YaraSystem) YaraSystem.Router.home();
   else document.getElementById('breadcrumb').innerHTML = '<strong>首页</strong>';
@@ -1274,7 +1445,37 @@ document.querySelectorAll('.nav-group-title').forEach(function(title){
       event.preventDefault();
       toggleGroup(title);
     }
+    if(event.key === 'ArrowRight' && isCollapsedDesktop()){
+      event.preventDefault();
+      openSidebarFlyout(title.closest('.nav-group'));
+      var firstItem = document.querySelector('#sidebarFlyout .sidebar-flyout-item');
+      if(firstItem) firstItem.focus();
+    }
   });
+  title.addEventListener('focus',function(){ openSidebarFlyout(title.closest('.nav-group')); });
+  var group = title.closest('.nav-group');
+  group.addEventListener('mouseenter',function(){ openSidebarFlyout(group); });
+  group.addEventListener('mouseleave',function(){ hideSidebarFlyout(false); });
+});
+document.getElementById('sidebarFlyout').addEventListener('mouseenter',function(){ clearTimeout(sidebarFlyoutTimer); });
+document.getElementById('sidebarFlyout').addEventListener('mouseleave',function(){ hideSidebarFlyout(false); });
+document.getElementById('sidebarFlyout').addEventListener('focusin',function(){ clearTimeout(sidebarFlyoutTimer); });
+document.getElementById('sidebarFlyout').addEventListener('focusout',function(event){
+  if(!event.currentTarget.contains(event.relatedTarget)) hideSidebarFlyout(false);
+});
+document.getElementById('breadcrumb').addEventListener('click',function(event){
+  if(event.target.closest('[data-breadcrumb-home]')) goHome();
+});
+document.getElementById('homePage').addEventListener('scroll',function(event){
+  setShellScrolled(event.currentTarget.scrollTop > 24);
+},{passive:true});
+window.addEventListener('resize',function(){ hideSidebarFlyout(true); });
+document.addEventListener('keydown',function(event){
+  if(event.key === 'Escape' && document.getElementById('sidebarFlyout').classList.contains('open')){
+    var trigger = activeFlyoutTrigger;
+    hideSidebarFlyout(true);
+    if(trigger) trigger.focus();
+  }
 });
 
 // ===== SHELL EXPERIENCE =====
@@ -1332,6 +1533,7 @@ function applySystemThemeToFrame(){
     doc.body.dataset.yaraName = window.YaraSystem ? YaraSystem.Router.current.name : doc.title;
     doc.body.dataset.yaraGroup = window.YaraSystem ? YaraSystem.Router.current.group : '';
     doc.body.classList.add('yara-module-ready');
+    bindFrameScroll(doc);
     var link = doc.getElementById('yaraSystemTheme');
     if(!link){
       link = doc.createElement('link');
@@ -1379,6 +1581,7 @@ window.addEventListener('message', function(event){
   if(message.type === 'route' && window.YaraSystem){
     rememberShellRoute(payload);
     YaraSystem.Router.child(payload);
+    renderShellBreadcrumb();
     updateRouteBackButton();
   }
   if(message.type === 'snapshot' && window.YaraSystem){
@@ -1435,6 +1638,7 @@ window.addEventListener('storage', function(event){
 
 function toggleSidebar(){
   document.body.classList.remove('sidebar-collapsed');
+  hideSidebarFlyout(true);
   syncSidebarCollapseButton();
   var sidebar = document.querySelector('.sidebar');
   var toggle = document.querySelector('.menu-toggle');

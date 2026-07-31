@@ -350,10 +350,12 @@
         el.title = '首页';
         return;
       }
-      var pieces = [this.current.group, this.current.name];
+      var pieces = ['首页', this.current.group, this.current.name];
       if (this.current.child && this.current.child !== this.current.name) pieces.push(this.current.child);
       el.innerHTML = pieces.map(function (piece, index) {
-        return index === pieces.length - 1 ? '<strong>' + UI.escape(piece) + '</strong>' : UI.escape(piece);
+        if (index === pieces.length - 1) return '<strong aria-current="page">' + UI.escape(piece) + '</strong>';
+        if (index === 0) return '<button class="breadcrumb-home" type="button" data-breadcrumb-home="true">' + UI.escape(piece) + '</button>';
+        return '<span class="breadcrumb-segment">' + UI.escape(piece) + '</span>';
       }).join(' <span class="route-separator">/</span> ');
       el.title = pieces.join(' / ');
     }
