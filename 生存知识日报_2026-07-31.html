@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f7f7fa">
+<title>生存知识日报 · 2026-07-31 · 星期五</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+:root {
+    --bg-base:#f7f7fa; --bg-elevated:#fff; --glass-bg:rgba(255,255,255,.72);
+    --glass-border:rgba(15,15,25,.08); --text-primary:#0f0f15; --text-secondary:#5a5a6a;
+    --text-tertiary:#9a9aa8; --accent-red:#ff2d55; --accent-magenta:#ff2dc8;
+    --accent-gradient:linear-gradient(135deg,#ff2d55 0%,#ff375f 50%,#ff2dc8 100%);
+    --radius-lg:28px; --radius-md:20px; --radius-pill:999px; --blur:30px;
+    --ease:cubic-bezier(.4,0,.2,1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg-base); color:var(--text-primary); line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+}
+.nav-bar {
+    position:sticky; top:0; z-index:1000; background:rgba(255,255,255,.72);
+    backdrop-filter:blur(var(--blur)) saturate(180%); -webkit-backdrop-filter:blur(var(--blur)) saturate(180%);
+    border-bottom:1px solid rgba(15,15,25,.06); padding:14px 20px;
+    display:flex; flex-wrap:wrap; gap:8px; justify-content:center;
+}
+.nav-bar a {
+    color:var(--text-secondary); text-decoration:none; font-size:.82em; font-weight:500;
+    padding:8px 16px; border-radius:var(--radius-pill); background:rgba(255,255,255,.6);
+    border:1px solid transparent; transition:all .3s var(--ease); white-space:nowrap;
+}
+.nav-bar a:hover {
+    color:var(--accent-red); background:rgba(255,45,85,.08);
+    border-color:rgba(255,45,85,.25); transform:translateY(-1px);
+}
+.hero {
+    position:relative; overflow:hidden; padding:90px 24px 70px; text-align:center;
+    border-bottom:1px solid rgba(15,15,25,.06); background:var(--bg-base);
+}
+.hero::before {
+    content:''; position:absolute; inset:-30%;
+    background:radial-gradient(ellipse 60% 50% at 30% 20%,rgba(255,45,85,.14) 0%,transparent 60%),
+               radial-gradient(ellipse 50% 40% at 70% 30%,rgba(255,45,200,.12) 0%,transparent 60%),
+               radial-gradient(ellipse 70% 60% at 50% 100%,rgba(255,55,95,.10) 0%,transparent 70%);
+    filter:blur(40px); animation:ambient 12s ease-in-out infinite alternate; z-index:0;
+}
+@keyframes ambient {
+    0% { transform:translate(0,0) scale(1); opacity:.75; }
+    100% { transform:translate(-3%,2%) scale(1.08); opacity:1; }
+}
+.hero::after {
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.6) 0%,transparent 50%);
+    pointer-events:none; z-index:0;
+}
+.hero h1 {
+    font-size:3.2em; font-weight:600; letter-spacing:4px; position:relative; z-index:1;
+    text-shadow:0 2px 20px rgba(255,255,255,.6);
+}
+.hero .date-info {
+    font-size:1.1em; color:var(--text-secondary); position:relative; z-index:1;
+    margin-top:14px; font-weight:400;
+}
+.toc { max-width:1080px; margin:0 auto; padding:40px 24px; }
+.toc-grid {
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px;
+}
+.toc-grid a {
+    display:block; padding:14px 16px; text-decoration:none; color:var(--text-secondary);
+    background:rgba(255,255,255,.7); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+    border-radius:var(--radius-md); border:1px solid rgba(15,15,25,.06);
+    transition:all .35s var(--ease); font-size:.9em; font-weight:500; text-align:center;
+}
+.toc-grid a:hover {
+    color:var(--accent-red); background:#fff; border-color:rgba(255,45,85,.25);
+    transform:translateY(-3px); box-shadow:0 8px 24px rgba(255,45,85,.12);
+}
+.module {
+    max-width:1080px; margin:28px auto; padding:48px 40px; background:rgba(255,255,255,.72);
+    backdrop-filter:blur(var(--blur)) saturate(150%); -webkit-backdrop-filter:blur(var(--blur)) saturate(150%);
+    border-radius:var(--radius-lg); border:1px solid rgba(15,15,25,.06);
+    box-shadow:0 1px 3px rgba(15,15,25,.04),0 8px 24px rgba(15,15,25,.03);
+    position:relative; overflow:hidden; transition:all .4s var(--ease);
+}
+.module::before {
+    content:''; position:absolute; top:-50%; left:50%; width:140%; height:80px;
+    transform:translateX(-50%); background:radial-gradient(ellipse at center,rgba(255,45,85,.06) 0%,transparent 70%);
+    filter:blur(20px); pointer-events:none;
+}
+.module:hover {
+    border-color:rgba(255,45,85,.20);
+    box-shadow:0 4px 12px rgba(15,15,25,.05),0 16px 40px rgba(255,45,85,.08);
+}
+.module-header {
+    display:flex; align-items:center; gap:18px; margin-bottom:32px; padding-bottom:20px;
+    border-bottom:1px solid rgba(15,15,25,.08);
+}
+.module-num {
+    font-size:2.4em; font-weight:300; line-height:1; background:var(--accent-gradient);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+}
+.module-title { font-size:1.65em; font-weight:600; letter-spacing:1px; }
+.module-subtitle { color:var(--text-secondary); font-size:.95em; margin-top:4px; font-weight:400; }
+.content { color:var(--text-primary); font-size:1.04em; }
+.content p { margin-bottom:18px; text-indent:2em; color:rgba(15,15,25,.85); }
+.content h3 {
+    color:var(--accent-red); font-size:1.18em; margin:30px 0 14px;
+    font-weight:600; letter-spacing:.5px; display:inline-block;
+}
+.content strong {
+    background:var(--accent-gradient); -webkit-background-clip:text; background-clip:text;
+    -webkit-text-fill-color:transparent; font-weight:600;
+}
+.highlight {
+    background:linear-gradient(135deg,rgba(255,45,85,.06) 0%,rgba(255,45,200,.05) 100%);
+    backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+    border-radius:var(--radius-md); padding:24px 28px; margin:24px 0;
+    border:1px solid rgba(255,45,85,.18); background-color:rgba(255,255,255,.6);
+    position:relative; overflow:hidden;
+}
+.highlight::before {
+    content:''; position:absolute; top:0; left:0; width:100%; height:1px;
+    background:linear-gradient(90deg,transparent,rgba(255,45,85,.5),rgba(255,45,200,.5),transparent);
+}
+.highlight h4 {
+    background:var(--accent-gradient); -webkit-background-clip:text; background-clip:text;
+    -webkit-text-fill-color:transparent; margin-bottom:12px; font-weight:600;
+    letter-spacing:.5px; font-size:1.05em;
+}
+.highlight ul { padding-left:1.3em; color:rgba(15,15,25,.82); }
+.highlight li { margin:8px 0; }
+.source-link {
+    display:inline-block; margin:0 0 18px 2em; color:var(--accent-red);
+    text-decoration:none; font-size:.88em; border-bottom:1px solid rgba(255,45,85,.28);
+}
+.source-link:hover { border-bottom-color:var(--accent-red); }
+.chart-box {
+    background:rgba(255,255,255,.7); backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px); border-radius:var(--radius-md);
+    padding:28px; margin:28px 0; border:1px solid rgba(15,15,25,.06);
+}
+.chart-box h4 {
+    color:var(--text-secondary); text-align:center; margin-bottom:18px;
+    font-weight:500; letter-spacing:1px; font-size:.95em;
+}
+.chart-fallback { display:grid; gap:10px; }
+.fallback-row { display:grid; grid-template-columns:7em 1fr 4.5em; gap:10px; align-items:center; font-size:.88em; color:var(--text-secondary); }
+.fallback-track { height:10px; background:rgba(15,15,25,.06); border-radius:999px; overflow:hidden; }
+.fallback-fill { display:block; height:100%; background:var(--accent-gradient); border-radius:999px; }
+.fallback-value { text-align:right; color:var(--accent-red); font-weight:600; }
+.metric-table {
+    width:100%; border-collapse:collapse; margin:18px 0; font-size:.92em;
+    background:rgba(255,255,255,.55); border-radius:14px; overflow:hidden;
+}
+.metric-table th,.metric-table td {
+    padding:12px 14px; text-align:left; border-bottom:1px solid rgba(15,15,25,.07);
+}
+.metric-table th { color:var(--text-secondary); font-weight:600; background:rgba(255,45,85,.05); }
+.metric-table tr:last-child td { border-bottom:none; }
+.source-list { padding-left:1.3em; }
+.source-list li { margin:10px 0; }
+.source-list a { color:var(--accent-red); text-decoration:none; border-bottom:1px solid rgba(255,45,85,.22); }
+.back-link { text-align:center; padding:60px 20px 40px; }
+.back-link a {
+    display:inline-block; color:#fff; text-decoration:none; font-size:1.05em; font-weight:600;
+    padding:16px 48px; border-radius:var(--radius-pill); background:var(--accent-gradient);
+    box-shadow:0 8px 24px rgba(255,45,85,.30),0 0 60px rgba(255,45,200,.12);
+    transition:all .35s var(--ease); letter-spacing:1px; border:none;
+}
+.back-link a:hover {
+    transform:translateY(-3px) scale(1.02);
+    box-shadow:0 14px 40px rgba(255,45,85,.45),0 0 80px rgba(255,45,200,.22);
+}
+.footer {
+    text-align:center; padding:48px 20px; color:var(--text-tertiary);
+    border-top:1px solid rgba(15,15,25,.06);
+}
+.footer p { margin:8px 0; font-weight:300; }
+@media (max-width:768px) {
+    .hero { padding:60px 18px 50px; }
+    .hero h1 { font-size:2.1em; letter-spacing:2px; }
+    .hero .date-info { font-size:.95em; }
+    .nav-bar { gap:5px; padding:10px 12px; }
+    .nav-bar a { font-size:.72em; padding:6px 11px; }
+    .toc { padding:28px 16px; }
+    .toc-grid { grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px; }
+    .toc-grid a { padding:11px 12px; font-size:.82em; }
+    .module { margin:16px 12px; padding:32px 22px; border-radius:var(--radius-md); }
+    .module-header { gap:12px; margin-bottom:24px; }
+    .module-num { font-size:1.9em; }
+    .module-title { font-size:1.3em; }
+    .content { font-size:.98em; }
+    .content p { text-indent:1.5em; }
+    .highlight { padding:18px 20px; }
+    .chart-box { padding:18px 14px; }
+    .fallback-row { grid-template-columns:6.5em 1fr 3.8em; gap:7px; font-size:.78em; }
+    .source-link { margin-left:1.5em; }
+    .metric-table { font-size:.82em; }
+    .metric-table th,.metric-table td { padding:9px 8px; }
+    .back-link a { padding:14px 36px; font-size:.98em; }
+}
+@media (max-width:480px) {
+    .hero h1 { font-size:1.8em; }
+    .nav-bar a { font-size:.68em; padding:5px 9px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav-bar">
+<a href="#module-1">①运营精华</a>
+<a href="#module-2">②今日要闻</a>
+<a href="#module-3">③科技×AI前沿</a>
+<a href="#module-4">④财富趋势</a>
+<a href="#module-5">⑤职场教育</a>
+<a href="#module-6">⑥深度阅读</a>
+<a href="#module-7">⑦五栏分析</a>
+</nav>
+
+<div class="hero">
+<h1>📰 生存知识日报</h1>
+<div class="date-info">2026-07-31 · 星期五 · 第 31 期</div>
+<div class="date-info" style="font-size:0.95em;margin-top:5px;opacity:0.7;">深度认知 · 理性判断 · 温情陪伴</div>
+</div>
+
+<div class="toc"><div class="toc-grid">
+<a href="#module-1">①运营精华</a>
+<a href="#module-2">②今日要闻</a>
+<a href="#module-3">③科技×AI前沿</a>
+<a href="#module-4">④财富趋势</a>
+<a href="#module-5">⑤职场教育</a>
+<a href="#module-6">⑥深度阅读</a>
+<a href="#module-7">⑦五栏分析</a>
+</div></div>
+
+<!-- ====== 模块1：运营精华 ====== -->
+<section id="module-1" class="module"><div class="module-header"><span class="module-num">①</span><div><div class="module-title">运营精华</div><div class="module-subtitle">AI教育从“会不会用”进入“能否证明价值” · 用双账本连接效率、体验与续费</div></div></div><div class="content">
+<h3>📌 今天的判断：不要只教工具，要交付“可验证的改进”</h3>
+<p><strong>发生了什么：</strong>OpenAI 7月8日披露，其面向美国 K–12 教育者的 AI Skills Jam 已覆盖超过 1,600 名教师、管理者和教育领导者，并于今天（7月31日）继续在凤凰城举办活动。文章引用 Gallup 调研称，每周使用 AI 的教师估算平均每周节省 5.9 小时；节省的时间会被重新投入更细致的反馈、个性化备课和家长沟通。这里最值得运营人注意的不是“5.9”这个孤立数字，而是它同时记录了<strong>效率增量和时间再投资</strong>。</p>
+<a class="source-link" href="https://openai.com/index/k-12-educators-practical-skills/" target="_blank" rel="noopener noreferrer">直接来源：OpenAI · Helping K–12 educators build practical AI skills（2026-07-08）↗</a>
+<p><strong>为什么重要：</strong>知识付费常把“学会一个工具”当作课程终点，但用户真正愿意续费的是结果：交付更快、返工更少、转化更稳、学员体验更好。如果只记录“用了几次 AI”，团队很容易制造热闹；如果只记录“省了多少时间”，又可能让提效变成继续堆任务。Yara 需要一套双账本：第一本是<strong>效率账</strong>，记录基线耗时、AI后耗时和返工；第二本是<strong>价值账</strong>，记录省下来的时间投向了谁、改善了什么业务结果。</p>
+<div class="highlight">
+<h4>今天就能上线的“AI 价值双账本”</h4>
+<table class="metric-table">
+<thead><tr><th>账本</th><th>必须记录</th><th>防止的假进步</th></tr></thead>
+<tbody>
+<tr><td>效率账</td><td>任务、基线分钟、AI分钟、返工分钟</td><td>只算生成速度，不算校验成本</td></tr>
+<tr><td>价值账</td><td>节省分钟、再投资动作、结果指标</td><td>省下时间，却没有改善用户体验</td></tr>
+<tr><td>安全账</td><td>数据等级、人工复核、异常与回滚</td><td>为了快而泄露、误导或不可追溯</td></tr>
+</tbody>
+</table>
+</div>
+<h3>🎯 对 Yara 的启发</h3>
+<p>把下一次 AI 培训从“功能演示会”改成“任务改造营”：每个人带一个真实但已脱敏的任务入场，先测无 AI 基线，再完成 AI 版本，最后写清省下的时间要投入哪一个高价值动作。课程卖点也从“掌握 20 个提示词”改成“把一个业务任务的总耗时和返工率降下来，并留下可复用 SOP”。<strong>卖工具会被工具更新淘汰，卖可审计的工作改进更耐久。</strong></p>
+<div class="highlight">
+<h4>今日行动 · 30 分钟启动</h4>
+<ul>
+<li>选一个高频任务：社群答疑摘要、课程复盘或销售线索分级。</li>
+<li>抽取过去 3 次真实记录，计算平均耗时和返工次数作为基线。</li>
+<li>今天完成 1 次 AI 辅助版本，记录生成、校验、修改的完整分钟数。</li>
+<li>把节省时间明确投向 1 个用户动作，例如回访沉默学员，并在 7 天后检查响应率。</li>
+</ul>
+</div>
+</div></section>
+
+<!-- ====== 模块2：今日要闻 ====== -->
+<section id="module-2" class="module"><div class="module-header"><span class="module-num">②</span><div><div class="module-title">今日要闻</div><div class="module-subtitle">两份教育公司成绩单：增长、效率与留存必须分开看</div></div></div><div class="content">
+<h3>📈 好未来：增长质量来自经营杠杆，不只来自收入增速</h3>
+<p><strong>发生了什么：</strong>好未来 7月30日发布截至5月31日的 2027 财年第一季度未经审计业绩：净收入 7.584 亿美元，同比增长 31.9%；毛利率从 54.9% 升至 57.8%；销售与营销费用同比下降 4.8% 至 1.720 亿美元；经营利润从 1,430 万美元升至 1.372 亿美元，经营现金流为 4.782 亿美元。与此同时，4.052 亿美元的其他收益主要来自长期投资公允价值变动，不能把净利润的跃升全部等同于主营业务改善。</p>
+<a class="source-link" href="https://ir.tal.com/2026-07-30-TAL-Education-Group-Announces-Unaudited-Financial-Results-for-the-First-Fiscal-Quarter-Ended-May-31%2C-2026" target="_blank" rel="noopener noreferrer">直接来源：TAL Investor Relations · FY2027 Q1 Results（2026-07-30）↗</a>
+<div class="chart-box"><h4>好未来 FY2027 Q1 关键经营指标同比变化（%）</h4><canvas id="talChart" height="270"></canvas><div class="chart-fallback" data-for="talChart">
+<div class="fallback-row"><span>净收入</span><span class="fallback-track"><span class="fallback-fill" style="width:82%;"></span></span><span class="fallback-value">+31.9%</span></div>
+<div class="fallback-row"><span>毛利润</span><span class="fallback-track"><span class="fallback-fill" style="width:100%;"></span></span><span class="fallback-value">+38.9%</span></div>
+<div class="fallback-row"><span>销售营销费</span><span class="fallback-track"><span class="fallback-fill" style="width:12%;"></span></span><span class="fallback-value">−4.8%</span></div>
+<div class="fallback-row"><span>经营费用</span><span class="fallback-track"><span class="fallback-fill" style="width:28%;"></span></span><span class="fallback-value">+10.8%</span></div>
+</div></div>
+<p><strong>为什么重要：</strong>真正的经营质量不是“营收涨了”这一句话，而是营收、毛利、获客投入、经营现金流是否一起变好。对 Yara 而言，这意味着每场招生复盘至少要把“成交额”拆成毛利、投放、退款、交付成本和回款；一次性收益或偶然爆款必须单列，不能拿来证明可复制能力。</p>
+
+<h3>🧭 Coursera：用户增长很快，企业留存却在承压</h3>
+<p><strong>发生了什么：</strong>Coursera 7月29日公布 2026 年第二季度业绩：收入 2.986 亿美元，同比增长 60%；付费订阅用户 165.5 万，同比增长 44%。但企业客户数同比下降 2% 至 12,107 家，企业净收入留存率从一年前的 95% 降至 91%。公司于5月11日完成与 Udemy 的合并，并预计到 2026 年末实现至少 8,500 万美元年化净协同效应；同时计划向 Andrew Ng 创办的 LearnVector 投资 1 亿美元，押注更自适应、可衡量的一对一学习体验。</p>
+<a class="source-link" href="https://investor.coursera.com/news/news-details/2026/Coursera-Reports-Second-Quarter-2026-Financial-Results/default.aspx" target="_blank" rel="noopener noreferrer">直接来源：Coursera Investor Relations · Q2 2026 Results（2026-07-29）↗</a>
+<div class="chart-box"><h4>Coursera Q2：增长指标与留存信号并不同步</h4><canvas id="courseraChart" height="270"></canvas><div class="chart-fallback" data-for="courseraChart">
+<div class="fallback-row"><span>收入同比</span><span class="fallback-track"><span class="fallback-fill" style="width:100%;"></span></span><span class="fallback-value">+60%</span></div>
+<div class="fallback-row"><span>付费订阅同比</span><span class="fallback-track"><span class="fallback-fill" style="width:73%;"></span></span><span class="fallback-value">+44%</span></div>
+<div class="fallback-row"><span>企业客户同比</span><span class="fallback-track"><span class="fallback-fill" style="width:3%;"></span></span><span class="fallback-value">−2%</span></div>
+<div class="fallback-row"><span>企业 NRR</span><span class="fallback-track"><span class="fallback-fill" style="width:7%;"></span></span><span class="fallback-value">−4pp</span></div>
+</div></div>
+<p><strong>对 Yara/运营工作的启发：</strong>拉新和续费是两张不同的成绩单。首页展示“新增付费人数”时，后台必须同时看 30 天活跃、完课、退款和续费意向；如果新客增长但老客沉默，增长只是把漏斗顶部放大。今天可采取的行动是给最近三个招生批次补一张<strong>分批次留存表</strong>：新增、7日激活、30日完课、二次购买分别成列，不再用全量平均数掩盖批次差异。</p>
+</div></section>
+
+<!-- ====== 模块3：科技×AI前沿 ====== -->
+<section id="module-3" class="module"><div class="module-header"><span class="module-num">③</span><div><div class="module-title">科技 × AI 前沿</div><div class="module-subtitle">培训产品正在从“大课”转向可组合微学习，从通用聊天转向有边界的场景工具</div></div></div><div class="content">
+<h3>🧩 “Snackable + Stackable”：微学习不是切碎视频，而是切清成果</h3>
+<p>Google 5月13日宣布推出面向教育者的 AI Educator Series：首批 20 多个免费短课程面向美国约 600 万名 K–12 与高等教育工作者，采用“snackable（短小易学）”和“stackable（可叠加）”设计，不要求按固定顺序学习，并计划从9月起每月新增内容。它与 ISTE+ASCD 合作，重点不是灌输完整知识体系，而是让教育者按当前任务选取一个最小单元。</p>
+<a class="source-link" href="https://blog.google/products-and-platforms/products/education/ai-educator-series/" target="_blank" rel="noopener noreferrer">直接来源：Google · AI Educator Series（2026-05-13）↗</a>
+<p><strong>为什么重要：</strong>成人学习最大的阻力往往不是“内容不够”，而是工作现场没有足够连续时间。对 Yara 来说，微课单元应以可交付成果命名，如“15分钟生成一版脱敏周报并完成事实核验”，而不是“第3章：提示词进阶”。每个单元都要独立包含输入模板、完成标准、错误示例和升级路径，这才叫可组合，不是把 2 小时视频机械切成 8 段。</p>
+
+<h3>🔐 有上下文的 AI 工具，更需要最小必要数据</h3>
+<p>Google 6月25日发布面向教育场景的一组新工具，其中 Classroom 应用可让 Gemini 在安全环境中调用课程上下文；同时资助面向 Title I 学校的 AI 准备度项目，并与 ISTE+ASCD 研究 AI 时代的评估方式。这说明产品竞争正在从“能不能对话”进入“能否连接业务上下文且保持可控”。</p>
+<a class="source-link" href="https://blog.google/products-and-platforms/products/education/collection-iste-june-2026/" target="_blank" rel="noopener noreferrer">直接来源：Google · Connected AI tools for education（2026-06-25）↗</a>
+<p><strong>今天可采取的行动：</strong>把团队常用 AI 流程分成绿、黄、红三级。公开课程资料属于绿级；脱敏后的群聊摘要属于黄级，必须人工复核；真实姓名、联系方式、成绩、订单和财务属于红级，不进入公共模型。凡是需要“接入上下文”的工具，先回答三个问题：最少需要哪些字段、谁能看到输出、错误后如何回滚。</p>
+</div></section>
+
+<!-- ====== 模块4：财富趋势 ====== -->
+<section id="module-4" class="module"><div class="module-header"><span class="module-num">④</span><div><div class="module-title">财富趋势</div><div class="module-subtitle">教育行业的估值逻辑：从流量故事转向现金流、留存和可衡量学习效果</div></div></div><div class="content">
+<h3>💰 三层数字，避免被“漂亮增长”误导</h3>
+<p>今天两份成绩单给出一个共同信号：资本更愿意奖励可以解释、可以持续的增长。好未来的收入、毛利率、营销费用和经营现金流共同改善，表现出经营杠杆；Coursera 的收入和订阅用户高速增长，却同时暴露企业客户和净收入留存率的压力。两者都提醒我们：<strong>规模指标回答“有多大”，效率指标回答“赚不赚钱”，留存指标回答“能不能持续”。</strong></p>
+<div class="highlight">
+<h4>Yara 的经营看板建议</h4>
+<table class="metric-table">
+<thead><tr><th>层级</th><th>核心指标</th><th>每周要问的问题</th></tr></thead>
+<tbody>
+<tr><td>规模</td><td>线索、付费人数、成交额</td><td>增长来自哪个渠道和人群？</td></tr>
+<tr><td>效率</td><td>毛利、获客成本、退款、回款周期</td><td>增长有没有消耗更多现金？</td></tr>
+<tr><td>持续</td><td>激活、完课、续费、推荐</td><td>用户为何留下，又为何离开？</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>对商业决策的启发：</strong>不要用一个综合大盘数做所有判断。投放要看渠道边际回报，课程要看分批次完成率，交付要看问题类型与复发率，续费要看用户获得的可证明结果。今天就把周报中的“总成交额”旁边增加“现金到账、预计退款、交付预留”三列，形成更接近真实可支配现金的数字。</p>
+</div></section>
+
+<!-- ====== 模块5：职场教育 ====== -->
+<section id="module-5" class="module"><div class="module-header"><span class="module-num">⑤</span><div><div class="module-title">职场教育</div><div class="module-subtitle">政策正在把“AI素养”与“安全、包容、评价”绑定在一起</div></div></div><div class="content">
+<h3>🏫 中国“人工智能+教育”：场景要高价值、可复制，也要可审查</h3>
+<p>教育部等五部门4月印发《“人工智能+教育”行动计划》，提出育人为本、素养为先、应用导向、智能向善，目标是到 2030 年基本形成人工智能与教育深度融合格局。计划强调形成高价值、可推广、可复制的应用场景，同时建立安全审核与测评机制，一体保障模型算法、数据资源、基础设施和应用系统安全。</p>
+<a class="source-link" href="https://www.moe.gov.cn/srcsite/A16/s3342/202604/t20260410_1433240.html" target="_blank" rel="noopener noreferrer">直接来源：中华人民共和国教育部 · “人工智能+教育”行动计划（2026-04）↗</a>
+
+<h3>🛡️ 英国 AI 辅导采购：安全、可用、有效是同一张验收表</h3>
+<p>英国教育部4月16日邀请教育科技与 AI 公司参与为弱势学生开发安全的 AI 辅导工具，要求投标者证明产品的教育收益、无障碍与包容性，并符合生成式 AI 产品安全标准。它给课程产品团队一个很实用的启发：安全不是上线前最后一道法务勾选，而是与学习效果、可达性一起进入产品定义。</p>
+<a class="source-link" href="https://www.gov.uk/government/news/edtech-and-ai-companies-invited-to-help-build-safe-ai-tutoring-tools-for-disadvantaged-pupils" target="_blank" rel="noopener noreferrer">直接来源：UK Department for Education · Safe AI tutoring tools（2026-04-16）↗</a>
+<div class="highlight">
+<h4>一份适合 Yara 的 AI 教学验收卡</h4>
+<ul>
+<li><strong>效果：</strong>它改善了哪一个可观察的学习或工作结果？</li>
+<li><strong>证据：</strong>基线、样本、时间窗和失败案例是否保留？</li>
+<li><strong>包容：</strong>新手、低带宽、手机端和阅读困难用户能否完成？</li>
+<li><strong>安全：</strong>敏感信息是否最小化，外发前是否有人审，能否回滚？</li>
+<li><strong>边界：</strong>哪些情况必须转人工，是否明确告诉用户？</li>
+</ul>
+</div>
+</div></section>
+
+<!-- ====== 模块6：深度阅读 ====== -->
+<section id="module-6" class="module"><div class="module-header"><span class="module-num">⑥</span><div><div class="module-title">深度阅读</div><div class="module-subtitle">“节省 5.9 小时”之后：提效只有被重新分配，才会变成组织能力</div></div></div><div class="content">
+<h3>🧠 效率不是终点，而是一项重新分配权</h3>
+<p>AI 项目最常见的误区，是把“更快完成”当成价值闭环。实际上，节省出来的时间有三种结局：被新的低价值任务填满、被组织悄悄收回，或被重新投入更需要判断和关系的工作。只有第三种，才可能改善学习体验和商业结果。OpenAI 披露的教师案例把节省时间投向更细致反馈、个性化备课和家长沟通，给出了一个关键结构：<strong>自动化标准化劳动，把人的注意力转移到高差异、高信任任务。</strong></p>
+<p>这也解释了为什么“用了 AI”不一定让组织更强。如果没有明确再投资规则，团队只会感到节奏更快、任务更多；如果没有完整计算校验和返工，所谓效率可能只是把错误推到下游；如果没有看用户结果，提效甚至可能牺牲体验。Yara 的 AI 项目应当把“省下多少分钟”和“这些分钟投向了什么”写进同一张任务卡，负责人不能只提交前半句。</p>
+<div class="highlight">
+<h4>一个可复用的价值公式</h4>
+<p style="text-indent:0;margin-bottom:8px;"><strong>净节省时间 = 基线耗时 −（AI生成 + 人工校验 + 返工）</strong></p>
+<p style="text-indent:0;margin-bottom:8px;"><strong>业务价值 = 净节省时间 × 再投资质量 × 结果改善概率</strong></p>
+<p style="text-indent:0;margin-bottom:0;">这不是财务会计公式，而是决策检查表：任何一项为零，AI 项目都可能只有演示价值。</p>
+</div>
+<p><strong>今天可采取的行动：</strong>挑一个已经在使用 AI 的流程，问负责人三件事：完整总耗时是否下降？错误是否被转移到别人？省下的时间投向了什么？如果答不出来，先停下扩张，把证据链补齐。</p>
+</div></section>
+
+<!-- ====== 模块7：五栏分析 ====== -->
+<section id="module-7" class="module"><div class="module-header"><span class="module-num">⑦</span><div><div class="module-title">五栏分析</div><div class="module-subtitle">从事实到行动：今天的运营决策压缩成五张卡</div></div></div><div class="content">
+<h3>① 发生了什么</h3>
+<p>教育行业近期同时出现三条清晰线索：教育者 AI 培训强调实践和时间节省；课程设计转向短小、可组合单元；头部教育平台用财报证明，收入增长、效率改善和客户留存可能并不同步。</p>
+<h3>② 为什么重要</h3>
+<p>这意味着知识付费的竞争焦点正在从“谁的内容更多、工具更新更快”转向“谁能证明用户的工作和学习真正改善”。AI 功能容易复制，证据体系、交付流程和长期信任不容易复制。</p>
+<h3>③ 对 Yara 的启发</h3>
+<p>课程产品要同时设计三件事：一个足够小的任务成果、一套可比较的前后测、一个明确的安全边界。运营看板则要同时看规模、效率和持续性，避免用总成交额或新增人数替代经营判断。</p>
+<h3>④ 今天可采取的行动</h3>
+<p>今天发起一个 7 天小实验：选 1 个高频任务、1 个执行小组、1 个用户结果指标。每天记录完整耗时和返工，并把节省时间投入沉默学员回访；第 7 天比较响应率、满意度或完成率，只在结果改善时扩大范围。</p>
+<h3>⑤ 风险与反证</h3>
+<p>5.9 小时是受访教师的估算值，不应直接移植为 Yara 的承诺；企业财报也不能证明某项 AI 功能造成增长。真正可靠的做法是把外部信息当作假设来源，用自己的基线、样本和失败案例验证。若提效伴随投诉、返工或隐私风险上升，就应判定实验未通过。</p>
+
+<div class="highlight">
+<h4>来源审计 · 7 个一手来源</h4>
+<ol class="source-list">
+<li><a href="https://openai.com/index/k-12-educators-practical-skills/" target="_blank" rel="noopener noreferrer">OpenAI：Helping K–12 educators build practical AI skills（2026-07-08）</a></li>
+<li><a href="https://blog.google/products-and-platforms/products/education/ai-educator-series/" target="_blank" rel="noopener noreferrer">Google：AI Educator Series（2026-05-13）</a></li>
+<li><a href="https://blog.google/products-and-platforms/products/education/collection-iste-june-2026/" target="_blank" rel="noopener noreferrer">Google：Connected AI tools for education（2026-06-25）</a></li>
+<li><a href="https://www.moe.gov.cn/srcsite/A16/s3342/202604/t20260410_1433240.html" target="_blank" rel="noopener noreferrer">中华人民共和国教育部：“人工智能+教育”行动方案（2026-04）</a></li>
+<li><a href="https://www.gov.uk/government/news/edtech-and-ai-companies-invited-to-help-build-safe-ai-tutoring-tools-for-disadvantaged-pupils" target="_blank" rel="noopener noreferrer">UK Department for Education：Safe AI tutoring tools（2026-04-16）</a></li>
+<li><a href="https://investor.coursera.com/news/news-details/2026/Coursera-Reports-Second-Quarter-2026-Financial-Results/default.aspx" target="_blank" rel="noopener noreferrer">Coursera：Q2 2026 Financial Results（2026-07-29）</a></li>
+<li><a href="https://ir.tal.com/2026-07-30-TAL-Education-Group-Announces-Unaudited-Financial-Results-for-the-First-Fiscal-Quarter-Ended-May-31%2C-2026" target="_blank" rel="noopener noreferrer">TAL：FY2027 Q1 Financial Results（2026-07-30）</a></li>
+</ol>
+</div>
+</div></section>
+
+<div class="back-link"><a href="index.html">← 返回日报首页</a></div>
+<div class="footer">
+<p>生存知识日报 · 2026-07-31</p>
+<p>内容基于 7 个可点击一手来源整理 · 时效事实核验于 2026-07-31（Asia/Shanghai）</p>
+</div>
+
+<script>
+const chartAvailable = typeof Chart === 'function';
+document.querySelectorAll('canvas').forEach((canvas) => { canvas.style.display = chartAvailable ? 'block' : 'none'; });
+document.querySelectorAll('.chart-fallback').forEach((fallback) => { fallback.style.display = chartAvailable ? 'none' : 'grid'; });
+if (chartAvailable) {
+const gradientBars = (ctx) => {
+    const g = ctx.createLinearGradient(0,0,400,0);
+    g.addColorStop(0,'rgba(255,45,85,.82)');
+    g.addColorStop(1,'rgba(255,45,200,.72)');
+    return g;
+};
+const commonOptions = {
+    responsive:true,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:(c)=>`${c.raw > 0 ? '+' : ''}${c.raw}${c.dataset.unit || '%'}`}}},
+    scales:{
+        x:{grid:{color:'rgba(15,15,25,.05)'},ticks:{color:'#5a5a6a'}},
+        y:{grid:{display:false},ticks:{color:'#5a5a6a'}}
+    }
+};
+const talCtx = document.getElementById('talChart').getContext('2d');
+new Chart(talCtx,{
+    type:'bar',
+    data:{
+        labels:['净收入','毛利润','销售营销费','经营费用'],
+        datasets:[{data:[31.9,38.9,-4.8,10.8],unit:'%',backgroundColor:gradientBars(talCtx),borderRadius:8}]
+    },
+    options:{...commonOptions,indexAxis:'y'}
+});
+const courseraCtx = document.getElementById('courseraChart').getContext('2d');
+new Chart(courseraCtx,{
+    type:'bar',
+    data:{
+        labels:['收入同比','付费订阅同比','企业客户同比','企业NRR同比变动'],
+        datasets:[{data:[60,44,-2,-4],unit:'',backgroundColor:gradientBars(courseraCtx),borderRadius:8}]
+    },
+    options:{
+        ...commonOptions,indexAxis:'y',
+        plugins:{
+            legend:{display:false},
+            tooltip:{callbacks:{label:(c)=>c.dataIndex===3?`${c.raw} 个百分点`:`${c.raw > 0 ? '+' : ''}${c.raw}%`}}
+        }
+    }
+});
+}
+</script>
+</body>
+</html>
