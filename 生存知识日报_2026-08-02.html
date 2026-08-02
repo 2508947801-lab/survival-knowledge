@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f7f7fa">
+<title>生存知识日报 · 2026-08-02 · 星期日</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+:root {
+    --bg-base:#f7f7fa; --glass-bg:rgba(255,255,255,.72); --text-primary:#0f0f15;
+    --text-secondary:#5a5a6a; --text-tertiary:#9a9aa8; --accent-red:#ff2d55;
+    --accent-gradient:linear-gradient(135deg,#ff2d55 0%,#ff375f 50%,#ff2dc8 100%);
+    --radius-lg:28px; --radius-md:20px; --radius-pill:999px; --blur:30px;
+    --ease:cubic-bezier(.4,0,.2,1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg-base); color:var(--text-primary); line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+}
+.nav-bar {
+    position:sticky; top:0; z-index:1000; background:rgba(255,255,255,.72);
+    backdrop-filter:blur(var(--blur)) saturate(180%); -webkit-backdrop-filter:blur(var(--blur)) saturate(180%);
+    border-bottom:1px solid rgba(15,15,25,.06); padding:14px 20px;
+    display:flex; flex-wrap:wrap; gap:8px; justify-content:center;
+}
+.nav-bar a {
+    color:var(--text-secondary); text-decoration:none; font-size:.82em; font-weight:500;
+    padding:8px 16px; border-radius:var(--radius-pill); background:rgba(255,255,255,.6);
+    border:1px solid transparent; transition:all .3s var(--ease); white-space:nowrap;
+}
+.nav-bar a:hover { color:var(--accent-red); background:rgba(255,45,85,.08); border-color:rgba(255,45,85,.25); }
+.hero {
+    position:relative; overflow:hidden; padding:90px 24px 70px; text-align:center;
+    border-bottom:1px solid rgba(15,15,25,.06); background:var(--bg-base);
+}
+.hero::before {
+    content:''; position:absolute; inset:-30%; z-index:0;
+    background:radial-gradient(ellipse 60% 50% at 30% 20%,rgba(255,45,85,.14) 0%,transparent 60%),
+               radial-gradient(ellipse 50% 40% at 70% 30%,rgba(255,45,200,.12) 0%,transparent 60%),
+               radial-gradient(ellipse 70% 60% at 50% 100%,rgba(255,55,95,.10) 0%,transparent 70%);
+    filter:blur(40px); animation:ambient 12s ease-in-out infinite alternate;
+}
+@keyframes ambient { from { transform:scale(1); opacity:.75; } to { transform:translate(-3%,2%) scale(1.08); opacity:1; } }
+.hero h1 { font-size:3.2em; font-weight:600; letter-spacing:4px; position:relative; z-index:1; }
+.hero .date-info { font-size:1.1em; color:var(--text-secondary); position:relative; z-index:1; margin-top:14px; }
+.toc { max-width:1080px; margin:0 auto; padding:40px 24px; }
+.toc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px; }
+.toc-grid a {
+    display:block; padding:14px 16px; text-decoration:none; color:var(--text-secondary);
+    background:rgba(255,255,255,.7); border-radius:var(--radius-md); border:1px solid rgba(15,15,25,.06);
+    transition:all .35s var(--ease); font-size:.9em; font-weight:500; text-align:center;
+}
+.toc-grid a:hover { color:var(--accent-red); border-color:rgba(255,45,85,.25); transform:translateY(-3px); }
+.module {
+    max-width:1080px; margin:28px auto; padding:48px 40px; background:var(--glass-bg);
+    backdrop-filter:blur(var(--blur)) saturate(150%); -webkit-backdrop-filter:blur(var(--blur)) saturate(150%);
+    border-radius:var(--radius-lg); border:1px solid rgba(15,15,25,.06);
+    box-shadow:0 1px 3px rgba(15,15,25,.04),0 8px 24px rgba(15,15,25,.03);
+    position:relative; overflow:hidden; transition:all .4s var(--ease);
+}
+.module:hover { border-color:rgba(255,45,85,.20); box-shadow:0 16px 40px rgba(255,45,85,.08); }
+.module-header { display:flex; align-items:center; gap:18px; margin-bottom:32px; padding-bottom:20px; border-bottom:1px solid rgba(15,15,25,.08); }
+.module-num {
+    font-size:2.4em; font-weight:300; line-height:1; background:var(--accent-gradient);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+}
+.module-title { font-size:1.65em; font-weight:600; letter-spacing:1px; }
+.module-subtitle { color:var(--text-secondary); font-size:.95em; margin-top:4px; }
+.content { font-size:1.04em; }
+.content p { margin-bottom:18px; text-indent:2em; color:rgba(15,15,25,.85); }
+.content h3 { color:var(--accent-red); font-size:1.18em; margin:30px 0 14px; font-weight:600; }
+.content strong { background:var(--accent-gradient); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; font-weight:600; }
+.highlight {
+    background:linear-gradient(135deg,rgba(255,45,85,.06),rgba(255,45,200,.05));
+    border-radius:var(--radius-md); padding:24px 28px; margin:24px 0;
+    border:1px solid rgba(255,45,85,.18); position:relative; overflow:hidden;
+}
+.highlight h4 { color:var(--accent-red); margin-bottom:12px; font-size:1.05em; }
+.highlight ul,.source-list { padding-left:1.3em; }
+.highlight li,.source-list li { margin:9px 0; }
+.source-link { display:inline-block; margin:0 0 18px 2em; color:var(--accent-red); text-decoration:none; border-bottom:1px solid rgba(255,45,85,.28); font-size:.88em; }
+.source-list a { color:var(--accent-red); text-decoration:none; border-bottom:1px solid rgba(255,45,85,.22); }
+.metric-table { width:100%; border-collapse:collapse; margin:18px 0; font-size:.92em; background:rgba(255,255,255,.55); border-radius:14px; overflow:hidden; }
+.metric-table th,.metric-table td { padding:12px 14px; text-align:left; border-bottom:1px solid rgba(15,15,25,.07); }
+.metric-table th { color:var(--text-secondary); background:rgba(255,45,85,.05); }
+.chart-box { background:rgba(255,255,255,.7); border-radius:var(--radius-md); padding:28px; margin:28px 0; border:1px solid rgba(15,15,25,.06); }
+.chart-box h4 { color:var(--text-secondary); text-align:center; margin-bottom:18px; font-weight:500; }
+.chart-fallback { display:grid; gap:12px; }
+.fallback-row { display:grid; grid-template-columns:8em 1fr 4em; gap:10px; align-items:center; color:var(--text-secondary); font-size:.88em; }
+.fallback-track { height:10px; background:rgba(15,15,25,.06); border-radius:999px; overflow:hidden; }
+.fallback-fill { display:block; height:100%; background:var(--accent-gradient); border-radius:999px; }
+.fallback-value { text-align:right; color:var(--accent-red); font-weight:600; }
+.back-link { text-align:center; padding:60px 20px 40px; }
+.back-link a { display:inline-block; color:#fff; text-decoration:none; font-weight:600; padding:16px 48px; border-radius:var(--radius-pill); background:var(--accent-gradient); box-shadow:0 8px 24px rgba(255,45,85,.30); }
+.footer { text-align:center; padding:48px 20px; color:var(--text-tertiary); border-top:1px solid rgba(15,15,25,.06); }
+.footer p { margin:8px 0; }
+@media (max-width:768px) {
+    .hero { padding:60px 18px 50px; } .hero h1 { font-size:2.1em; letter-spacing:2px; }
+    .nav-bar { gap:5px; padding:10px 12px; } .nav-bar a { font-size:.72em; padding:6px 11px; }
+    .toc { padding:28px 16px; } .toc-grid { grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px; }
+    .module { margin:16px 12px; padding:32px 22px; border-radius:var(--radius-md); }
+    .module-num { font-size:1.9em; } .module-title { font-size:1.3em; } .content { font-size:.98em; }
+    .content p { text-indent:1.5em; } .source-link { margin-left:1.5em; }
+    .metric-table { font-size:.82em; } .metric-table th,.metric-table td { padding:9px 8px; }
+    .fallback-row { grid-template-columns:7em 1fr 3.4em; gap:7px; font-size:.78em; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav-bar">
+<a href="#module-1">①运营精华</a><a href="#module-2">②今日要闻</a><a href="#module-3">③科技×AI前沿</a>
+<a href="#module-4">④财富趋势</a><a href="#module-5">⑤职场教育</a><a href="#module-6">⑥深度阅读</a><a href="#module-7">⑦五栏分析</a>
+</nav>
+
+<header class="hero">
+<h1>📰 生存知识日报</h1>
+<div class="date-info">2026-08-02 · 星期日 · 第 33 期</div>
+<div class="date-info" style="font-size:.95em;margin-top:5px;opacity:.7;">深度认知 · 理性判断 · 温情陪伴</div>
+</header>
+
+<div class="toc"><div class="toc-grid">
+<a href="#module-1">①运营精华</a><a href="#module-2">②今日要闻</a><a href="#module-3">③科技×AI前沿</a>
+<a href="#module-4">④财富趋势</a><a href="#module-5">⑤职场教育</a><a href="#module-6">⑥深度阅读</a><a href="#module-7">⑦五栏分析</a>
+</div></div>
+
+<section id="module-1" class="module"><div class="module-header"><span class="module-num">①</span><div><div class="module-title">运营精华</div><div class="module-subtitle">当搜索入口变成 AI 答案，内容运营要从“阅读量”升级为“可引用、可归因、可转化”</div></div></div><div class="content">
+<h3>📌 今天的判断：别追“GEO 秘籍”，先建一条可审计的 AI 发现链路</h3>
+<p><strong>发生了什么：</strong>Google 6月3日开始向部分站点推出搜索生成式 AI 专属绩效报告，可按页面、国家、设备和日期查看 AI Overviews 与 AI Mode 中的展示。OpenAI 截至8月2日的发布者 FAQ 则明确：允许 OAI-SearchBot 抓取有助于内容在 ChatGPT 中被发现和引用，引荐链接自动带有 <code>utm_source=chatgpt.com</code>，可在分析工具中识别。</p>
+<a class="source-link" href="https://developers.google.com/search/blog/2026/06/gen-ai-performance-reports" target="_blank" rel="noopener noreferrer">直接来源：Google Search Central · Generative AI performance reports（2026-06-03）↗</a>
+<a class="source-link" href="https://help.openai.com/en/articles/12627856" target="_blank" rel="noopener noreferrer">直接来源：OpenAI · Publishers and Developers FAQ（核验于 2026-08-02）↗</a>
+<p><strong>为什么重要：</strong>过去的内容漏斗是“排名→点击→留资”；现在多了“被 AI 展示/引用”一层。用户可能在答案里已经完成大部分认知，只在需要证据、模板或服务时访问原站。因此，不能只问“文章有多少阅读”，还要问“哪一页被展示、哪一条引用带来到站、到站后完成了什么”。</p>
+<div class="highlight"><h4>今天就能建的“AI 发现四段漏斗”</h4>
+<table class="metric-table"><thead><tr><th>阶段</th><th>核心证据</th><th>今天的最小动作</th></tr></thead><tbody>
+<tr><td>可抓取</td><td>搜索机器人能否读取</td><td>检查 robots.txt、WAF 与页面状态码</td></tr>
+<tr><td>可引用</td><td>原创经验、明确结论、直接证据</td><td>为一篇旧文补上原始数据与失败案例</td></tr>
+<tr><td>可归因</td><td>AI 展示、引荐会话、落地页</td><td>在分析工具中新建 chatgpt.com 流量分组</td></tr>
+<tr><td>可转化</td><td>模板下载、预约、试听、留资</td><td>每页只保留一个与内容相匹配的下一步</td></tr>
+</tbody></table></div>
+<p><strong>对 Yara 的启发：</strong>把课程内容从“知识摘要”改成“经验证据包”：一个真问题、一个原始基线、一个执行方法、一个结果、一个失败边界。这既更容易被人信任，也更容易被 AI 系统准确引用。</p>
+</div></section>
+
+<section id="module-2" class="module"><div class="module-header"><span class="module-num">②</span><div><div class="module-title">今日要闻</div><div class="module-subtitle">平台开始给出 AI 可见性量化工具，内容成果终于可以从“感觉”进入“证据”</div></div></div><div class="content">
+<h3>📊 Google：生成式 AI 中的曝光可以单独看了</h3>
+<p><strong>发生了什么：</strong>Google 的新报告先向部分站点滚动开放，展示 AI Overviews 和 AI Mode 中的展示次数，并能看到被展示的页面、国家、设备和时间。它暂时是曝光视角，且处于逐步开放阶段，不是每个站点都会立即看到。</p>
+<p><strong>为什么重要：</strong>这是“AI 可见性”从第三方估算走向平台一方数据的关键一步。但曝光不等于点击，点击不等于转化；如果运营团队只拿“被 AI 看见”当结果，依然会被虚荣指标误导。</p>
+
+<h3>🧭 OpenAI：发现爬虫与训练爬虫可分开决策</h3>
+<p>OpenAI 的官方说明区分了 OAI-SearchBot 和 GPTBot：前者关系到内容在 ChatGPT 搜索中的发现、摘要与引用；若发布者希望排除内容用于潜在训练，则可针对 GPTBot 设置。<strong>这不再是“全放行”或“全封禁”的二选一。</strong></p>
+<p><strong>今天可采取的行动：</strong>先画一张内容资产表：公开引流文章、试听片段、付费课程、学员与订单数据分层。只有公开层参与搜索发现；付费与私密层不因为“想被 AI 看见”而放开。</p>
+<a class="source-link" href="https://help.openai.com/en/articles/9237897-chatgpt-search" target="_blank" rel="noopener noreferrer">直接来源：OpenAI · ChatGPT Search（核验于 2026-08-02）↗</a>
+</div></section>
+
+<section id="module-3" class="module"><div class="module-header"><span class="module-num">③</span><div><div class="module-title">科技 × AI 前沿</div><div class="module-subtitle">技术底层没有神秘标记：抓取、索引、文本结构和真实价值仍然是基础</div></div></div><div class="content">
+<h3>🔎 Google 官方破除“AEO/GEO 捷径”</h3>
+<p>Google 7月10日更新的生成式 AI 优化指南明确提醒：不需要为 Google Search 额外创建 <code>llms.txt</code>、特殊 AI 标记或为排名而刻意切碎内容。基础条件仍然是页面可抓取、可索引、重要内容有文本形式、内部链接清晰，结构化数据与页面可见文本一致。</p>
+<a class="source-link" href="https://developers.google.com/search/docs/fundamentals/ai-optimization-guide" target="_blank" rel="noopener noreferrer">直接来源：Google Search Central · AI optimization guide（更新于 2026-07-10）↗</a>
+<p><strong>对 Yara/运营工作的启发：</strong>课程页不要只有华丽海报和一句口号。应该用可搜索文本写清适合谁、不适合谁、能完成什么任务、如何验收、需要多少时间和哪些前置条件。这些信息既服务真人决策，也降低 AI 错误转述的概率。</p>
+
+<h3>🧩 “非标准品内容”比大量摘要更可持续</h3>
+<p>Google 将更有价值的内容归纳为：有独特观点、来自真实经验、组织清晰、有高质量图像或视频支持，而不是把网上已有常识换一种说法。对知识付费来说，这意味着<strong>“七个方法”会越来越廉价，“我们在什么条件下怎样做、为何失败、如何改”会更稀缺。</strong></p>
+<div class="highlight"><h4>把普通内容改成可引用证据包</h4><ul>
+<li>不写“提高完课率的5个方法”，改写“某批次完课下降后，我们排除了哪3个错误假设”。</li>
+<li>显示样本、时间窗、基线和口径，不只放一个漂亮百分比。</li>
+<li>保留反例与限制条件，让用户知道什么时候不应该照搬。</li>
+</ul></div>
+</div></section>
+
+<section id="module-4" class="module"><div class="module-header"><span class="module-num">④</span><div><div class="module-title">财富趋势</div><div class="module-subtitle">内容经济的交换条件正在改变：被抓取不再自动等于获得访客</div></div></div><div class="content">
+<h3>🤖 Cloudflare：用于 AI 训练的爬取占比从 22% 升到 52%</h3>
+<p>Cloudflare 7月1日发布的网络报告显示：在其按用途识别的爬虫请求中，用于 AI 训练的占比由 2025 年春季的 22% 升至 2026 年6月的 52%；混合用途爬虫超过 36%。这是 Cloudflare 网络视角下的观测，不等同于整个互联网的精确普查，但方向非常清楚：抓取的目的正从“搜索发现”向“训练与代理使用”偏移。</p>
+<a class="source-link" href="https://blog.cloudflare.com/agentic-internet-bot-report/" target="_blank" rel="noopener noreferrer">直接来源：Cloudflare · Agentic Internet bot report（2026-07-01）↗</a>
+<div class="chart-box"><h4>Cloudflare 观测：爬虫请求中 AI 训练用途占比</h4>
+<canvas id="crawlChart" height="260"></canvas>
+<div class="chart-fallback" data-for="crawlChart">
+<div class="fallback-row"><span>2025 年春</span><span class="fallback-track"><span class="fallback-fill" style="width:42%;"></span></span><span class="fallback-value">22%</span></div>
+<div class="fallback-row"><span>2026 年6月</span><span class="fallback-track"><span class="fallback-fill" style="width:100%;"></span></span><span class="fallback-value">52%</span></div>
+</div></div>
+<p><strong>商业启发：</strong>内容资产不能再只用“发了多少篇”估值。至少要分成三类：公开发现层用于获得引用和信任；交换层用模板、清单、直播换取可识别的用户关系；付费层提供个性化诊断、反馈和陪跑。如果把最稀缺的服务也完全公开，运营很忙，却可能没有建立可交易的价值。</p>
+</div></section>
+
+<section id="module-5" class="module"><div class="module-header"><span class="module-num">⑤</span><div><div class="module-title">职场教育</div><div class="module-subtitle">课程口碑也是证据工程：评价必须真实、可见，激励关系必须披露</div></div></div><div class="content">
+<h3>⭐ Google 7月24日更新评论指南：不得使用虚假或未披露的激励性评论</h3>
+<p>Google 的 Review snippet 指南新增明确要求：页面和结构化数据中不得包含不基于真实体验的评论；如果评论者因金钱、折扣、优惠券或免费产品获得利益，必须清晰、显著地披露。评论文字与评分也应对用户直接可见，不能只藏在机器标记中。</p>
+<a class="source-link" href="https://developers.google.com/search/docs/appearance/structured-data/review-snippet" target="_blank" rel="noopener noreferrer">直接来源：Google Search Central · Review snippet guidelines（更新于 2026-07-24）↗</a>
+<p><strong>对 Yara 的启发：</strong>课程案例页要从“晒好评”升级为“展示证据链”。除了保护学员隐私，还应保留案例的真实来源、授权状态、使用范围和是否存在返现/赠课。如果学员因赠课填写了评价，页面应披露；如果只有好评样本，运营会错误高估产品质量。</p>
+<div class="highlight"><h4>今天可执行的课程证据卡</h4><ul>
+<li><strong>背景：</strong>用户在什么条件下使用了产品，哪些信息已脱敏。</li>
+<li><strong>过程：</strong>参与了哪些环节，中途有哪些中断或额外支持。</li>
+<li><strong>结果：</strong>前后口径是否一致，是自报还是系统记录。</li>
+<li><strong>关系：</strong>是否有返现、赠课或其他激励，是否已显著披露。</li>
+</ul></div>
+</div></section>
+
+<section id="module-6" class="module"><div class="module-header"><span class="module-num">⑥</span><div><div class="module-title">深度阅读</div><div class="module-subtitle">当点击变稀缺，内容的核心价值从“长度”变成“证据密度”</div></div></div><div class="content">
+<h3>🧠 从“被看见”到“被相信”，中间差一条证据链</h3>
+<p>AI 答案的便利，会让大量只提供概括的页面失去点击理由。如果用户在答案页已经知道“应该做用户分层”，他为什么还要打开你的页面？只有当页面拥有模型无法从常识中直接合成的东西：原始观察、可复用模板、完整口径、反例、人的判断与服务，点击才有新的价值。</p>
+<p>这也解释了为什么“内容更多”不必然形成资产。一篇泛泛的万字长文，可能比不上一张记录了基线、干预、结果和失败条件的表格。<strong>证据密度 = 可核验事实 + 上下文 + 判断边界 + 可执行下一步。</strong>这不是搜索技巧，而是内容产品的质量定义。</p>
+<h3>📐 测量不能只停在流量来源</h3>
+<p>Google 建议结合 Search Console 与 Google Analytics：前者更擅长解释到站前的展示、点击和查询，后者更擅长解释到站后的页面、停留和行为。两者口径不会完全一致，因此应看趋势和同口径对比，不要为了凑成同一个数而修改结论。</p>
+<a class="source-link" href="https://developers.google.com/search/docs/monitor-debug/google-analytics-search-console" target="_blank" rel="noopener noreferrer">直接来源：Google Search Central · Using Search Console and Google Analytics（更新于 2026-01-07）↗</a>
+<p><strong>今天可采取的行动：</strong>选1篇高曝光、低转化的内容，不要先改标题。先画出“展示→引荐会话→下一步行为”三段数据，然后判断问题是“没被选中”、“被引用但没有到站理由”，还是“到站后下一步不清晰”。</p>
+</div></section>
+
+<section id="module-7" class="module"><div class="module-header"><span class="module-num">⑦</span><div><div class="module-title">五栏分析</div><div class="module-subtitle">从事实到行动：把今天的内容发现课题压缩成五张卡</div></div></div><div class="content">
+<h3>① 发生了什么</h3>
+<p>Google 开始提供生成式 AI 专属曝光报告，OpenAI 明确搜索爬虫、训练爬虫与 ChatGPT 引荐归因的边界，Cloudflare 则记录到 AI 训练爬取占比大幅上升。</p>
+<h3>② 为什么重要</h3>
+<p>内容分发的价值链已不再是“被搜索就有流量”。发布者需要分开管理发现、训练授权、引荐和转化，否则容易用大量公开内容换来很少可归因价值。</p>
+<h3>③ 对 Yara 的启发</h3>
+<p>课程和运营内容要同时做三件事：用原创经验获得引用，用证据链获得信任，用清晰的下一步获得可归因行动。大量批量摘要不会自动成为品牌资产。</p>
+<h3>④ 今天可采取的行动</h3>
+<p>做一次 45 分钟的“AI 发现审计”：15分钟检查一个公开页面能否被抓取；15分钟补一个原始证据和一个反例；15分钟在分析工具中建立 ChatGPT 引荐分组并检查页面唯一下一步。</p>
+<h3>⑤ 风险与反证</h3>
+<p>Google 的生成式 AI 报告仍在部分站点滚动开放，Cloudflare 数据也是其网络范围内的观测，不能直接当作 Yara 自身流量结构。更不应为了“被 AI 引用”公开学员、订单、课程或财务数据。完整的验证必须用自己的展示、引荐、留资和成交数据跑至少一个内容周期。</p>
+
+<div class="highlight"><h4>来源审计 · 7 个官方直接来源</h4><ol class="source-list">
+<li><a href="https://developers.google.com/search/blog/2026/06/gen-ai-performance-reports" target="_blank" rel="noopener noreferrer">Google：Search Generative AI performance reports（2026-06-03）</a></li>
+<li><a href="https://developers.google.com/search/docs/fundamentals/ai-optimization-guide" target="_blank" rel="noopener noreferrer">Google：Generative AI Search optimization guide（更新于 2026-07-10）</a></li>
+<li><a href="https://help.openai.com/en/articles/12627856" target="_blank" rel="noopener noreferrer">OpenAI：Publishers and Developers FAQ（核验于 2026-08-02）</a></li>
+<li><a href="https://blog.cloudflare.com/agentic-internet-bot-report/" target="_blank" rel="noopener noreferrer">Cloudflare：Agentic Internet bot report（2026-07-01）</a></li>
+<li><a href="https://developers.google.com/search/docs/appearance/structured-data/review-snippet" target="_blank" rel="noopener noreferrer">Google：Review snippet guidelines（更新于 2026-07-24）</a></li>
+<li><a href="https://developers.google.com/search/docs/monitor-debug/google-analytics-search-console" target="_blank" rel="noopener noreferrer">Google：Using Search Console and Google Analytics（更新于 2026-01-07）</a></li>
+<li><a href="https://help.openai.com/en/articles/9237897-chatgpt-search" target="_blank" rel="noopener noreferrer">OpenAI：ChatGPT Search（核验于 2026-08-02）</a></li>
+</ol></div>
+</div></section>
+
+<div class="back-link"><a href="index.html">← 返回日报首页</a></div>
+<div class="footer">
+<p>生存知识日报 · 2026-08-02 · 星期日</p>
+<p>内容基于 7 个可点击官方来源整理 · 时效事实核验于 2026-08-02（Asia/Shanghai）</p>
+</div>
+
+<script>
+const chartAvailable = typeof Chart === 'function';
+document.querySelectorAll('canvas').forEach((canvas) => { canvas.style.display = chartAvailable ? 'block' : 'none'; });
+document.querySelectorAll('.chart-fallback').forEach((fallback) => { fallback.style.display = chartAvailable ? 'none' : 'grid'; });
+if (chartAvailable) {
+    const ctx = document.getElementById('crawlChart').getContext('2d');
+    const gradient = ctx.createLinearGradient(0,0,420,0);
+    gradient.addColorStop(0,'rgba(255,45,85,.82)'); gradient.addColorStop(1,'rgba(255,45,200,.72)');
+    new Chart(ctx,{type:'bar',data:{labels:['2025年春季','2026年6月'],datasets:[{data:[22,52],backgroundColor:gradient,borderRadius:9}]},options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:(c)=>c.raw+'%'}}},scales:{x:{beginAtZero:true,max:60,ticks:{callback:(v)=>v+'%',color:'#5a5a6a'},grid:{color:'rgba(15,15,25,.05)'}},y:{ticks:{color:'#5a5a6a'},grid:{display:false}}}}});
+}
+</script>
+</body>
+</html>

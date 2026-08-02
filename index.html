@@ -1,43 +1,55 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
+<html lang="zh-CN"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#f7f7fa">
 <title>生存知识日报 · 首页</title>
 <style>
+/* === YouTube 2025 风格设计系统（浅色版）=== */
 :root {
-    --bg: #f7f7fa;
-    --glass: rgba(255,255,255,0.72);
-    --ink: #0f0f15;
-    --muted: #5a5a6a;
-    --soft: #9a9aa8;
-    --red: #ff2d55;
-    --pink: #ff2dc8;
-    --grad: linear-gradient(135deg, #ff2d55 0%, #ff375f 50%, #ff2dc8 100%);
-    --radius: 28px;
+    --bg-base: #f7f7fa;
+    --bg-elevated: #ffffff;
+    --glass-bg: rgba(255,255,255,0.72);
+    --glass-bg-hover: rgba(255,255,255,0.88);
+    --glass-border: rgba(15,15,25,0.08);
+    --glass-border-hover: rgba(255,45,85,0.35);
+    --text-primary: #0f0f15;
+    --text-secondary: #5a5a6a;
+    --text-tertiary: #9a9aa8;
+    --accent-red: #ff2d55;
+    --accent-magenta: #ff2dc8;
+    --accent-gradient: linear-gradient(135deg, #ff2d55 0%, #ff375f 50%, #ff2dc8 100%);
+    --accent-soft: rgba(255,45,85,0.10);
+    --accent-glow: rgba(255,45,85,0.28);
+    --radius-lg: 28px;
+    --radius-md: 20px;
+    --radius-sm: 14px;
+    --radius-pill: 999px;
+    --blur: 30px;
     --ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 html { scroll-behavior:smooth; }
 body {
     font-family:-apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
-    background: var(--bg);
-    color: var(--ink);
-    line-height:1.8;
+    background: var(--bg-base);
+    color: var(--text-primary);
+    line-height:1.85;
     min-height:100vh;
     -webkit-font-smoothing:antialiased;
 }
 .hero {
     position:relative; overflow:hidden;
-    padding:100px 24px 80px;
+    padding:80px 24px 60px;
     text-align:center;
+    border-bottom:1px solid rgba(15,15,25,0.06);
+    background: var(--bg-base);
 }
 .hero::before {
     content:''; position:absolute; inset:-30%;
     background:
         radial-gradient(ellipse 60% 50% at 30% 20%, rgba(255,45,85,0.14) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 40% at 70% 30%, rgba(255,45,200,0.12) 0%, transparent 60%);
+        radial-gradient(ellipse 50% 40% at 70% 30%, rgba(255,45,200,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 70% 60% at 50% 100%, rgba(255,55,95,0.10) 0%, transparent 70%);
     filter: blur(40px);
     animation: ambient 12s ease-in-out infinite alternate;
     z-index:0;
@@ -46,133 +58,512 @@ body {
     0% { transform: translate(0,0) scale(1); opacity:0.75; }
     100% { transform: translate(-3%, 2%) scale(1.08); opacity:1; }
 }
+.hero::after {
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.6) 0%, transparent 50%);
+    pointer-events:none; z-index:0;
+}
 .hero h1 {
-    font-size:3em; font-weight:600; letter-spacing:4px;
+    font-size:2.8em; color: var(--text-primary);
+    font-weight:600; letter-spacing:4px;
     position:relative; z-index:1;
     text-shadow: 0 2px 20px rgba(255,255,255,0.6);
 }
-.hero .lead {
-    margin-top:16px; color: var(--muted);
-    font-size:1.05em; position:relative; z-index:1;
+.hero .hero-sub {
+    font-size:1.05em;
+    color: var(--text-secondary);
+    margin-top:12px;
+    position:relative; z-index:1;
 }
-.hero .lead strong {
-    background: var(--grad);
-    -webkit-background-clip:text;
-    background-clip:text;
-    -webkit-text-fill-color:transparent;
-    font-weight:600;
+.hero .hero-meta {
+    font-size:0.9em;
+    color: var(--text-tertiary);
+    margin-top:8px;
+    position:relative; z-index:1;
 }
-.grid {
-    max-width:1080px; margin:0 auto;
-    padding:40px 24px 80px;
+.container {
+    max-width:1200px;
+    margin:0 auto;
+    padding:32px 24px 60px;
+}
+.section-title {
+    font-size:1.3em; font-weight:600;
+    color: var(--text-primary);
+    margin:36px 0 20px;
+    padding-left:16px;
+    border-left:4px solid;
+    border-image: var(--accent-gradient) 1;
+}
+.card-grid {
     display:grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap:20px;
 }
 .date-card {
-    display:block; text-decoration:none;
-    background: var(--glass);
-    backdrop-filter: blur(30px) saturate(150%);
-    -webkit-backdrop-filter: blur(30px) saturate(150%);
-    border-radius: var(--radius);
-    border:1px solid rgba(15,15,25,0.06);
-    padding:28px 24px;
+    display:block;
+    text-decoration:none;
+    color: var(--text-primary);
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--blur)) saturate(150%);
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(150%);
+    border-radius: var(--radius-lg);
+    border:1px solid var(--glass-border);
+    padding:24px 28px;
     transition: all 0.4s var(--ease);
-    position:relative; overflow:hidden;
     box-shadow: 0 1px 3px rgba(15,15,25,0.04), 0 8px 24px rgba(15,15,25,0.03);
 }
-.date-card::before {
-    content:''; position:absolute; top:-50%; left:50%;
-    width:140%; height:60px;
-    transform: translateX(-50%);
-    background: radial-gradient(ellipse at center, rgba(255,45,85,0.05) 0%, transparent 70%);
-    filter: blur(20px);
-    pointer-events:none;
-}
 .date-card:hover {
-    border-color: rgba(255,45,85,0.20);
-    box-shadow: 0 4px 12px rgba(15,15,25,0.05), 0 16px 40px rgba(255,45,85,0.08);
+    border-color: var(--glass-border-hover);
     transform: translateY(-3px);
+    box-shadow: 0 8px 40px rgba(255,45,85,0.10), 0 2px 8px rgba(15,15,25,0.05);
+}
+.card-header {
+    display:flex; align-items:center; gap:12px;
+    margin-bottom:12px;
 }
 .card-date {
-    font-size:1.3em; font-weight:600;
-    background: var(--grad);
+    font-size:1.15em; font-weight:600;
+    background: var(--accent-gradient);
     -webkit-background-clip:text;
     background-clip:text;
     -webkit-text-fill-color:transparent;
-    margin-bottom:8px;
 }
+.card-weekday {
+    font-size:0.82em;
+    color: var(--text-tertiary);
+}
+.card-badge {
+    font-size:0.75em;
+    background: linear-gradient(135deg, rgba(255,45,85,0.12) 0%, rgba(255,45,200,0.1) 100%);
+    color: var(--accent-red);
+    padding:3px 10px;
+    border-radius: var(--radius-pill);
+    font-weight:500;
+    margin-left:auto;
+}
+.card-body {}
 .card-label {
-    color: var(--muted);
-    font-size:0.88em;
-    margin-bottom:12px;
-    line-height:1.5;
+    font-size:0.85em;
+    color: var(--text-secondary);
+    line-height:1.6;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
 }
-.card-tag {
-    display:inline-block;
-    font-size:0.78em;
-    color: var(--red);
-    background: rgba(255,45,85,0.08);
-    border-radius: 999px;
-    padding:4px 12px;
+.card-arrow {
+    margin-top:10px;
+    font-size:0.82em;
+    color: var(--accent-red);
     font-weight:500;
 }
 .footer {
-    text-align:center; padding:48px 20px;
-    color: var(--soft);
+    text-align:center;
+    padding:48px 20px;
+    color: var(--text-tertiary);
     border-top:1px solid rgba(15,15,25,0.06);
 }
-.footer p { margin:6px 0; font-weight:300; }
+.footer p { margin:8px 0; font-weight:300; }
 @media (max-width:768px) {
-    .hero { padding:70px 18px 60px; }
-    .hero h1 { font-size:2.1em; letter-spacing:2px; }
-    .grid { padding:28px 16px 60px; grid-template-columns: 1fr; gap:16px; }
-    .date-card { padding:22px 18px; }
+    .hero { padding:50px 18px 40px; }
+    .hero h1 { font-size:2em; letter-spacing:2px; }
+    .card-grid { grid-template-columns: 1fr; gap:14px; }
+    .date-card { padding:20px 22px; }
 }
-</style>
-</head>
-<body>
-<div class="hero">
-<h1>📰 生存知识日报</h1>
-<div class="lead">深度认知 · 理性判断 · 温情陪伴 · <strong>为 Yara 量身定制 · 已归档 31 期</strong></div>
+</style></head><body>
+
+<header class="hero">
+<h1>生存知识日报</h1>
+<div class="hero-sub">Nean 的个人知识资产库</div>
+<div class="hero-meta">每日 · 6模块 + 5栏分析 · 运营操盘手成长引擎</div>
+</header>
+
+<div class="container">
+
+<div class="section-title">📰 日报日历</div>
+<div class="card-grid">
+
+    <a href="生存知识日报_2026-08-02.html#module-1" class="date-card" id="date-ops">
+        <div class="card-header">
+            <span class="card-date">📌 运营精华</span>
+            <span class="card-weekday">每日必读</span>
+        </div>
+        <div class="card-body">
+            <div class="card-label">AI 发现漏斗 · 从被抓取、被引用到可归因转化</div>
+            <div class="card-arrow">→ 进入精华</div>
+        </div>
+    </a>
+
+    <a href="生存知识日报_2026-08-02.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-08-02</span>
+            <span class="card-weekday">星期日</span>
+            <span class="card-badge">🆕 最新</span>
+        </div>
+        <div class="card-body">
+            <div class="card-label">AI搜索可见性报告·ChatGPT引荐归因·证据密度·真实评价红线</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+
+    <a href="生存知识日报_2026-08-01.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-08-01</span>
+            <span class="card-weekday">星期六</span>
+        </div>
+        <div class="card-body">
+            <div class="card-label">政治局定调逆周期调节·A股7月收官·DeepSeek V4 Flash·霍尔木兹告急</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-31.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-31</span>
+            <span class="card-weekday">星期五</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-30.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-30</span>
+            <span class="card-weekday">四</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-29.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-29</span>
+            <span class="card-weekday">星期三</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-28.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-28</span>
+            <span class="card-weekday">星期二</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-27.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-27</span>
+            <span class="card-weekday">星期一</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-26.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-26</span>
+            <span class="card-weekday">星期日</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-25.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-25</span>
+            <span class="card-weekday">星期六</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-24.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-24</span>
+            <span class="card-weekday">星期五</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-23.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-23</span>
+            <span class="card-weekday">四</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-22.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-22</span>
+            <span class="card-weekday">星期三</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-21.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-21</span>
+            <span class="card-weekday">星期二</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-20.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-20</span>
+            <span class="card-weekday">星期一</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-19.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-19</span>
+            <span class="card-weekday">星期日</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-18.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-18</span>
+            <span class="card-weekday">星期六</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-17.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-17</span>
+            <span class="card-weekday">星期五</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-16.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-16</span>
+            <span class="card-weekday">四</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-15.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-15</span>
+            <span class="card-weekday">星期三</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-14.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-14</span>
+            <span class="card-weekday">星期二</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-13.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-13</span>
+            <span class="card-weekday">星期一</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-12.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-12</span>
+            <span class="card-weekday">星期日</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-11.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-11</span>
+            <span class="card-weekday">星期六</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-10.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-10</span>
+            <span class="card-weekday">星期五</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-09.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-09</span>
+            <span class="card-weekday">四</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-08.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-08</span>
+            <span class="card-weekday">星期三</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-07.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-07</span>
+            <span class="card-weekday">星期二</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-06.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-06</span>
+            <span class="card-weekday">星期一</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-05.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-05</span>
+            <span class="card-weekday">星期日</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-04.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-04</span>
+            <span class="card-weekday">星期六</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-03.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-03</span>
+            <span class="card-weekday">星期五</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-02.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-02</span>
+            <span class="card-weekday">四</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+    <a href="生存知识日报_2026-07-01.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-07-01</span>
+            <span class="card-weekday">星期三</span>
+
+        </div>
+        <div class="card-body">
+            <div class="card-label">2026-07 · 生存知识日报</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
 </div>
-<div class="grid">
-<a class="date-card" href="生存知识日报_2026-07-31.html#module-1"><div class="card-date">运营精华</div><div class="card-label">AI教育从“会不会用”进入“能否证明价值” · 用双账本连接效率、体验与续费</div><div class="card-tag">今日焦点 · 2026-07-31</div></a>
-<a class="date-card" href="生存知识日报_2026-07-31.html"><div class="card-date">07/31 · 周五</div><div class="card-label">2026年7月31日 星期五 · AI教育价值证明·双账本运营·平台增长与留存·安全验收卡</div><div class="card-tag">🆕 最新</div></a>
-<a class="date-card" href="生存知识日报_2026-07-30.html"><div class="card-date">07/30 · 周四</div><div class="card-label">2026年7月30日 星期四 · 反网络暴力法的社区红线·传智教育4连板的口碑转...</div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-29.html"><div class="card-date">07/29 · 周二</div><div class="card-label">2026年7月29日 星期三 · 伊朗导弹与"黑天鹅"应急预案·寒武纪945人激...</div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-28.html"><div class="card-date">07/28 · 周一</div><div class="card-label">2026年7月28日 星期二 · 长鑫科技IPO的"首日效应"与开营节奏·教育整...</div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-27.html"><div class="card-date">07/27 · 周日</div><div class="card-label">2026年7月27日 星期一 · Kimi停售新订阅的"算力配额"启示·携程51...</div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-26.html"><div class="card-date">07/26 · 周六</div><div class="card-label">2026年7月26日 星期日 · 携程51.79亿罚单的信任经济学·内地投资者现...</div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-25.html"><div class="card-date">07/25 · 周五</div><div class="card-label">2026年7月25日 星期六 · 台风红色预警下的交付连续性·"五停"映射的停课...</div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-24.html"><div class="card-date">07/24 · 周四</div><div class="card-label">2026年7月24日 星期五 · 四预警齐发的危机运营、失能老人补贴政策拆解、K...</div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-23.html"><div class="card-date">07/23 · 周三</div><div class="card-label">2026年7月23日 星期四 · 教育新基建、以旧换新运营拆解、OpenAI失控...</div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-22.html"><div class="card-date">07/22 · 周二</div><div class="card-label">2026年7月22日 星期三 · WAIC 203.6亿采购、家政分级定价、育儿...</div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-21.html"><div class="card-date">07/21 · 周一</div><div class="card-label">2026年7月21日 星期一 · A股V形反转、AI密集发布、太空算力的运营拆解</div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-20.html"><div class="card-date">07/20 · 周日</div><div class="card-label"></div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-19.html"><div class="card-date">07/19 · 周六</div><div class="card-label">2026年7月19日 星期日 · 世界杯季军、C919出海、地质灾害巡查的运营拆...</div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-18.html"><div class="card-date">07/18 · 周五</div><div class="card-label">2026年7月18日 星期六 · WAIC开幕、邮政千亿件、油价上调的运营拆解</div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-17.html"><div class="card-date">07/17 · 周四</div><div class="card-label"></div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-16.html"><div class="card-date">07/16 · 周三</div><div class="card-label"></div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-15.html"><div class="card-date">07/15 · 周二</div><div class="card-label"></div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-14.html"><div class="card-date">07/14 · 周一</div><div class="card-label"></div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-13.html"><div class="card-date">07/13 · 周日</div><div class="card-label"></div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-12.html"><div class="card-date">07/12 · 周六</div><div class="card-label"></div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-11.html"><div class="card-date">07/11 · 周五</div><div class="card-label">2026年7月11日 星期六 · 台风停课的危机运营 · 希音IPO的供应链启示...</div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-10.html"><div class="card-date">07/10 · 周四</div><div class="card-label"></div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-09.html"><div class="card-date">07/09 · 周三</div><div class="card-label"></div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-08.html"><div class="card-date">07/08 · 周二</div><div class="card-label"></div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-07.html"><div class="card-date">07/07 · 周一</div><div class="card-label"></div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-06.html"><div class="card-date">07/06 · 周日</div><div class="card-label"></div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-05.html"><div class="card-date">07/05 · 周六</div><div class="card-label"></div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-04.html"><div class="card-date">07/04 · 周五</div><div class="card-label"></div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-03.html"><div class="card-date">07/03 · 周四</div><div class="card-label"></div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-02.html"><div class="card-date">07/02 · 周三</div><div class="card-label"></div><div class="card-tag"></div></a>
-<a class="date-card" href="生存知识日报_2026-07-01.html"><div class="card-date">07/01 · 周二</div><div class="card-label"></div><div class="card-tag"></div></a>
+
 </div>
+
 <div class="footer">
-<p>生存知识日报 · 知识资产库 v2.0 · 已归档 31 期</p>
-<p>深度认知 · 理性判断 · 温情陪伴</p>
+<p>生存知识日报 v2.0 · 以 Nean 为锚点的个人知识资产库</p>
+<p>共 33 天日报 · 最新：2026-08-02</p>
 </div>
-</body>
-</html>
+
+</body></html>

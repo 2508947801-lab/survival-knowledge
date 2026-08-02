@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生存知识日报 · 2026-08-01 · 星期六</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+/* === YouTube 2025 风格设计系统（浅色版）=== */
+:root {
+    --bg-base: #f7f7fa;
+    --bg-elevated: #ffffff;
+    --glass-bg: rgba(255,255,255,0.72);
+    --glass-bg-hover: rgba(255,255,255,0.88);
+    --glass-border: rgba(15,15,25,0.08);
+    --glass-border-hover: rgba(255,45,85,0.35);
+    --text-primary: #0f0f15;
+    --text-secondary: #5a5a6a;
+    --text-tertiary: #9a9aa8;
+    --accent-red: #ff2d55;
+    --accent-magenta: #ff2dc8;
+    --accent-gradient: linear-gradient(135deg, #ff2d55 0%, #ff375f 50%, #ff2dc8 100%);
+    --accent-soft: rgba(255,45,85,0.10);
+    --accent-glow: rgba(255,45,85,0.28);
+    --magenta-glow: rgba(255,45,200,0.20);
+    --radius-lg: 28px;
+    --radius-md: 20px;
+    --radius-sm: 14px;
+    --radius-pill: 999px;
+    --blur: 30px;
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+    font-family:-apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg-base);
+    color: var(--text-primary);
+    line-height:1.85;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+}
+.nav-bar {
+    position:sticky; top:0; z-index:1000;
+    background:rgba(255,255,255,0.72);
+    backdrop-filter:blur(var(--blur)) saturate(180%);
+    -webkit-backdrop-filter:blur(var(--blur)) saturate(180%);
+    border-bottom:1px solid rgba(15,15,25,0.06);
+    padding:14px 20px;
+    display:flex; flex-wrap:wrap; gap:8px;
+    justify-content:center;
+}
+.nav-bar a {
+    color: var(--text-secondary);
+    text-decoration:none;
+    font-size:0.82em; font-weight:500;
+    padding:8px 16px;
+    border-radius: var(--radius-pill);
+    background: rgba(255,255,255,0.6);
+    border:1px solid transparent;
+    transition: all 0.3s var(--ease);
+    white-space:nowrap;
+}
+.nav-bar a:hover {
+    color: var(--accent-red);
+    background: rgba(255,45,85,0.08);
+    border-color: rgba(255,45,85,0.25);
+    transform: translateY(-1px);
+}
+.hero {
+    position:relative; overflow:hidden;
+    padding:90px 24px 70px;
+    text-align:center;
+    border-bottom:1px solid rgba(15,15,25,0.06);
+    background: var(--bg-base);
+}
+.hero::before {
+    content:''; position:absolute; inset:-30%;
+    background:
+        radial-gradient(ellipse 60% 50% at 30% 20%, rgba(255,45,85,0.14) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 70% 30%, rgba(255,45,200,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 70% 60% at 50% 100%, rgba(255,55,95,0.10) 0%, transparent 70%);
+    filter: blur(40px);
+    animation: ambient 12s ease-in-out infinite alternate;
+    z-index:0;
+}
+@keyframes ambient {
+    0% { transform: translate(0,0) scale(1); opacity:0.75; }
+    100% { transform: translate(-3%, 2%) scale(1.08); opacity:1; }
+}
+.hero::after {
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.6) 0%, transparent 50%);
+    pointer-events:none; z-index:0;
+}
+.hero h1 {
+    font-size:3.2em; color: var(--text-primary);
+    font-weight:600; letter-spacing:4px;
+    position:relative; z-index:1;
+    text-shadow: 0 2px 20px rgba(255,255,255,0.6);
+}
+.hero .date-info {
+    font-size:1.1em;
+    color: var(--text-secondary);
+    position:relative; z-index:1;
+    margin-top:14px; font-weight:400;
+}
+.toc {
+    max-width:1080px; margin:0 auto; padding:40px 24px;
+}
+.toc-grid {
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap:12px;
+}
+.toc-grid a {
+    display:block; padding:14px 16px;
+    text-decoration:none; color: var(--text-secondary);
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-md);
+    border:1px solid rgba(15,15,25,0.06);
+    transition: all 0.35s var(--ease);
+    font-size:0.9em; font-weight:500;
+    text-align:center;
+}
+.toc-grid a:hover {
+    color: var(--accent-red);
+    background: #fff;
+    border-color: rgba(255,45,85,0.25);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(255,45,85,0.12);
+}
+.module {
+    max-width:1080px;
+    margin:28px auto;
+    padding:48px 40px;
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(var(--blur)) saturate(150%);
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(150%);
+    border-radius: var(--radius-lg);
+    border:1px solid rgba(15,15,25,0.06);
+    box-shadow: 0 1px 3px rgba(15,15,25,0.04), 0 8px 24px rgba(15,15,25,0.03);
+    position:relative; overflow:hidden;
+    transition: all 0.4s var(--ease);
+}
+.module::before {
+    content:''; position:absolute; top:-50%; left:50%;
+    width:140%; height:80px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse 100% 100% at 50% 0%, rgba(255,45,85,0.06) 0%, transparent 70%);
+    pointer-events:none; z-index:0;
+}
+.module:hover {
+    border-color: rgba(255,45,85,0.25);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 40px rgba(255,45,85,0.10), 0 2px 8px rgba(15,15,25,0.05);
+}
+.module-header {
+    display:flex; align-items:center; gap:18px;
+    margin-bottom:32px;
+    position:relative; z-index:1;
+}
+.module-num {
+    font-size:2.4em; font-weight:700;
+    background: var(--accent-gradient);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    line-height:1;
+}
+.module-title {
+    font-size:1.5em; font-weight:600;
+    color: var(--text-primary);
+    letter-spacing:1px;
+}
+.module-subtitle {
+    font-size:0.88em; color: var(--text-tertiary);
+    margin-top:4px;
+}
+.content {
+    position:relative; z-index:1;
+    font-size:1.02em;
+}
+.content h3 {
+    color: var(--text-primary);
+    font-size:1.15em;
+    margin:24px 0 12px;
+    font-weight:600;
+    position:relative;
+    padding-left:16px;
+}
+.content h3::before {
+    content:'';
+    position:absolute; left:0; top:50%; transform:translateY(-50%);
+    width:4px; height:20px;
+    border-radius: 2px;
+    background: var(--accent-gradient);
+}
+.content p {
+    margin-bottom:16px;
+    color: var(--text-secondary);
+    text-indent:2em;
+}
+.content strong {
+    background: var(--accent-gradient);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    font-weight:600;
+}
+.content ul {
+    list-style:none; padding-left:0;
+    margin:16px 0 24px;
+}
+.content ul li {
+    position:relative;
+    padding-left:28px;
+    margin-bottom:10px;
+    color: var(--text-secondary);
+    line-height:1.8;
+}
+.content ul li::before {
+    content:''; position:absolute; left:6px; top:18px;
+    width:8px; height:8px;
+    border-radius: var(--radius-pill);
+    background: var(--accent-gradient);
+}
+.highlight {
+    background: linear-gradient(135deg, rgba(255,45,85,0.06) 0%, rgba(255,45,200,0.05) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-md);
+    padding:24px 28px; margin:24px 0;
+    border:1px solid rgba(255,45,85,0.18);
+    background-color: rgba(255,255,255,0.6);
+    position:relative; overflow:hidden;
+}
+.highlight::before {
+    content:''; position:absolute; top:0; left:0;
+    width:100%; height:1px;
+    background: linear-gradient(90deg, transparent, rgba(255,45,85,0.5), rgba(255,45,200,0.5), transparent);
+}
+.highlight h4 {
+    background: var(--accent-gradient);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    margin-bottom:12px; font-weight:600;
+    letter-spacing:0.5px; font-size:1.05em;
+}
+.chart-box {
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-md);
+    padding:28px;
+    margin:28px 0;
+    border:1px solid rgba(15,15,25,0.06);
+}
+.chart-box h4 {
+    color: var(--text-secondary);
+    text-align:center;
+    margin-bottom:18px;
+    font-weight:500; letter-spacing:1px;
+    font-size:0.95em;
+}
+.analysis-grid {
+    display:grid;
+    grid-template-columns: 1fr;
+    gap:20px;
+    margin-top:16px;
+}
+.analysis-card {
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-md);
+    padding:22px 24px;
+    border:1px solid rgba(15,15,25,0.06);
+    transition: all 0.3s var(--ease);
+}
+.analysis-card:hover {
+    border-color: rgba(255,45,85,0.18);
+    box-shadow: 0 4px 16px rgba(255,45,85,0.06);
+}
+.analysis-card h3 {
+    margin-top:0;
+    font-size:1.08em;
+}
+.back-link {
+    text-align:center; padding:60px 20px 40px;
+}
+.back-link a {
+    display:inline-block;
+    color:#fff; text-decoration:none;
+    font-size:1.05em; font-weight:600;
+    padding:16px 48px;
+    border-radius: var(--radius-pill);
+    background: var(--accent-gradient);
+    box-shadow: 0 8px 24px rgba(255,45,85,0.30), 0 0 60px rgba(255,45,200,0.12);
+    transition: all 0.35s var(--ease);
+    letter-spacing:1px;
+    border:none;
+}
+.back-link a:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 14px 40px rgba(255,45,85,0.45), 0 0 80px rgba(255,45,200,0.22);
+}
+.back-link a:active { transform: translateY(-1px) scale(0.99); }
+.footer {
+    text-align:center;
+    padding:48px 20px;
+    color: var(--text-tertiary);
+    border-top:1px solid rgba(15,15,25,0.06);
+}
+.footer p { margin:8px 0; font-weight:300; }
+@media (max-width:768px) {
+    .hero { padding:60px 18px 50px; }
+    .hero h1 { font-size:2.1em; letter-spacing:2px; }
+    .hero .date-info { font-size:0.95em; }
+    .nav-bar { gap:5px; padding:10px 12px; }
+    .nav-bar a { font-size:0.72em; padding:6px 11px; }
+    .toc { padding:28px 16px; }
+    .toc-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap:10px; }
+    .toc-grid a { padding:11px 12px; font-size:0.82em; }
+    .module { margin:16px 12px; padding:32px 22px; border-radius: var(--radius-md); }
+    .module-header { gap:12px; margin-bottom:24px; }
+    .module-num { font-size:1.9em; }
+    .module-title { font-size:1.3em; }
+    .content { font-size:0.98em; }
+    .content p { text-indent:1.5em; }
+    .highlight { padding:18px 20px; }
+    .chart-box { padding:18px 14px; }
+    .back-link a { padding:14px 36px; font-size:0.98em; }
+}
+@media (max-width:480px) {
+    .hero h1 { font-size:1.8em; }
+    .nav-bar a { font-size:0.68em; padding:5px 9px; }
+    .analysis-card h3 { font-size:0.98em; }
+    .analysis-card p { font-size:0.92em; }
+}
+</style></head><body>
+
+<nav class="nav-bar"><a href="#module-1">①运营精华</a><a href="#module-2">②今日要闻</a><a href="#module-3">③科技×AI前沿</a><a href="#module-4">④财富趋势</a><a href="#module-5">⑤职场教育</a><a href="#module-6">⑥深度阅读</a><a href="#module-7">⑦五栏分析</a></nav>
+
+<header class="hero">
+<h1>生存知识日报</h1>
+<div class="date-info">2026-08-01 · 星期六 · 八一建军节99周年</div>
+</header>
+
+<div class="toc"><div class="toc-grid"><a href="#module-1">①运营精华</a><a href="#module-2">②今日要闻</a><a href="#module-3">③科技×AI前沿</a><a href="#module-4">④财富趋势</a><a href="#module-5">⑤职场教育</a><a href="#module-6">⑥深度阅读</a><a href="#module-7">⑦五栏分析</a></div></div>
+
+<!-- ====== 模块1：运营精华 ====== -->
+<section id="module-1" class="module"><div class="module-header"><span class="module-num">①</span><div><div class="module-title">运营精华</div><div class="module-subtitle">每日运营思路提炼 · AI Agent驱动的新一代用户运营</div></div></div><div class="content">
+
+<h3>1. DeepSeek V4 Flash正式版上线：Agent能力是一次运营自动化的大考</h3>
+<p>7月31日，DeepSeek通过API文档发布日志，宣布V4-Flash正式版API上线公测。最引人注目的是其<strong>Agent能力大幅增强</strong>——Terminal Bench 2.1达到82.7分，NL2Repo 54.2分，CyberGym 76.7分，这些基准测试分数意味着AI已经能够自主完成复杂的多步骤开发任务。对运营团队而言，这不仅是技术新闻，更是一个信号：<strong>AI Agent正在从"回答问题的工具"进化为"执行任务的数字员工"</strong>。在知识付费行业，AI Agent可以接管的不只是客服应答，还包括用户分群、个性化内容推送、学习进度提醒、退费风险预警等需要"判断+执行"的复合任务。</p>
+
+<h3>2. 字节Seedance 2.5发布：视频内容生产的门槛被再次击穿</h3>
+<p>7月31日，字节跳动发布Seedance 2.5视频生成模型，<strong>单次可生成30秒高质量视频片段</strong>，重点提升了长叙事和多模态参考能力，已陆续上线即梦AI与豆包专业版。对知识付费运营来说，这意味着课程宣传片、学员案例视频、引流短视频的生产成本将断崖式下降——以前需要摄影+剪辑+配音+字幕四个人干两天的活，未来可能一个人+AI半小时搞定。但硬币的另一面是：当所有人都能用AI做视频时，<strong>内容创意的稀缺性反而被拉高了</strong>——真正拉开差距的将不再是技术门槛，而是对人性和需求的洞察深度。</p>
+
+<h3>3. 三大运营商停止第三方售卡：用户触达渠道正在重构</h3>
+<p>8月1日起，中国电信、中国移动、中国联通正式停止第三方互联网渠道号卡办理。这个看似与教育培训无关的政策变化，其实是一个重要的行业信号：<strong>平台与运营商之间的数据隔离正在加深</strong>。对依赖电话外呼、短信营销的教育机构而言，这意味着获取新用户线索的成本将持续上升。与此同时，微信生态内的公众号、视频号、社群和企微成为唯一不受"管道隔离"影响的私域阵地——<strong>私域运营从"可选"变成"必选"的拐点已经到来</strong>。</p>
+
+<h3>4. AI+私域2026年趋势：从"人海战术"到"AI Agent矩阵"</h3>
+<p>根据行业最新数据，2026年抖音企业号私信咨询量同比上涨超过60%，在教培等高客单价行业，<strong>85%的成交线索源自私信互动</strong>。但成本端也在快速变化：维持一支7×24小时客服团队对中小企业已是沉重负担。解决方案是<strong>AI Agent接管售前服务</strong>——案例显示，经训练的AI可承担90%以上的售前咨询，释放真人客服精力专注于高价值转化环节。对于Nean正在运营的398引流课和3980转化课，一个AI自动应答+自动打标+自动跟进的企业微信机器人，可能比再招两个教务更有价值。</p>
+
+<div class="highlight"><h4>▌今日运营精华：用AI Agent重构"用户触达→意向筛选→人工转化"链路</h4>
+<p style="text-indent:0;">当DeepSeek V4 Flash的Agent能力已经能通过82.7分的编程基准测试时，用同一个模型去做"读取用户标签→判断学习阶段→发送个性化提醒→标记高意向用户→推送给销售"这条运营流水线，技术上已经完全可行。关键在于：<strong>谁先设计出这条自动化链路，谁就能在人力成本不变的前提下，把用户运营的精细度提升一个数量级。</strong></p></div>
+
+</div></section>
+
+<!-- ====== 模块2：今日要闻 ====== -->
+<section id="module-2" class="module"><div class="module-header"><span class="module-num">②</span><div><div class="module-title">今日要闻</div><div class="module-subtitle">2026年8月1日重大新闻速览 · 含真实数据</div></div></div><div class="content">
+
+<h3>1. 八一建军节99周年：习近平签署通令表彰</h3>
+<p>今天是中国人民解放军建军99周年。中央军委主席习近平签署通令，给中国人民解放军91548部队杨勇记国防科技一等功。中宣部、中央军委政治工作部联合发布12名"最美新时代革命军人"。国防部7月31日在人民大会堂举办招待会，国防部长董军出席并致辞。7月30日，中共中央政治局就高质量推进国防和军队现代化进行第二十七次集体学习，习近平强调"如期实现建军一百年奋斗目标"。</p>
+
+<h3>2. 油价大幅上调：加满一箱油多花27元</h3>
+<p>7月31日24时起，国内汽柴油零售限价上调——<strong>汽油每吨上调685元，柴油每吨上调655元</strong>。全国平均来看，92号汽油每升上调0.54元，95号汽油每升上调0.57元，0号柴油每升上调0.56元。按一般家用汽车油箱50升计算，<strong>加满一箱92号汽油将多花约27元</strong>。油价上涨的核心驱动力是中东地缘局势升级——霍尔木兹海峡通行量锐减，伊朗扣留两艘油轮，特朗普下令对伊朗新一轮袭击。好消息是：8月5日起国内航线燃油附加费将下调，800公里以上降至70元/人。</p>
+
+<h3>3. 中央政治局会议定调：加大逆周期调节，降准窗口期开启</h3>
+<p>7月30日召开的中共中央政治局会议，分析研究当前经济形势并部署下半年经济工作。会议明确提出"加大逆周期调节力度""综合运用并适时调整货币政策工具"，释放出强烈的稳增长信号。多家机构预测，<strong>下半年存在0.5个百分点的降准空间，降准窗口期可能在第三季度</strong>，以对冲政府债券大规模发行影响。会议还强调加快财政支出和债券资金使用进度，推进"两重"建设和"两新"工作。</p>
+
+<h3>4. 外交部强硬回应菲律宾黄岩岛挑衅</h3>
+<p>7月31日，外交部发布声明：菲律宾在中国领土黄岩岛划设所谓"领海基线"，严重侵犯中国领土主权，是"非法的、无效的"。中方对此坚决反对、绝不接受。同日，中国海警秀山舰编队位中国台湾岛以东海域依法开展常态化执法巡查。</p>
+
+<h3>5. 三大运营商停止第三方售卡 + 12306新增新生购票</h3>
+<p>中国电信、中国移动和中国联通8月1日起<strong>停止第三方互联网渠道号卡办理</strong>，宣告运营商渠道管理进入新阶段。同日，为期一年的深化扫黑除恶专项斗争正式启动。民生方面，铁路12306新增<strong>2026级新生预约购票服务功能</strong>，8月1日至30日开放；第12批国家药品集采首轮报价结束，65个品种、327家企业521个产品拟中选，为历次规模最大。</p>
+
+<h3>6. 全球热点：霍尔木兹海峡告急 + 日本设国家情报局</h3>
+<p>伊朗"波斯湾海峡管理局"宣布霍尔木兹海峡已无法正常通行，革命卫队7月31日击中并扣留两艘油轮。国际航运数据显示，海峡30日船舶通行量从前一天22艘骤降至5艘，降幅77%。特朗普下令对伊朗新一轮袭击，最早本周末开始。日本方面，首相高市早苗主持首次"国家情报会议"，"国家情报局"正式成立，我外交部敦促日方"深刻汲取历史教训"。</p>
+
+<div class="chart-box"><h4>🗓 7月31日A股主要指数收盘表现</h4>
+<canvas id="chart1" height="280"></canvas></div>
+
+</div></section>
+
+<!-- ====== 模块3：科技×AI前沿 ====== -->
+<section id="module-3" class="module"><div class="module-header"><span class="module-num">③</span><div><div class="module-title">科技 × AI前沿</div><div class="module-subtitle">AI+教育+商业科技 · 重点投入方向</div></div></div><div class="content">
+
+<h3>1. DeepSeek V4 Flash Agent能力大爆发</h3>
+<p>7月31日，DeepSeek V4 Flash正式版API上线公测。与预览版相比，其Agent能力实现了质的飞跃——在Terminal Bench 2.1（终端环境任务基准）上达到82.7分，NL2Repo（自然语言到代码仓库）54.2分，CyberGym（网络安全模拟）76.7分，DeepSWE（软件工程）54.4分。这意味着AI已经可以<strong>独立完成从读取需求到编写代码再到测试部署的完整开发流程</strong>。对运营从业者而言，这个能力的迁移想象是巨大的：既然AI可以"读取需求→写代码→测试→部署"，那它同样可以"读取用户数据→分析行为→生成策略→执行推送→评估效果"。</p>
+
+<h3>2. OpenAI大幅降价，行业Token价格战白热化</h3>
+<p>OpenAI发布仅三周的GPT-5.6 Terra、Luna两款模型下调定价——<strong>Luna降价幅度高达80%</strong>，Terra降价20%，旗舰Sol维持不变。此次降价是在谷歌Gemini、Anthropic Claude及国产开源模型（DeepSeek、千问、Kimi等）的激烈竞争压力下做出的。对企业而言，AI应用的成本门槛正在以肉眼可见的速度下降——以前一个AI客服每月成本可能几千元，现在降到几百元。当<strong>Token价格趋近于零时，真正的竞争将从"谁能用AI"转向"谁用得巧、用得好"</strong>。</p>
+
+<h3>3. Meta 7000亿美元AI军备竞赛：数据中心基础设施大爆发</h3>
+<p>Meta当地时间7月30日披露，公司已通过长期和短期协议承诺未来投入<strong>近7000亿美元</strong>，用于AI数据中心、云计算等领域。其中已签署不可撤销合同3493亿美元（主要涉及第三方云协议、服务器及网络基础设施），另有3470亿美元租赁承诺尚未计入资产负债表，仅在7月就增加680亿美元。与此同时，Anthropic拟获150亿美元融资建设德州AI数据中心，谷歌提供融资担保并供应TPU芯片。这些数字说明：<strong>AI产业的"水电煤"基础设施正在以万亿级规模铺开，未来3-5年的AI应用成本将持续下降。</strong></p>
+
+<h3>4. 中国开源模型下载量全球第一 + 多部门AI密集部署</h3>
+<p>截至7月底，<strong>中国开源模型全球下载量突破100亿次，位居全球第一</strong>。同期，国家发改委、工信部、国家知识产权局、国家能源局等多部门围绕人工智能密集发声：发改委推动AI法立法进程和世界人工智能合作组织建设；工信部推进"毫秒用算"专项行动和普惠算力赋能中小企业；知识产权局将修改AI相关发明专利审查标准。政策+开源双轮驱动下，中国AI产业的"底座"正在快速夯实。</p>
+
+<h3>5. 特斯拉接入豆包+千问：AI语音助手进入车机战场</h3>
+<p>豆包大模型助手已接入部分特斯拉新车，千问也已进入特斯拉中国车机的深度测试阶段，预计"能听能答、能控车、能导航、能办事"。这是AI大模型从"手机App"走向"物理世界交互界面"的标志性事件——当AI助手可以在车载场景中实时理解上下文并执行操作，它对教育场景（比如AI陪练在车载场景中陪用户练口语）的想象力空间也将被打开。</p>
+
+<div class="chart-box"><h4>📊 2025-2028年中国GenAI+教育市场规模预测（亿元）</h4>
+<canvas id="chart2" height="280"></canvas></div>
+
+<div class="highlight"><h4>▌今日科技精华：AI Agent + 视频生成 + 成本断崖 → 知识付费运营效率革命</h4>
+<p style="text-indent:0;">DeepSeek V4 Flash的Agent能力、Seedance 2.5的30秒视频生成、OpenAI降价80%、中国开源模型100亿次下载——这四条新闻放在一起，勾勒出一个清晰的趋势：<strong>AI正在从"信息处理工具"进化为"自主执行系统"，且执行成本正在指数级下降。</strong>对于Nean运营的398/3980课程体系，这意味着一条从前无法想象的路径正在打开：AI自动生成课程宣传视频→AI自动回复学员咨询→AI自动判断学习阶段并推送内容→人工只负责最终的深度转化。</p></div>
+
+</div></section>
+
+<!-- ====== 模块4：财富趋势 ====== -->
+<section id="module-4" class="module"><div class="module-header"><span class="module-num">④</span><div><div class="module-title">财富趋势</div><div class="module-subtitle">A股/黄金/原油/宏观 · 理财视角</div></div></div><div class="content">
+
+<h3>1. A股7月收官：科技板块遭遇历史级回调，红利资产逆势新高</h3>
+<p>7月31日，A股完成7月最后一个交易日。在微软、亚马逊财报超预期和隔夜美股科技股暴力反弹（纳指+2.78%，微软单日市值增4500亿美元创美股纪录）的带动下，<strong>三大指数集体高开反攻</strong>：上证指数收报3832.26点（+0.72%），深证成指13578.93点（+2.21%），创业板指3343.96点（+3.06%），科创50盘中一度涨超8%后收涨2.99%。成交额2.56万亿元，较前日放量约2000亿。但全月来看，<strong>7月是A股科技板块的"黑色七月"</strong>：上证月跌6.40%，深证月跌16.21%，创业板月跌23.00%（逾十年最大单月跌幅），科创50月跌25.90%，北证50月跌13.42%。全月A股市值蒸发超12万亿元。</p>
+
+<h3>2. 板块极致分化：煤炭石油暴涨 vs 半导体暴跌</h3>
+<p>7月申万31个行业中，<strong>21个行业上涨但10个行业下跌，分化之剧烈为近年罕见</strong>。贵金属月涨25.84%居首，石油石化月涨21.02%，煤炭月涨14.29%，银行、食品饮料、农林牧渔均录得两位数涨幅，建设银行、工商银行等红利股创历史新高。另一边，AI硬件产业链成为调整重灾区：半导体产品、通信设备、存储芯片、CPO概念等板块月度跌幅普遍超30%，136只个股跌幅超50%，其中AI产业链扎堆（兆易创新、普冉股份、德明利等）。</p>
+
+<h3>3. 大宗商品：黄金站稳4000美元，布油月涨31%</h3>
+<p>受中东地缘局势持续升级影响，<strong>布伦特原油7月累计暴涨31.01%，报87.93美元/桶</strong>；WTI原油月涨25.98%报84.67美元/桶。摩根大通警告称，如果美伊局势进一步恶化，油价可能涨至120美元/桶以上。现货黄金7月31日报4044.61美元/盎司（-1.44%），7月月线基本持平，但年内累计涨幅仍可观，COMEX黄金期货报4098.60美元/盎司。在岸人民币对美元报6.7476，7月累计升值约268个基点。</p>
+
+<h3>4. 政治局会议释放明确政策信号：降准+财政发力双管齐下</h3>
+<p>7月30日政治局会议最核心的表述是"加大逆周期调节力度"。与4月会议相比，此次重提"加大逆周期调节"和"综合运用并适时调整货币政策工具"意味着<strong>下半年宏观政策协同发力的确定性很高</strong>。财信证券预计下半年存在0.5个百分点降准空间、可能在Q3落地；上海财经大学专家预计专项债将迎来全年发行高峰，8000亿新型政策性金融工具有望在Q3内投放。对投资者而言，"政策底"信号已较为明确，但"市场底"往往滞后——8月大概率呈现<strong>弱势震荡上行、风格再平衡</strong>的格局。</p>
+
+<h3>5. 对Nean的理财启示</h3>
+<p>Nean目前仅持有博时黄金002611（每日定投20元），此前已清仓全部权益基金。在当前环境下——科技板块7月暴跌后性价比回升但短期波动仍大，红利资产估值已不便宜，黄金高位震荡但仍有地缘避险支撑——<strong>维持"黄金定投+观望"的防御姿态是理性选择</strong>。如果后续政治局会议催化的降准降息落地，可以考虑小仓位配置短债基金或同业存单指数基金作为现金管理的补充。但8月市场不确定性仍高（美伊冲突、台风白海豚、美联储政策分歧），<strong>不急于加仓权益资产</strong>。</p>
+
+<div class="chart-box"><h4>📈 A股7月主要指数月度涨跌幅（%）</h4>
+<canvas id="chart3" height="300"></canvas></div>
+
+</div></section>
+
+<!-- ====== 模块5：职场教育 ====== -->
+<section id="module-5" class="module"><div class="module-header"><span class="module-num">⑤</span><div><div class="module-title">职场教育</div><div class="module-subtitle">行业趋势 + 学习方法 + 管理实践</div></div></div><div class="content">
+
+<h3>1. GenAI+教育市场爆发：2028年将达8910亿元</h3>
+<p>艾瑞咨询最新报告显示，<strong>2025年中国GenAI+教育产品服务总规模已达3442亿元，预计以37%的年复合增长率驱动2028年规模迈向8910亿元</strong>。这一增速远超教育行业整体增速（约8%-12%），说明AI正在成为教育行业最大的增量引擎。具体到细分场景：AI助教、AI陪练、AI自适应学习、AI批改、AI智能备课是落地最快的五个方向。对Nean所在的知识付费赛道来说，率先将AI嵌入"学习体验"而非仅仅"降低运营成本"的机构，将在下一轮竞争中获得结构性优势。</p>
+
+<h3>2. 教育部新增27个职教专业：人形机器人、具身智能上榜</h3>
+<p>7月16日，教育部发布2026年《职业教育专业目录》增补专业，共增补27个职业教育本专科专业，其中<strong>人形机器人工程技术、具身智能计算技术等前沿方向首次进入国家专业目录</strong>。同时，6月29日国务院印发《教育发展"十五五"规划》，明确到2030年高质量教育体系基本建成，推进人工智能全学段教育。传智教育已率先推出"AI具身智能机器人开发"新学科，首期班10月20日开班。教育板块近期持续走强——全通教育20%涨停、传智教育三连板、中公教育涨停——资本正在用真金白银为"AI+教育"投票。</p>
+
+<h3>3. 浙江省养老服务人才本科奖补5万元：成人教育的新政策风向</h3>
+<p>浙江省政府8月1日披露的政策显示：对老年服务与管理专业本科及以上学历毕业生给予<strong>入职奖补5万元</strong>（专科4万、中职3万），并将养老护理员纳入补贴性职业培训目录。全省已有9所本科院校开设养老相关专业、23所高职院校开设11个养老专科专业、67所中职学校开设10个养老专业——一个从"中职→高职→本科"的完整养老人才培养链条已经成型。这个看似与知识付费无关的政策，其实透露出一个重要信号：<strong>政府正在用真金白银引导成人教育从"学历补偿"向"技能紧缺型"方向转型</strong>，而AI、养老、新能源等"十五五"重点产业的培训赛道将迎来结构性红利。</p>
+
+<h3>4. 2026年运营人的能力升级方向：从"操盘手"到"AI编排者"</h3>
+<p>结合今天的科技新闻和行业数据，2026年下半年运营从业者的核心竞争力正在发生质变。传统的"用户分层→策划活动→数据分析→复盘优化"闭环中，<strong>数据分析、内容生成、用户触达三个环节正在被AI快速自动化</strong>。但"判断什么值得做""设计什么样的用户体验""在什么时机用什么方式触达用户"——这些需要深度理解人性和商业逻辑的决策，仍然是AI无法替代的。未来的运营高手将更像一个<strong>"AI编排者"：懂得如何组合不同的AI Agent、设定正确的目标函数、在关键节点做人工干预和方向调整</strong>。Nean正在三节课学习的"数据分析+视觉传达+AI工具应用+产品经理+运营"五方向，恰好构成了这个"AI编排者"的全栈能力拼图。</p>
+
+<h3>5. 成人学历提升行业趋势："学历+技能"复合型成为主流</h3>
+<p>2026年成人高考报名在即，行业正在经历从"为了拿证而学习"到"为了提升而学习"的认知升级。杭州作为浙江省成人教育改革的先行城市，政策层面正在推动成人学历与全日制学历之间的"标签差异"逐步淡化。"学历+技能+职业素养+社交平台"的四位一体培养模式将成为主流。对于知识付费行业的从业者来说，这意味着<strong>纯知识传授型课程的价值在贬值，而"知识+实践+反馈+社群"的闭环型课程在升值</strong>——这也是为什么3980转化课必须设计作业批改、社群答疑、阶段测试等"重交付"环节的根本原因。</p>
+
+</div></section>
+
+<!-- ====== 模块6：深度阅读 ====== -->
+<section id="module-6" class="module"><div class="module-header"><span class="module-num">⑥</span><div><div class="module-title">深度阅读</div><div class="module-subtitle">地理/人物/国学/历史/法律/旅游 · 精华合集</div></div></div><div class="content">
+
+<h3>1. 汉代"后羿射日"画像石：留白叙事的千年智慧</h3>
+<p>央视新闻在八一建军节当天推送的《文博日历》介绍了汉代"后羿射日"画像石（拓片）。画面中，一株神树顶天立地，树上栖息着三只太阳鸟；树下，壮士羿弯腰仰面、奋力拉弓。最妙的是其"留白叙事"——<strong>树上只剩三只鸟，意味着羿已经射下七个太阳，正在瞄准第八个</strong>。整幅画面没有画"箭"也没有画"落下的太阳"，却让观者自动脑补出完整的故事。这种"少即是多"的叙事手法，对现代内容创作者启发极大：真正高级的表达，不是把一切说尽，而是给读者留下"参与叙事"的空间。无论是写课程文案、做短视频脚本还是设计用户触达话术，<strong>留白带来的"啊哈时刻"远比信息堆砌的"我知道了"更有黏性</strong>。</p>
+
+<h3>2. 八一建军节与当下的全球地缘变局</h3>
+<p>今天是中国人民解放军建军99周年。99年前南昌城头的一声枪响，开启了中国武装力量从无到有、从弱到强的征程。回望当下——霍尔木兹海峡告急、特朗普下令对伊朗新一轮打击、日本正式设立"国家情报局"、菲律宾在黄岩岛挑衅——全球正处在一个地缘冲突加速、安全格局重塑的关键节点。而中国海警秀山舰编队正在台湾岛以东海域依法巡航、中国开源模型下载量全球第一、十五五规划109项重大工程加速推进——这些看似分散的新闻碎片，拼在一起是一幅清晰的国家图景：<strong>硬实力和软实力双线并进，在不确定性中构建确定性。</strong></p>
+
+<h3>3. 从"红色山洪预警"四地齐发看风险管理的底层逻辑</h3>
+<p>水利部和中国气象局7月31日联合发布红色山洪灾害气象预警：黑龙江南部、四川东北部、陕西西南部、甘肃南部"发生山洪灾害可能性很大"。与此同时，第13号台风"白海豚"可能在"八上"期间（8月1日-15日）登陆影响我国。这种"四地同时预警+台风逼近"的多线程危机场景，与运营团队在面对"系统故障+投诉爆发+领导追问+客户流失"时的处境如出一辙。风险管理的核心从来不是"规避所有风险"，而是<strong>提前定义"不可接受的损失底线"并为之建立响应机制</strong>。对于Nean正在管理的45位辅导老师和10期以上班级（每期1500人），一个清晰的"问题分级+响应SOP+升级路径"比任何时候都重要。</p>
+
+<h3>4. 宋代画论中的"远"与运营者的"格局"</h3>
+<p>北宋郭熙在《林泉高致》中提出山水画的"三远法"：高远（自山下仰望山巅）、深远（自山前窥山后）、平远（自近山望远山）。这三种视角恰好对应了运营从业者需要的三种思维层次：<strong>"高远"是向上看——理解公司战略和商业逻辑，知道老板想要什么；"深远"是向里看——理解用户需求的底层动机，不被表面数据迷惑；"平远"是向远看——理解行业趋势和长期价值，不被短期KPI牵着走。</strong>Nean目前处于从"执行层"向"策略层"过渡的阶段，最需要补齐的正是"高远"视角——把日常的教务操作和一节课一节课的交付，放在"公司营收结构→用户生命周期→行业竞争格局"的大坐标系里重新审视。</p>
+
+<h3>5. 杭州8月新规速览 + 本地法律资源更新</h3>
+<p>8月1日起，一批新规正式施行：涉及生态环境、退役军人服务等多个领域。杭州本地方面，针对近期国内多地建筑施工安全事故，香港已率先全面禁用易燃棚架防护物料，杭州建筑行业预计将跟进类似安全标准升级。对于闲鱼猫咪上门服务的法律风险，Nean需注意：①服务过程中进入客户家中涉及隐私权，建议每次服务前通过文字确认服务范围和时长；②如发生客户家中财物损坏争议，平台纠纷处理周期较长，建议自行拍摄"服务前后对比照"作为证据留存；③杭州滨江和萧山的宠物服务纠纷可通过"浙江解纷码"线上调解平台快速处理。</p>
+
+</div></section>
+
+<!-- ====== 模块7：五栏分析骨架 ====== -->
+<section id="module-7" class="module"><div class="module-header"><span class="module-num">🧠</span><div><div class="module-title">五栏分析骨架</div><div class="module-subtitle">跨领域提炼 · 行业→用户→运营→管理→行动</div></div></div><div class="content">
+<div class="analysis-grid">
+
+<div class="analysis-card">
+<h3>🅐 行业变化</h3>
+<p>8月第一天，三条主线交织：①AI Agent能力跨越式提升——DeepSeek V4 Flash的Agent基准测试全面超越前代，OpenAI降价80%使AI接入成本断崖式下降，标志着<strong>AI从"对话工具"正式进入"自主执行系统"阶段</strong>；②地缘冲突升级——霍尔木兹海峡通行量骤降77%、布油月涨31%、特朗普下令新一轮对伊打击，全球供应链与能源价格面临持续冲击；③政策密集发力——政治局会议明确"加大逆周期调节"、多部门AI部署齐发、教育"十五五"规划落地，<strong>政策正在从顶层设计走向执行落地</strong>。对教育行业而言，GenAI+教育3442亿→8910亿的增长曲线（37% CAGR）已经勾勒出未来三年的主战场。</p>
+</div>
+
+<div class="analysis-card">
+<h3>🅑 用户洞察</h3>
+<p>今天的新闻揭示出用户的深层需求变化：①<strong>"不被AI替代"的焦虑正在转化为"学会用AI"的行动</strong>——教育板块全线走强（全通教育涨停、传智教育三连板），反映的是用户对"AI技能培训"的刚性需求已经超过传统学历提升；②经济不确定性下，<strong>用户付费决策从"冲动消费"转向"价值验证"</strong>——在A股7月蒸发12万亿市值的背景下，教育消费的"投资回报预期"被拉得更高，用户更在意"学完能不能用得上"而非"课程看起来好不好"；③私域咨询量同比涨60%、85%成交线索源自私信——用户已经不满足于被动接收信息，<strong>他们需要"即时、个性化、有人感"的互动体验</strong>。</p>
+</div>
+
+<div class="analysis-card">
+<h3>🅒 运营启发</h3>
+<p>三条可直接复制的方法论：①<strong>用AI Agent重构"用户触达→意向筛选→人工转化"链路</strong>。既然AI Agent已经能通过Terminal Bench 82.7分的测试，用它来做"读取学员标签→判断学习阶段→自动推送内容→标记高意向→推给销售"这条流水线已经完全可行。Nean可以先在398引流课的企微私域中做一个最小闭环：AI自动应答常见问题→AI根据咨询内容自动打标签→高意向用户自动推送至销售，预估可以减少50%以上的人工售前工作量。②<strong>Seedance 2.5的视频生成能力可以用于课程宣传片的A/B测试</strong>——用AI快速生成3版不同风格（情感向/效果向/名师向）的引流视频，测出转化率最高的风格后批量复制。③公众号AI一键排版功能上线后，<strong>内容团队的生产效率可以提升30%以上</strong>，释放出的精力应投入到"选题判断"和"用户洞察"而非"排版调格式"。</p>
+</div>
+
+<div class="analysis-card">
+<h3>🅓 管理思考</h3>
+<p>两大管理启示：①<strong>"四预警齐发"式的多线程危机管理能力将成为团队标配</strong>。7月底红色山洪预警四地齐发+台风白海豚逼近的场景，与运营团队日常面对的多重突发事件（系统故障、投诉爆发、领导紧急需求、客户流失预警）如出一辙。解决思路不是"更努力地处理每件事"，而是建立"问题分级矩阵"——定义哪些是红色（必须立即处理）、哪些是黄色（可排入今日待办）、哪些是绿色（可延后或委派）。②政治局会议"加大逆周期调节"的政策思路对团队管理也有启发：<strong>在业务低谷期（寒暑假过渡期、招生淡季），恰恰是"逆周期投入"的最佳时机</strong>——做流程优化、能力培训、工具搭建，等到旺季来临时已经准备好了更高效的体系。</p>
+</div>
+
+<div class="analysis-card">
+<h3>🅔 我的行动</h3>
+<p>今天可以落地的三个具体动作：①<strong>检查398引流课的首条AI自动回复话术</strong>——结合DeepSeek V4 Flash的Agent能力，今天可以重新设计一套"自动应答→自动打标→自动跟进"的企业微信机器人流程，目标是在8月底前跑通最小闭环。②<strong>把7月A股科技板块暴跌30%的数据做一个简单的"理财心态"内部分享</strong>——不是为了荐股，而是帮团队理解"市场有周期、教育有刚需"：当用户在股市亏钱时，他们把"投资自己"看作更确定的回报来源，这恰恰是知识付费的利好窗口。③<strong>排查现有的教务SOP中是否存在"四个模块同时报警"但没有优先级决策树的问题</strong>——从今天的红色山洪预警中得到启发，给每个SOP条目标注严重等级（P0/P1/P2）和响应时限。</p>
+</div>
+
+</div></div></section>
+
+<div class="back-link"><a href="index.html">← 返回首页</a></div>
+
+<div class="footer">
+<p>生存知识日报 · 2026-08-01 · 星期六</p>
+<p>以 Nean 为锚点的个人知识资产库 · v2.0 · 6模块+5栏分析</p>
+<p>数据来源：央视新闻、华尔街见闻、中国证券报、艾瑞咨询等公开信息</p>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+// 图表1：A股7月31日主要指数涨跌幅
+new Chart(document.getElementById('chart1'), {
+    type: 'bar',
+    data: {
+        labels: ['上证指数','深证成指','创业板指','科创50','北证50','恒生科技'],
+        datasets: [{
+            label: '涨跌幅(%)',
+            data: [0.72, 2.21, 3.06, 2.99, 1.15, 0.53],
+            backgroundColor: [
+                'rgba(255,45,85,0.7)',
+                'rgba(255,45,85,0.65)',
+                'rgba(255,45,200,0.7)',
+                'rgba(255,45,200,0.65)',
+                'rgba(255,55,95,0.6)',
+                'rgba(255,55,95,0.55)'
+            ],
+            borderColor: [
+                'rgba(255,45,85,1)',
+                'rgba(255,45,85,1)',
+                'rgba(255,45,200,1)',
+                'rgba(255,45,200,1)',
+                'rgba(255,55,95,1)',
+                'rgba(255,55,95,1)'
+            ],
+            borderWidth: 1,
+            borderRadius: 8
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { labels: { color: 'rgba(60,60,90,0.85)', font: { size: 12 } } }
+        },
+        scales: {
+            x: { ticks: { color: 'rgba(60,60,90,0.85)', font: { size: 11 } }, grid: { color: 'rgba(0,0,0,0.06)' } },
+            y: { ticks: { color: 'rgba(60,60,90,0.85)', font: { size: 11 }, callback: function(v) { return v + '%'; } }, grid: { color: 'rgba(0,0,0,0.06)' } }
+        }
+    }
+});
+
+// 图表2：GenAI+教育市场规模预测
+new Chart(document.getElementById('chart2'), {
+    type: 'line',
+    data: {
+        labels: ['2023','2024','2025','2026E','2027E','2028E'],
+        datasets: [{
+            label: 'GenAI+教育市场规模(亿元)',
+            data: [980, 2100, 3442, 4720, 6480, 8910],
+            borderColor: '#ff2d55',
+            backgroundColor: 'rgba(255,45,85,0.08)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#ff2d55',
+            pointRadius: 5,
+            pointHoverRadius: 8
+        },
+        {
+            label: '增长率(%)',
+            data: [null, 114, 64, 37, 37, 37],
+            borderColor: 'rgba(255,45,200,0.7)',
+            borderDash: [6,4],
+            borderWidth: 2,
+            fill: false,
+            tension: 0.3,
+            pointBackgroundColor: 'rgba(255,45,200,0.7)',
+            pointRadius: 4,
+            yAxisID: 'y1'
+        }]
+    },
+    options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+            legend: { labels: { color: 'rgba(60,60,90,0.85)', font: { size: 12 } } }
+        },
+        scales: {
+            x: { ticks: { color: 'rgba(60,60,90,0.85)' }, grid: { color: 'rgba(0,0,0,0.06)' } },
+            y: {
+                type: 'linear', position: 'left',
+                title: { display: true, text: '市场规模(亿元)', color: 'rgba(60,60,90,0.85)' },
+                ticks: { color: 'rgba(60,60,90,0.85)' },
+                grid: { color: 'rgba(0,0,0,0.06)' }
+            },
+            y1: {
+                type: 'linear', position: 'right',
+                title: { display: true, text: '增长率(%)', color: 'rgba(60,60,90,0.85)' },
+                ticks: { color: 'rgba(60,60,90,0.85)', callback: function(v) { return v + '%'; } },
+                grid: { drawOnChartArea: false },
+                min: 0, max: 150
+            }
+        }
+    }
+});
+
+// 图表3：A股7月各板块月度涨跌幅
+new Chart(document.getElementById('chart3'), {
+    type: 'bar',
+    data: {
+        labels: ['贵金属','石油石化','煤炭','银行','食品饮料','农林牧渔','非银金融','电子','通信','计算机'],
+        datasets: [{
+            label: '7月涨跌幅(%)',
+            data: [25.84, 21.02, 14.29, 10.5, 13.48, 10.2, 6.8, -28.5, -32.3, -25.9],
+            backgroundColor: function(context) {
+                var v = context.raw;
+                return v >= 0 ? 'rgba(255,45,85,0.65)' : 'rgba(90,90,110,0.5)';
+            },
+            borderColor: function(context) {
+                var v = context.raw;
+                return v >= 0 ? 'rgba(255,45,85,1)' : 'rgba(90,90,110,1)';
+            },
+            borderWidth: 1,
+            borderRadius: 8
+        }]
+    },
+    options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: {
+            legend: { labels: { color: 'rgba(60,60,90,0.85)', font: { size: 12 } } },
+            tooltip: { callbacks: { label: function(ctx) { return ctx.raw >= 0 ? '+' + ctx.raw + '%' : ctx.raw + '%'; } } }
+        },
+        scales: {
+            x: { ticks: { color: 'rgba(60,60,90,0.85)', callback: function(v) { return v + '%'; } }, grid: { color: 'rgba(0,0,0,0.06)' } },
+            y: { ticks: { color: 'rgba(60,60,90,0.85)', font: { size: 11 } }, grid: { color: 'rgba(0,0,0,0.06)' } }
+        }
+    }
+});
+
+});
+</script>
+</body></html>
