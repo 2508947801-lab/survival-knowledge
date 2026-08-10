@@ -7,6 +7,7 @@
   var SB_CONFIG = window.YaraRuntimeConfig ? window.YaraRuntimeConfig.supabase() : { url: '', anonKey: '', ready: false };
   var SB_URL = SB_CONFIG.url;
   var SB_KEY = SB_CONFIG.anonKey;
+  var SB_SECRET = SB_CONFIG.appSecret;
   var SB_ROW = 'growth-game';
   var cloudTimer = 0;
   var syncing = false;
@@ -64,6 +65,7 @@
     var headers = {
       apikey: SB_KEY,
       Authorization: 'Bearer ' + SB_KEY,
+      'x-app-secret': SB_SECRET,
       'Content-Type': 'application/json'
     };
     Object.keys(extra || {}).forEach(function (key) { headers[key] = extra[key]; });

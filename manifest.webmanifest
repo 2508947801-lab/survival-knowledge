@@ -1,0 +1,35 @@
+{
+  "id": "./管理系统.html",
+  "name": "Yara 超级大脑",
+  "short_name": "Yara大脑",
+  "description": "Yara 的个人教务、运营、行动、知识与灵感管理系统。",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "start_url": "./管理系统.html?entry=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#172033",
+  "theme_color": "#172033",
+  "orientation": "any",
+  "categories": ["productivity", "education", "lifestyle"],
+  "icons": [
+    {
+      "src": "icons/yara-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/yara-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/yara-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

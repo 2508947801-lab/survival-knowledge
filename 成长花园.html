@@ -335,7 +335,7 @@
       function renderPlans(){
         var root=document.getElementById('planList');
         if(!state.plans.length)root.innerHTML='<div class="empty">还没有计划。先写下一件 15 分钟可以开始的小事吧 🌱</div>';
-        else root.innerHTML=state.plans.map(function(item){return '<article class="task '+(item.done?'done':'')+'" data-id="'+escapeHtml(item.id)+'"><button class="check" data-action="toggle" aria-label="'+(item.done?'恢复':'完成')+'计划">'+(item.done?'✓':'')+'</button><div class="task-copy"><div class="task-title">'+escapeHtml(item.title)+'</div><div class="task-meta">'+escapeHtml(item.minutes)+' 分钟 · '+escapeHtml(item.created.slice(0,10))+'</div></div><button class="task-delete" data-action="delete" aria-label="删除学习计划">×</button></article>'}).join('');
+        else root.innerHTML=state.plans.map(function(item){return '<article class="task '+(item.done?'done':'')+'" data-id="'+escapeHtml(item.id)+'"><button class="check" data-action="toggle" aria-label="'+(item.done?'恢复':'完成')+'计划">'+(item.done?'✓':'')+'</button><div class="task-copy"><div class="task-title">'+escapeHtml(item.title)+'</div><div class="task-meta">'+escapeHtml(item.minutes)+' 分钟 · '+escapeHtml(item.created.slice(0,10))+'</div></div><button class="task-delete" data-action="delete" data-yara-confirm="module" aria-label="删除学习计划">×</button></article>'}).join('');
         var total=state.plans.length,done=state.plans.filter(function(item){return item.done}).length,pct=total?Math.round(done/total*100):0;
         document.getElementById('planScore').textContent=pct+'%';
         document.getElementById('planFill').style.width=pct+'%';

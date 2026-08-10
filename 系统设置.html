@@ -62,6 +62,21 @@
         YaraModuleUI.confirm({title:'清除当前浏览器的云同步配置？',message:'不会删除云端数据，但本机将暂停同步。',confirmText:'确认清除'}).then(function(ok){if(ok){YaraRuntimeConfig.clear();render();YaraModuleUI.notify('本机配置已清除');}});
       });
       render();
+      // 支持 URL hash 快速配置：打开 系统设置.html#url=...&key=... 自动填入并保存，
+      // 配完立刻清掉地址栏里的 key，不留痕迹。用于手机端免手输一次性配置。
+      (function(){
+        if(!location.hash) return;
+        var p=new URLSearchParams(location.hash.slice(1));
+        var u=p.get('url'),k=p.get('key');
+        if(u&&k){
+          try{
+            YaraRuntimeConfig.save({supabaseUrl:u,supabaseAnonKey:k});
+            history.replaceState(null,'',location.pathname+location.search);
+            render();
+            YaraModuleUI.notify('云同步配置已自动填入并保存，可关闭本页');
+          }catch(e){YaraModuleUI.notify(e.message||'自动配置失败','warning');}
+        }
+      })();
     })();
   </script>
 </body>

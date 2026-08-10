@@ -31,6 +31,7 @@
   }
 
   function activeLabel() {
+    if (moduleType === 'flash') return cleanLabel(document.body.dataset.yaraName || '闪念中心');
     var selectors = [
       '[aria-current="page"]',
       '[role="tab"][aria-selected="true"]',
@@ -141,6 +142,7 @@
     if (moduleType === 'finance') snapshot.finance = safeJson('yara_ledger_v1', { transactions: [], budgets: {} });
     if (moduleType === 'opsos') snapshot.capability = safeJson('yara_ops_os_v1', { scores: {} });
     if (moduleType === 'growth') snapshot.growth = safeJson('yara_growth_center_v1', { plans: [], english: [], reviews: [] });
+    if (moduleType === 'flash') snapshot.flash = safeJson('yara_flash_notes_v1', { notes: [], summaries: [], deletedIds: [], deletedSummaryIds: [] });
     if (moduleType === 'reconcile') snapshot.reconcile = reconcileSnapshot();
     return snapshot;
   }
@@ -271,7 +273,11 @@
   document.addEventListener('click', function (event) {
     var control = event.target.closest('button, a, [role="button"], [role="tab"], .nav-item, .menu-item, .card');
     if (!control) return;
+    // 共享确认框已经处于最终确认层，不能再把“确认删除”当作新的删除请求。
+    if (control.closest('.yara-module-dialog-backdrop')) return;
     var operation = classifyOperation(control);
+    // 使用共享 YaraModuleUI 的模块会自行即时确认，避免外壳再次拦截并等待第二次确认。
+    if (operation && operation.destructive && control.dataset.yaraConfirm === 'module') return;
     if (operation && operation.destructive && control.dataset.yaraConfirmed !== 'true') {
       event.preventDefault();
       event.stopImmediatePropagation();
@@ -315,7 +321,7 @@
       }, 60);
     }
     var isNavigation = control.matches('[role="tab"], .nav-item, .sidebar-item, .menu-item, .tab, [data-tab], [data-period]') ||
-      !!control.closest('nav, aside');
+      !!control.closest('nav');
     var label = isNavigation ? cleanLabel(control.getAttribute('aria-label') || control.textContent) : '';
     reportRoute(label);
     reportSnapshot(240);

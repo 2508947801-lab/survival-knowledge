@@ -71,8 +71,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .task.done .t-title{color:#94a3b8;text-decoration:line-through;}
 .t-min{flex:0 0 auto;background:var(--primary-l);color:var(--primary);border-radius:20px;padding:3px 11px;font-size:.74rem;font-weight:700;white-space:nowrap;}
 .task.done .t-min{background:var(--success-l);color:var(--success);}
-.del{flex:0 0 auto;width:26px;height:26px;border:none;background:transparent;color:#cbd5e1;font-size:1rem;cursor:pointer;border-radius:7px;transition:all .15s;line-height:1;}
+.t-actions{display:flex;gap:5px;flex:0 0 auto;align-items:center;}
+.edit,.del{min-width:52px;height:30px;padding:0 8px;border:1px solid var(--border);background:#fff;color:var(--sub);font-size:.72rem;font-weight:700;white-space:nowrap;cursor:pointer;border-radius:8px;transition:all .15s;line-height:1;}
+.edit:hover{background:var(--primary-l);color:var(--primary);}
 .del:hover{background:#fee2e2;color:var(--danger);}
+
+/* 编辑态 */
+.task.editing{background:#fffdf2;border-color:#fde68a;box-shadow:0 0 0 2px rgba(217,119,6,.14);align-items:center;}
+.task.editing .edit-body{flex:1;min-width:0;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.task.editing .edit-body input{border:1px solid var(--border);border-radius:9px;padding:8px 10px;font-size:.86rem;font-family:inherit;outline:none;background:#fff;transition:border .15s;}
+.task.editing .edit-body input:focus{border-color:var(--primary);}
+.task.editing .edit-body input.et{flex:1;min-width:150px;}
+.task.editing .edit-body input.em{width:60px;text-align:center;flex:0 0 60px;}
+.task.editing .edit-body .em-unit{font-size:.74rem;color:var(--sub);flex:0 0 auto;}
+.task.editing .eb{padding:7px 13px;border:none;border-radius:9px;font-size:.78rem;font-weight:700;cursor:pointer;transition:all .15s;}
+.task.editing .eb.save{background:var(--primary);color:#fff;}
+.task.editing .eb.save:hover{background:#1d4ed8;}
+.task.editing .eb.cancel{background:#f1f5f9;color:var(--sub);}
+.task.editing .eb.cancel:hover{background:#e2e8f0;}
+.task.removing{opacity:0;transform:translateX(48px);}
 
 .empty{text-align:center;color:var(--sub);font-size:.85rem;padding:44px 20px;background:#fff;border:1px dashed var(--border);border-radius:14px;}
 
@@ -82,6 +99,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
   .add-row{flex-wrap:wrap;}
   #newTitle{flex:1 1 100%;}
   .sum-chip{min-width:calc(50% - 5px);}
+  .task{align-items:flex-start;flex-wrap:wrap;}
+  .t-actions{width:100%;justify-content:flex-end;padding-top:2px;}
 }
 </style>
 <link id="yaraSystemTheme" rel="stylesheet" href="../yara-system-theme.css?v=3.0">
@@ -94,7 +113,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
     <div class="module-kicker"><span class="module-icon">✓</span><span>工作管理</span></div>
     <h1>每日工作待办</h1>
     <p class="sub">DAILY WORK TODO · YARA</p>
-    <p class="sync-tip"><span class="dot"></span>本机数据已就绪 · 配置后可跨设备同步</p>
+    <p class="sync-tip" id="syncTip"><span class="dot"></span><span id="syncText">正在检查云同步…</span></p>
   </header>
 
   <div class="datebar">
@@ -136,7 +155,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 const LS_KEY = 'yara_daily_todo_v1';
 const WEEK = ['周日','周一','周二','周三','周四','周五','周六'];
 
-// 首次使用预置：2026-07-28 的 8 项任务
+// 首次使用预置：历史任务 + 2026 年 8 月日常运营排期。
+// 预置任务使用稳定 seed ID；用户删除后会进入 deletedSeeds，不会在刷新或云同步后复活。
 const SEED = {
   '2026-07-28': [
     {id:'seed1', title:'【0810期】3980 / 1980 / 2000 三品周期管理', minutes:60, done:false},
@@ -150,14 +170,47 @@ const SEED = {
   ]
 };
 
+// 2026 年 8 月工作日运营任务：
+// 每个工作日：直播间配置 60 分钟、延期的隐藏课程 20 分钟；
+// 每周一/三/五：批量处理退费 90 分钟、批量处理解锁保留 30 分钟；
+// 每周五晚上：批量开课 15 分钟。
+(function seedAugust2026Operations(){
+  function addSeed(date, suffix, title, minutes){
+    if(!SEED[date]) SEED[date]=[];
+    SEED[date].push({
+      id:'seed-ops-'+date.replace(/-/g,'')+'-'+suffix,
+      title:title,
+      minutes:minutes,
+      done:false
+    });
+  }
+  for(let day=1; day<=31; day+=1){
+    const d=new Date(2026,7,day);
+    const weekday=d.getDay();
+    if(weekday<1 || weekday>5) continue;
+    const date='2026-08-'+String(day).padStart(2,'0');
+    addSeed(date,'live-room','直播间配置',60);
+    addSeed(date,'delay-hidden','延期的隐藏课程',20);
+    if(weekday===1 || weekday===3 || weekday===5){
+      addSeed(date,'refund','批量处理退费',90);
+      addSeed(date,'unlock-retain','批量处理解锁保留',30);
+    }
+    if(weekday===5){
+      addSeed(date,'open-course','晚上｜批量开课',15);
+    }
+  }
+})();
+
 // ===== 云同步配置（Supabase）：让 web 端和手机端待办数据实时一致 =====
 const SB_CONFIG = window.YaraRuntimeConfig ? window.YaraRuntimeConfig.supabase() : {url:'',anonKey:'',ready:false};
 const SB_URL = SB_CONFIG.url;
 const SB_KEY = SB_CONFIG.anonKey;
+const SB_SECRET = SB_CONFIG.appSecret;
 const SB_ROW = 'main';        // 云端只存一行，id 固定为 main
-const SB_POLL_MS = 15000;     // 每 15 秒轮询一次云端，拉取其他设备的改动
+const SB_POLL_MS = 5000;      // 活跃时每 5 秒拉取一次，手机切回页面时立即补拉
 let lastSync = 0;             // 最近一次已知的云端版本时间戳（毫秒）
 let saveTimer = null;         // 防抖：短时间内多次改动只上云一次
+let seedMergeChanged = false; // 本次合并是否新增了预置，用于把新增排期同步到云端
 
 let state = load();
 let current = todayStr();
@@ -175,7 +228,10 @@ function mergeSeeds(s){
     SEED[date].forEach(seed=>{
       const exists = s.tasks[date].some(t=>t.id===seed.id);
       const deleted = s.deletedSeeds.indexOf(seed.id)>=0;
-      if(!exists && !deleted) s.tasks[date].push(JSON.parse(JSON.stringify(seed)));
+      if(!exists && !deleted){
+        s.tasks[date].push(JSON.parse(JSON.stringify(seed)));
+        seedMergeChanged=true;
+      }
     });
   }
   return s;
@@ -191,18 +247,26 @@ function save(){
   scheduleCloudSave();
 }
 
+function setSyncStatus(status, message){
+  const tip=document.getElementById('syncTip');
+  const text=document.getElementById('syncText');
+  if(tip) tip.dataset.state=status||'local';
+  if(text) text.textContent=message||'本机数据已保存';
+}
+
 // ===== 云同步（Supabase REST）=====
 function sbHeaders(extra){
   const h = {'apikey':SB_KEY, 'Authorization':'Bearer '+SB_KEY, 'Content-Type':'application/json'};
+  if(SB_SECRET) h['x-app-secret']=SB_SECRET;
   for(const k in (extra||{})) h[k]=extra[k];
   return h;
 }
 function cloudLoad(){
   if(!SB_CONFIG.ready) return Promise.resolve(null);
   return fetch(SB_URL+'/rest/v1/yara_todo?id=eq.'+SB_ROW+'&select=data,updated_at', {headers:sbHeaders()})
-    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
     .then(function(rows){ return (rows && rows.length) ? rows[0] : null; })
-    .catch(function(){ return null; });
+    .catch(function(){ setSyncStatus('error','云同步暂时失败 · 本机数据仍安全保留'); return null; });
 }
 function cloudSave(){
   if(!SB_CONFIG.ready) return Promise.resolve(false);
@@ -211,8 +275,11 @@ function cloudSave(){
     method:'POST',
     headers:sbHeaders({'Prefer':'resolution=merge-duplicates'}),
     body:JSON.stringify({id:SB_ROW, data:state, updated_at:iso})
-  }).then(function(r){ if(r.ok){ lastSync = Date.parse(iso); } return r.ok; })
-    .catch(function(){ return false; });
+  }).then(function(r){
+    if(r.ok){ lastSync = Date.parse(iso); setSyncStatus('online','云同步已连接 · Web 与手机共用进度'); }
+    else setSyncStatus('error','云同步写入失败 · 本机数据仍安全保留');
+    return r.ok;
+  }).catch(function(){ setSyncStatus('error','云同步写入失败 · 本机数据仍安全保留'); return false; });
 }
 function scheduleCloudSave(){
   if(saveTimer) clearTimeout(saveTimer);
@@ -231,14 +298,21 @@ function adoptCloud(row){
       if(localDone[t.id] && !t.done){ t.done=true; changed=true; }
     });
   });
+  seedMergeChanged=false;
   state = mergeSeeds(cloud);
+  const seeded = seedMergeChanged;
   localStorage.setItem(LS_KEY, JSON.stringify(state));
   lastSync = Date.parse(row.updated_at)||0;
+  setSyncStatus('online','已同步其他设备的最新进度');
   render();
-  if(changed) cloudSave();
+  if(changed || seeded) cloudSave();
 }
 function initCloud(){
-  if(!SB_CONFIG.ready) return;
+  if(!SB_CONFIG.ready){
+    setSyncStatus('local','仅保存在此设备 · 请在系统设置中配置云同步');
+    return;
+  }
+  setSyncStatus('loading','正在连接 Web 与手机端…');
   cloudLoad().then(function(row){
     if(!row || !row.data || !row.data.tasks){
       // 云端还没有数据 → 把本机状态推上去作为基准
@@ -246,8 +320,11 @@ function initCloud(){
       return;
     }
     if((Date.parse(row.updated_at)||0) > lastSync) adoptCloud(row);
+    else setSyncStatus('online','云同步已连接 · Web 与手机共用进度');
   });
   setInterval(pollCloud, SB_POLL_MS);
+  window.addEventListener('focus', pollCloud);
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) pollCloud(); });
 }
 function pollCloud(){
   cloudLoad().then(function(row){
@@ -280,24 +357,59 @@ function toggleTask(id){
   const t=getTasks(current).find(x=>x.id===id);
   if(t){ t.done=!t.done; save(); render(); YaraModuleUI.notify(t.done?'任务已完成':'任务已恢复'); }
 }
+// 局部删除：只移除当前 li + 刷新汇总，避免全量 render 重建造成的卡顿与跳动
 function delTask(id){
   const arr=getTasks(current);
   const i=arr.findIndex(x=>x.id===id);
-  if(i>=0){
-    if(id.indexOf('seed')===0 && state.deletedSeeds.indexOf(id)<0) state.deletedSeeds.push(id);
-    arr.splice(i,1); save(); render(); YaraModuleUI.notify('任务已删除');
+  if(i<0) return;
+  if(id.indexOf('seed')===0 && state.deletedSeeds.indexOf(id)<0) state.deletedSeeds.push(id);
+  arr.splice(i,1);
+  save();
+  const li=document.querySelector('.task[data-id="'+cssAttr(id)+'"]');
+  if(li){
+    li.classList.add('removing');
+    setTimeout(function(){
+      li.remove();
+      renderSummary();
+      updateEmpty();
+    },150);
+  }else{
+    render();
   }
+  YaraModuleUI.notify('任务已删除');
 }
+// 编辑：进入编辑态
+function enterEdit(id){
+  const li=document.querySelector('.task[data-id="'+cssAttr(id)+'"]');
+  if(!li) return;
+  const t=getTasks(current).find(x=>x.id===id);
+  if(!t) return;
+  li.classList.add('editing');
+  li.innerHTML =
+    '<div class="edit-body">'+
+      '<input class="et" type="text" maxlength="60" value="'+escAttr(t.title)+'">'+
+      '<input class="em" type="number" min="5" step="5" value="'+(t.minutes||30)+'">'+
+      '<span class="em-unit">分钟</span>'+
+      '<button class="eb save" data-act="save">保存</button>'+
+      '<button class="eb cancel" data-act="cancel">取消</button>'+
+    '</div>';
+  const et=li.querySelector('.et');
+  et.focus();
+  et.setSelectionRange(et.value.length,et.value.length);
+}
+// 编辑：保存
+function saveEdit(id,title,minutes){
+  title=(title||'').trim();
+  if(!title){ YaraModuleUI.notify('任务内容不能为空','warning'); return false; }
+  minutes=Math.max(5,Math.round(+minutes)||30);
+  const t=getTasks(current).find(x=>x.id===id);
+  if(t){ t.title=title; t.minutes=minutes; save(); render(); YaraModuleUI.notify('已保存修改'); }
+  return true;
+}
+function escAttr(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function cssAttr(s){ return String(s==null?'':s).replace(/"/g,'\\"'); }
 
-function render(){
-  // 日期标签
-  const d=parseDate(current);
-  const isToday = current===todayStr();
-  document.getElementById('dateLabel').innerHTML =
-    (d.getMonth()+1)+'月'+d.getDate()+'日<span class="wk">'+WEEK[d.getDay()]+'</span>' +
-    (isToday?'<span class="today-tag">今天</span>':'');
-  document.getElementById('datePick').value = current;
-
+function renderSummary(){
   const tasks=getTasks(current);
   const total=tasks.length;
   const doneN=tasks.filter(t=>t.done).length;
@@ -314,17 +426,37 @@ function render(){
     '</div>'+
     '<div class="progress"><div class="fill'+(pct>=100?' full':'')+'" style="width:'+pct+'%"></div></div>'+
     '<div class="sum-note">'+(total? ('本日进度 '+pct+'%'+(pct>=100?' · 全部完成，辛苦啦 🎉':'')) :'安排好今天的任务，心里更有底 💪')+'</div>';
+}
+function updateEmpty(){
+  const total=getTasks(current).length;
+  document.getElementById('emptyState').style.display = total? 'none':'block';
+}
 
+function render(){
+  // 日期标签
+  const d=parseDate(current);
+  const isToday = current===todayStr();
+  document.getElementById('dateLabel').innerHTML =
+    (d.getMonth()+1)+'月'+d.getDate()+'日<span class="wk">'+WEEK[d.getDay()]+'</span>' +
+    (isToday?'<span class="today-tag">今天</span>':'');
+  document.getElementById('datePick').value = current;
+
+  renderSummary();
+
+  const tasks=getTasks(current);
   const list=document.getElementById('taskList');
   list.innerHTML = tasks.map(t=>
-    '<li class="task'+(t.done?' done':'')+'" data-id="'+t.id+'">'+
+    '<li class="task'+(t.done?' done':'')+'" data-id="'+escAttr(t.id)+'">'+
       '<div class="chk" data-act="toggle">'+(t.done?'✓':'')+'</div>'+
       '<div class="t-body"><div class="t-title">'+escHtml(t.title)+'</div></div>'+
       '<span class="t-min">'+fmtMin(t.minutes)+'</span>'+
-      '<button class="del" data-act="del" title="删除">×</button>'+
+      '<div class="t-actions">'+
+        '<button class="edit" type="button" data-act="edit" aria-label="编辑任务" title="编辑任务">✎ 编辑</button>'+
+        '<button class="del" type="button" data-act="del" data-yara-confirm="module" aria-label="删除任务" title="删除任务">× 删除</button>'+
+      '</div>'+
     '</li>'
   ).join('');
-  document.getElementById('emptyState').style.display = total? 'none':'block';
+  updateEmpty();
 }
 
 function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -361,6 +493,12 @@ document.getElementById('taskList').addEventListener('click', e=>{
   const act=e.target.closest('[data-act]');
   if(!act) return;
   if(act.dataset.act==='toggle') toggleTask(id);
+  else if(act.dataset.act==='edit') enterEdit(id);
+  else if(act.dataset.act==='save'){
+    const title=li.querySelector('.et').value, minutes=li.querySelector('.em').value;
+    saveEdit(id,title,minutes);
+  }
+  else if(act.dataset.act==='cancel') render();
   else if(act.dataset.act==='del'){
     YaraModuleUI.requestDelete(act, {
       title:'删除这条工作任务？',
@@ -368,6 +506,21 @@ document.getElementById('taskList').addEventListener('click', e=>{
       confirmText:'确认删除'
     }, function(){ delTask(id); });
   }
+});
+
+// 编辑态键盘：Enter 保存 / Esc 取消
+document.getElementById('taskList').addEventListener('keydown', e=>{
+  const li=e.target.closest('.task.editing');
+  if(!li) return;
+  if(e.key==='Enter'){ e.preventDefault(); const id=li.dataset.id; saveEdit(id, li.querySelector('.et').value, li.querySelector('.em').value); }
+  else if(e.key==='Escape'){ render(); }
+});
+
+window.addEventListener('storage', function(event){
+  if(event.key!==LS_KEY) return;
+  state=load();
+  render();
+  setSyncStatus(SB_CONFIG.ready?'online':'local', SB_CONFIG.ready?'已同步当前浏览器的最新进度':'本机数据已更新');
 });
 
 // ===== INIT =====

@@ -41,6 +41,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .sum-cell.bal .v{color:var(--primary);}
 .sum-cell.wk{background:var(--warning-l);} .sum-cell.wk .v{color:var(--warning);}
 
+/* private bank statement snapshot */
+.statement-card{display:none;overflow:hidden;position:relative;}
+.statement-card.ready{display:block;}
+.statement-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;}
+.statement-bank{display:flex;align-items:center;gap:9px;min-width:0;}
+.statement-logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#dc2626,#fb7185);color:#fff;display:grid;place-items:center;font-weight:900;box-shadow:0 8px 18px rgba(220,38,38,.18);}
+.statement-bank strong{display:block;font-size:.9rem;}
+.statement-bank span,.statement-period{display:block;color:var(--sub);font-size:.7rem;line-height:1.45;}
+.statement-period{text-align:right;white-space:nowrap;}
+.statement-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+.statement-cell{padding:11px 9px;border-radius:12px;background:#f8fafc;border:1px solid #edf2f7;}
+.statement-cell .v{font-size:1rem;font-weight:850;line-height:1.3;}
+.statement-cell .k{font-size:.66rem;color:var(--sub);margin-top:3px;}
+.statement-cell.inc .v{color:var(--income);}.statement-cell.exp .v{color:var(--expense);}.statement-cell.net .v{color:var(--warning);}
+.statement-note{margin-top:10px;padding:8px 10px;border-radius:10px;background:var(--warning-l);color:#92400e;font-size:.69rem;line-height:1.55;}
+
 /* budget */
 .bud-row{margin-bottom:9px;}
 .bud-row:last-child{margin-bottom:0;}
@@ -125,6 +141,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 
 @media(max-width:560px){
   .sum-grid{grid-template-columns:repeat(2,1fr);}
+  .statement-grid{grid-template-columns:1fr;}
+  .statement-cell{display:flex;align-items:center;justify-content:space-between;}
+  .statement-cell .k{margin-top:0;order:-1;}
   .goal-form{grid-template-columns:1fr;}
   .import-row{align-items:flex-start;}
   .import-copy span{max-width:220px;}
@@ -153,6 +172,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
   <div class="card">
     <div class="card-title">收支概览</div>
     <div class="sum-grid" id="sumGrid"></div>
+  </div>
+
+  <!-- 银行截图仅作为区间对账快照，不混入逐笔流水与月度统计 -->
+  <div class="card statement-card" id="statementCard" aria-live="polite">
+    <div id="statementBody"></div>
   </div>
 
   <!-- 预算 -->
@@ -282,11 +306,19 @@ let lastSync = 0, saveTimer = null;
 
 let state = load();
 let curType = 'expense';
-let curMonth = todayStr().slice(0,7);
+let curMonth = preferredLedgerMonth(state);
 
 function todayStr(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function fmtDate(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function money(n){ return (Math.round(n*100)/100).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function preferredLedgerMonth(source){
+  const current=todayStr().slice(0,7);
+  const txs=(source&&source.transactions)||[];
+  if(txs.some(function(tx){ return String(tx.date||'').slice(0,7)===current; })) return current;
+  const months=txs.map(function(tx){ return String(tx.date||'').slice(0,7); })
+    .filter(function(month){ return /^\d{4}-\d{2}$/.test(month); }).sort();
+  return months.length?months[months.length-1]:current;
+}
 
 function load(){
   let s;
@@ -308,6 +340,37 @@ function normalize(s){
   return s;
 }
 function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); scheduleCloudSave(); }
+
+// ===== 本机私密银行对账快照 =====
+// 截图中的区间累计金额不是逐笔流水，因此只做参考展示，不写入 yara_ledger_v1，
+// 避免污染月度收支、预算、趋势图以及跨端合并语义。
+function loadPrivateStatementSummaries(){
+  const isLocal=location.protocol==='file:' || location.hostname==='127.0.0.1' || location.hostname==='localhost';
+  if(!isLocal) return;
+  const loader=document.createElement('script');
+  loader.src='../private-data/'+'ledger-statement-summaries.js?v='+Date.now();
+  loader.onload=function(){
+    const rows=Array.isArray(window.YaraPrivateLedgerStatements)?window.YaraPrivateLedgerStatements:[];
+    delete window.YaraPrivateLedgerStatements;
+    renderStatementSummary(rows);
+    loader.remove();
+  };
+  loader.onerror=function(){ loader.remove(); };
+  document.head.appendChild(loader);
+}
+function renderStatementSummary(rows){
+  const card=document.getElementById('statementCard');
+  const body=document.getElementById('statementBody');
+  if(!card||!body||!rows.length) return;
+  const row=rows.slice().sort(function(a,b){return String(b.endDate||'').localeCompare(String(a.endDate||''));})[0];
+  const income=Math.round((Number(row.income)||0)*100)/100;
+  const expense=Math.round((Number(row.expense)||0)*100)/100;
+  const net=Math.round((Number(row.net!=null?row.net:income-expense)||0)*100)/100;
+  body.innerHTML='<div class="statement-head"><div class="statement-bank"><span class="statement-logo">招</span><div><strong>'+esc(row.bank||'招商银行')+' · '+esc(row.accountType||'银行卡')+'</strong><span>银行账单区间对账快照</span></div></div><div class="statement-period">'+esc(row.startDate||'')+'<br>至 '+esc(row.endDate||'')+'</div></div>'+ 
+    '<div class="statement-grid"><div class="statement-cell inc"><div class="v">'+money(income)+'</div><div class="k">区间收入</div></div><div class="statement-cell exp"><div class="v">'+money(expense)+'</div><div class="k">区间支出</div></div><div class="statement-cell net"><div class="v">'+(net>0?'+':'')+money(net)+'</div><div class="k">区间结余</div></div></div>'+ 
+    '<div class="statement-note">仅作对账参考，不计入月度流水。获得招行逐笔账单后，再按日期、分类和账户导入，避免重复计算。</div>';
+  card.classList.add('ready');
+}
 
 // ===== 云同步（合并式：流水按 id 取并集，避免多端/代记互相覆盖）=====
 function sbHeaders(extra){
@@ -368,6 +431,9 @@ function adoptCloud(row){
     state.budgets=Object.assign({}, state.budgets, cloud.budgets||{});
     if(cloud.goal && cloud.goal.targetAmount) state.goal=cloud.goal;
     sortTx();
+    if(!state.transactions.some(function(tx){ return String(tx.date||'').slice(0,7)===curMonth; })){
+      curMonth=preferredLedgerMonth(state);
+    }
   }
   const after=sig(state);
   lastSync=Date.parse(row.updated_at)||0;
@@ -441,11 +507,14 @@ function prepareLedgerImport(payload){
 }
 function commitLedgerImport(batch){
   if(!batch.fresh.length) return 0;
+  const currentMonthWasEmpty=!state.transactions.some(function(tx){ return String(tx.date||'').slice(0,7)===curMonth; });
   batch.fresh.forEach(function(tx){ state.transactions.push(tx); });
   state.categories.expense=unionArr(state.categories.expense, batch.categories.expense||[]);
   state.categories.income=unionArr(state.categories.income, batch.categories.income||[]);
   state.accounts=unionArr(state.accounts, batch.accounts);
-  sortTx(); save(); render();
+  sortTx();
+  if(currentMonthWasEmpty) curMonth=preferredLedgerMonth(state);
+  save(); render();
   return batch.fresh.length;
 }
 function loadPendingLocalLedgerImport(){
@@ -655,7 +724,7 @@ function renderInvest(){
       '<div style="text-align:right"><div class="tx-amt">'+money(h.value||0)+'</div>'+
       '<div class="tx-amt '+(g>=0?'inc':'exp')+'" style="font-size:.72rem">'+(g>=0?'+':'')+money(g)+'（'+(g>=0?'+':'')+gp.toFixed(1)+'%）</div></div>'+
       '<button class="del" data-act="hedit" title="编辑" style="color:var(--primary)">✎</button>'+
-      '<button class="del" data-act="hdel" title="删除">×</button>'+
+      '<button class="del" data-act="hdel" data-yara-confirm="module" title="删除">×</button>'+
     '</div>';
   }).join('');
 }
@@ -704,7 +773,7 @@ function renderTxList(){
       '<div class="tx-body"><div class="tx-cat">'+esc(t.category)+'</div>'+
       '<div class="tx-meta">'+esc(t.account)+(t.note?' · '+esc(t.note):'')+' · '+(t.date||'').slice(5)+'</div></div>'+
       '<div class="tx-amt '+t.type+'">'+sign+money(t.amount)+'</div>'+
-      '<button class="del" data-act="del" title="删除">×</button>'+
+      '<button class="del" data-act="del" data-yara-confirm="module" title="删除">×</button>'+
     '</div>';
   }).join('');
 }
@@ -899,6 +968,7 @@ document.getElementById('fDate').value=todayStr();
 render();
 initCloud();
 loadPendingLocalLedgerImport();
+loadPrivateStatementSummaries();
 </script>
 <script id="yaraSystemBridge" src="../yara-system-bridge.js?v=1.5"></script>
 </body>

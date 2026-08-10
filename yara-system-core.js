@@ -7,7 +7,8 @@
     life: 'yara_life_todo_v1',
     finance: 'yara_ledger_v1',
     capability: 'yara_ops_os_v1',
-    growth: 'yara_growth_center_v1'
+    growth: 'yara_growth_center_v1',
+    flash: 'yara_flash_notes_v1'
   };
 
   function safeJson(raw, fallback) {
@@ -142,6 +143,22 @@
     };
   }
 
+  function buildFlashSummary(flash) {
+    var notes = flash && Array.isArray(flash.notes) ? flash.notes : [];
+    var summaries = flash && Array.isArray(flash.summaries) ? flash.summaries : [];
+    var summarized = {};
+    summaries.forEach(function (summary) {
+      (summary.noteIds || []).forEach(function (id) { summarized[id] = true; });
+    });
+    return {
+      total: notes.length,
+      pending: notes.filter(function (note) { return note.status !== 'archived'; }),
+      actionable: notes.filter(function (note) { return note.status === 'action'; }),
+      unsummarized: notes.filter(function (note) { return note.status !== 'archived' && !summarized[note.id]; }),
+      latestSummary: summaries[0] || null
+    };
+  }
+
   function createAction(id, level, title, detail, target) {
     return { id: id, level: level, title: title, detail: detail, target: target };
   }
@@ -157,6 +174,7 @@
       finance: {},
       capability: {},
       growth: {},
+      flash: {},
       reconcile: null,
       actions: [],
       risks: []
@@ -170,12 +188,14 @@
       var finance = readSource(SOURCE_KEYS.finance, { transactions: [], budgets: {} });
       var capability = readSource(SOURCE_KEYS.capability, { scores: {} });
       var growth = readSource(SOURCE_KEYS.growth, { plans: [], english: [], reviews: [] });
+      var flash = readSource(SOURCE_KEYS.flash, { notes: [], summaries: [] });
       var courses = buildCourseSummary(courseData || {}, today);
       var workSummary = buildWorkSummary(work, today);
       var lifeTasks = Array.isArray(life.tasks) ? life.tasks : [];
       var financeSummary = buildFinanceSummary(finance, now);
       var capabilitySummary = buildCapabilitySummary(capability);
       var growthSummary = buildGrowthSummary(growth, today);
+      var flashSummary = buildFlashSummary(flash);
       var cached = readSource(CACHE_KEY, {});
       var reconcile = this.state.reconcile || cached.reconcile || null;
       var actions = [];
@@ -217,31 +237,13 @@
           { src: '运营能力地图/交付运营总系统.html', name: '自查总系统', group: '运营能力' }
         ));
       }
-      if (growthSummary.pendingPlans.length) {
+      if (flashSummary.unsummarized.length >= 3) {
         actions.push(createAction(
-          'growth-plan-' + growthSummary.pendingPlans[0].id,
+          'flash-review-' + today,
           'low',
-          growthSummary.pendingPlans[0].title || '继续学习计划',
-          (growthSummary.pendingPlans[0].minutes || 15) + ' 分钟 · 成长花园',
-          { src: '成长花园.html#plan', name: '学习计划', group: '成长花园' }
-        ));
-      }
-      if (!growthSummary.englishToday) {
-        actions.push(createAction(
-          'growth-english-today',
-          'low',
-          '完成一次英语输出',
-          '今日一句 · 约 5 分钟',
-          { src: '成长花园.html#english', name: '英语练习', group: '成长花园' }
-        ));
-      }
-      if (!growthSummary.reviewToday && now.getHours() >= 18) {
-        actions.push(createAction(
-          'growth-review-today',
-          'low',
-          '为今天做一次温柔复盘',
-          '记录收获、消耗与明日一步',
-          { src: '成长花园.html#review', name: '每日复盘', group: '成长花园' }
+          '整理近期闪念',
+          flashSummary.unsummarized.length + ' 条想法还没有进入总结',
+          { src: '闪念中心.html', name: '闪念中心', group: '灵感管理' }
         ));
       }
 
@@ -285,7 +287,8 @@
           finance: !!localStorage.getItem(SOURCE_KEYS.finance),
           capability: !!localStorage.getItem(SOURCE_KEYS.capability),
           reconcile: !!reconcile,
-          growth: !!localStorage.getItem(SOURCE_KEYS.growth)
+          growth: !!localStorage.getItem(SOURCE_KEYS.growth),
+          flash: !!localStorage.getItem(SOURCE_KEYS.flash)
         },
         courses: courses,
         work: workSummary,
@@ -296,6 +299,7 @@
         finance: financeSummary,
         capability: capabilitySummary,
         growth: growthSummary,
+        flash: flashSummary,
         reconcile: reconcile,
         actions: actions,
         risks: risks

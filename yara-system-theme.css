@@ -440,20 +440,117 @@ body[data-yara-module="daily-index"] .kb-card:hover,
 body[data-yara-module="daily-index"] .focal-card:hover{transform:translateY(-4px)!important;box-shadow:var(--ys-shadow-hover)!important;}
 
 body[data-yara-module="daily-article"]{
-  background:#edf1f7!important;
+  --bg-base:var(--ys-bg);
+  --glass-bg:rgba(255,255,255,.9);
+  --text-primary:var(--ys-ink);
+  --text-secondary:var(--ys-ink-2);
+  --text-tertiary:var(--ys-ink-3);
+  --accent-red:var(--ys-primary);
+  --accent-magenta:#8070e9;
+  --accent-gradient:linear-gradient(135deg,#6956e8,#7c70e8 54%,#16958f);
+  --accent-soft:rgba(105,86,232,.09);
+  --radius-lg:22px;
+  --radius-md:15px;
+  --radius-pill:999px;
+  background:
+    radial-gradient(circle at 8% -4%,rgba(105,86,232,.11),transparent 28%),
+    radial-gradient(circle at 96% 8%,rgba(22,149,143,.08),transparent 26%),
+    var(--ys-bg)!important;
   color:var(--ys-ink)!important;
+  font-family:var(--ys-font)!important;
 }
 body[data-yara-module="daily-article"] [id^="module-"]{scroll-margin-top:78px;}
 body[data-yara-module="daily-article"] .container,
 body[data-yara-module="daily-article"] .wrap,
 body[data-yara-module="daily-article"] main{
-  max-width:980px;
+  max-width:1040px;
 }
 body[data-yara-module="daily-article"] article,
 body[data-yara-module="daily-article"] .module,
 body[data-yara-module="daily-article"] .card,
 body[data-yara-module="daily-article"] .section{
+  border:1px solid rgba(214,220,232,.88)!important;
   border-radius:var(--ys-radius)!important;
+  background:rgba(255,255,255,.9)!important;
+  box-shadow:var(--ys-shadow)!important;
+}
+body[data-yara-module="daily-article"] .nav-bar,
+body[data-yara-module="daily-article"] nav:first-child{
+  top:12px!important;width:min(980px,calc(100% - 28px))!important;margin:12px auto 0!important;padding:9px!important;
+  border:1px solid rgba(255,255,255,.8)!important;border-radius:17px!important;
+  background:rgba(250,251,254,.86)!important;box-shadow:0 12px 32px rgba(45,54,82,.09)!important;
+  backdrop-filter:blur(20px) saturate(140%)!important;
+}
+body[data-yara-module="daily-article"] .nav-bar a,
+body[data-yara-module="daily-article"] nav:first-child a{
+  padding:7px 12px!important;border:1px solid transparent!important;border-radius:10px!important;
+  color:var(--ys-ink-2)!important;background:transparent!important;font-size:.75rem!important;font-weight:720!important;
+}
+body[data-yara-module="daily-article"] .nav-bar a:hover,
+body[data-yara-module="daily-article"] .nav-bar a.is-current,
+body[data-yara-module="daily-article"] nav:first-child a.is-current{
+  color:var(--ys-primary)!important;border-color:#dcd5fb!important;background:var(--ys-primary-soft)!important;
+}
+body[data-yara-module="daily-article"] .hero,
+body[data-yara-module="daily-article"] header{
+  width:min(1040px,calc(100% - 28px));margin:18px auto 0!important;padding:58px 28px 50px!important;
+  border:1px solid rgba(255,255,255,.84)!important;border-radius:26px!important;
+  background:linear-gradient(135deg,rgba(255,255,255,.95),rgba(243,241,255,.86) 60%,rgba(233,248,245,.82))!important;
+  box-shadow:var(--ys-shadow)!important;
+}
+body[data-yara-module="daily-article"] .hero:before,
+body[data-yara-module="daily-article"] header:before{opacity:.5!important;filter:blur(60px)!important;}
+body[data-yara-module="daily-article"] .hero h1,
+body[data-yara-module="daily-article"] header h1{
+  color:var(--ys-ink)!important;font:780 clamp(2rem,5vw,3.25rem)/1.1 var(--ys-font)!important;
+  letter-spacing:-.045em!important;text-shadow:none!important;
+}
+body[data-yara-module="daily-article"] .date-info,
+body[data-yara-module="daily-article"] .hero p,
+body[data-yara-module="daily-article"] header p{color:var(--ys-ink-2)!important;}
+body[data-yara-module="daily-article"] .toc{max-width:1040px!important;padding:22px 14px 2px!important;}
+body[data-yara-module="daily-article"] .toc-grid{gap:8px!important;}
+body[data-yara-module="daily-article"] .toc-grid a{
+  padding:11px 12px!important;border:1px solid var(--ys-line)!important;border-radius:12px!important;
+  color:var(--ys-ink-2)!important;background:rgba(255,255,255,.76)!important;box-shadow:none!important;
+}
+body[data-yara-module="daily-article"] .module{
+  max-width:1040px!important;margin:18px auto!important;padding:clamp(26px,4vw,44px)!important;overflow:visible!important;
+}
+body[data-yara-module="daily-article"] .module:hover{transform:none!important;border-color:#d5cdf8!important;box-shadow:var(--ys-shadow-hover)!important;}
+body[data-yara-module="daily-article"] .module-header{gap:15px!important;margin-bottom:24px!important;padding-bottom:18px!important;border-bottom:1px solid var(--ys-line)!important;}
+body[data-yara-module="daily-article"] .module-num{font-size:2rem!important;color:var(--ys-primary)!important;background:var(--accent-gradient)!important;-webkit-background-clip:text!important;background-clip:text!important;}
+body[data-yara-module="daily-article"] .module-title{color:var(--ys-ink)!important;font:760 clamp(1.18rem,2.5vw,1.55rem)/1.35 var(--ys-font)!important;letter-spacing:-.02em!important;}
+body[data-yara-module="daily-article"] .module-subtitle{color:var(--ys-ink-2)!important;line-height:1.65!important;}
+body[data-yara-module="daily-article"] .content{color:var(--ys-ink)!important;font-size:1rem!important;line-height:1.9!important;}
+body[data-yara-module="daily-article"] .content p{color:#3f485f!important;text-indent:0!important;margin-bottom:17px!important;}
+body[data-yara-module="daily-article"] .content h2,
+body[data-yara-module="daily-article"] .content h3{color:#5141bd!important;margin-top:27px!important;letter-spacing:-.015em!important;}
+body[data-yara-module="daily-article"] .content strong{color:#3d32a4!important;background:none!important;-webkit-text-fill-color:currentColor!important;}
+body[data-yara-module="daily-article"] .highlight{
+  padding:22px!important;border:1px solid #ddd7f8!important;border-radius:16px!important;
+  background:linear-gradient(135deg,#f7f5ff,#f2faf8)!important;
+}
+body[data-yara-module="daily-article"] .source-link,
+body[data-yara-module="daily-article"] .source-list a{color:#5b4bc4!important;text-decoration:none!important;border-bottom-color:#cfc7f6!important;}
+body[data-yara-module="daily-article"] table{border:1px solid var(--ys-line)!important;border-radius:13px!important;background:#fff!important;}
+body[data-yara-module="daily-article"] th{color:#4f5870!important;background:#f1f2fa!important;}
+body[data-yara-module="daily-article"] .back-link{padding:32px 20px 18px!important;}
+body[data-yara-module="daily-article"] .back-link a{
+  padding:12px 22px!important;border-radius:12px!important;color:#fff!important;background:linear-gradient(135deg,#6956e8,#8271ed)!important;box-shadow:0 9px 22px rgba(105,86,232,.2)!important;
+}
+body[data-yara-module="daily-article"] .footer,
+body[data-yara-module="daily-article"] footer{color:var(--ys-ink-3)!important;border-top:0!important;}
+.daily-reading-progress{position:fixed;left:0;right:0;top:0;height:3px;z-index:3000;background:rgba(105,86,232,.08);pointer-events:none}.daily-reading-progress span{display:block;width:100%;height:100%;transform:scaleX(0);transform-origin:left;background:linear-gradient(90deg,#6956e8,#16958f);transition:transform .08s linear}
+.daily-reader-tools{position:fixed;right:18px;bottom:18px;z-index:2500;display:flex;gap:8px;align-items:center}.daily-reader-tools a,.daily-reader-tools button{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 13px;border:1px solid rgba(255,255,255,.85);border-radius:12px;color:var(--ys-ink-2);background:rgba(255,255,255,.9);box-shadow:0 10px 28px rgba(41,50,77,.12);font:720 .72rem var(--ys-font);text-decoration:none;backdrop-filter:blur(14px)}.daily-reader-top{width:40px;padding:0!important;opacity:0;transform:translateY(8px);pointer-events:none;transition:.2s}.daily-reader-tools.show-top .daily-reader-top{opacity:1;transform:none;pointer-events:auto}
+@media(max-width:768px){
+  body[data-yara-module="daily-article"] .nav-bar,body[data-yara-module="daily-article"] nav:first-child{position:sticky!important;top:8px!important;width:calc(100% - 16px)!important;margin:8px auto 0!important;justify-content:flex-start!important;flex-wrap:nowrap!important;overflow-x:auto!important;}
+  body[data-yara-module="daily-article"] .hero,body[data-yara-module="daily-article"] header{width:calc(100% - 16px)!important;margin-top:10px!important;padding:38px 18px 32px!important;border-radius:20px!important;}
+  body[data-yara-module="daily-article"] .module{margin:12px 8px!important;padding:24px 18px!important;border-radius:17px!important;}
+  body[data-yara-module="daily-article"] .module-header{align-items:flex-start!important;}
+  body[data-yara-module="daily-article"] .content{font-size:.94rem!important;line-height:1.82!important;}
+  body[data-yara-module="daily-article"] .highlight{padding:17px!important;overflow-x:auto!important;}
+  .daily-reader-tools{right:10px;bottom:calc(10px + env(safe-area-inset-bottom))}.daily-reader-back{display:none!important;}
 }
 
 /* Personal management suite: work, life and finance share one product language. */

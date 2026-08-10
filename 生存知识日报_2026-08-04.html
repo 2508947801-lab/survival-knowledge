@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f7f7fa">
+<title>生存知识日报 · 2026-08-04 · 星期二</title>
+<style>
+:root {
+    --bg-base:#f7f7fa; --glass-bg:rgba(255,255,255,.72); --text-primary:#0f0f15;
+    --text-secondary:#5a5a6a; --text-tertiary:#9a9aa8; --accent-red:#ff2d55;
+    --accent-gradient:linear-gradient(135deg,#ff2d55 0%,#ff375f 50%,#ff2dc8 100%);
+    --radius-lg:28px; --radius-md:20px; --radius-pill:999px; --blur:30px;
+    --ease:cubic-bezier(.4,0,.2,1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg-base); color:var(--text-primary); line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+}
+.nav-bar {
+    position:sticky; top:0; z-index:1000; background:rgba(255,255,255,.72);
+    backdrop-filter:blur(var(--blur)) saturate(180%); -webkit-backdrop-filter:blur(var(--blur)) saturate(180%);
+    border-bottom:1px solid rgba(15,15,25,.06); padding:14px 20px;
+    display:flex; flex-wrap:wrap; gap:8px; justify-content:center;
+}
+.nav-bar a {
+    color:var(--text-secondary); text-decoration:none; font-size:.82em; font-weight:500;
+    padding:8px 16px; border-radius:var(--radius-pill); background:rgba(255,255,255,.6);
+    border:1px solid transparent; transition:all .3s var(--ease); white-space:nowrap;
+}
+.nav-bar a:hover { color:var(--accent-red); background:rgba(255,45,85,.08); border-color:rgba(255,45,85,.25); }
+.hero {
+    position:relative; overflow:hidden; padding:90px 24px 70px; text-align:center;
+    border-bottom:1px solid rgba(15,15,25,.06); background:var(--bg-base);
+}
+.hero::before {
+    content:''; position:absolute; inset:-30%; z-index:0;
+    background:radial-gradient(ellipse 60% 50% at 30% 20%,rgba(255,45,85,.14) 0%,transparent 60%),
+               radial-gradient(ellipse 50% 40% at 70% 30%,rgba(255,45,200,.12) 0%,transparent 60%),
+               radial-gradient(ellipse 70% 60% at 50% 100%,rgba(255,55,95,.10) 0%,transparent 70%);
+    filter:blur(40px); animation:ambient 12s ease-in-out infinite alternate;
+}
+@keyframes ambient { from { transform:scale(1); opacity:.75; } to { transform:translate(-3%,2%) scale(1.08); opacity:1; } }
+.hero h1 { font-size:3.2em; font-weight:600; letter-spacing:4px; position:relative; z-index:1; }
+.hero .date-info { font-size:1.1em; color:var(--text-secondary); position:relative; z-index:1; margin-top:14px; }
+.toc { max-width:1080px; margin:0 auto; padding:40px 24px; }
+.toc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px; }
+.toc-grid a {
+    display:block; padding:14px 16px; text-decoration:none; color:var(--text-secondary);
+    background:rgba(255,255,255,.7); border-radius:var(--radius-md); border:1px solid rgba(15,15,25,.06);
+    transition:all .35s var(--ease); font-size:.9em; font-weight:500; text-align:center;
+}
+.toc-grid a:hover { color:var(--accent-red); border-color:rgba(255,45,85,.25); transform:translateY(-3px); }
+.module {
+    max-width:1080px; margin:28px auto; padding:48px 40px; background:var(--glass-bg);
+    backdrop-filter:blur(var(--blur)) saturate(150%); -webkit-backdrop-filter:blur(var(--blur)) saturate(150%);
+    border-radius:var(--radius-lg); border:1px solid rgba(15,15,25,.06);
+    box-shadow:0 1px 3px rgba(15,15,25,.04),0 8px 24px rgba(15,15,25,.03);
+    position:relative; overflow:hidden; transition:all .4s var(--ease);
+}
+.module:hover { border-color:rgba(255,45,85,.20); box-shadow:0 16px 40px rgba(255,45,85,.08); }
+.module-header { display:flex; align-items:center; gap:18px; margin-bottom:32px; padding-bottom:20px; border-bottom:1px solid rgba(15,15,25,.08); }
+.module-num {
+    font-size:2.4em; font-weight:300; line-height:1; background:var(--accent-gradient);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+}
+.module-title { font-size:1.65em; font-weight:600; letter-spacing:1px; }
+.module-subtitle { color:var(--text-secondary); font-size:.95em; margin-top:4px; }
+.content { font-size:1.04em; }
+.content p { margin-bottom:18px; text-indent:2em; color:rgba(15,15,25,.85); }
+.content h3 { color:var(--accent-red); font-size:1.18em; margin:30px 0 14px; font-weight:600; }
+.content strong { background:var(--accent-gradient); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; font-weight:600; }
+.highlight {
+    background:linear-gradient(135deg,rgba(255,45,85,.06),rgba(255,45,200,.05));
+    border-radius:var(--radius-md); padding:24px 28px; margin:24px 0;
+    border:1px solid rgba(255,45,85,.18); position:relative; overflow:hidden;
+}
+.highlight h4 { color:var(--accent-red); margin-bottom:12px; font-size:1.05em; }
+.highlight ul,.source-list { padding-left:1.3em; }
+.highlight li,.source-list li { margin:9px 0; }
+.source-link { display:inline-block; margin:0 0 18px 2em; color:var(--accent-red); text-decoration:none; border-bottom:1px solid rgba(255,45,85,.28); font-size:.88em; }
+.source-list a { color:var(--accent-red); text-decoration:none; border-bottom:1px solid rgba(255,45,85,.22); }
+.metric-table { width:100%; border-collapse:collapse; margin:18px 0; font-size:.92em; background:rgba(255,255,255,.55); border-radius:14px; overflow:hidden; }
+.metric-table th,.metric-table td { padding:12px 14px; text-align:left; border-bottom:1px solid rgba(15,15,25,.07); }
+.metric-table th { color:var(--text-secondary); background:rgba(255,45,85,.05); }
+.back-link { text-align:center; padding:60px 20px 40px; }
+.back-link a { display:inline-block; color:#fff; text-decoration:none; font-weight:600; padding:16px 48px; border-radius:var(--radius-pill); background:var(--accent-gradient); box-shadow:0 8px 24px rgba(255,45,85,.30); }
+.footer { text-align:center; padding:48px 20px; color:var(--text-tertiary); border-top:1px solid rgba(15,15,25,.06); }
+.footer p { margin:8px 0; }
+@media (max-width:768px) {
+    .hero { padding:60px 18px 50px; } .hero h1 { font-size:2.1em; letter-spacing:2px; }
+    .nav-bar { gap:5px; padding:10px 12px; } .nav-bar a { font-size:.72em; padding:6px 11px; }
+    .toc { padding:28px 16px; } .toc-grid { grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px; }
+    .module { margin:16px 12px; padding:32px 22px; border-radius:var(--radius-md); }
+    .module-num { font-size:1.9em; } .module-title { font-size:1.3em; } .content { font-size:.98em; }
+    .content p { text-indent:1.5em; } .source-link { margin-left:1.5em; }
+    .metric-table { display:block; overflow-x:auto; font-size:.82em; } .metric-table th,.metric-table td { padding:9px 8px; min-width:7em; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav-bar">
+<a href="#module-1">①运营精华</a><a href="#module-2">②今日要闻</a><a href="#module-3">③科技×AI前沿</a>
+<a href="#module-4">④财富趋势</a><a href="#module-5">⑤职场教育</a><a href="#module-6">⑥深度阅读</a><a href="#module-7">⑦五栏分析</a>
+</nav>
+
+<header class="hero">
+<h1>📰 生存知识日报</h1>
+<div class="date-info">2026-08-04 · 星期二 · 第 34 期</div>
+<div class="date-info" style="font-size:.95em;margin-top:5px;opacity:.7;">深度认知 · 理性判断 · 温情陪伴</div>
+</header>
+
+<div class="toc"><div class="toc-grid">
+<a href="#module-1">①运营精华</a><a href="#module-2">②今日要闻</a><a href="#module-3">③科技×AI前沿</a>
+<a href="#module-4">④财富趋势</a><a href="#module-5">⑤职场教育</a><a href="#module-6">⑥深度阅读</a><a href="#module-7">⑦五栏分析</a>
+</div></div>
+
+<section id="module-1" class="module"><div class="module-header"><span class="module-num">①</span><div><div class="module-title">运营精华</div><div class="module-subtitle">AI 运营进入“可披露、可追溯、可接管”阶段：信任要被设计进流程</div></div></div><div class="content">
+<h3>📌 今天的判断：别只做“AI 提效”，先做一条用户看得见的责任链</h3>
+<p><strong>发生了什么：</strong>欧盟委员会7月20日发布 AI Act 第50条透明度义务实施指南，相关义务自8月2日起适用：特定 AI 交互要告知用户，生成或操纵内容要能被识别，深度伪造及部分公共利益文本需要标注。中国《人工智能生成合成内容标识办法》已于2025年9月1日起施行，同样区分用户可感知的显式标识与文件元数据中的隐式标识。</p>
+<a class="source-link" href="https://digital-strategy.ec.europa.eu/en/library/guidelines-transparency-obligations-providers-and-deployers-ai-systems" target="_blank" rel="noopener noreferrer">直接来源：欧盟委员会 · Article 50 透明度实施指南（2026-07-20）↗</a>
+<a class="source-link" href="https://www.cac.gov.cn/2025-03/14/c_1743654684782215.htm" target="_blank" rel="noopener noreferrer">直接来源：中国网信办 · 人工智能生成合成内容标识办法（2025-03-14）↗</a>
+<p><strong>为什么重要：</strong>知识付费团队最容易把合规理解成一句页脚“内容由 AI 辅助生成”。但真正影响信任的，是用户在关键决策点能否知道：我在和机器还是人沟通？这段推荐来自真实学员还是虚拟人物？AI 能做什么、不能做什么？出现错误后谁接管？<strong>透明度不是一张贴纸，而是一套前台说明、后台留痕与人工兜底。</strong></p>
+<div class="highlight"><h4>今天就能搭的“AI 责任四道门”</h4>
+<table class="metric-table"><thead><tr><th>关口</th><th>用户需要知道</th><th>运营证据</th><th>最小动作</th></tr></thead><tbody>
+<tr><td>进入前</td><td>是否在与 AI 互动</td><td>界面提示与适用范围</td><td>给机器人欢迎语补一句身份说明</td></tr>
+<tr><td>内容上架</td><td>是否由 AI 生成或操纵</td><td>显式标识、文件元数据</td><td>给图文、音视频建立发布检查项</td></tr>
+<tr><td>影响决策</td><td>结论依据与限制条件</td><td>来源、版本、审核人</td><td>给课程推荐加依据和“不适合谁”</td></tr>
+<tr><td>发生异常</td><td>如何找真人复核</td><td>转人工记录与纠错闭环</td><td>设置明确的人工接管按钮和时限</td></tr>
+</tbody></table></div>
+<p><strong>对 Yara 的启发：</strong>先不要追求“全自动客服”。选择一个低风险场景，例如课前常见问题，把“AI 身份提示→回答范围→引用来源→一键转人工→复盘错答”跑通。能说清责任边界的自动化，才有资格扩大流量。</p>
+</div></section>
+
+<section id="module-2" class="module"><div class="module-header"><span class="module-num">②</span><div><div class="module-title">今日要闻</div><div class="module-subtitle">欧盟透明度义务正式进入适用期，但教育高风险规则不是同一天全部生效</div></div></div><div class="content">
+<h3>🗓️ 8月2日：AI 透明度从“最佳实践”变成明确义务</h3>
+<p><strong>发生了什么：</strong>欧盟 AI Act 的总体适用日期是2026年8月2日。欧盟委员会最新事实页将第50条归纳为四类透明度场景，包括告知人们正在与 AI 系统交互、让 AI 生成或操纵内容可被可靠识别，以及由部署方标注深度伪造、部分公共利益文本等。对于2026年8月2日前已投放市场的生成式 AI 系统，特定机器可读标记义务存在到2026年12月的过渡期。</p>
+<a class="source-link" href="https://digital-strategy.ec.europa.eu/en/factpages/quick-facts-transparency-rules-ai-systems" target="_blank" rel="noopener noreferrer">直接来源：欧盟委员会 · AI 透明度规则事实页（核验于 2026-08-04）↗</a>
+<p><strong>为什么重要：</strong>规则开始按角色拆责任：模型或系统提供者负责让生成内容可被检测，实际使用 AI 触达用户的部署者也承担告知与标注责任。购买第三方工具，并不会自动把运营方的责任全部外包。</p>
+
+<h3>⚖️ 别把“透明度已生效”误写成“教育 AI 全面高风险执法”</h3>
+<p>欧盟委员会当前时间表显示，教育、就业等 Annex III 高风险场景的相关规则延至2027年12月2日起适用；嵌入受监管产品的相关规则则延至2028年8月2日。<strong>今天已确定的重点是透明度，不应把不同章节、不同日期混成一句“欧盟 AI 法全部落地”。</strong></p>
+<a class="source-link" href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" target="_blank" rel="noopener noreferrer">直接来源：欧盟委员会 · AI Act 适用时间表（更新并核验于 2026-08-04）↗</a>
+<p><strong>今天可采取的行动：</strong>在团队知识库建立一张“义务—场景—角色—日期”表。先处理已经发生的 AI 客服、虚拟人口播、AI 营销素材和公共发布内容，不用一条笼统的“AI 合规”标签替代具体判断。</p>
+</div></section>
+
+<section id="module-3" class="module"><div class="module-header"><span class="module-num">③</span><div><div class="module-title">科技 × AI 前沿</div><div class="module-subtitle">显式标识服务于人，隐式标识服务于机器；两者缺一不可</div></div></div><div class="content">
+<h3>🏷️ 一套标识，要同时回答“人怎么看”和“系统怎么验”</h3>
+<p>中国《标识办法》把 AI 生成合成内容覆盖到文本、图片、音频、视频和虚拟场景，并明确显式标识与隐式标识：前者让用户直接感知，后者写入文件元数据，记录内容属性、服务提供者或编码、内容编号等制作要素。提供下载、复制、导出时，也不能把应有标识在交付环节悄悄丢掉。</p>
+<p><strong>为什么重要：</strong>只在页面角落写“AI 辅助”解决不了内容流转后的溯源；只写元数据又无法帮助眼前用户判断。运营团队需要把标识当作一条供应链：生成工具、素材库、剪辑导出、发布平台、二次分发，每一站都可能让信息断链。</p>
+
+<h3>🧩 自愿代码不是“自愿透明”</h3>
+<p>欧盟 AI 生成内容透明度实践代码提供了机器标记、检测、深度伪造和特定文本标注的可操作框架。加入代码是自愿的，但第50条透明度要求本身是法律义务。欧盟委员会称，截至2026年7月底约有190家企业与组织签署该代码。</p>
+<a class="source-link" href="https://digital-strategy.ec.europa.eu/en/policies/code-practice-ai-generated-content" target="_blank" rel="noopener noreferrer">直接来源：欧盟委员会 · AI 生成内容透明度实践代码（核验于 2026-08-04）↗</a>
+<div class="highlight"><h4>一个素材的最小“内容护照”</h4><ul>
+<li><strong>来源：</strong>模型/工具、生成日期、提示词或原始素材编号。</li>
+<li><strong>加工：</strong>人改了什么，事实由谁复核，当前版本是什么。</li>
+<li><strong>授权：</strong>人物形象、声音、商标、课程材料是否有使用权限。</li>
+<li><strong>发布：</strong>哪些平台已发布，显式标识和元数据是否保留。</li>
+<li><strong>纠错：</strong>发现错误后由谁下架、修订，并同步到哪些渠道。</li>
+</ul></div>
+<p><strong>对 Yara/运营工作的启发：</strong>不要让 AI 素材只存在于聊天记录和下载文件夹。给每条对外课程素材分配一个内容编号，与来源、审核、授权和发布渠道绑定，未来查错和复用都会更快。</p>
+</div></section>
+
+<section id="module-4" class="module"><div class="module-header"><span class="module-num">④</span><div><div class="module-title">财富趋势</div><div class="module-subtitle">AI 降低生产成本后，真正值钱的是可信分发与可复核的品牌资产</div></div></div><div class="content">
+<h3>💰 合规不是“减速器”，而是规模化的边际成本控制</h3>
+<p><strong>发生了什么：</strong>市场监管总局等六部门5月发布的广告产业意见，一方面支持人工智能用于广告设计制作、效果监测和新业态，另一方面明确加强对 AI 生成式违法广告、违法引证广告和直播电商广告的监管。监管信号不是“不要用 AI”，而是“使用 AI 的规模越大，证据与责任链越要标准化”。</p>
+<a class="source-link" href="https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/ggjgs/art/2026/art_9d61919cfea14116b347a471bfc804ef.html" target="_blank" rel="noopener noreferrer">直接来源：市场监管总局等六部门 · 广告产业高质量发展意见（2026-05-19）↗</a>
+<p><strong>为什么重要：</strong>AI 能把同一创意扩成100条素材，也能把同一处错误扩散100次。没有内容编号、审核记录、授权证明和下架清单时，生产越便宜，返工、投诉和品牌损耗越贵。</p>
+<div class="highlight"><h4>用“单位可信成本”替代“单位出片成本”</h4>
+<table class="metric-table"><thead><tr><th>旧指标</th><th>容易忽略</th><th>建议补充</th></tr></thead><tbody>
+<tr><td>每条素材成本</td><td>事实核验与返工</td><td>一次审核通过率</td></tr>
+<tr><td>日更数量</td><td>重复与错误扩散</td><td>可追溯素材占比</td></tr>
+<tr><td>点击率</td><td>误导带来的低质线索</td><td>投诉率、有效咨询率</td></tr>
+<tr><td>自动回复率</td><td>错答和责任悬空</td><td>转人工成功率、纠错时长</td></tr>
+</tbody></table></div>
+<p><strong>今天可采取的行动：</strong>抽查最近10条 AI 辅助素材，统计“能找到来源、审核人、授权、发布渠道”的比例。低于80%时，先补资产台账，再扩内容产能。</p>
+</div></section>
+
+<section id="module-5" class="module"><div class="module-header"><span class="module-num">⑤</span><div><div class="module-title">职场教育</div><div class="module-subtitle">虚拟讲师、AI 学员和“小字免责”，都不能替代真实证据</div></div></div><div class="content">
+<h3>🎭 AI 虚拟人物推荐课程，必须先回答“谁在作证”</h3>
+<p><strong>发生了什么：</strong>市场监管总局3月启动为期半年的广告提示性用语整治，明确关注 AI 生成式广告：未经权利人同意使用他人形象，或用 AI 虚构人物为产品、服务推荐证明却未作提示、可能造成消费者误解的，可以认定为虚假广告。通知还点名“大字吸睛、小字免责”、绝对化用语和不可公开查询的引证材料。</p>
+<a class="source-link" href="https://www.samr.gov.cn/ggjgs/tzgg/art/2026/art_23fa8f1eaa5546af86528157fbc85db5.html" target="_blank" rel="noopener noreferrer">直接来源：市场监管总局 · 强化广告中提示性用语监管通知（2026-03-13）↗</a>
+<p><strong>为什么重要：</strong>知识产品依赖信任。一个“AI 学员”讲述逆袭故事，即使画面精美，也不是学员案例；用极小字体写“效果因人而异”，不能挽救主画面中的保证性暗示；用内部调研写“行业第一”，如果口径、样本、时间和地域不可查，也不是可靠证明。</p>
+<div class="highlight"><h4>课程营销上线前四问</h4><ul>
+<li>画面或声音中的人是真人、授权数字分身，还是完全虚构？用户能一眼知道吗？</li>
+<li>案例是个人真实经历、情景演绎还是 AI 合成？证据与授权保存在哪里？</li>
+<li>“提升、领先、第一”等结论能否公开核验？样本与限制条件是否同等醒目？</li>
+<li>用户看完后形成的核心理解，是否会被角落里的小字推翻？</li>
+</ul></div>
+<p><strong>对 Yara 的启发：</strong>把素材审核从“有没有错别字”升级为“用户会形成什么判断”。让运营、交付和审核人分别写下主结论；三人理解不一致，素材就不能上线。</p>
+</div></section>
+
+<section id="module-6" class="module"><div class="module-header"><span class="module-num">⑥</span><div><div class="module-title">深度阅读</div><div class="module-subtitle">透明度的终点不是免责声明，而是让组织在出错时仍然可控</div></div></div><div class="content">
+<h3>🧠 为什么一句“AI 生成”远远不够</h3>
+<p>免责声明只是在告诉用户“风险存在”，却没有说明风险由谁管理。真正成熟的 AI 运营系统，会把责任拆进生命周期：上线前定义用途和禁区，运行中记录版本与来源，关键节点保留人工复核，出错后能定位受影响内容并快速撤回。<strong>透明度的商业价值，是缩短“发现错误—找到责任人—完成纠正”的时间。</strong></p>
+<p>NIST 的生成式 AI 风险管理框架将治理放进设计、开发、使用和评估全过程，并强调组织需要把可信要求转化为持续管理活动。它不是中国或欧盟的法律，但可作为跨团队建立风险清单、测试和责任分工的操作参考。</p>
+<a class="source-link" href="https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence" target="_blank" rel="noopener noreferrer">直接来源：NIST · Generative AI Profile（2024-07-26，核验于 2026-08-04）↗</a>
+
+<h3>🔄 自动化悖论：系统越能做，人越要清楚何时接管</h3>
+<p>当客服只自动回答营业时间，错答容易发现；当它开始推荐课程、解释退款或判断学习问题，错误会直接改变用户决策。此时“人工随时可以看”不等于有效监督：人工必须能看到上下文、理解模型依据、有权限暂停流程，还要有明确响应时限。</p>
+<p><strong>今天可采取的行动：</strong>选一条现有 AI 工作流，故意输入三个边界问题：超出产品范围、涉及退款承诺、需要专业判断。记录它是否主动说明限制、是否正确转人工、人工是否拿到完整上下文。一次真实演练，比十页原则更能暴露漏洞。</p>
+</div></section>
+
+<section id="module-7" class="module"><div class="module-header"><span class="module-num">⑦</span><div><div class="module-title">五栏分析</div><div class="module-subtitle">从规则到动作：把 AI 透明度压缩成五张运营决策卡</div></div></div><div class="content">
+<h3>① 发生了什么</h3>
+<p>欧盟 AI Act 第50条透明度义务自8月2日起适用；中国已经实施 AI 生成合成内容显式、隐式标识制度；市场监管部门正在整治 AI 虚拟人物推荐、误导性小字和不可靠引证。</p>
+<h3>② 为什么重要</h3>
+<p>AI 内容生产与用户触达开始从“能不能做”进入“谁负责、如何告知、怎样追溯”的阶段。第三方工具可以承包生成，不能替运营团队承包信任。</p>
+<h3>③ 对 Yara 的启发</h3>
+<p>课程内容、私域客服、宣传素材和虚拟人口播应共用一张 AI 使用台账；每个场景都要有身份说明、来源证据、审核责任人、人工接管和纠错路径。</p>
+<h3>④ 今天可采取的行动</h3>
+<p>完成一次60分钟“AI 透明度走查”：20分钟盘点对外 AI 触点，20分钟抽查10条素材的标识与授权，20分钟用三个边界问题测试客服转人工。只修最影响用户决策的一处，也比写一份空泛制度有效。</p>
+<h3>⑤ 风险与反证</h3>
+<p>本文是运营管理训练，不是针对具体业务或司法辖区的法律意见。欧盟不同义务存在不同适用日期与例外，中国标识办法也有明确适用主体与场景；上线跨境产品、未成年人教育服务或高风险用途前，应由专业人员结合实际流程确认。透明度也不是越多越好：提示过载会让用户忽略真正重要的风险，关键是显著、具体、贴近决策点。</p>
+
+<div class="highlight"><h4>来源审计 · 8 个官方/权威直接来源</h4><ol class="source-list">
+<li><a href="https://digital-strategy.ec.europa.eu/en/library/guidelines-transparency-obligations-providers-and-deployers-ai-systems" target="_blank" rel="noopener noreferrer">欧盟委员会：Article 50 透明度义务实施指南（2026-07-20）</a></li>
+<li><a href="https://digital-strategy.ec.europa.eu/en/factpages/quick-facts-transparency-rules-ai-systems" target="_blank" rel="noopener noreferrer">欧盟委员会：AI 透明度规则事实页（核验于 2026-08-04）</a></li>
+<li><a href="https://digital-strategy.ec.europa.eu/en/policies/code-practice-ai-generated-content" target="_blank" rel="noopener noreferrer">欧盟委员会：AI 生成内容透明度实践代码（核验于 2026-08-04）</a></li>
+<li><a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" target="_blank" rel="noopener noreferrer">欧盟委员会：AI Act 适用时间表（核验于 2026-08-04）</a></li>
+<li><a href="https://www.cac.gov.cn/2025-03/14/c_1743654684782215.htm" target="_blank" rel="noopener noreferrer">中国网信办等四部门：人工智能生成合成内容标识办法（2025-03-14）</a></li>
+<li><a href="https://www.samr.gov.cn/ggjgs/tzgg/art/2026/art_23fa8f1eaa5546af86528157fbc85db5.html" target="_blank" rel="noopener noreferrer">市场监管总局：强化广告中提示性用语监管通知（2026-03-13）</a></li>
+<li><a href="https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/ggjgs/art/2026/art_9d61919cfea14116b347a471bfc804ef.html" target="_blank" rel="noopener noreferrer">市场监管总局等六部门：广告产业高质量发展意见（2026-05-19）</a></li>
+<li><a href="https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence" target="_blank" rel="noopener noreferrer">NIST：Artificial Intelligence Risk Management Framework — Generative AI Profile（2024-07-26）</a></li>
+</ol></div>
+</div></section>
+
+<div class="back-link"><a href="index.html">← 返回日报首页</a></div>
+<div class="footer">
+<p>生存知识日报 · 2026-08-04 · 星期二</p>
+<p>内容基于 8 个可点击官方/权威来源整理 · 时效事实核验于 2026-08-04（Asia/Shanghai）</p>
+</div>
+
+</body>
+</html>

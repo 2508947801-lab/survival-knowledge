@@ -159,7 +159,7 @@ function save(){
 
 // ===== 云同步 =====
 function sbHeaders(extra){
-  const h = {'apikey':SB_KEY, 'Authorization':'Bearer '+SB_KEY, 'Content-Type':'application/json'};
+  const h = {'apikey':SB_KEY, 'Authorization':'Bearer '+SB_KEY, 'x-app-secret':SB_SECRET, 'Content-Type':'application/json'};
   for(const k in (extra||{})) h[k]=extra[k];
   return h;
 }
@@ -253,7 +253,7 @@ function taskHtml(t){
       (t.notes?'<div class="t-notes">'+escHtml(t.notes)+'</div>':'')+
       (t.target?'<span class="t-target">⏰ '+escHtml(t.target)+'</span>':'')+
     '</div>'+
-    '<button class="del" data-act="del" title="删除">×</button>'+
+    '<button class="del" data-act="del" data-yara-confirm="module" title="删除">×</button>'+
   '</li>';
 }
 

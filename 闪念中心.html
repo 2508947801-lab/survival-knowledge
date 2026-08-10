@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#eef1f8">
+  <title>闪念中心 · Yara</title>
+  <link id="yaraSystemTheme" rel="stylesheet" href="yara-system-theme.css?v=3.0">
+  <style>
+    :root{
+      --bg:#eef1f8;--card:rgba(255,255,255,.86);--ink:#20263a;--sub:#6e778f;--line:#dbe1ec;
+      --violet:#6956e8;--violet-soft:#eeeafd;--teal:#15958f;--amber:#cf7c22;--danger:#d9576c;
+      --shadow:0 18px 48px rgba(45,54,82,.10);--radius:22px;
+      --font:'Avenir Next','MiSans','HarmonyOS Sans SC','PingFang SC','Microsoft YaHei',sans-serif;
+    }
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;color:var(--ink);font-family:var(--font);background:radial-gradient(circle at 8% -5%,rgba(105,86,232,.14),transparent 30%),radial-gradient(circle at 100% 12%,rgba(21,149,143,.10),transparent 28%),var(--bg)}
+    button,input,textarea,select{font:inherit}button{cursor:pointer}.app{width:min(1180px,100%);margin:auto;padding:30px clamp(14px,3vw,30px) 80px}
+    .hero{position:relative;overflow:hidden;padding:34px clamp(22px,4vw,42px);border:1px solid rgba(255,255,255,.8);border-radius:28px;background:linear-gradient(135deg,rgba(255,255,255,.94),rgba(241,244,250,.83));box-shadow:var(--shadow)}
+    .hero:after{content:'✦';position:absolute;right:6%;top:3%;font-size:7rem;color:rgba(105,86,232,.08);transform:rotate(12deg)}
+    .kicker{display:flex;align-items:center;gap:9px;color:var(--violet);font-size:.78rem;font-weight:800;letter-spacing:.12em}.kicker i{display:grid;place-items:center;width:32px;height:32px;border-radius:11px;background:linear-gradient(135deg,var(--violet),#8877ef);color:#fff;font-style:normal;box-shadow:0 9px 20px rgba(105,86,232,.22)}
+    h1{margin:13px 0 8px;font-size:clamp(2rem,4vw,3.1rem);letter-spacing:-.055em}.hero p{max-width:660px;margin:0;color:var(--sub);line-height:1.75}.sync{display:inline-flex;align-items:center;gap:7px;margin-top:17px;padding:7px 11px;border-radius:99px;background:#edf8f6;color:#23766f;font-size:.72rem;font-weight:700}.sync:before{content:'';width:7px;height:7px;border-radius:50%;background:#34b6a9;box-shadow:0 0 0 4px rgba(52,182,169,.12)}.sync[data-state="error"]{background:#fff1f2;color:#b94b60}.sync[data-state="error"]:before{background:#e26177}
+    .layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,.8fr);gap:18px;margin-top:20px}.panel{border:1px solid rgba(255,255,255,.84);border-radius:var(--radius);background:var(--card);box-shadow:0 12px 35px rgba(48,58,88,.075);backdrop-filter:blur(20px)}
+    .capture{padding:22px}.panel-title{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:15px}.panel-title h2{margin:0;font-size:1.05rem;letter-spacing:-.02em}.panel-title p{margin:5px 0 0;color:var(--sub);font-size:.76rem}.capture textarea{width:100%;min-height:112px;resize:vertical;padding:16px;border:1px solid var(--line);border-radius:16px;outline:none;background:rgba(248,249,252,.9);color:var(--ink);line-height:1.7;transition:.2s}.capture textarea:focus,.capture input:focus,.capture select:focus{border-color:#a69bed;box-shadow:0 0 0 4px rgba(105,86,232,.08)}
+    .capture-meta{display:grid;grid-template-columns:minmax(0,1fr) 140px;gap:10px;margin-top:10px}.capture input,.capture select{width:100%;height:43px;padding:0 12px;border:1px solid var(--line);border-radius:12px;outline:none;background:#fff;color:var(--ink)}.capture-actions{display:flex;align-items:center;justify-content:flex-end;gap:9px;margin-top:13px}.btn{min-height:41px;padding:0 16px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--sub);font-weight:750}.btn.primary{border:0;color:#fff;background:linear-gradient(135deg,var(--violet),#8170ed);box-shadow:0 10px 22px rgba(105,86,232,.22)}.btn.subtle{background:var(--violet-soft);border-color:#ddd6fb;color:var(--violet)}.btn.danger{color:var(--danger)}#cancelEdit{display:none}
+    .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}.metric{padding:14px;border:1px solid #edf0f5;border-radius:15px;background:rgba(250,251,253,.84)}.metric strong{display:block;font-size:1.35rem}.metric span{display:block;margin-top:4px;color:var(--sub);font-size:.7rem}
+    .list-panel{padding:20px;margin-top:18px}.toolbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.search{flex:1;min-width:180px;height:41px;padding:0 13px;border:1px solid var(--line);border-radius:12px;background:#fff;outline:none}.filters{display:flex;gap:6px;flex-wrap:wrap}.filter{height:36px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--sub);font-size:.74rem;font-weight:700}.filter.active{color:var(--violet);border-color:#d7cff9;background:var(--violet-soft)}
+    .notes{display:grid;gap:10px;margin-top:16px}.note{padding:16px;border:1px solid #e6eaf1;border-radius:16px;background:#fff;transition:.2s}.note:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(52,61,90,.08)}.note.pinned{border-color:#d9d0fb;background:linear-gradient(135deg,#fff,#faf8ff)}.note-head{display:flex;align-items:center;gap:8px}.status{padding:4px 8px;border-radius:8px;background:#f2f4f8;color:var(--sub);font-size:.68rem;font-weight:800}.status.action{background:#e8f7f3;color:#147d75}.status.explore{background:#fff4df;color:#a66620}.status.archived{background:#edf0f4;color:#7e879a}.pin{margin-left:auto;color:#a68eda;font-size:.72rem}.note-content{margin:12px 0 10px;white-space:pre-wrap;line-height:1.72;font-size:.91rem}.tags{display:flex;gap:6px;flex-wrap:wrap}.tag{padding:4px 8px;border-radius:99px;background:#f1effc;color:#6f5bd3;font-size:.66rem}.note-foot{display:flex;align-items:center;gap:7px;margin-top:12px;padding-top:10px;border-top:1px solid #eff1f5}.note-time{margin-right:auto;color:#99a0b1;font-size:.66rem}.mini{height:30px;padding:0 9px;border:1px solid #e2e6ed;border-radius:9px;background:#fff;color:var(--sub);font-size:.68rem;font-weight:700}.empty{padding:45px 16px;text-align:center;color:var(--sub);border:1px dashed var(--line);border-radius:16px}.empty b{display:block;margin-bottom:7px;color:var(--ink)}
+    .summary-panel{position:sticky;top:18px;align-self:start;padding:20px}.range-tabs{display:flex;gap:6px;margin:13px 0}.range{flex:1;height:35px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--sub);font-size:.7rem;font-weight:750}.range.active{color:var(--violet);border-color:#d7cff9;background:var(--violet-soft)}.summary-empty{padding:30px 12px;text-align:center;color:var(--sub);font-size:.78rem;line-height:1.75;border:1px dashed var(--line);border-radius:14px}.summary-content h3{margin:5px 0 6px;font-size:1.05rem}.summary-meta{color:var(--sub);font-size:.68rem}.summary-block{margin-top:15px}.summary-block h4{margin:0 0 8px;font-size:.76rem;color:var(--violet)}.summary-block ul{margin:0;padding-left:1.1rem;color:#4d566d;font-size:.78rem;line-height:1.75}.summary-actions{display:flex;gap:8px;margin-top:16px}.summary-actions .btn{flex:1;padding:0 10px;font-size:.72rem}
+    @media(max-width:820px){.app{padding:12px 10px 70px}.hero{padding:25px 20px;border-radius:21px}.hero:after{font-size:4.5rem}.layout{grid-template-columns:1fr}.summary-panel{position:relative;top:auto}.metrics{grid-template-columns:repeat(2,1fr)}.capture-meta{grid-template-columns:1fr}.note:hover{transform:none}}
+    @media(max-width:430px){.panel-title{display:block}.capture-actions{display:grid;grid-template-columns:1fr 1fr}.capture-actions .primary{grid-column:1/-1}.note-foot{flex-wrap:wrap}.note-time{width:100%;margin:0}.mini{flex:1}.toolbar{display:grid}.search{width:100%}}
+  </style>
+</head>
+<body data-yara-module="flash">
+  <main class="app">
+    <header class="hero">
+      <div class="kicker"><i>✦</i><span>灵感管理 · IDEA INBOX</span></div>
+      <h1>闪念中心</h1>
+      <p>先捕捉，再判断。把突然冒出的想法留在这里，定期整理成主题、机会和下一步行动。</p>
+      <div class="sync" id="syncState" data-state="local">本机数据已就绪</div>
+    </header>
+
+    <div class="layout">
+      <div>
+        <section class="panel capture" id="capture">
+          <div class="panel-title"><div><h2 id="captureTitle">记下一条闪念</h2><p>不要求完整，先保住它最初的火花。</p></div><span id="editingHint"></span></div>
+          <textarea id="ideaInput" maxlength="1200" placeholder="刚刚想到什么？它可能解决谁的什么问题？"></textarea>
+          <div class="capture-meta">
+            <input id="tagInput" maxlength="100" placeholder="标签，用空格或逗号分隔（可选）">
+            <select id="statusInput" aria-label="闪念状态"><option value="spark">刚刚想到</option><option value="explore">值得探索</option><option value="action">准备行动</option><option value="archived">暂时收起</option></select>
+          </div>
+          <div class="capture-actions"><button class="btn" id="cancelEdit" type="button">取消编辑</button><button class="btn subtle" id="clearInput" type="button">清空</button><button class="btn primary" id="saveIdea" type="button">✦ 收下这条闪念</button></div>
+          <div class="metrics" id="metrics"></div>
+        </section>
+
+        <section class="panel list-panel">
+          <div class="panel-title"><div><h2>我的闪念</h2><p>从灵感池里挑出值得验证的下一步。</p></div></div>
+          <div class="toolbar">
+            <input class="search" id="searchInput" type="search" placeholder="搜索内容或标签…">
+            <div class="filters" id="filters"><button class="filter active" data-filter="all">全部</button><button class="filter" data-filter="spark">刚想到</button><button class="filter" data-filter="explore">探索中</button><button class="filter" data-filter="action">可行动</button><button class="filter" data-filter="archived">已收起</button></div>
+          </div>
+          <div class="notes" id="notes"></div>
+        </section>
+      </div>
+
+      <aside class="panel summary-panel">
+        <div class="panel-title"><div><h2>定期整理</h2><p>看见反复出现的主题，也看见真正值得推进的事。</p></div></div>
+        <div class="range-tabs" id="rangeTabs"><button class="range active" data-days="7">近 7 天</button><button class="range" data-days="30">近 30 天</button><button class="range" data-days="0">全部</button></div>
+        <button class="btn primary" id="generateSummary" type="button" style="width:100%">生成本期总结与建议</button>
+        <div id="summaryRoot" style="margin-top:14px"></div>
+      </aside>
+    </div>
+  </main>
+
+  <script src="yara-runtime-config.js?v=1.0"></script>
+  <script src="yara-module-ui.js?v=1.0"></script>
+  <script>
+  (function(){
+    'use strict';
+    var KEY='yara_flash_notes_v1';
+    var SB_ROW='flash-notes-v1';
+    var config=window.YaraRuntimeConfig?YaraRuntimeConfig.supabase():{url:'',anonKey:'',appSecret:'',ready:false};
+    var state=load();
+    var editingId='';
+    var activeFilter='all';
+    var activeDays=7;
+    var cloudTimer=0;
+    var pollTimer=0;
+    var statusNames={spark:'刚刚想到',explore:'值得探索',action:'准备行动',archived:'暂时收起'};
+
+    function blank(){return{version:1,notes:[],summaries:[],deletedIds:[],deletedSummaryIds:[],updatedAt:''};}
+    function normalize(raw){
+      var next=raw&&typeof raw==='object'?raw:blank();
+      next.version=1;next.notes=Array.isArray(next.notes)?next.notes:[];next.summaries=Array.isArray(next.summaries)?next.summaries:[];next.deletedIds=Array.isArray(next.deletedIds)?next.deletedIds:[];next.deletedSummaryIds=Array.isArray(next.deletedSummaryIds)?next.deletedSummaryIds:[];next.updatedAt=next.updatedAt||'';
+      return next;
+    }
+    function load(){try{return normalize(JSON.parse(localStorage.getItem(KEY)||'null'));}catch(error){return blank();}}
+    function uid(prefix){return prefix+'-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7);}
+    function nowIso(){return new Date().toISOString();}
+    function save(message){state.updatedAt=nowIso();localStorage.setItem(KEY,JSON.stringify(state));render();scheduleCloud();if(window.YaraBridge)YaraBridge.snapshot();if(message)YaraModuleUI.notify(message);}
+    function esc(value){return String(value==null?'':value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+    function parseTags(value){var seen={};return String(value||'').split(/[，,、\s]+/).map(function(x){return x.replace(/^#/,'').trim();}).filter(function(x){if(!x||seen[x])return false;seen[x]=true;return true;}).slice(0,8);}
+    function fmtDate(value){var d=new Date(value);if(isNaN(d.getTime()))return '';return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
+    function setSync(status,text){var el=document.getElementById('syncState');el.dataset.state=status;el.textContent=text;}
+
+    function validatePendingNote(raw){
+      if(!raw||typeof raw!=='object')return null;
+      var id=String(raw.id||'').trim();
+      var content=String(raw.content||'').trim();
+      var status=['spark','explore','action','archived'].indexOf(raw.status)>=0?raw.status:'spark';
+      if(!id||!content)return null;
+      var created=raw.createdAt||nowIso();
+      return{id:id,content:content,tags:parseTags((raw.tags||[]).join?raw.tags.join(' '):raw.tags),status:status,pinned:!!raw.pinned,createdAt:created,updatedAt:raw.updatedAt||created};
+    }
+    function loadPendingLocalFlashImport(){
+      var isLocal=location.protocol==='file:'||location.hostname==='127.0.0.1'||location.hostname==='localhost';
+      if(!isLocal)return;
+      var loader=document.createElement('script');
+      loader.src='private-data/'+'flash-pending-import.js?v='+Date.now();
+      loader.onload=function(){
+        var payload=window.YaraPendingFlashImport;
+        delete window.YaraPendingFlashImport;
+        loader.remove();
+        if(!payload||payload.kind!=='yara-flash-import'||!Array.isArray(payload.notes))return;
+        var existing={};state.notes.forEach(function(note){existing[note.id]=true;});
+        var deleted={};state.deletedIds.forEach(function(id){deleted[id]=true;});
+        var fresh=[];
+        payload.notes.forEach(function(raw){var note=validatePendingNote(raw);if(note&&!existing[note.id]&&!deleted[note.id]){existing[note.id]=true;fresh.push(note);}});
+        if(!fresh.length)return;
+        state.notes=fresh.concat(state.notes);
+        save('已从本机资料更新 '+fresh.length+' 条闪念');
+      };
+      loader.onerror=function(){loader.remove();};
+      document.head.appendChild(loader);
+    }
+
+    function resetForm(){editingId='';document.getElementById('ideaInput').value='';document.getElementById('tagInput').value='';document.getElementById('statusInput').value='spark';document.getElementById('captureTitle').textContent='记下一条闪念';document.getElementById('saveIdea').textContent='✦ 收下这条闪念';document.getElementById('cancelEdit').style.display='none';document.getElementById('editingHint').textContent='';}
+    function submit(){
+      var content=document.getElementById('ideaInput').value.trim();
+      if(!content){YaraModuleUI.notify('先写下一点想法再保存','warning');document.getElementById('ideaInput').focus();return;}
+      var at=nowIso();
+      if(editingId){var note=state.notes.find(function(item){return item.id===editingId;});if(note){note.content=content;note.tags=parseTags(document.getElementById('tagInput').value);note.status=document.getElementById('statusInput').value;note.updatedAt=at;}save('闪念已更新');}
+      else{state.notes.unshift({id:uid('flash'),content:content,tags:parseTags(document.getElementById('tagInput').value),status:document.getElementById('statusInput').value,pinned:false,createdAt:at,updatedAt:at});save('闪念已收好');}
+      resetForm();render();
+    }
+    function editNote(id){var note=state.notes.find(function(item){return item.id===id;});if(!note)return;editingId=id;document.getElementById('ideaInput').value=note.content;document.getElementById('tagInput').value=(note.tags||[]).join(' ');document.getElementById('statusInput').value=note.status||'spark';document.getElementById('captureTitle').textContent='编辑这条闪念';document.getElementById('saveIdea').textContent='保存修改';document.getElementById('cancelEdit').style.display='inline-flex';document.getElementById('editingHint').textContent='正在编辑';document.getElementById('capture').scrollIntoView({behavior:'smooth',block:'start'});document.getElementById('ideaInput').focus();setTimeout(function(){if(window.YaraBridge)YaraBridge.route('编辑闪念',4,{id:id});},180);}
+    function deleteNote(id,control){var note=state.notes.find(function(item){return item.id===id;});if(!note)return;YaraModuleUI.requestDelete(control,{title:'删除这条闪念？',message:'删除后会同步到其他设备，但不会影响其他记录。',confirmText:'确认删除'},function(){if(state.deletedIds.indexOf(id)<0)state.deletedIds.push(id);state.notes=state.notes.filter(function(item){return item.id!==id;});if(editingId===id)resetForm();save('闪念已删除');});}
+    function patchNote(id,patch,message){var note=state.notes.find(function(item){return item.id===id;});if(!note)return;Object.keys(patch).forEach(function(key){note[key]=patch[key];});note.updatedAt=nowIso();save(message);}
+
+    function filteredNotes(){var query=document.getElementById('searchInput').value.trim().toLowerCase();return state.notes.filter(function(note){if(activeFilter!=='all'&&note.status!==activeFilter)return false;var hay=(note.content+' '+(note.tags||[]).join(' ')).toLowerCase();return !query||hay.indexOf(query)>=0;}).sort(function(a,b){if(!!a.pinned!==!!b.pinned)return a.pinned?-1:1;return String(b.updatedAt||b.createdAt).localeCompare(String(a.updatedAt||a.createdAt));});}
+    function renderMetrics(){var actionable=state.notes.filter(function(n){return n.status==='action';}).length;var explore=state.notes.filter(function(n){return n.status==='explore';}).length;var summarized={};state.summaries.forEach(function(s){(s.noteIds||[]).forEach(function(id){summarized[id]=true;});});var waiting=state.notes.filter(function(n){return !summarized[n.id]&&n.status!=='archived';}).length;document.getElementById('metrics').innerHTML='<div class="metric"><strong>'+state.notes.length+'</strong><span>累计闪念</span></div><div class="metric"><strong>'+explore+'</strong><span>值得探索</span></div><div class="metric"><strong>'+actionable+'</strong><span>准备行动</span></div><div class="metric"><strong>'+waiting+'</strong><span>待整理</span></div>';}
+    function renderNotes(){var root=document.getElementById('notes');var rows=filteredNotes();if(!rows.length){root.innerHTML='<div class="empty"><b>这里暂时很安静</b>记录不用完整，哪怕只有一句话也可以。</div>';return;}root.innerHTML=rows.map(function(note){return '<article class="note'+(note.pinned?' pinned':'')+'" data-id="'+esc(note.id)+'"><div class="note-head"><span class="status '+esc(note.status)+'">'+esc(statusNames[note.status]||statusNames.spark)+'</span>'+(note.pinned?'<span class="pin">✦ 已置顶</span>':'')+'</div><div class="note-content">'+esc(note.content)+'</div><div class="tags">'+(note.tags||[]).map(function(tag){return '<span class="tag"># '+esc(tag)+'</span>';}).join('')+'</div><div class="note-foot"><span class="note-time">'+fmtDate(note.updatedAt||note.createdAt)+'</span><button class="mini" data-act="pin">'+(note.pinned?'取消置顶':'置顶')+'</button><button class="mini" data-act="advance">推进状态</button><button class="mini" data-act="edit">编辑</button><button class="mini" data-act="delete" data-yara-confirm="module">删除</button></div></article>';}).join('');}
+
+    var topics=[{name:'交付与工作',re:/交付|工作|课程|教务|学员|客户|退费|开课|项目|运营/},{name:'产品与系统',re:/产品|系统|功能|页面|工具|流程|自动化|数据|表格|开发/},{name:'学习与能力',re:/学习|英语|课程|能力|读书|知识|训练|练习/},{name:'职业发展',re:/职业|简历|岗位|面试|公司|薪资|绩效/},{name:'生活与体验',re:/生活|旅行|健康|情绪|家|朋友|吃|玩|体验/},{name:'财务与投资',re:/钱|财务|记账|基金|投资|预算|收入|支出/},{name:'AI 与创作',re:/AI|人工智能|智能体|内容|写作|创意|海报|设计/i}];
+    function notesInRange(){if(!activeDays)return state.notes.slice();var cutoff=Date.now()-activeDays*86400000;return state.notes.filter(function(note){return new Date(note.createdAt).getTime()>=cutoff;});}
+    function analyze(rows){var counts=topics.map(function(topic){var count=0;rows.forEach(function(note){if(topic.re.test(note.content))count+=1;});return{name:topic.name,count:count};}).filter(function(x){return x.count;}).sort(function(a,b){return b.count-a.count;});var tagCounts={};rows.forEach(function(note){(note.tags||[]).forEach(function(tag){tagCounts[tag]=(tagCounts[tag]||0)+1;});});var tags=Object.keys(tagCounts).map(function(tag){return{name:tag,count:tagCounts[tag]};}).sort(function(a,b){return b.count-a.count;}).slice(0,4);return{topics:counts.slice(0,3),tags:tags};}
+    function generateSummary(){var rows=notesInRange();if(!rows.length){YaraModuleUI.notify('当前时间范围还没有闪念','warning');return;}var analysis=analyze(rows);var actionCount=rows.filter(function(n){return n.status==='action';}).length;var exploreCount=rows.filter(function(n){return n.status==='explore';}).length;var sparkCount=rows.filter(function(n){return n.status==='spark';}).length;var top=analysis.topics.length?analysis.topics.map(function(x){return x.name;}).join('、'):(analysis.tags.length?analysis.tags.map(function(x){return'#'+x.name;}).join('、'):'尚未形成明显主题');var insights=['本期共捕捉 '+rows.length+' 条闪念，其中 '+exploreCount+' 条进入探索、'+actionCount+' 条准备行动。','反复出现的关注方向：'+top+'。'];if(sparkCount>Math.max(2,rows.length/2))insights.push('仍有 '+sparkCount+' 条停留在“刚刚想到”，说明灵感充足，但需要一次集中澄清。');if(analysis.tags.length)insights.push('高频自定义标签：'+analysis.tags.map(function(x){return'#'+x.name+' ×'+x.count;}).join('、')+'。');var candidates=rows.filter(function(n){return n.status!=='archived';}).sort(function(a,b){return Number(!!b.pinned)-Number(!!a.pinned)||String(b.updatedAt).localeCompare(String(a.updatedAt));});var suggestions=[];if(candidates[0])suggestions.push('优先验证「'+candidates[0].content.slice(0,34)+(candidates[0].content.length>34?'…':'')+'」：先写清目标对象、预期变化和一个 30 分钟可完成的最小动作。');if(analysis.topics[0]&&analysis.topics[0].count>=2)suggestions.push('把“'+analysis.topics[0].name+'”相关闪念合并成一张主题卡，区分事实、假设和下一步实验，避免想法重复堆积。');if(sparkCount)suggestions.push('从 '+sparkCount+' 条未澄清闪念中只挑 1 条推进，其余暂存；本期重点是形成证据，不是一次做完所有想法。');if(!suggestions.length)suggestions.push('本期闪念已经比较清晰，选择一条标记为“准备行动”，补上时间节点和完成标准。');var at=nowIso();state.summaries.unshift({id:uid('summary'),rangeDays:activeDays,createdAt:at,noteIds:rows.map(function(n){return n.id;}),headline:top,insights:insights,suggestions:suggestions});state.summaries=state.summaries.slice(0,24);save('本期总结已生成');renderSummary();setTimeout(function(){if(window.YaraBridge)YaraBridge.route('闪念总结 · '+(activeDays?activeDays+'天':'全部'),4,{range:activeDays});},180);}
+    function currentSummary(){return state.summaries.find(function(summary){return Number(summary.rangeDays)===Number(activeDays);})||state.summaries[0]||null;}
+    function summaryText(summary){if(!summary)return'';return '闪念总结｜'+fmtDate(summary.createdAt)+'\n\n观察\n- '+(summary.insights||[]).join('\n- ')+'\n\n建议\n- '+(summary.suggestions||[]).join('\n- ');}
+    function renderSummary(){var root=document.getElementById('summaryRoot');var summary=currentSummary();if(!summary){root.innerHTML='<div class="summary-empty">积累几条闪念后生成总结，我会帮你找出高频主题、待验证假设和更具体的下一步。</div>';return;}root.innerHTML='<div class="summary-content"><div class="summary-meta">'+fmtDate(summary.createdAt)+' · '+(summary.rangeDays?summary.rangeDays+' 天':'全部记录')+'</div><h3>'+esc(summary.headline)+'</h3><div class="summary-block"><h4>本期观察</h4><ul>'+(summary.insights||[]).map(function(x){return'<li>'+esc(x)+'</li>';}).join('')+'</ul></div><div class="summary-block"><h4>改进与建议</h4><ul>'+(summary.suggestions||[]).map(function(x){return'<li>'+esc(x)+'</li>';}).join('')+'</ul></div><div class="summary-actions"><button class="btn" id="copySummary" type="button">复制总结</button><button class="btn subtle" id="exportSummary" type="button">导出 Markdown</button><button class="btn danger" id="deleteSummary" data-yara-confirm="module" type="button">删除本期</button></div></div>';}
+    function render(){renderMetrics();renderNotes();renderSummary();}
+
+    function headers(extra){var h={'apikey':config.anonKey,'Authorization':'Bearer '+config.anonKey,'Content-Type':'application/json'};if(config.appSecret)h['x-app-secret']=config.appSecret;Object.keys(extra||{}).forEach(function(k){h[k]=extra[k];});return h;}
+    function mergeStates(local,remote){local=normalize(local);remote=normalize(remote);var deleted=Array.from(new Set(local.deletedIds.concat(remote.deletedIds)));var deletedSummaries=Array.from(new Set(local.deletedSummaryIds.concat(remote.deletedSummaryIds)));var map={};local.notes.concat(remote.notes).forEach(function(note){if(deleted.indexOf(note.id)>=0)return;var old=map[note.id];if(!old||String(note.updatedAt||note.createdAt)>String(old.updatedAt||old.createdAt))map[note.id]=note;});var summaries={};local.summaries.concat(remote.summaries).forEach(function(item){if(deletedSummaries.indexOf(item.id)>=0)return;if(!summaries[item.id]||String(item.createdAt)>String(summaries[item.id].createdAt))summaries[item.id]=item;});return normalize({version:1,notes:Object.keys(map).map(function(id){return map[id];}),summaries:Object.keys(summaries).map(function(id){return summaries[id];}).sort(function(a,b){return String(b.createdAt).localeCompare(String(a.createdAt));}).slice(0,24),deletedIds:deleted,deletedSummaryIds:deletedSummaries,updatedAt:String(local.updatedAt)>String(remote.updatedAt)?local.updatedAt:remote.updatedAt});}
+    function cloudLoad(){if(!config.ready)return Promise.resolve(null);return fetch(config.url+'/rest/v1/yara_todo?id=eq.'+SB_ROW+'&select=data,updated_at',{headers:headers()}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(function(rows){return rows&&rows[0]?rows[0]:null;}).catch(function(){setSync('error','云同步暂时不可用 · 本机记录仍安全');return null;});}
+    function cloudSave(){if(!config.ready)return Promise.resolve(false);var iso=nowIso();return fetch(config.url+'/rest/v1/yara_todo',{method:'POST',headers:headers({'Prefer':'resolution=merge-duplicates'}),body:JSON.stringify({id:SB_ROW,data:state,updated_at:iso})}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);setSync('online','已同步 · Web 与手机共用闪念');return true;}).catch(function(){setSync('error','同步失败 · 已保存在当前设备');return false;});}
+    function scheduleCloud(){clearTimeout(cloudTimer);cloudTimer=setTimeout(cloudSave,700);}
+    function syncCloud(){cloudLoad().then(function(row){if(!row||!row.data){cloudSave();return;}var remote=normalize(row.data);var merged=mergeStates(state,remote);var needsPush=JSON.stringify(merged)!==JSON.stringify(remote);state=merged;localStorage.setItem(KEY,JSON.stringify(state));render();setSync('online','已同步 · Web 与手机共用闪念');if(needsPush)cloudSave();});}
+    function initCloud(){if(!config.ready){setSync('local','仅保存在此设备 · 配置后可跨设备同步');return;}setSync('loading','正在连接云同步…');syncCloud();pollTimer=setInterval(syncCloud,8000);window.addEventListener('focus',syncCloud);document.addEventListener('visibilitychange',function(){if(!document.hidden)syncCloud();});}
+
+    document.getElementById('saveIdea').addEventListener('click',submit);document.getElementById('clearInput').addEventListener('click',resetForm);document.getElementById('cancelEdit').addEventListener('click',resetForm);document.getElementById('ideaInput').addEventListener('keydown',function(e){if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){e.preventDefault();submit();}});document.getElementById('searchInput').addEventListener('input',renderNotes);
+    document.getElementById('filters').addEventListener('click',function(e){var btn=e.target.closest('[data-filter]');if(!btn)return;activeFilter=btn.dataset.filter;this.querySelectorAll('.filter').forEach(function(x){x.classList.toggle('active',x===btn);});renderNotes();});
+    document.getElementById('notes').addEventListener('click',function(e){var btn=e.target.closest('[data-act]');var note=e.target.closest('.note');if(!btn||!note)return;var id=note.dataset.id;if(btn.dataset.act==='edit')editNote(id);if(btn.dataset.act==='delete')deleteNote(id,btn);if(btn.dataset.act==='pin'){var row=state.notes.find(function(n){return n.id===id;});patchNote(id,{pinned:!row.pinned},row.pinned?'已取消置顶':'闪念已置顶');}if(btn.dataset.act==='advance'){var row2=state.notes.find(function(n){return n.id===id;});var order=['spark','explore','action','archived'];var next=order[(order.indexOf(row2.status)+1)%order.length];patchNote(id,{status:next},'已推进为“'+statusNames[next]+'”');}});
+    document.getElementById('rangeTabs').addEventListener('click',function(e){var btn=e.target.closest('[data-days]');if(!btn)return;activeDays=Number(btn.dataset.days);this.querySelectorAll('.range').forEach(function(x){x.classList.toggle('active',x===btn);});renderSummary();});document.getElementById('generateSummary').addEventListener('click',generateSummary);
+    document.getElementById('summaryRoot').addEventListener('click',function(e){var summary=currentSummary();if(!summary)return;if(e.target.id==='copySummary'){var text=summaryText(summary);if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(function(){YaraModuleUI.notify('总结已复制');});else YaraModuleUI.notify('当前浏览器不支持直接复制','warning');}if(e.target.id==='exportSummary'){var blob=new Blob([summaryText(summary)],{type:'text/markdown;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='闪念总结_'+new Date().toISOString().slice(0,10)+'.md';a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},1000);YaraModuleUI.notify('总结已导出');}if(e.target.id==='deleteSummary'){YaraModuleUI.requestDelete(e.target,{title:'删除本期总结？',message:'只删除这份总结，不会删除参与整理的闪念。',confirmText:'确认删除'},function(){if(state.deletedSummaryIds.indexOf(summary.id)<0)state.deletedSummaryIds.push(summary.id);state.summaries=state.summaries.filter(function(item){return item.id!==summary.id;});save('本期总结已删除');});}});
+    window.addEventListener('storage',function(e){if(e.key!==KEY)return;state=load();render();});
+    render();initCloud();loadPendingLocalFlashImport();
+  })();
+  </script>
+  <script id="yaraSystemBridge" src="yara-system-bridge.js?v=1.5"></script>
+</body>
+</html>
