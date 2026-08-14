@@ -4,8 +4,11 @@
  */
 
 :root{
-  --ys-font:"Avenir Next","MiSans","HarmonyOS Sans SC","Alibaba PuHuiTi 3","PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif;
-  --ys-mono:"SFMono-Regular","Cascadia Code","Roboto Mono",Menlo,Consolas,monospace;
+  --ys-font:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI Variable","Segoe UI","PingFang SC","Hiragino Sans GB","Noto Sans CJK SC","Microsoft YaHei UI","Microsoft YaHei",Arial,sans-serif;
+  --ys-font-display:var(--ys-font);
+  --ys-mono:var(--ys-font);
+  --ys-tracking-body:.005em;
+  --ys-tracking-heading:-.025em;
   --ys-primary:#6956e8;
   --ys-primary-strong:#5642d6;
   --ys-primary-soft:#eeeafd;
@@ -42,24 +45,34 @@ html[data-yara-theme]{
   scroll-behavior:smooth;
   background:var(--ys-bg);
 }
-html[data-yara-theme] body,
-html[data-yara-theme] button,
-html[data-yara-theme] input,
-html[data-yara-theme] select,
-html[data-yara-theme] textarea{
+html body,
+html body :where(*),
+html button,
+html input,
+html select,
+html textarea{
   font-family:var(--ys-font)!important;
   font-variant-numeric:tabular-nums;
 }
-html[data-yara-theme] code,
-html[data-yara-theme] pre,
-html[data-yara-theme] .mono,
-html[data-yara-theme] td.mono,
-html[data-yara-theme] th.mono{
+html code,
+html pre,
+html .mono,
+html td.mono,
+html th.mono{
   font-family:var(--ys-mono)!important;
 }
-html[data-yara-theme] body{
+html body{
   -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  font-kerning:normal;
+  font-optical-sizing:auto;
+  letter-spacing:var(--ys-tracking-body);
   text-rendering:optimizeLegibility;
+}
+html :where(h1,h2,h3,h4,h5,h6,.title,.heading,[class*="-title"],[class*="__title"]){
+  font-family:var(--ys-font-display)!important;
+  letter-spacing:var(--ys-tracking-heading);
+  text-wrap:balance;
 }
 html[data-yara-theme] ::selection{background:rgba(105,86,232,.2);color:var(--ys-ink);}
 html[data-yara-theme] *{scrollbar-width:thin;scrollbar-color:#bcc7d8 transparent;}

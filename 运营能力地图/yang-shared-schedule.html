@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>杨老师纠音与语聊联动课表</title>
+  <link rel="stylesheet" href="../yara-system-theme.css?v=3.2">
+  <link rel="stylesheet" href="../yara-deep-module.css?v=1.7">
+  <link rel="stylesheet" href="../yara-yang-shared-schedule.css?v=1.0">
+</head>
+<body data-yara-module="yang-shared-schedule">
+  <main class="shared-shell">
+    <header class="shared-heading">
+      <div>
+        <span class="shared-kicker">YANG · SHARED CLASS CONTROL</span>
+        <h1>杨老师纠音 / 语聊联动课表</h1>
+        <p>同一天参加共同课程的所有期班合并成一条。修改一次，关联课节在主课表、首页看板和手机端同时更新。</p>
+      </div>
+      <div class="shared-status">
+        <span class="status-chip" id="cloudChip" data-status="local">本机已保存</span>
+        <span class="status-chip" id="revisionChip">修订 —</span>
+      </div>
+    </header>
+
+    <section class="shared-summary" aria-label="联动课表摘要">
+      <article><span>共同课场次</span><strong id="statSessions">—</strong><small>按日期合并</small></article>
+      <article><span>关联期班</span><strong id="statPeriods">—</strong><small>实时读取主课表</small></article>
+      <article><span>关联课节</span><strong id="statLessons">—</strong><small>原子联动写入</small></article>
+      <article class="next-session"><span>下一场共同课</span><strong id="statNext">—</strong><small id="statNextName">暂无待上安排</small></article>
+    </section>
+
+    <section class="shared-workspace">
+      <div class="shared-toolbar">
+        <label class="toolbar-field toolbar-search"><span>搜索</span><input id="searchInput" type="search" placeholder="日期、课节、期班…"></label>
+        <label class="toolbar-field"><span>课型</span><select id="typeSelect"><option value="">全部</option><option value="纠音">纠音</option><option value="语聊">语聊</option></select></label>
+        <label class="toolbar-field"><span>范围</span><select id="rangeSelect"><option value="future">待上与今日</option><option value="all">全部场次</option><option value="past">已完成</option></select></label>
+        <div class="toolbar-actions">
+          <button class="shared-btn" id="undoButton" type="button">撤销上一步</button>
+          <button class="shared-btn" id="syncButton" type="button">立即同步</button>
+          <button class="shared-btn" id="exportButton" type="button">导出 XLSX</button>
+          <button class="shared-btn primary" id="importButton" type="button">导入 XLSX</button>
+          <input id="importInput" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+        </div>
+      </div>
+
+      <div class="shared-notice">
+        <strong>联动边界</strong>
+        <span>只允许修改行课日期与开始时间；章节、课节名称、课节 ID 和作业 ID 保持原样。导入时以隐藏的稳定 ID 校验关联关系。</span>
+      </div>
+
+      <div class="shared-table-wrap">
+        <table class="shared-table">
+          <thead><tr><th>行课日期</th><th>开始时间</th><th>课型</th><th>共同课内容</th><th>关联期班</th><th>联动范围</th><th>状态</th><th>操作</th></tr></thead>
+          <tbody id="scheduleBody"></tbody>
+        </table>
+        <div class="shared-empty" id="emptyState" hidden>当前筛选没有共同课。</div>
+      </div>
+
+      <footer class="shared-footer">
+        <span id="sourceNote">数据源：语言事业部主课表</span>
+        <span>每次保存仅产生 1 个修订 · 支持撤销 · 自动同步云端</span>
+      </footer>
+    </section>
+  </main>
+
+  <div class="shared-toast" id="sharedToast" role="status" aria-live="polite"></div>
+
+  <script src="../交付教务管理系统/lib/xlsx.full.min.js"></script>
+  <script src="../yara-runtime-config.js?v=1.0"></script>
+  <script src="../yara-master-schedule-seed.js?v=1.1"></script>
+  <script src="../yara-master-schedule.js?v=1.1"></script>
+  <script src="../yara-module-ui.js?v=1.0"></script>
+  <script src="../yara-yang-shared-schedule.js?v=1.0"></script>
+  <script id="yaraSystemBridge" src="../yara-system-bridge.js?v=1.5"></script>
+</body>
+</html>

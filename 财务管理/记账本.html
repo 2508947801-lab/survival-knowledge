@@ -41,21 +41,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .sum-cell.bal .v{color:var(--primary);}
 .sum-cell.wk{background:var(--warning-l);} .sum-cell.wk .v{color:var(--warning);}
 
-/* private bank statement snapshot */
-.statement-card{display:none;overflow:hidden;position:relative;}
-.statement-card.ready{display:block;}
-.statement-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;}
-.statement-bank{display:flex;align-items:center;gap:9px;min-width:0;}
-.statement-logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#dc2626,#fb7185);color:#fff;display:grid;place-items:center;font-weight:900;box-shadow:0 8px 18px rgba(220,38,38,.18);}
-.statement-bank strong{display:block;font-size:.9rem;}
-.statement-bank span,.statement-period{display:block;color:var(--sub);font-size:.7rem;line-height:1.45;}
-.statement-period{text-align:right;white-space:nowrap;}
-.statement-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
-.statement-cell{padding:11px 9px;border-radius:12px;background:#f8fafc;border:1px solid #edf2f7;}
-.statement-cell .v{font-size:1rem;font-weight:850;line-height:1.3;}
-.statement-cell .k{font-size:.66rem;color:var(--sub);margin-top:3px;}
-.statement-cell.inc .v{color:var(--income);}.statement-cell.exp .v{color:var(--expense);}.statement-cell.net .v{color:var(--warning);}
-.statement-note{margin-top:10px;padding:8px 10px;border-radius:10px;background:var(--warning-l);color:#92400e;font-size:.69rem;line-height:1.55;}
+/* annual money overview + coach */
+.annual-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;}
+.annual-title{display:flex;align-items:center;gap:9px;min-width:0;}
+.annual-logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#0f766e,#34d399);color:#fff;display:grid;place-items:center;font-weight:900;box-shadow:0 8px 18px rgba(5,150,105,.18);}
+.annual-title strong{display:block;font-size:.9rem;}.annual-title span,.annual-scope{display:block;color:var(--sub);font-size:.7rem;line-height:1.45}.annual-scope{text-align:right}
+.annual-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.annual-cell{padding:11px 9px;border-radius:12px;background:#f8fafc;border:1px solid #edf2f7}.annual-cell .v{font-size:1rem;font-weight:850;line-height:1.3}.annual-cell .k{font-size:.66rem;color:var(--sub);margin-top:3px}.annual-cell.inc .v{color:var(--income)}.annual-cell.exp .v{color:var(--expense)}.annual-cell.net .v{color:var(--warning)}
+.money-diagnosis{margin-top:11px;padding:10px 12px;border-radius:11px;background:var(--primary-l);color:#16665e;font-size:.75rem;line-height:1.65}.money-diagnosis.danger{background:var(--expense-l);color:#9f1239}.money-diagnosis.warn{background:var(--warning-l);color:#92400e}
+.coach-status{display:flex;align-items:center;gap:10px;padding:12px;border-radius:12px;background:#f8fafc;border:1px solid var(--border)}.coach-dot{width:12px;height:12px;border-radius:50%;background:var(--income);box-shadow:0 0 0 5px rgba(22,163,74,.10)}.coach-status.warn .coach-dot{background:var(--warning);box-shadow:0 0 0 5px rgba(217,119,6,.11)}.coach-status.danger .coach-dot{background:var(--expense);box-shadow:0 0 0 5px rgba(225,29,72,.11)}.coach-status strong{display:block;font-size:.86rem}.coach-status span{display:block;color:var(--sub);font-size:.7rem;margin-top:1px}.coach-advice{margin:11px 0 0;padding-left:1.1rem;color:#475569;font-size:.75rem;line-height:1.75}.plan-row{display:flex;align-items:end;gap:9px;margin-top:12px;padding-top:11px;border-top:1px dashed var(--border)}.plan-row label{flex:1;color:var(--sub);font-size:.68rem}.plan-row input{display:block;width:100%;margin-top:3px;border:1px solid var(--border);border-radius:8px;padding:7px 9px}.plan-row button{border:0;border-radius:9px;background:var(--primary);color:#fff;padding:8px 12px;font-weight:700}
+.deposit-summary{font-size:.75rem;color:var(--sub);margin-bottom:9px}.deposit-item{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:9px;align-items:center;padding:10px 4px;border-bottom:1px solid #f1f5f9}.deposit-item:last-child{border-bottom:0}.deposit-item strong{display:block;font-size:.84rem}.deposit-item span{display:block;color:var(--sub);font-size:.68rem;margin-top:2px}.deposit-value{text-align:right;font-size:.78rem;font-weight:800;color:var(--primary)}.deposit-actions{display:flex;gap:4px}.deposit-actions button{width:28px;height:28px;border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--sub)}
+
+/* immutable source archive */
+.source-policy{padding:10px 12px;border-radius:11px;background:linear-gradient(135deg,#ecfdf5,#f8fafc);border:1px solid rgba(5,150,105,.14);font-size:.72rem;color:#16665e;line-height:1.65;margin-bottom:10px}.source-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.source-item{padding:11px;border:1px solid var(--border);border-radius:12px;background:#fff}.source-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.source-head strong{font-size:.84rem}.source-head span{font-size:.64rem;color:var(--sub);text-align:right}.source-file{margin:5px 0 8px;color:var(--sub);font-size:.67rem;word-break:break-all}.source-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.source-stat{padding:6px 4px;border-radius:8px;background:#f8fafc;text-align:center}.source-stat b{display:block;font-size:.72rem}.source-stat small{display:block;font-size:.58rem;color:var(--sub);margin-top:1px}.source-check{margin-top:7px;padding-top:6px;border-top:1px dashed var(--border);font-size:.61rem;color:#94a3b8;word-break:break-all}.source-empty{font-size:.76rem;color:var(--sub)}
 
 /* budget */
 .bud-row{margin-bottom:9px;}
@@ -141,15 +138,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 
 @media(max-width:560px){
   .sum-grid{grid-template-columns:repeat(2,1fr);}
-  .statement-grid{grid-template-columns:1fr;}
-  .statement-cell{display:flex;align-items:center;justify-content:space-between;}
-  .statement-cell .k{margin-top:0;order:-1;}
+  .annual-grid{grid-template-columns:repeat(2,1fr)}
+  .plan-row{align-items:stretch;flex-direction:column}.deposit-item{grid-template-columns:minmax(0,1fr) auto}.deposit-actions{grid-column:1/-1;justify-content:flex-end}
   .goal-form{grid-template-columns:1fr;}
   .import-row{align-items:flex-start;}
   .import-copy span{max-width:220px;}
+  .source-grid{grid-template-columns:1fr}.source-stats{grid-template-columns:repeat(3,1fr)}
 }
 </style>
-<link id="yaraSystemTheme" rel="stylesheet" href="../yara-system-theme.css?v=3.0">
+<link id="yaraSystemTheme" rel="stylesheet" href="../yara-system-theme.css?v=3.2">
 <script src="../yara-runtime-config.js?v=1.0"></script>
 <script src="../yara-module-ui.js?v=1.0"></script>
 </head>
@@ -174,9 +171,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
     <div class="sum-grid" id="sumGrid"></div>
   </div>
 
-  <!-- 银行截图仅作为区间对账快照，不混入逐笔流水与月度统计 -->
-  <div class="card statement-card" id="statementCard" aria-live="polite">
-    <div id="statementBody"></div>
+  <!-- 年度总览：汇总截图直接进入年度口径，不伪装成单笔流水 -->
+  <div class="card" id="annualCard" aria-live="polite">
+    <div id="annualBody"></div>
+  </div>
+
+  <!-- 原始账单来源档案：只展示元数据；真实逐行来源保存在私密数据层 -->
+  <div class="card" id="sourceArchiveCard" aria-live="polite">
+    <div class="card-title">来源档案 <span style="font-weight:400;font-size:.68rem">原记录只读 · 分析口径另行派生</span></div>
+    <div id="sourceArchiveBody"></div>
+  </div>
+
+  <div class="card" id="moneyCoachCard">
+    <div class="card-title">资金管家 <span style="font-weight:400;font-size:.68rem">判断超支 · 规划结余 · 控制节奏</span></div>
+    <div id="moneyCoachBody"></div>
   </div>
 
   <!-- 预算 -->
@@ -201,22 +209,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
     <div class="chart-box sm"><canvas id="acctChart"></canvas></div>
   </div>
 
-  <!-- 投资追踪 -->
+  <!-- 定存规划；旧基金数据继续保留但不再展示 -->
   <div class="card">
-    <div class="card-title">投资追踪 <span style="font-weight:400;color:var(--sub);font-size:.7rem">市值计入总资产</span></div>
-    <div class="sum-grid" id="invSum"></div>
-    <div id="invList" style="margin-top:10px"></div>
+    <div class="card-title">定存规划 <span style="font-weight:400;color:var(--sub);font-size:.7rem">先保流动性，再安排到期梯队</span></div>
+    <div class="deposit-summary" id="depositSummary"></div>
+    <div id="depositList"></div>
     <div class="add-grid" style="margin-top:10px">
-      <div class="fld full"><label>投资名称（如：广发远见智选混合C）</label><input id="hName" type="text" maxlength="40" placeholder="基金 / 股票 / 理财名称"></div>
-      <div class="fld"><label>投入成本（元）</label><input id="hCost" type="number" step="0.01" min="0" placeholder="0.00"></div>
-      <div class="fld"><label>当前市值（元）</label><input id="hValue" type="number" step="0.01" min="0" placeholder="0.00"></div>
-      <div class="fld full"><label>备注（可选，如代码 / 仓位）</label><input id="hNote" type="text" maxlength="40" placeholder="如：016874"></div>
-      <button class="add-btn" id="hAddBtn">＋ 添加持仓</button>
+      <div class="fld full"><label>定存名称</label><input id="dName" type="text" maxlength="40" placeholder="如：招行 1 年期定存"></div>
+      <div class="fld"><label>本金（元）</label><input id="dPrincipal" type="number" step="0.01" min="0" placeholder="0.00"></div>
+      <div class="fld"><label>年利率（%）</label><input id="dRate" type="number" step="0.01" min="0" placeholder="以银行实际利率为准"></div>
+      <div class="fld"><label>起存日期</label><input id="dStart" type="date"></div>
+      <div class="fld"><label>期限（月）</label><input id="dMonths" type="number" min="1" max="120" placeholder="如 12"></div>
+      <button class="add-btn" id="depositSaveBtn">＋ 添加定存计划</button>
     </div>
-    <button class="add-btn" id="snapBtn" style="margin-top:9px;background:#0d9488">📍 记录今日市值</button>
-    <div class="card-title" style="margin-top:14px">市值走势</div>
-    <div class="chart-box sm" id="snapChartBox" style="display:none"><canvas id="snapChart"></canvas></div>
-    <div id="snapHint" style="font-size:.74rem;color:var(--sub);text-align:center;padding:14px 0">记录满 2 天后，这里会显示市值走势曲线 📈</div>
+    <div style="font-size:.68rem;color:var(--sub);margin-top:9px">利息为规划估算，不代表银行承诺收益；在应急备用金不足时，不建议锁定全部现金。</div>
   </div>
 
   <!-- 财务目标 -->
@@ -256,7 +262,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
     <div class="import-row">
       <div class="import-copy">
         <strong>批量导入流水</strong>
-        <span>使用 Yara 账本 JSON；固定交易 ID 自动跳过重复记录</span>
+        <span>使用 Yara 账本 JSON；稳定交易 ID 去重，来源字段只读留档</span>
       </div>
       <button class="import-btn" id="importLedgerBtn" type="button">选择文件</button>
       <input id="ledgerImportFile" type="file" accept=".json,application/json" hidden>
@@ -287,12 +293,15 @@ const DEFAULT_ACCOUNTS = ['支付宝','微信','银行卡','信用卡','美团�
 
 function defaultState(){
   return {
+    version: 2,
     transactions: [], deletedIds: [],
     categories: JSON.parse(JSON.stringify(DEFAULT_CATEGORIES)),
     accounts: DEFAULT_ACCOUNTS.slice(),
     budgets: {},
     goal: { targetAmount:0, targetYear:0, currentSavings:0 },
-    holdings: [], snapshots: []
+    holdings: [], snapshots: [],
+    yearSummaries: [], deposits: [], sourceRecords: [], sourceImports: [],
+    financialPlan: { targetSavingsRate:20, emergencyMonths:6, updatedAt:'' }
   };
 }
 
@@ -327,6 +336,7 @@ function load(){
   return normalize(s);
 }
 function normalize(s){
+  s.version=2;
   if(!s.transactions) s.transactions=[];
   if(!s.deletedIds) s.deletedIds=[];
   if(!s.categories) s.categories=JSON.parse(JSON.stringify(DEFAULT_CATEGORIES));
@@ -337,39 +347,48 @@ function normalize(s){
   if(!s.goal) s.goal={targetAmount:0,targetYear:0,currentSavings:0};
   if(!s.holdings) s.holdings=[];
   if(!s.snapshots) s.snapshots=[];
+  if(!s.yearSummaries) s.yearSummaries=[];
+  if(!s.deposits) s.deposits=[];
+  if(!s.sourceRecords) s.sourceRecords=[];
+  if(!s.sourceImports) s.sourceImports=[];
+  if(!s.financialPlan) s.financialPlan={targetSavingsRate:20,emergencyMonths:6,updatedAt:''};
+  if(!Number.isFinite(Number(s.financialPlan.targetSavingsRate))) s.financialPlan.targetSavingsRate=20;
+  if(!Number.isFinite(Number(s.financialPlan.emergencyMonths))) s.financialPlan.emergencyMonths=6;
   return s;
 }
 function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); scheduleCloudSave(); }
 
-// ===== 本机私密银行对账快照 =====
-// 截图中的区间累计金额不是逐笔流水，因此只做参考展示，不写入 yara_ledger_v1，
-// 避免污染月度收支、预算、趋势图以及跨端合并语义。
-function loadPrivateStatementSummaries(){
+// ===== 本机私密年度汇总导入 =====
+// 汇总截图进入 yearSummaries，不伪装成交易流水；因此年度视图可用，月度口径不被污染。
+function loadPendingLocalYearSummary(){
   const isLocal=location.protocol==='file:' || location.hostname==='127.0.0.1' || location.hostname==='localhost';
   if(!isLocal) return;
   const loader=document.createElement('script');
-  loader.src='../private-data/'+'ledger-statement-summaries.js?v='+Date.now();
+  loader.src='../private-data/'+'ledger-year-pending-import.js?v='+Date.now();
   loader.onload=function(){
-    const rows=Array.isArray(window.YaraPrivateLedgerStatements)?window.YaraPrivateLedgerStatements:[];
-    delete window.YaraPrivateLedgerStatements;
-    renderStatementSummary(rows);
+    const payload=window.YaraPendingLedgerYearImport;
+    delete window.YaraPendingLedgerYearImport;
     loader.remove();
+    if(!payload||payload.kind!=='yara-ledger-year-summary-import'||!Array.isArray(payload.yearSummaries)) return;
+    const deleted=new Set(state.deletedIds||[]), byId={};
+    state.yearSummaries.forEach(function(row){byId[row.id]=row;});
+    let changed=0;
+    payload.yearSummaries.forEach(function(raw){
+      const row=validateYearSummary(raw);if(!row||deleted.has(row.id))return;
+      if(!byId[row.id]||String(row.updatedAt)>String(byId[row.id].updatedAt||'')){byId[row.id]=row;changed++;}
+    });
+    if(!changed)return;
+    state.yearSummaries=Object.keys(byId).map(function(id){return byId[id];}).sort(function(a,b){return String(b.endDate).localeCompare(String(a.endDate));});
+    save();render();YaraModuleUI.notify('年度收支汇总已更新');
   };
   loader.onerror=function(){ loader.remove(); };
   document.head.appendChild(loader);
 }
-function renderStatementSummary(rows){
-  const card=document.getElementById('statementCard');
-  const body=document.getElementById('statementBody');
-  if(!card||!body||!rows.length) return;
-  const row=rows.slice().sort(function(a,b){return String(b.endDate||'').localeCompare(String(a.endDate||''));})[0];
-  const income=Math.round((Number(row.income)||0)*100)/100;
-  const expense=Math.round((Number(row.expense)||0)*100)/100;
-  const net=Math.round((Number(row.net!=null?row.net:income-expense)||0)*100)/100;
-  body.innerHTML='<div class="statement-head"><div class="statement-bank"><span class="statement-logo">招</span><div><strong>'+esc(row.bank||'招商银行')+' · '+esc(row.accountType||'银行卡')+'</strong><span>银行账单区间对账快照</span></div></div><div class="statement-period">'+esc(row.startDate||'')+'<br>至 '+esc(row.endDate||'')+'</div></div>'+ 
-    '<div class="statement-grid"><div class="statement-cell inc"><div class="v">'+money(income)+'</div><div class="k">区间收入</div></div><div class="statement-cell exp"><div class="v">'+money(expense)+'</div><div class="k">区间支出</div></div><div class="statement-cell net"><div class="v">'+(net>0?'+':'')+money(net)+'</div><div class="k">区间结余</div></div></div>'+ 
-    '<div class="statement-note">仅作对账参考，不计入月度流水。获得招行逐笔账单后，再按日期、分类和账户导入，避免重复计算。</div>';
-  card.classList.add('ready');
+function validateYearSummary(raw){
+  if(!raw||typeof raw!=='object')return null;
+  const id=String(raw.id||'').trim(),year=Number(raw.year),income=Math.round(Number(raw.income)*100)/100,expense=Math.round(Number(raw.expense)*100)/100;
+  if(!id||!year||!Number.isFinite(income)||!Number.isFinite(expense)||income<0||expense<0)return null;
+  return{id:id,year:year,startDate:String(raw.startDate||year+'-01-01').slice(0,10),endDate:String(raw.endDate||year+'-12-31').slice(0,10),account:String(raw.account||'全部账户'),income:income,expense:expense,note:String(raw.note||''),updatedAt:raw.updatedAt||new Date().toISOString()};
 }
 
 // ===== 云同步（合并式：流水按 id 取并集，避免多端/代记互相覆盖）=====
@@ -397,10 +416,23 @@ function scheduleCloudSave(){ if(saveTimer) clearTimeout(saveTimer); saveTimer=s
 function sig(s){
   return s.transactions.length+':'+s.transactions.map(function(t){return t.id;}).sort().join(',')
     + '|h:'+(s.holdings||[]).map(function(h){return h.id+':'+h.value;}).sort().join(',')
-    + '|s:'+(s.snapshots||[]).map(function(x){return x.id+':'+x.value;}).sort().join(',');
+    + '|s:'+(s.snapshots||[]).map(function(x){return x.id+':'+x.value;}).sort().join(',')
+    + '|y:'+(s.yearSummaries||[]).map(function(x){return x.id+':'+x.updatedAt;}).sort().join(',')
+    + '|d:'+(s.deposits||[]).map(function(x){return x.id+':'+x.updatedAt;}).sort().join(',')
+    + '|sr:'+(s.sourceRecords||[]).map(function(x){return x.id;}).sort().join(',')
+    + '|si:'+(s.sourceImports||[]).map(function(x){return x.id+':'+x.updatedAt+':'+x.checksum;}).sort().join(',')
+    + '|p:'+JSON.stringify(s.financialPlan||{});
 }
 function unionArr(a,b){ const set=new Set(a); (b||[]).forEach(function(x){ set.add(x); }); return Array.from(set); }
 function sortTx(){ state.transactions.sort(function(a,b){ return (b.date||'').localeCompare(a.date||'') || (b.created||0)-(a.created||0); }); }
+function mergeUpdatedRows(localRows,cloudRows,delSet){
+  const byId={};
+  (localRows||[]).concat(cloudRows||[]).forEach(function(row){
+    if(!row||!row.id||delSet.has(row.id))return;
+    if(!byId[row.id]||String(row.updatedAt||'')>String(byId[row.id].updatedAt||''))byId[row.id]=row;
+  });
+  return Object.keys(byId).map(function(id){return byId[id];});
+}
 
 function adoptCloud(row){
   const cloud=row.data;
@@ -423,6 +455,14 @@ function adoptCloud(row){
     state.snapshots.forEach(function(x){ sById[x.id]=x; });
     (cloud.snapshots||[]).forEach(function(x){ sById[x.id]=x; });
     state.snapshots=Object.keys(sById).map(function(k){ return sById[k]; }).filter(function(x){ return !delSet.has(x.id); }).sort(function(a,b){ return (a.date||'').localeCompare(b.date||''); });
+    state.yearSummaries=mergeUpdatedRows(state.yearSummaries,cloud.yearSummaries,delSet).sort(function(a,b){return String(b.endDate||'').localeCompare(String(a.endDate||''));});
+    state.deposits=mergeUpdatedRows(state.deposits,cloud.deposits,delSet).sort(function(a,b){return String(a.maturityDate||'').localeCompare(String(b.maturityDate||''));});
+    const sourceById={};
+    (state.sourceRecords||[]).forEach(function(row){if(row&&row.id)sourceById[row.id]=row;});
+    (cloud.sourceRecords||[]).forEach(function(row){if(row&&row.id&&!sourceById[row.id])sourceById[row.id]=row;});
+    state.sourceRecords=Object.keys(sourceById).map(function(id){return sourceById[id];});
+    state.sourceImports=mergeUpdatedRows(state.sourceImports,cloud.sourceImports,new Set()).sort(function(a,b){return String(b.periodEnd||'').localeCompare(String(a.periodEnd||''));});
+    if(cloud.financialPlan&&String(cloud.financialPlan.updatedAt||'')>String((state.financialPlan||{}).updatedAt||'')) state.financialPlan=cloud.financialPlan;
     if(cloud.categories){
       state.categories.expense=unionArr(state.categories.expense, cloud.categories.expense);
       state.categories.income=unionArr(state.categories.income, cloud.categories.income);
@@ -430,6 +470,7 @@ function adoptCloud(row){
     state.accounts=unionArr(state.accounts, cloud.accounts);
     state.budgets=Object.assign({}, state.budgets, cloud.budgets||{});
     if(cloud.goal && cloud.goal.targetAmount) state.goal=cloud.goal;
+    state.version=2;
     sortTx();
     if(!state.transactions.some(function(tx){ return String(tx.date||'').slice(0,7)===curMonth; })){
       curMonth=preferredLedgerMonth(state);
@@ -483,6 +524,18 @@ function validateImportTx(tx){
     created:Number(tx.created)||Date.now()
   });
 }
+function validateSourceRecord(raw){
+  if(!raw||typeof raw!=='object')return null;
+  const id=String(raw.id||'').trim(),platform=String(raw.platform||'').trim(),sourceImportId=String(raw.sourceImportId||'').trim();
+  if(!id||!platform||!sourceImportId||!raw.raw||typeof raw.raw!=='object')return null;
+  return Object.assign({},raw,{id:id,platform:platform,sourceImportId:sourceImportId,sourceRow:Number(raw.sourceRow)||0,immutableSource:true});
+}
+function validateSourceImport(raw){
+  if(!raw||typeof raw!=='object')return null;
+  const id=String(raw.id||'').trim(),checksum=String(raw.checksum||'').trim();
+  if(!id||!checksum||!Number.isFinite(Number(raw.rawRecordCount)))return null;
+  return Object.assign({},raw,{id:id,checksum:checksum,rawRecordCount:Number(raw.rawRecordCount)||0,immutableSource:true,updatedAt:raw.updatedAt||new Date().toISOString()});
+}
 function prepareLedgerImport(payload){
   if(!payload || payload.kind!=='yara-ledger-import' || !Array.isArray(payload.transactions)){
     throw new Error('这不是有效的 Yara 账本导入文件');
@@ -498,24 +551,46 @@ function prepareLedgerImport(payload){
   const existing=new Set(state.transactions.map(function(tx){ return tx.id; }));
   const deleted=new Set(state.deletedIds||[]);
   const fresh=valid.filter(function(tx){ return !existing.has(tx.id) && !deleted.has(tx.id); });
+  const sourceSeen=new Set(),validSourceRecords=[];let invalidSources=0;
+  (payload.sourceRecords||[]).forEach(function(raw){const row=validateSourceRecord(raw);if(!row||sourceSeen.has(row.id)){invalidSources++;return;}sourceSeen.add(row.id);validSourceRecords.push(row);});
+  const existingSources=new Set((state.sourceRecords||[]).map(function(row){return row.id;}));
+  const freshSourceRecords=validSourceRecords.filter(function(row){return !existingSources.has(row.id);});
+  const sourceImports=[];
+  (payload.sourceImports||[]).forEach(function(raw){const row=validateSourceImport(raw);if(row)sourceImports.push(row);else invalidSources++;});
+  const supersedeIds=Array.from(new Set((payload.supersedeIds||[]).map(function(id){return String(id||'').trim();}).filter(Boolean)));
+  const supersedeExisting=supersedeIds.filter(function(id){return existing.has(id);});
+  const importById={};(state.sourceImports||[]).forEach(function(row){importById[row.id]=row;});
+  const updatedSourceImports=sourceImports.filter(function(row){return !importById[row.id]||String(row.updatedAt)>String(importById[row.id].updatedAt||'');});
   return {
     valid:valid, fresh:fresh, invalid:invalid,
     duplicate:valid.length-fresh.length,
+    validSourceRecords:validSourceRecords,freshSourceRecords:freshSourceRecords,invalidSources:invalidSources,
+    sourceImports:sourceImports,updatedSourceImports:updatedSourceImports,
+    supersedeIds:supersedeIds,supersedeExisting:supersedeExisting,
     categories:payload.categories||{},
     accounts:Array.isArray(payload.accounts)?payload.accounts:[]
   };
 }
 function commitLedgerImport(batch){
-  if(!batch.fresh.length) return 0;
+  const hasChanges=batch.fresh.length||batch.freshSourceRecords.length||batch.updatedSourceImports.length||batch.supersedeExisting.length;
+  if(!hasChanges) return {transactions:0,sourceRecords:0,sourceImports:0,superseded:0};
   const currentMonthWasEmpty=!state.transactions.some(function(tx){ return String(tx.date||'').slice(0,7)===curMonth; });
+  const tombstones=new Set(state.deletedIds||[]);
+  batch.supersedeIds.forEach(function(id){tombstones.add(id);});
+  state.deletedIds=Array.from(tombstones);
+  if(batch.supersedeIds.length){const supersedeSet=new Set(batch.supersedeIds);state.transactions=state.transactions.filter(function(tx){return !supersedeSet.has(tx.id);});}
   batch.fresh.forEach(function(tx){ state.transactions.push(tx); });
+  batch.freshSourceRecords.forEach(function(row){state.sourceRecords.push(row);});
+  const importsById={};(state.sourceImports||[]).forEach(function(row){importsById[row.id]=row;});
+  batch.sourceImports.forEach(function(row){if(!importsById[row.id]||String(row.updatedAt)>String(importsById[row.id].updatedAt||''))importsById[row.id]=row;});
+  state.sourceImports=Object.keys(importsById).map(function(id){return importsById[id];}).sort(function(a,b){return String(b.periodEnd||'').localeCompare(String(a.periodEnd||''));});
   state.categories.expense=unionArr(state.categories.expense, batch.categories.expense||[]);
   state.categories.income=unionArr(state.categories.income, batch.categories.income||[]);
   state.accounts=unionArr(state.accounts, batch.accounts);
   sortTx();
   if(currentMonthWasEmpty) curMonth=preferredLedgerMonth(state);
   save(); render();
-  return batch.fresh.length;
+  return {transactions:batch.fresh.length,sourceRecords:batch.freshSourceRecords.length,sourceImports:batch.updatedSourceImports.length,superseded:batch.supersedeExisting.length};
 }
 function loadPendingLocalLedgerImport(){
   const isLocal=location.protocol==='file:' || location.hostname==='127.0.0.1' || location.hostname==='localhost';
@@ -525,12 +600,13 @@ function loadPendingLocalLedgerImport(){
   loader.onload=function(){
     const payload=window.YaraPendingLedgerImport;
     delete window.YaraPendingLedgerImport;
+    loader.remove();
     if(!payload) return;
     try{
       const batch=prepareLedgerImport(payload);
-      if(!batch.fresh.length) return;
-      const count=commitLedgerImport(batch);
-      YaraModuleUI.notify('本机账单已自动导入 '+count+' 条，重复记录已跳过');
+      if(!batch.fresh.length&&!batch.freshSourceRecords.length&&!batch.updatedSourceImports.length&&!batch.supersedeExisting.length)return;
+      const result=commitLedgerImport(batch);
+      YaraModuleUI.notify('账单已核验：新增 '+result.transactions+' 条会计流水、归档 '+result.sourceRecords+' 条原始记录'+(result.superseded?'，替换 '+result.superseded+' 条旧汇总':'') );
     }catch(error){
       YaraModuleUI.notify('本机账单自动导入失败，请改用“选择文件”导入','error');
     }
@@ -547,7 +623,38 @@ function delTx(id){
   }
 }
 
-// ===== 投资追踪 =====
+// ===== 定存规划（v2 增量字段；不改变旧 holdings / snapshots 语义） =====
+let editDepositId=null;
+function dateAddMonths(dateStr,months){
+  const d=new Date((dateStr||todayStr())+'T00:00:00');const day=d.getDate();d.setMonth(d.getMonth()+Number(months||0));if(d.getDate()<day)d.setDate(0);return fmtDate(d);
+}
+function depositInterest(row){return (Number(row.principal)||0)*(Number(row.rate)||0)/100*(Number(row.termMonths)||0)/12;}
+function saveDeposit(){
+  const wasEditing=!!editDepositId;
+  const name=document.getElementById('dName').value.trim();
+  const principal=Math.round((Number(document.getElementById('dPrincipal').value)||0)*100)/100;
+  const rate=Math.round((Number(document.getElementById('dRate').value)||0)*1000)/1000;
+  const startDate=document.getElementById('dStart').value||todayStr();
+  const termMonths=Math.round(Number(document.getElementById('dMonths').value)||0);
+  if(!name||principal<=0||rate<0||termMonths<1){YaraModuleUI.notify('请完整填写定存名称、本金、利率和期限','warning');return;}
+  const at=new Date().toISOString(),maturityDate=dateAddMonths(startDate,termMonths);
+  if(editDepositId){const row=state.deposits.find(function(x){return x.id===editDepositId;});if(row)Object.assign(row,{name:name,principal:principal,rate:rate,startDate:startDate,termMonths:termMonths,maturityDate:maturityDate,updatedAt:at});}
+  else state.deposits.push({id:'deposit-'+Date.now()+Math.random().toString(36).slice(2,6),name:name,principal:principal,rate:rate,startDate:startDate,termMonths:termMonths,maturityDate:maturityDate,createdAt:at,updatedAt:at});
+  clearDepositForm();save();render();YaraModuleUI.notify(wasEditing?'定存计划已更新':'定存计划已添加');
+}
+function clearDepositForm(){editDepositId=null;['dName','dPrincipal','dRate','dMonths'].forEach(function(id){const el=document.getElementById(id);if(el)el.value='';});const start=document.getElementById('dStart');if(start)start.value=todayStr();const btn=document.getElementById('depositSaveBtn');if(btn)btn.textContent='＋ 添加定存计划';}
+function editDeposit(id){const row=state.deposits.find(function(x){return x.id===id;});if(!row)return;editDepositId=id;document.getElementById('dName').value=row.name||'';document.getElementById('dPrincipal').value=row.principal||'';document.getElementById('dRate').value=row.rate||'';document.getElementById('dStart').value=row.startDate||todayStr();document.getElementById('dMonths').value=row.termMonths||'';document.getElementById('depositSaveBtn').textContent='✓ 保存定存修改';}
+function deleteDeposit(id,control){const row=state.deposits.find(function(x){return x.id===id;});if(!row)return;YaraModuleUI.requestDelete(control,{title:'删除这条定存计划？',message:'删除后会同步到其他设备，但不会生成或删除任何真实银行交易。',confirmText:'确认删除'},function(){if(state.deletedIds.indexOf(id)<0)state.deletedIds.push(id);state.deposits=state.deposits.filter(function(x){return x.id!==id;});if(editDepositId===id)clearDepositForm();save();render();YaraModuleUI.notify('定存计划已删除');});}
+function renderDeposits(){
+  const rows=(state.deposits||[]).slice().sort(function(a,b){return String(a.maturityDate||'').localeCompare(String(b.maturityDate||''));});
+  const principal=rows.reduce(function(total,row){return total+(Number(row.principal)||0);},0),interest=rows.reduce(function(total,row){return total+depositInterest(row);},0);
+  document.getElementById('depositSummary').textContent=rows.length?'共 '+rows.length+' 笔计划 · 本金 '+money(principal)+' · 预计利息 '+money(interest):'还没有定存计划。建议先确认应急资金，再用分批到期的方式安排闲置现金。';
+  const box=document.getElementById('depositList');
+  if(!rows.length){box.innerHTML='';return;}
+  box.innerHTML=rows.map(function(row){const interest=depositInterest(row);return'<div class="deposit-item" data-id="'+esc(row.id)+'"><div><strong>'+esc(row.name)+'</strong><span>'+esc(row.startDate)+' → '+esc(row.maturityDate)+' · '+Number(row.termMonths)+'个月 · 年利率 '+Number(row.rate).toFixed(2)+'%</span></div><div class="deposit-value">本金 '+money(row.principal)+'<br>预计到期 '+money(Number(row.principal)+interest)+'</div><div class="deposit-actions"><button data-act="dedit" title="编辑">✎</button><button data-act="ddel" data-yara-confirm="module" title="删除">×</button></div></div>';}).join('');
+}
+
+// ===== 历史投资兼容逻辑（界面已退场，旧数据不删除） =====
 let editHoldingId = null;
 function totalCost(){ return state.holdings.reduce(function(a,h){ return a+(h.cost||0); },0); }
 function totalValue(){ return state.holdings.reduce(function(a,h){ return a+(h.value||0); },0); }
@@ -636,14 +743,64 @@ function render(){
     '<div class="sum-cell exp"><div class="v">'+money(exp)+'</div><div class="k">本月支出</div></div>'+
     '<div class="sum-cell bal"><div class="v">'+money(inc-exp)+'</div><div class="k">本月结余</div></div>'+
     '<div class="sum-cell wk"><div class="v">'+money(weekExpense())+'</div><div class="k">本周支出</div></div>';
+  renderAnnualOverview();
+  renderSourceArchive();
+  renderMoneyCoach(list,inc,exp);
   renderBudget(list, exp);
   renderGoal();
-  renderInvest();
-  renderInvestChart();
+  renderDeposits();
   renderFormOptions();
   renderTxList();
   renderSettings();
   renderCharts();
+}
+
+function renderSourceArchive(){
+  const box=document.getElementById('sourceArchiveBody');
+  const rows=(state.sourceImports||[]).slice().sort(function(a,b){return String(b.periodEnd||'').localeCompare(String(a.periodEnd||''));});
+  if(!rows.length){box.innerHTML='<div class="source-empty">还没有账单来源档案。导入支付宝、微信或银行卡明细后，这里会显示文件范围、记录数和校验值。</div>';return;}
+  const rawCount=(state.sourceRecords||[]).length;
+  box.innerHTML='<div class="source-policy">已留存 '+rawCount+' 条逐行来源记录。原始字段、交易单号和来源文件校验值只读保存；关闭交易与不计收支不进入消费，退款仅在能对应到已计支出的原交易时用于冲减，所有分析结果都与原记录分层。</div><div class="source-grid">'+rows.map(function(row){
+    const period=esc(row.periodStart||'')+' — '+esc(row.periodEnd||'');
+    const accounting=row.accountingView||{};
+    const accountingHint=accounting.transactionCount!=null?'会计视图 '+accounting.transactionCount+' 条；来源净额与账单汇总一致。':'';
+    return '<div class="source-item"><div class="source-head"><strong>'+esc(row.displayName||row.platform||'来源账单')+'</strong><span>'+period+'</span></div><div class="source-file">'+esc(row.sourceFile||'')+'</div><div class="source-stats"><div class="source-stat"><b>'+Number(row.rawRecordCount||0)+'</b><small>原始记录</small></div><div class="source-stat"><b>'+Number(row.incomeCount||0)+' / '+money(Number(row.incomeAmount)||0)+'</b><small>来源收入</small></div><div class="source-stat"><b>'+Number(row.expenseCount||0)+' / '+money(Number(row.expenseAmount)||0)+'</b><small>来源支出</small></div></div><div class="source-check">'+esc(accountingHint)+'<br>'+esc(row.checksumAlgorithm||'SHA-256')+' '+esc(String(row.checksum||'').slice(0,16))+'…</div></div>';
+  }).join('')+'</div>';
+}
+
+function annualSource(year){
+  const rows=(state.yearSummaries||[]).filter(function(row){return Number(row.year)===Number(year);}).sort(function(a,b){return String(b.endDate||'').localeCompare(String(a.endDate||''));});
+  if(rows.length)return Object.assign({isSummary:true},rows[0]);
+  const list=state.transactions.filter(function(tx){return String(tx.date||'').slice(0,4)===String(year);});
+  return{year:Number(year),startDate:year+'-01-01',endDate:todayStr(),account:'已录入全部流水',income:sumBy(list,'income'),expense:sumBy(list,'expense'),isSummary:false,note:''};
+}
+function renderAnnualOverview(){
+  const year=Number(curMonth.slice(0,4));
+  const row=annualSource(year),income=Number(row.income)||0,expense=Number(row.expense)||0,net=income-expense,spendRate=income?expense/income*100:0;
+  let level='';let diagnosis='本年度尚无足够数据，先补充收入与支出明细，再做资金判断。';
+  if(income>0&&net<0){level='danger';diagnosis='年度支出已经超过收入 '+money(Math.abs(net))+' 元，支出/收入比为 '+spendRate.toFixed(1)+'%。当前第一目标不是追求收益，而是先让现金流恢复为正。';}
+  else if(income>0&&spendRate>80){level='warn';diagnosis='年度仍有正结余，但支出已占收入 '+spendRate.toFixed(1)+'%。建议先把储蓄列为固定预算，再安排定存。';}
+  else if(income>0){diagnosis='年度现金流保持正结余，当前结余率 '+((net/income)*100).toFixed(1)+'%。可以在保留应急资金后，分批规划定存。';}
+  document.getElementById('annualBody').innerHTML='<div class="annual-head"><div class="annual-title"><span class="annual-logo">'+year.toString().slice(-2)+'</span><div><strong>'+year+' 年收入与消费</strong><span>年度累计直接进入资金总览，不重复生成流水</span></div></div><div class="annual-scope">'+esc(row.account||'已录入流水')+'<br>截至 '+esc(row.endDate||todayStr())+'</div></div>'+
+    '<div class="annual-grid"><div class="annual-cell inc"><div class="v">'+money(income)+'</div><div class="k">年度收入</div></div><div class="annual-cell exp"><div class="v">'+money(expense)+'</div><div class="k">年度消费</div></div><div class="annual-cell net"><div class="v">'+(net>0?'+':'')+money(net)+'</div><div class="k">年度结余</div></div><div class="annual-cell"><div class="v">'+(income?spendRate.toFixed(1):'—')+(income?'%':'')+'</div><div class="k">支出 / 收入</div></div></div>'+
+    '<div class="money-diagnosis '+level+'">'+diagnosis+(row.isSummary?' 当前口径：'+esc(row.account)+'区间累计；后续补充其他账户后再完善年度全景。':' 当前判断仅依据已录入流水。')+'</div>';
+}
+function renderMoneyCoach(list,inc,exp){
+  const plan=state.financialPlan||{targetSavingsRate:20,emergencyMonths:6};
+  const target=Math.max(0,Math.min(90,Number(plan.targetSavingsRate)||20));
+  const budgetTotal=Object.keys(state.budgets||{}).reduce(function(total,key){return total+(Number(state.budgets[key])||0);},0);
+  const net=inc-exp,savingsRate=inc?net/inc*100:0;
+  let level='',title='数据还不够，暂不判定超支',detail='本月需要至少有收入和支出记录，系统才会给出可靠结论。';
+  if(inc>0&&exp>inc){level='danger';title='本月已超额支出';detail='支出比收入多 '+money(exp-inc)+' 元，当前月结余为负。';}
+  else if(budgetTotal>0&&exp>budgetTotal){level='danger';title='本月已超过预算';detail='实际支出比已设预算多 '+money(exp-budgetTotal)+' 元。';}
+  else if(inc>0&&savingsRate<target){level='warn';title='本月未达到储蓄目标';detail='当前结余率 '+savingsRate.toFixed(1)+'%，低于目标 '+target.toFixed(0)+'%。';}
+  else if(inc>0){title='本月资金节奏正常';detail='当前结余率 '+savingsRate.toFixed(1)+'%，达到目标 '+target.toFixed(0)+'%。';}
+  const advice=[];
+  if(level==='danger')advice.push('先暂停非必要大额支出，找出本月金额最高的 3 个可调整分类。');
+  if(inc>0)advice.push('建议本月优先留出约 '+money(inc*target/100)+' 元作为储蓄目标；比例可按实际生活成本调整。');
+  else advice.push('补齐本月工资与固定支出后，再决定可存金额，避免用不完整数据制造焦虑。');
+  advice.push('定存前先保留可随时取用的应急资金；金额应结合你的固定生活成本与工作稳定性。');
+  document.getElementById('moneyCoachBody').innerHTML='<div class="coach-status '+level+'"><span class="coach-dot"></span><div><strong>'+title+'</strong><span>'+detail+' · 统计月份 '+curMonth+'</span></div></div><ul class="coach-advice">'+advice.map(function(item){return'<li>'+item+'</li>';}).join('')+'</ul><div class="plan-row"><label>目标储蓄率（不是硬指标，可随生活阶段调整）<input id="targetSavingsRate" type="number" min="0" max="90" step="1" value="'+target+'"></label><label>应急资金目标（月）<input id="emergencyMonths" type="number" min="1" max="24" step="1" value="'+(Number(plan.emergencyMonths)||6)+'"></label><button id="saveFinancialPlan" type="button">保存规划</button></div>';
 }
 
 function renderBudget(list, exp){
@@ -672,7 +829,7 @@ function renderGoal(){
   const invest=totalValue();
   const net=(g.currentSavings||0)+invest;
   if(!g.targetAmount){
-    body.innerHTML='<div style="font-size:.8rem;color:var(--sub);margin-bottom:8px">设定你的财务目标，系统按「现金储蓄 + 投资市值」的总资产帮你推算达成进度。</div>'+goalFormHtml();
+    body.innerHTML='<div style="font-size:.8rem;color:var(--sub);margin-bottom:8px">设定一个真实可执行的储蓄目标。定存是现金安排，不自动重复计入总资产；历史投资数据仍安全保留但不再展示。</div>'+goalFormHtml();
     return;
   }
   const now=new Date();
@@ -687,7 +844,7 @@ function renderGoal(){
   body.innerHTML=
     '<div class="goal-prog"><div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:4px"><span>目标 '+money(g.targetAmount)+' · '+g.targetYear+'年</span><span style="color:var(--primary);font-weight:700">'+pct+'%</span></div>'+
     '<div class="goal-bar"><div class="fill" style="width:'+pct+'%"></div></div></div>'+
-    '<div style="font-size:.74rem;color:var(--sub);margin:8px 0 2px">总资产 '+money(net)+' ＝ 现金 '+money(g.currentSavings||0)+' ＋ 投资市值 '+money(invest)+'</div>'+
+    '<div style="font-size:.74rem;color:var(--sub);margin:8px 0 2px">当前可追踪资产 '+money(net)+' ＝ 现金储蓄 '+money(g.currentSavings||0)+(invest?' ＋ 历史持仓 '+money(invest):'')+'</div>'+
     '<div class="goal-stats">'+
       '<div class="goal-stat"><div class="v">'+money(net)+'</div><div class="k">当前总资产</div></div>'+
       '<div class="goal-stat"><div class="v">'+money(gap)+'</div><div class="k">距离目标还差</div></div>'+
@@ -866,19 +1023,19 @@ document.getElementById('ledgerImportFile').addEventListener('change',function(e
   file.text().then(function(text){
     const payload=JSON.parse(text);
     const batch=prepareLedgerImport(payload);
-    if(!batch.fresh.length){
-      YaraModuleUI.notify('没有需要新增的流水：文件中的记录已导入或曾被删除');
+    if(!batch.fresh.length&&!batch.freshSourceRecords.length&&!batch.updatedSourceImports.length&&!batch.supersedeExisting.length){
+      YaraModuleUI.notify('没有需要更新的内容：流水和来源档案均已记录');
       return;
     }
     return YaraModuleUI.confirm({
-      title:'导入 '+batch.fresh.length+' 条新流水？',
-      message:'已识别 '+batch.valid.length+' 条有效记录；'+batch.duplicate+' 条重复/已删除记录会跳过，'+batch.invalid+' 条无效记录不会导入。确认后将保存到本机，并沿用现有云同步。',
+      title:'导入并核验这份账单？',
+      message:'将新增 '+batch.fresh.length+' 条会计流水、归档 '+batch.freshSourceRecords.length+' 条只读来源记录'+(batch.supersedeExisting.length?'，并用真实明细替换 '+batch.supersedeExisting.length+' 条旧汇总记录':'')+'。重复与已删除记录继续跳过；原始来源字段不会被分析结果覆盖。',
       confirmText:'确认导入',
       cancelText:'取消'
     }).then(function(confirmed){
       if(!confirmed) return;
-      const count=commitLedgerImport(batch);
-      YaraModuleUI.notify('已导入 '+count+' 条流水，重复记录已自动跳过');
+      const result=commitLedgerImport(batch);
+      YaraModuleUI.notify('已导入 '+result.transactions+' 条会计流水，来源档案同步完成');
     });
   }).catch(function(error){
     YaraModuleUI.notify(error&&error.message?error.message:'导入失败，请检查文件格式','error');
@@ -897,20 +1054,17 @@ document.getElementById('txList').addEventListener('click',function(e){
   }
 });
 
-// 投资追踪事件
-document.getElementById('hAddBtn').addEventListener('click',function(){ saveHolding(); });
-document.getElementById('snapBtn').addEventListener('click',function(){ upsertSnapshot(); save(); render(); YaraModuleUI.notify('今日市值已记录'); });
-document.getElementById('invList').addEventListener('click',function(e){
-  const tx=e.target.closest('.tx'); if(!tx) return;
-  const act=e.target.closest('[data-act]'); if(!act) return;
-  if(act.dataset.act==='hdel'){
-    YaraModuleUI.requestDelete(act, {
-      title:'删除这条持仓？',
-      message:'删除后持仓市值与财务目标中的总资产会同步重新计算。',
-      confirmText:'确认删除'
-    }, function(){ delHolding(tx.dataset.id); });
-  }
-  else if(act.dataset.act==='hedit'){ editHolding(tx.dataset.id); }
+// 定存规划事件
+document.getElementById('depositSaveBtn').addEventListener('click',saveDeposit);
+document.getElementById('depositList').addEventListener('click',function(e){
+  const item=e.target.closest('.deposit-item'),act=e.target.closest('[data-act]');if(!item||!act)return;
+  if(act.dataset.act==='dedit')editDeposit(item.dataset.id);
+  if(act.dataset.act==='ddel')deleteDeposit(item.dataset.id,act);
+});
+document.getElementById('moneyCoachBody').addEventListener('click',function(e){
+  if(e.target.id!=='saveFinancialPlan')return;
+  state.financialPlan={targetSavingsRate:Math.max(0,Math.min(90,Number(document.getElementById('targetSavingsRate').value)||20)),emergencyMonths:Math.max(1,Math.min(24,Number(document.getElementById('emergencyMonths').value)||6)),updatedAt:new Date().toISOString()};
+  save();render();YaraModuleUI.notify('资金规划目标已保存');
 });
 
 document.getElementById('setToggle').addEventListener('click',function(){
@@ -965,10 +1119,11 @@ function saveGoal(){
 
 // ===== INIT =====
 document.getElementById('fDate').value=todayStr();
+document.getElementById('dStart').value=todayStr();
 render();
 initCloud();
 loadPendingLocalLedgerImport();
-loadPrivateStatementSummaries();
+loadPendingLocalYearSummary();
 </script>
 <script id="yaraSystemBridge" src="../yara-system-bridge.js?v=1.5"></script>
 </body>

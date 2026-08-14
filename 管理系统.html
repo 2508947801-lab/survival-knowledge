@@ -14,6 +14,7 @@
 <link rel="icon" type="image/svg+xml" href="icons/yara-app-icon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
 <link rel="stylesheet" href="yara-pwa.css?v=1.0">
+<link id="yaraSystemTheme" rel="stylesheet" href="yara-system-theme.css?v=3.2">
 <link rel="alternate" media="only screen and (max-width: 768px)" href="手机端.html">
 <title>Yara超级大脑</title>
 <style>
@@ -24,8 +25,8 @@
   --glass:rgba(255,255,255,.055); --glass-2:rgba(255,255,255,.10); --glass-bd:rgba(255,255,255,.13);
   --ink:#f3f0ff; --ink-l:#b9b3d8; --sub:#8f87b8; --border:rgba(255,255,255,.10);
   --success:#5eead4; --warning:#fbbf24; --danger:#fb7185;
-  --sans:'Avenir Next','MiSans','HarmonyOS Sans SC','Alibaba PuHuiTi 3','PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif;
-  --disp:'Avenir Next','MiSans','HarmonyOS Sans SC','Alibaba PuHuiTi 3','PingFang SC','Microsoft YaHei',sans-serif;
+  --sans:var(--ys-font);
+  --disp:var(--ys-font-display);
   --sidebar-w:252px; --r-lg:22px; --r-md:16px;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -891,11 +892,11 @@ body[data-theme="twilight"] .flash-home-card{color:#f1efff;border-color:rgba(255
         <span class="icon">📚</span>教务管理<span class="arrow">▶</span>
       </div>
       <div class="nav-children">
-        <div class="nav-child" data-src="运营能力地图/academic-system.html" data-name="建课系统" data-group="教务管理"><span class="dot"></span>建课系统</div>
+        <div class="nav-child" data-src="运营能力地图/academic-system.html?view=dashboard" data-name="教务首页概览" data-group="教务管理"><span class="dot"></span>教务首页概览</div>
         <div class="nav-child" data-src="运营能力地图/master-schedule.html" data-name="主课表中心" data-group="教务管理"><span class="dot"></span>主课表中心</div>
-        <div class="nav-child" data-src="杨家成课表管理工具/课表批量生成工具.html" data-name="杨家成排课" data-group="教务管理"><span class="dot"></span>杨家成3980排课</div>
-        <div class="nav-child" data-src="杨家成课表管理工具/之昊3980课表生成工具.html" data-name="之昊排课" data-group="教务管理"><span class="dot"></span>之昊3980排课</div>
-        <div class="nav-child" data-src="杨家成课表管理工具/高高2980课表生成工具.html" data-name="高高排课" data-group="教务管理"><span class="dot"></span>高高2980排课</div>
+        <div class="nav-child" data-src="运营能力地图/yang-shared-schedule.html" data-name="杨老师纠音与语聊" data-group="教务管理"><span class="dot"></span>杨老师纠音 / 语聊联动</div>
+        <div class="nav-child" data-src="运营能力地图/academic-system.html?view=tools" data-name="建课系统" data-group="教务管理"><span class="dot"></span>建课系统 · 3个排课工具</div>
+        <div class="nav-child" data-src="运营能力地图/academic-system.html?view=allocation" data-name="接量预排" data-group="教务管理"><span class="dot"></span>接量预排</div>
       </div>
     </div>
 
@@ -1027,7 +1028,7 @@ body[data-theme="twilight"] .flash-home-card{color:#f1efff;border-color:rgba(255
           <h2 id="dashGreeting">你好，Yara</h2>
           <p class="sub" id="dashDate"></p>
           <div class="hero-chips">
-            <span class="hero-chip"><strong>13</strong> 个核心工具</span>
+            <span class="hero-chip"><strong>14</strong> 个核心工具</span>
             <span class="hero-chip" id="dataHubChip"><strong>连接中</strong> 数据中心</span>
             <span class="hero-chip">按 <strong>⌘ K</strong> 快速搜索</span>
           </div>
@@ -1075,11 +1076,11 @@ body[data-theme="twilight"] .flash-home-card{color:#f1efff;border-color:rgba(255
       <div class="dash-section">
         <div class="dash-section-title"><span class="icon">🔧</span>快捷入口</div>
         <div class="quick-grid">
+          <div class="quick-btn" onclick="openTool('运营能力地图/academic-system.html?view=dashboard','教务首页概览','教务管理')"><span class="qb-icon">◎</span><span class="qb-name">教务概览</span></div>
           <div class="quick-btn" onclick="openTool('运营能力地图/master-schedule.html','主课表中心','教务管理')"><span class="qb-icon">🧾</span><span class="qb-name">主课表中心</span></div>
-          <div class="quick-btn" onclick="openTool('运营能力地图/academic-system.html','建课系统','教务管理')"><span class="qb-icon">📚</span><span class="qb-name">建课系统</span></div>
-          <div class="quick-btn" onclick="openTool('杨家成课表管理工具/课表批量生成工具.html','杨家成3980排课','教务管理')"><span class="qb-icon">📅</span><span class="qb-name">杨家成排课</span></div>
-          <div class="quick-btn" onclick="openTool('杨家成课表管理工具/之昊3980课表生成工具.html','之昊3980排课','教务管理')"><span class="qb-icon">📅</span><span class="qb-name">之昊排课</span></div>
-          <div class="quick-btn" onclick="openTool('杨家成课表管理工具/高高2980课表生成工具.html','高高2980排课','教务管理')"><span class="qb-icon">📅</span><span class="qb-name">高高排课</span></div>
+          <div class="quick-btn" onclick="openTool('运营能力地图/yang-shared-schedule.html','杨老师纠音与语聊','教务管理')"><span class="qb-icon">🎙️</span><span class="qb-name">纠音 / 语聊</span></div>
+          <div class="quick-btn" onclick="openTool('运营能力地图/academic-system.html?view=tools','建课系统','教务管理')"><span class="qb-icon">📚</span><span class="qb-name">建课系统</span></div>
+          <div class="quick-btn" onclick="openTool('运营能力地图/academic-system.html?view=allocation','接量预排','教务管理')"><span class="qb-icon">⇄</span><span class="qb-name">接量预排</span></div>
           <div class="quick-btn" onclick="openTool('运营能力地图/运营能力地图.html','能力地图','运营能力')"><span class="qb-icon">🗺️</span><span class="qb-name">能力地图</span></div>
           <div class="quick-btn" onclick="openTool('运营能力地图/交付运营总系统.html','自查总系统','运营能力')"><span class="qb-icon">⚡</span><span class="qb-name">自查总系统</span></div>
           <div class="quick-btn" onclick="openTool('私密模块说明.html#reconcile','对账对比看板','对帐工具')"><span class="qb-icon">🧾</span><span class="qb-name">对账看板</span></div>
@@ -1135,13 +1136,13 @@ body[data-theme="twilight"] .flash-home-card{color:#f1efff;border-color:rgba(255
 </div>
 
 <script src="yara-runtime-config.js?v=1.0"></script>
-<script src="yara-master-schedule-seed.js?v=1.0"></script>
-<script src="yara-master-schedule.js?v=1.0"></script>
+<script src="yara-master-schedule-seed.js?v=1.1"></script>
+<script src="yara-master-schedule.js?v=1.1"></script>
 <script src="yara-system-core.js?v=1.2"></script>
 <script src="yara-pwa.js?v=1.0" defer></script>
 <script>
 // 构建版本号：部署时由「一键部署.command」替换为时间戳，用于强制手机端拉取最新工具（防止缓存导致 web/手机不一致）。本地打开时保持 'DEV'。
-var BUILD_VERSION = '20260810193834';
+var BUILD_VERSION = '20260814121331';
 var shellRouteLevels = {};
 var sidebarFlyoutTimer = null;
 var activeFlyoutTrigger = null;
@@ -1513,7 +1514,7 @@ function applySystemThemeToFrame(){
       link = doc.createElement('link');
       link.id = 'yaraSystemTheme';
       link.rel = 'stylesheet';
-      link.href = new URL('yara-system-theme.css?v=3.0', window.location.href).href;
+      link.href = new URL('yara-system-theme.css?v=3.2', window.location.href).href;
       link.addEventListener('load', closeFrameLoader, {once:true});
       link.addEventListener('error', closeFrameLoader, {once:true});
       doc.head.appendChild(link);

@@ -67,12 +67,24 @@
     clearTimeout(routeTimer);
     routeTimer = setTimeout(function () {
       var label = cleanLabel(preferredLabel) || activeLabel();
+      var level = label ? 3 : 2;
+      if (moduleType === 'academic') {
+        var rootView = new URLSearchParams(location.search).get('view');
+        if (['tools', 'dashboard', 'allocation'].indexOf(rootView) >= 0) {
+          label = cleanLabel(document.body.dataset.yaraName) || label;
+          level = 2;
+        }
+      }
+      if (moduleType.indexOf('schedule-') === 0 && new URLSearchParams(location.search).get('from') === 'academic-build') {
+        label = cleanLabel(new URLSearchParams(location.search).get('name')) || label;
+        level = 3;
+      }
       var routeKey = location.pathname + location.hash + '|' + label;
       if (routeKey === lastRoute) return;
       lastRoute = routeKey;
       post('route', {
         label: label,
-        level: label ? 3 : 2,
+        level: level,
         path: location.pathname,
         hash: location.hash
       });

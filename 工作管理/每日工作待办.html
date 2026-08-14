@@ -103,7 +103,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
   .t-actions{width:100%;justify-content:flex-end;padding-top:2px;}
 }
 </style>
-<link id="yaraSystemTheme" rel="stylesheet" href="../yara-system-theme.css?v=3.0">
+<link id="yaraSystemTheme" rel="stylesheet" href="../yara-system-theme.css?v=3.2">
 <script src="../yara-runtime-config.js?v=1.0"></script>
 <script src="../yara-module-ui.js?v=1.0"></script>
 </head>
@@ -171,8 +171,10 @@ const SEED = {
 };
 
 // 2026 年 8 月工作日运营任务：
-// 每个工作日：直播间配置 60 分钟、延期的隐藏课程 20 分钟；
-// 每周一/三/五：批量处理退费 90 分钟、批量处理解锁保留 30 分钟；
+// 每个工作日：直播间配置 60 分钟、延期的隐藏课程 20 分钟、
+//              直播房间加到各期系列课内供营期使用 30 分钟；
+// 每周一/三/五：杨家成、张之昊、一对一扩科退费处理 120 分钟、批量处理解锁保留 30 分钟；
+// 每周二/四：突发退费处理 30 分钟；每周三：线索接入检查更新、营期检查更新各 20 分钟；
 // 每周五晚上：批量开课 15 分钟。
 (function seedAugust2026Operations(){
   function addSeed(date, suffix, title, minutes){
@@ -191,14 +193,24 @@ const SEED = {
     const date='2026-08-'+String(day).padStart(2,'0');
     addSeed(date,'live-room','直播间配置',60);
     addSeed(date,'delay-hidden','延期的隐藏课程',20);
+    addSeed(date,'room-to-series','直播房间加到各期系列课内，供营期使用',30);
     if(weekday===1 || weekday===3 || weekday===5){
-      addSeed(date,'refund','批量处理退费',90);
+      addSeed(date,'refund','杨家成、张之昊、一对一扩科退费处理',120);
       addSeed(date,'unlock-retain','批量处理解锁保留',30);
+    }
+    if(weekday===2 || weekday===4){
+      addSeed(date,'urgent-refund','突发退费处理',30);
+    }
+    if(weekday===3){
+      addSeed(date,'lead-intake-check','杨家成、张之昊线索接入检查&更新',20);
+      addSeed(date,'camp-check','杨家成、张之昊营期检查&更新',20);
     }
     if(weekday===5){
       addSeed(date,'open-course','晚上｜批量开课',15);
     }
   }
+  // 以当前日期 2026-08-13 计算，“下周一”为 2026-08-17。
+  addSeed('2026-08-17','xiaoe-camp-training','小鹅通营期培训',60);
 })();
 
 // ===== 云同步配置（Supabase）：让 web 端和手机端待办数据实时一致 =====
@@ -222,6 +234,20 @@ function shiftDay(s, n){ const d=parseDate(s); d.setDate(d.getDate()+n); return 
 
 function mergeSeeds(s){
   if(!s.deletedSeeds) s.deletedSeeds=[];
+  // 版本化预置升级：只调整仍保留旧默认内容的任务；用户已自行编辑的内容保持不变。
+  if(!s.seedVersions) s.seedVersions={};
+  if(!s.seedVersions.augustOpsV2){
+    for(const date in (s.tasks||{})){
+      (s.tasks[date]||[]).forEach(function(task){
+        if(/^seed-ops-202608\d{2}-refund$/.test(task.id) && task.title==='批量处理退费' && Number(task.minutes)===90){
+          task.title='杨家成、张之昊、一对一扩科退费处理';
+          task.minutes=120;
+          seedMergeChanged=true;
+        }
+      });
+    }
+    s.seedVersions.augustOpsV2=true;
+  }
   // 合并新增的预置任务（按 id 判断，已删除的不再恢复）
   for(const date in SEED){
     if(!s.tasks[date]) s.tasks[date]=[];

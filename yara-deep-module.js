@@ -140,6 +140,13 @@
       }
     }
 
+    if (moduleType.indexOf('schedule-') === 0 &&
+        new URLSearchParams(location.search).get('from') === 'academic-build' &&
+        Number(detail.targetLevel) <= 2) {
+      location.href = new URL('../运营能力地图/academic-system.html?view=tools', location.href).href;
+      return true;
+    }
+
     if (Number(detail.targetLevel) <= 2) {
       clearHash('detail');
       clearHash('job');
@@ -214,7 +221,10 @@
         setTimeout(function () {
           var active = document.querySelector('.nav-item.active');
           var label = active ? clean(active.textContent) : clean(document.getElementById('pageTitle').textContent);
-          route(label, 3, { moduleId: id });
+          var rootView = new URLSearchParams(location.search).get('view');
+          var level = ['tools', 'dashboard', 'allocation'].indexOf(rootView) >= 0 ? 2 : 3;
+          if (level === 2) label = clean(document.body.dataset.yaraName) || label;
+          route(label, level, { moduleId: id, view: rootView || 'tools' });
           setHash('module', id);
           enhanceTableRows(document.getElementById('content'));
         }, 0);

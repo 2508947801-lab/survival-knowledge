@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f7f7fa">
+<title>生存知识日报 · 2026-08-14 · 星期五</title>
+<style>
+:root {
+    --bg-base:#f7f7fa; --glass-bg:rgba(255,255,255,.72); --text-primary:#0f0f15;
+    --text-secondary:#5a5a6a; --text-tertiary:#9a9aa8; --accent-red:#ff2d55;
+    --accent-gradient:linear-gradient(135deg,#ff2d55 0%,#ff375f 50%,#ff2dc8 100%);
+    --radius-lg:28px; --radius-md:20px; --radius-pill:999px; --blur:30px;
+    --ease:cubic-bezier(.4,0,.2,1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg-base); color:var(--text-primary); line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+}
+.nav-bar {
+    position:sticky; top:0; z-index:1000; background:rgba(255,255,255,.72);
+    backdrop-filter:blur(var(--blur)) saturate(180%); -webkit-backdrop-filter:blur(var(--blur)) saturate(180%);
+    border-bottom:1px solid rgba(15,15,25,.06); padding:14px 20px;
+    display:flex; flex-wrap:wrap; gap:8px; justify-content:center;
+}
+.nav-bar a {
+    color:var(--text-secondary); text-decoration:none; font-size:.82em; font-weight:500;
+    padding:8px 16px; border-radius:var(--radius-pill); background:rgba(255,255,255,.6);
+    border:1px solid transparent; transition:all .3s var(--ease); white-space:nowrap;
+}
+.nav-bar a:hover { color:var(--accent-red); background:rgba(255,45,85,.08); border-color:rgba(255,45,85,.25); }
+.hero {
+    position:relative; overflow:hidden; padding:90px 24px 70px; text-align:center;
+    border-bottom:1px solid rgba(15,15,25,.06); background:var(--bg-base);
+}
+.hero::before {
+    content:''; position:absolute; inset:-30%; z-index:0;
+    background:radial-gradient(ellipse 60% 50% at 30% 20%,rgba(255,45,85,.14) 0%,transparent 60%),
+               radial-gradient(ellipse 50% 40% at 70% 30%,rgba(255,45,200,.12) 0%,transparent 60%),
+               radial-gradient(ellipse 70% 60% at 50% 100%,rgba(255,55,95,.10) 0%,transparent 70%);
+    filter:blur(40px); animation:ambient 12s ease-in-out infinite alternate;
+}
+@keyframes ambient { from { transform:scale(1); opacity:.75; } to { transform:translate(-3%,2%) scale(1.08); opacity:1; } }
+.hero h1 { font-size:3.2em; font-weight:600; letter-spacing:4px; position:relative; z-index:1; }
+.hero .date-info { font-size:1.1em; color:var(--text-secondary); position:relative; z-index:1; margin-top:14px; }
+.toc { max-width:1080px; margin:0 auto; padding:40px 24px; }
+.toc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px; }
+.toc-grid a {
+    display:block; padding:14px 16px; text-decoration:none; color:var(--text-secondary);
+    background:rgba(255,255,255,.7); border-radius:var(--radius-md); border:1px solid rgba(15,15,25,.06);
+    transition:all .35s var(--ease); font-size:.9em; font-weight:500; text-align:center;
+}
+.toc-grid a:hover { color:var(--accent-red); border-color:rgba(255,45,85,.25); transform:translateY(-3px); }
+.module {
+    max-width:1080px; margin:28px auto; padding:48px 40px; background:var(--glass-bg);
+    backdrop-filter:blur(var(--blur)) saturate(150%); -webkit-backdrop-filter:blur(var(--blur)) saturate(150%);
+    border-radius:var(--radius-lg); border:1px solid rgba(15,15,25,.06);
+    box-shadow:0 1px 3px rgba(15,15,25,.04),0 8px 24px rgba(15,15,25,.03);
+    position:relative; overflow:hidden; transition:all .4s var(--ease);
+    scroll-margin-top:86px;
+}
+.module:hover { border-color:rgba(255,45,85,.20); box-shadow:0 16px 40px rgba(255,45,85,.08); }
+.module-header { display:flex; align-items:center; gap:18px; margin-bottom:32px; padding-bottom:20px; border-bottom:1px solid rgba(15,15,25,.08); }
+.module-num {
+    font-size:2.4em; font-weight:300; line-height:1; background:var(--accent-gradient);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+}
+.module-title { font-size:1.65em; font-weight:600; letter-spacing:1px; }
+.module-subtitle { color:var(--text-secondary); font-size:.95em; margin-top:4px; }
+.content { font-size:1.04em; }
+.content p { margin-bottom:18px; text-indent:2em; color:rgba(15,15,25,.85); }
+.content h3 { color:var(--accent-red); font-size:1.18em; margin:30px 0 14px; font-weight:600; }
+.content strong { background:var(--accent-gradient); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; font-weight:600; }
+.highlight {
+    background:linear-gradient(135deg,rgba(255,45,85,.06),rgba(255,45,200,.05));
+    border-radius:var(--radius-md); padding:24px 28px; margin:24px 0;
+    border:1px solid rgba(255,45,85,.18); position:relative; overflow:hidden;
+}
+.highlight h4 { color:var(--accent-red); margin-bottom:12px; font-size:1.05em; }
+.highlight ul,.source-list { padding-left:1.3em; }
+.highlight li,.source-list li { margin:9px 0; }
+.source-link { display:inline-block; margin:0 0 18px 2em; color:var(--accent-red); text-decoration:none; border-bottom:1px solid rgba(255,45,85,.28); font-size:.88em; }
+.source-list a { color:var(--accent-red); text-decoration:none; border-bottom:1px solid rgba(255,45,85,.22); }
+.metric-table { width:100%; border-collapse:collapse; margin:18px 0; font-size:.92em; background:rgba(255,255,255,.55); border-radius:14px; overflow:hidden; }
+.metric-table th,.metric-table td { padding:12px 14px; text-align:left; border-bottom:1px solid rgba(15,15,25,.07); }
+.metric-table th { color:var(--text-secondary); background:rgba(255,45,85,.05); }
+.back-link { text-align:center; padding:60px 20px 40px; }
+.back-link a { display:inline-block; color:#fff; text-decoration:none; font-weight:600; padding:16px 48px; border-radius:var(--radius-pill); background:var(--accent-gradient); box-shadow:0 8px 24px rgba(255,45,85,.30); }
+.footer { text-align:center; padding:48px 20px; color:var(--text-tertiary); border-top:1px solid rgba(15,15,25,.06); }
+.footer p { margin:8px 0; }
+@media (max-width:768px) {
+    .hero { padding:60px 18px 50px; } .hero h1 { font-size:2.1em; letter-spacing:2px; }
+    .nav-bar { gap:5px; padding:10px 12px; } .nav-bar a { font-size:.72em; padding:6px 11px; }
+    .toc { padding:28px 16px; } .toc-grid { grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px; }
+    .module { margin:16px 12px; padding:32px 22px; border-radius:var(--radius-md); scroll-margin-top:112px; }
+    .module-num { font-size:1.9em; } .module-title { font-size:1.3em; } .content { font-size:.98em; }
+    .content p { text-indent:1.5em; } .source-link { margin-left:1.5em; }
+    .metric-table { display:block; overflow-x:auto; font-size:.82em; } .metric-table th,.metric-table td { padding:9px 8px; min-width:7em; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav-bar">
+<a href="#module-1">①运营精华</a><a href="#module-2">②今日要闻</a><a href="#module-3">③科技×AI前沿</a>
+<a href="#module-4">④财富趋势</a><a href="#module-5">⑤职场教育</a><a href="#module-6">⑥深度阅读</a><a href="#module-7">⑦五栏分析</a>
+</nav>
+
+<header class="hero">
+<h1>📰 生存知识日报</h1>
+<div class="date-info">2026-08-14 · 星期五 · 第 36 期</div>
+<div class="date-info" style="font-size:.95em;margin-top:5px;opacity:.7;">深度认知 · 理性判断 · 温情陪伴</div>
+</header>
+
+<div class="toc"><div class="toc-grid">
+<a href="#module-1">①运营精华</a><a href="#module-2">②今日要闻</a><a href="#module-3">③科技×AI前沿</a>
+<a href="#module-4">④财富趋势</a><a href="#module-5">⑤职场教育</a><a href="#module-6">⑥深度阅读</a><a href="#module-7">⑦五栏分析</a>
+</div></div>
+
+<section id="module-1" class="module"><div class="module-header"><span class="module-num">①</span><div><div class="module-title">运营精华</div><div class="module-subtitle">直播成交不再只看话术和在线人数，而要留下可复核的交易证据</div></div></div><div class="content">
+<h3>📌 今天的判断：把每场课程直播当成一笔“未来三年都能解释清楚的交易”</h3>
+<p><strong>发生了什么：</strong>《直播电商监督管理办法》已于2026年2月1日起施行，适用范围包括通过视频、音频等直播形式销售商品或者提供服务。规则要求直播间持续展示实际提供服务的经营者信息，显著展示服务项目、内容、价格与计价方法；平台保存直播回放、互动、订单页面快照、客服、支付和售后等交易信息，自交易完成之日起不少于三年。直播间运营者对经营者、主播身份、营销用语和现场纠错的相关记录，也有不少于三年的保存要求。</p>
+<a class="source-link" href="https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/fgs/art/2026/art_ce66ea61fcec4583b5dbd677f470088b.html" target="_blank" rel="noopener noreferrer">直接来源：市场监管总局 · 直播电商监督管理办法（2026-01-07发布，2026-02-01施行）↗</a>
+<p><strong>为什么重要：</strong>知识付费直播最危险的不是某个词说得不够漂亮，而是成交后无法还原用户当时看见了谁、听见了什么承诺、按什么价格购买、最终得到什么服务。只保存成交表，却没有报价页、直播回放、客服承诺和履约记录，发生退款或投诉时就只能靠记忆争辩。<strong>增长链路必须同时是一条证据链。</strong></p>
+<div class="highlight"><h4>Yara 可直接落地的“直播成交五件套”</h4>
+<table class="metric-table"><thead><tr><th>节点</th><th>必须说清</th><th>最小留痕</th><th>负责人</th></tr></thead><tbody>
+<tr><td>开播前</td><td>谁在卖、谁提供服务</td><td>主体与主播核验卡</td><td>运营</td></tr>
+<tr><td>讲解中</td><td>课程内容、边界、适合谁</td><td>审核版脚本与现场纠错单</td><td>主播/审核人</td></tr>
+<tr><td>报价时</td><td>实付价、比较基准、有效期</td><td>报价页与订单页快照</td><td>商品运营</td></tr>
+<tr><td>成交后</td><td>承诺如何交付、何时完成</td><td>客服记录、服务进度、变更确认</td><td>交付</td></tr>
+<tr><td>售后时</td><td>退款依据与解决时限</td><td>工单、退款计算与结案记录</td><td>客服/财务</td></tr>
+</tbody></table></div>
+<p><strong>对 Yara 的启发：</strong>今天先选最近一场课程直播，倒推能否在10分钟内找齐“五件套”。缺哪一件，就把它补进下一场直播的开播清单；不要等争议发生后才从群聊和个人电脑里拼证据。</p>
+</div></section>
+
+<section id="module-2" class="module"><div class="module-header"><span class="module-num">②</span><div><div class="module-title">今日要闻</div><div class="module-subtitle">一宗私域直播卖网课的处罚案例，把虚假人设、收益承诺和假限时同时拉到台前</div></div></div><div class="content">
+<h3>⚖️ 私域不是规则盲区：115名学员、56.69万元销售额、30万元罚款</h3>
+<p><strong>发生了什么：</strong>市场监管总局4月29日公布的第六批直播电商典型案例中，一家公司通过私域直播销售“二类电商项目”网课。主播打造“通过公务员考试、曾任警察、辞职创业成功”的人设，宣称学员可“月入过万”，并设置所谓限时优惠。监管调查发现其实际仅短暂任职辅警，高收益案例极少，优惠价格实为常态定价；截至查处时共向115人销售课程，销售额56.69万元。2025年12月，属地监管部门责令停止违法行为并处罚款30万元。</p>
+<a class="source-link" href="https://www.samr.gov.cn/xw/zj/art/2026/art_328ec7ba9d1b406fa4b7c9bee818b759.html" target="_blank" rel="noopener noreferrer">直接来源：市场监管总局 · 第六批直播电商领域典型案例（2026-04-29）↗</a>
+<p><strong>为什么重要：</strong>这个案例与课程运营高度贴近：人设、结果案例、收入承诺和促销倒计时往往被团队分散制作，却共同塑造了消费者判断。只要其中一个环节没有证据，所谓“转化技巧”就可能变成经营风险。</p>
+
+<h3>🧾 用户看到的承诺，会进入履约责任</h3>
+<p>《消费者权益保护法实施条例》明确，经营者通过直播提供商品或服务应履行消费者权益保护义务；商业宣传、产品推荐等对数量、质量、价格、售后或责任承担作出的承诺，应向消费者履行。直播内容构成商业广告时，还要承担相应广告责任。</p>
+<a class="source-link" href="https://www.mee.gov.cn/zcwj/gwywj/202403/t20240320_1068830.shtml" target="_blank" rel="noopener noreferrer">直接来源：中国政府网转载 · 消费者权益保护法实施条例（2024-03-19公布）↗</a>
+<p><strong>今天可采取的行动：</strong>把直播脚本中所有带数字和确定性的词单独抽出：通过率、提升幅度、收入、名额、原价、截止时间、服务次数、回复时效。每一项要么绑定证据与口径，要么改成不误导的真实表达。</p>
+</div></section>
+
+<section id="module-3" class="module"><div class="module-header"><span class="module-num">③</span><div><div class="module-title">科技 × AI 前沿</div><div class="module-subtitle">AI可以生成脚本和数字人，但不能替团队承担主体核验、事实证明与现场纠错</div></div></div><div class="content">
+<h3>🤖 AI 主播不是免责层，自动化越快越需要“主张台账”</h3>
+<p>《直播电商监督管理办法》明确禁止利用人工智能编造、传播虚假或引人误解的商业信息，禁止假冒他人进行商业宣传；使用 AI 生成的人物图像或视频开展直播电商，还应持续向消费者提示其由 AI 技术生成。市场监管总局4月的互联网广告治理通知又将教育培训列为重点民生领域，并点名利用 AI 冒充或虚构专家、学者、知名企业家等风险。</p>
+<a class="source-link" href="https://www.samr.gov.cn/ggjgs/tzgg/art/2026/art_cf9803c8f145496d99c5ac9b0ac0bc4b.html" target="_blank" rel="noopener noreferrer">直接来源：市场监管总局 · 深化互联网广告生态治理通知（2026-04-23）↗</a>
+<p><strong>为什么重要：</strong>AI 能让同一条课程卖点迅速扩展成脚本、切片、私聊话术和数字人口播。如果原始主张没有证据，一个错误也会同步扩散到所有渠道。需要被管理的不是“用了哪个模型”，而是<strong>每个对外主张从哪里来、在哪些渠道出现、谁批准、何时失效</strong>。</p>
+<div class="highlight"><h4>一条课程主张的最小数据结构</h4><ul>
+<li><strong>主张：</strong>用户实际会看到或听到的完整句子。</li>
+<li><strong>证据：</strong>原始材料、样本、时间窗、统计口径和限制条件。</li>
+<li><strong>状态：</strong>草稿、已核验、已批准、已过期或已撤回。</li>
+<li><strong>渠道：</strong>直播、切片、海报、私聊、落地页分别用了哪一版。</li>
+<li><strong>责任：</strong>生成者、事实复核人、发布批准人和纠错负责人。</li>
+</ul></div>
+<p><strong>对 Yara/运营工作的启发：</strong>让 AI 只从“已批准主张库”生成销售素材；涉及师资、效果、案例、价格和稀缺性的句子，没有有效证据就不允许进入自动化分发。</p>
+</div></section>
+
+<section id="module-4" class="module"><div class="module-header"><span class="module-num">④</span><div><div class="module-title">财富趋势</div><div class="module-subtitle">直播间的漂亮GMV可能只是毛收入，退款、履约与证据债务决定它能否留下</div></div></div><div class="content">
+<h3>💰 从“成交额”升级到“可保留收入”</h3>
+<p><strong>发生了什么：</strong>直播规则要求显著展示服务项目、内容、价格和计价方法；采用价格比较、折价或减价时，还要显著标明比较价格或计算基准。《明码标价和禁止价格欺诈规定》则把利用虚假或使人误解的价格手段诱骗交易界定为价格欺诈，并要求价格信息真实准确、标识醒目。</p>
+<a class="source-link" href="https://www.samr.gov.cn/xw/zj/art/2023/art_57c23b9341c34f6fa37a0de33f4058e3.html" target="_blank" rel="noopener noreferrer">直接来源：市场监管总局 · 明码标价和禁止价格欺诈规定（2022-06-02发布）↗</a>
+<p><strong>为什么重要：</strong>“直播成交100万元”无法回答钱能否真正留下。如果常态价被包装成限时价、交付承诺超出产能、退款口径模糊，GMV 越高，售后和信誉风险可能越大。经营看板应至少区分成交、到账、预计退款、履约预留与争议敞口。</p>
+<div class="highlight"><h4>建议加进直播复盘的四层金额</h4>
+<table class="metric-table"><thead><tr><th>层级</th><th>计算思路</th><th>回答的问题</th></tr></thead><tbody>
+<tr><td>名义成交</td><td>订单标价合计</td><td>直播触发了多少购买？</td></tr>
+<tr><td>现金到账</td><td>实际支付减即时取消</td><td>目前收到多少钱？</td></tr>
+<tr><td>可保留收入</td><td>到账减预计退款与售后补偿</td><td>成交质量如何？</td></tr>
+<tr><td>贡献毛利</td><td>可保留收入减投流、佣金与交付成本</td><td>这场直播是否值得复制？</td></tr>
+</tbody></table></div>
+<p><strong>今天可采取的行动：</strong>用最近一场直播重算一次“可保留收入率”和“每单交付预留”，并把虚构原价、永远倒计时等高风险做法从增长实验中直接排除。</p>
+</div></section>
+
+<section id="module-5" class="module"><div class="module-header"><span class="module-num">⑤</span><div><div class="module-title">职场教育</div><div class="module-subtitle">课程销售岗位的新专业能力：不是背熟话术，而是能证明每个关键主张</div></div></div><div class="content">
+<h3>🎓 教育培训广告的“权威感”必须来自事实，不是头衔包装</h3>
+<p>南宁市市场监管局3月面向教育考试培训机构发布合规提醒，明确不得虚构机构师资、培训条件和培训效果，不得宣传或暗示与考试机构、命题人员、命题方向、命题准确度及考官存在合作，也不得用虚假“研究组”“原某职务”“业内权威”等称谓误导消费者。</p>
+<a class="source-link" href="https://www.samr.gov.cn/zt/ndzt/2025n/ggf/dfzs/art/2026/art_8b7f89730d554ac389d9b4070f759783.html" target="_blank" rel="noopener noreferrer">直接来源：南宁市市场监管局 · 教育考试培训广告合规提醒（2026-03-13）↗</a>
+<p><strong>为什么重要：</strong>销售培训若只考察“能不能促单”，就会奖励夸大、偷换口径和制造焦虑。更成熟的能力模型应考察：能否识别高风险主张、能否解释证据边界、能否在直播中及时纠正口误、能否把用户个案与普遍承诺分开。</p>
+<div class="highlight"><h4>给主播/销售的四项实战考核</h4><ul>
+<li><strong>证据定位：</strong>30秒内找到某项效果或师资主张的原始证据。</li>
+<li><strong>边界表达：</strong>不回避限制条件，也不把个案说成普遍结果。</li>
+<li><strong>现场纠错：</strong>发现口误后立即更正，并留下更正时间点与内容。</li>
+<li><strong>服务对齐：</strong>只承诺交付团队真实能提供的次数、时限和范围。</li>
+</ul></div>
+<p><strong>对 Yara 的启发：</strong>下一次直播演练不要只复盘转化率。随机抽5个关键句，让主播当场说出证据、口径和不适用范围；答不清的句子不上线。</p>
+</div></section>
+
+<section id="module-6" class="module"><div class="module-header"><span class="module-num">⑥</span><div><div class="module-title">深度阅读</div><div class="module-subtitle">直播是一段内容，也是一笔交易；两种身份决定了完全不同的组织责任</div></div></div><div class="content">
+<h3>🧠 为什么“录了屏”仍然不等于完成留痕</h3>
+<p>一段直播回放只能证明镜头里发生过什么，却不能单独证明订单形成时用户看到的价格页、客服后来补充的承诺、支付结果、课程实际履约和售后解决过程。监管规则把回放、互动、订单快照、客服、支付、退换货和售后放在同一组交易信息里，背后的管理逻辑是：<strong>证据必须能还原完整决策链，而不是只保存最有利的一段。</strong></p>
+<p>网络交易平台规则也被要求清晰、可理解，并显著提示收费、争议解决等重大利害内容；平台规则覆盖服务协议、交易与纠纷处理、个人信息保护等。对课程团队来说，这意味着“报名须知”“服务协议”“退款规则”不能藏在多次跳转或难读小字中，更不能让销售口头承诺与正式规则互相冲突。</p>
+<a class="source-link" href="https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/fgs/art/2026/art_85b474fc5a08494bb60ca6a280b98d7d.html" target="_blank" rel="noopener noreferrer">直接来源：市场监管总局 · 网络交易平台规则监督管理办法（2026-01-07发布）↗</a>
+<h3>🔄 三年留痕不等于无限收集</h3>
+<p>保存交易证据与保护个人信息必须同时成立。运营需要保留与身份核验、承诺、订单、履约和售后直接相关的必要记录，但不应借“留痕”之名收集与交易无关的学员隐私，也不应把证据散落在个人设备和公开空间。访问权限、保存期限、删除流程和导出审计应当一起设计。</p>
+<p><strong>今天可采取的行动：</strong>画一条“直播前—直播中—订单—交付—售后”证据地图。每个节点只回答四问：保存什么、保存在哪里、谁能访问、何时删除。凡是无法对应具体责任的个人信息，先停止收集。</p>
+<a class="source-link" href="https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/fgs/art/2023/art_85a1509b801143bc8a37a1aa2722542a.html" target="_blank" rel="noopener noreferrer">直接来源：市场监管总局 · 侵害消费者权益行为处罚办法（现行修订版）↗</a>
+</div></section>
+
+<section id="module-7" class="module"><div class="module-header"><span class="module-num">⑦</span><div><div class="module-title">五栏分析</div><div class="module-subtitle">从法规到经营动作：把直播成交压缩成五张决策卡</div></div></div><div class="content">
+<h3>① 发生了什么</h3>
+<p>2026年2月1日起施行的直播电商规则将主体展示、内容审查、价格说明、现场纠错、交易信息与售后记录纳入同一责任链；4月公布的私域直播卖网课案例，则直接展示了虚假人设、收益承诺与假限时的现实后果。</p>
+<h3>② 为什么重要</h3>
+<p>知识付费直播已不能只按“内容活动”管理。它同时是服务交易、广告传播和持续履约的入口；脚本、报价、订单、客服与交付任何一环失真，都会让增长变成未来的退款、投诉与信誉负债。</p>
+<h3>③ 对 Yara 的启发</h3>
+<p>最值得建设的不是更多促单话术，而是一套让真实好产品稳定成交的证据基础设施：主体可核验、主张有来源、价格有基准、承诺能履约、争议可还原。</p>
+<h3>④ 今天可采取的行动</h3>
+<p>做一次60分钟“直播证据演练”：15分钟抽取脚本中的数字主张；15分钟核验人设、师资和案例；15分钟保存报价页与服务边界快照；15分钟模拟一次退款争议，检查能否在10分钟内还原完整链路。</p>
+<h3>⑤ 风险与反证</h3>
+<p>本文用于运营管理训练，不构成针对具体课程、平台或争议的法律意见。不同服务的登记、广告、合同、预付消费和退款义务可能不同；“保存不少于三年”也不代表所有材料都要无限期、无边界收集。涉及具体上线方案时，应结合实际交易结构由专业人员复核。</p>
+
+<div class="highlight"><h4>来源审计 · 8 个政府/监管直接来源</h4><ol class="source-list">
+<li><a href="https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/fgs/art/2026/art_ce66ea61fcec4583b5dbd677f470088b.html" target="_blank" rel="noopener noreferrer">市场监管总局：直播电商监督管理办法（2026-01-07发布，2026-02-01施行）</a></li>
+<li><a href="https://www.samr.gov.cn/xw/zj/art/2026/art_328ec7ba9d1b406fa4b7c9bee818b759.html" target="_blank" rel="noopener noreferrer">市场监管总局：第六批直播电商领域典型案例（2026-04-29）</a></li>
+<li><a href="https://www.mee.gov.cn/zcwj/gwywj/202403/t20240320_1068830.shtml" target="_blank" rel="noopener noreferrer">生态环境部转载中国政府网：消费者权益保护法实施条例（2024-03-19公布）</a></li>
+<li><a href="https://www.samr.gov.cn/ggjgs/tzgg/art/2026/art_cf9803c8f145496d99c5ac9b0ac0bc4b.html" target="_blank" rel="noopener noreferrer">市场监管总局：深化互联网广告生态治理工作通知（2026-04-23）</a></li>
+<li><a href="https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/fgs/art/2026/art_85b474fc5a08494bb60ca6a280b98d7d.html" target="_blank" rel="noopener noreferrer">市场监管总局：网络交易平台规则监督管理办法（2026-01-07发布）</a></li>
+<li><a href="https://www.samr.gov.cn/xw/zj/art/2023/art_57c23b9341c34f6fa37a0de33f4058e3.html" target="_blank" rel="noopener noreferrer">市场监管总局：明码标价和禁止价格欺诈规定（2022-06-02发布）</a></li>
+<li><a href="https://www.samr.gov.cn/zt/ndzt/2025n/ggf/dfzs/art/2026/art_8b7f89730d554ac389d9b4070f759783.html" target="_blank" rel="noopener noreferrer">南宁市市场监管局：教育考试培训机构广告合规提醒（2026-03-13）</a></li>
+<li><a href="https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/fgs/art/2023/art_85a1509b801143bc8a37a1aa2722542a.html" target="_blank" rel="noopener noreferrer">市场监管总局：侵害消费者权益行为处罚办法（现行修订版）</a></li>
+</ol></div>
+</div></section>
+
+<div class="back-link"><a href="index.html">← 返回日报首页</a></div>
+<div class="footer">
+<p>生存知识日报 · 2026-08-14 · 星期五</p>
+<p>内容基于 8 个可点击政府/监管来源整理 · 时效事实核验于 2026-08-14（Asia/Shanghai）</p>
+</div>
+
+</body>
+</html>
