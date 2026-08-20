@@ -1,176 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><head>
+<html lang="zh-CN" data-yara-theme="dawn"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>生存知识日报 · 首页</title>
-<style>
-/* === YouTube 2025 风格设计系统（浅色版）=== */
-:root {
-    --bg-base: #f7f7fa;
-    --bg-elevated: #ffffff;
-    --glass-bg: rgba(255,255,255,0.72);
-    --glass-bg-hover: rgba(255,255,255,0.88);
-    --glass-border: rgba(15,15,25,0.08);
-    --glass-border-hover: rgba(255,45,85,0.35);
-    --text-primary: #0f0f15;
-    --text-secondary: #5a5a6a;
-    --text-tertiary: #9a9aa8;
-    --accent-red: #ff2d55;
-    --accent-magenta: #ff2dc8;
-    --accent-gradient: linear-gradient(135deg, #ff2d55 0%, #ff375f 50%, #ff2dc8 100%);
-    --accent-soft: rgba(255,45,85,0.10);
-    --accent-glow: rgba(255,45,85,0.28);
-    --radius-lg: 28px;
-    --radius-md: 20px;
-    --radius-sm: 14px;
-    --radius-pill: 999px;
-    --blur: 30px;
-    --ease: cubic-bezier(0.4, 0, 0.2, 1);
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-html { scroll-behavior:smooth; }
-body {
-    font-family:-apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
-    background: var(--bg-base);
-    color: var(--text-primary);
-    line-height:1.85;
-    min-height:100vh;
-    -webkit-font-smoothing:antialiased;
-}
-.hero {
-    position:relative; overflow:hidden;
-    padding:80px 24px 60px;
-    text-align:center;
-    border-bottom:1px solid rgba(15,15,25,0.06);
-    background: var(--bg-base);
-}
-.hero::before {
-    content:''; position:absolute; inset:-30%;
-    background:
-        radial-gradient(ellipse 60% 50% at 30% 20%, rgba(255,45,85,0.14) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 40% at 70% 30%, rgba(255,45,200,0.12) 0%, transparent 60%),
-        radial-gradient(ellipse 70% 60% at 50% 100%, rgba(255,55,95,0.10) 0%, transparent 70%);
-    filter: blur(40px);
-    animation: ambient 12s ease-in-out infinite alternate;
-    z-index:0;
-}
-@keyframes ambient {
-    0% { transform: translate(0,0) scale(1); opacity:0.75; }
-    100% { transform: translate(-3%, 2%) scale(1.08); opacity:1; }
-}
-.hero::after {
-    content:''; position:absolute; inset:0;
-    background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.6) 0%, transparent 50%);
-    pointer-events:none; z-index:0;
-}
-.hero h1 {
-    font-size:2.8em; color: var(--text-primary);
-    font-weight:600; letter-spacing:4px;
-    position:relative; z-index:1;
-    text-shadow: 0 2px 20px rgba(255,255,255,0.6);
-}
-.hero .hero-sub {
-    font-size:1.05em;
-    color: var(--text-secondary);
-    margin-top:12px;
-    position:relative; z-index:1;
-}
-.hero .hero-meta {
-    font-size:0.9em;
-    color: var(--text-tertiary);
-    margin-top:8px;
-    position:relative; z-index:1;
-}
-.container {
-    max-width:1200px;
-    margin:0 auto;
-    padding:32px 24px 60px;
-}
-.section-title {
-    font-size:1.3em; font-weight:600;
-    color: var(--text-primary);
-    margin:36px 0 20px;
-    padding-left:16px;
-    border-left:4px solid;
-    border-image: var(--accent-gradient) 1;
-}
-.card-grid {
-    display:grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap:20px;
-}
-.date-card {
-    display:block;
-    text-decoration:none;
-    color: var(--text-primary);
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--blur)) saturate(150%);
-    -webkit-backdrop-filter: blur(var(--blur)) saturate(150%);
-    border-radius: var(--radius-lg);
-    border:1px solid var(--glass-border);
-    padding:24px 28px;
-    transition: all 0.4s var(--ease);
-    box-shadow: 0 1px 3px rgba(15,15,25,0.04), 0 8px 24px rgba(15,15,25,0.03);
-}
-.date-card:hover {
-    border-color: var(--glass-border-hover);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 40px rgba(255,45,85,0.10), 0 2px 8px rgba(15,15,25,0.05);
-}
-.card-header {
-    display:flex; align-items:center; gap:12px;
-    margin-bottom:12px;
-}
-.card-date {
-    font-size:1.15em; font-weight:600;
-    background: var(--accent-gradient);
-    -webkit-background-clip:text;
-    background-clip:text;
-    -webkit-text-fill-color:transparent;
-}
-.card-weekday {
-    font-size:0.82em;
-    color: var(--text-tertiary);
-}
-.card-badge {
-    font-size:0.75em;
-    background: linear-gradient(135deg, rgba(255,45,85,0.12) 0%, rgba(255,45,200,0.1) 100%);
-    color: var(--accent-red);
-    padding:3px 10px;
-    border-radius: var(--radius-pill);
-    font-weight:500;
-    margin-left:auto;
-}
-.card-body {}
-.card-label {
-    font-size:0.85em;
-    color: var(--text-secondary);
-    line-height:1.6;
-    display:-webkit-box;
-    -webkit-line-clamp:2;
-    -webkit-box-orient:vertical;
-    overflow:hidden;
-}
-.card-arrow {
-    margin-top:10px;
-    font-size:0.82em;
-    color: var(--accent-red);
-    font-weight:500;
-}
-.footer {
-    text-align:center;
-    padding:48px 20px;
-    color: var(--text-tertiary);
-    border-top:1px solid rgba(15,15,25,0.06);
-}
-.footer p { margin:8px 0; font-weight:300; }
-@media (max-width:768px) {
-    .hero { padding:50px 18px 40px; }
-    .hero h1 { font-size:2em; letter-spacing:2px; }
-    .card-grid { grid-template-columns: 1fr; gap:14px; }
-    .date-card { padding:20px 22px; }
-}
-</style></head><body>
+<link rel="stylesheet" href="daily-report.css"></head><body>
 
 <header class="hero">
 <h1>生存知识日报</h1>
@@ -183,14 +16,37 @@ body {
 <div class="section-title">📰 日报日历</div>
 <div class="card-grid">
 
-    <a href="生存知识日报_2026-08-14.html#module-1" class="date-card" id="date-ops">
+    <a href="生存知识日报_2026-08-20.html#module-1" class="date-card" id="date-ops">
         <div class="card-header">
             <span class="card-date">📌 运营精华</span>
             <span class="card-weekday">每日必读</span>
         </div>
         <div class="card-body">
-            <div class="card-label">直播成交的三年证据链 · 从促单话术到可复核交易</div>
+            <div class="card-label">从“内容播放”到“能力闭环” · 诊断、练习、反馈与换题验证</div>
             <div class="card-arrow">→ 进入精华</div>
+        </div>
+    </a>
+
+    <a href="生存知识日报_2026-08-20.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-08-20</span>
+            <span class="card-weekday">星期四</span>
+            <span class="card-badge">🆕 最新</span>
+        </div>
+        <div class="card-body">
+            <div class="card-label">课程能力闭环·诊断练习反馈·换题验证·AI素养</div>
+            <div class="card-arrow">→ 阅读全文</div>
+        </div>
+    </a>
+
+    <a href="生存知识日报_2026-08-19.html" class="date-card">
+        <div class="card-header">
+            <span class="card-date">2026-08-19</span>
+            <span class="card-weekday">星期三</span>
+        </div>
+        <div class="card-body">
+            <div class="card-label">AI代理委派力·最小权限·结果ROI·认知不外包</div>
+            <div class="card-arrow">→ 阅读全文</div>
         </div>
     </a>
 
@@ -198,7 +54,6 @@ body {
         <div class="card-header">
             <span class="card-date">2026-08-14</span>
             <span class="card-weekday">星期五</span>
-            <span class="card-badge">🆕 最新</span>
         </div>
         <div class="card-body">
             <div class="card-label">直播成交证据链·私域网课处罚案例·主张台账·可保留收入</div>
@@ -596,7 +451,7 @@ body {
 
 <div class="footer">
 <p>生存知识日报 v2.0 · 以 Nean 为锚点的个人知识资产库</p>
-<p>共 36 期日报 · 最新：2026-08-14</p>
+<p>共 38 期日报 · 最新：2026-08-20</p>
 </div>
 
 </body></html>

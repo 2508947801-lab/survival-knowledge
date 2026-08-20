@@ -8,8 +8,8 @@
   "start_url": "./管理系统.html?entry=pwa",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#172033",
-  "theme_color": "#172033",
+  "background_color": "#17211e",
+  "theme_color": "#17211e",
   "orientation": "any",
   "categories": ["productivity", "education", "lifestyle"],
   "icons": [

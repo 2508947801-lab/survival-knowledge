@@ -16,3 +16,16 @@ body[data-theme="dawn"] .pwa-install-step{background:rgba(70,92,120,.07)}
 @media(max-width:768px){.pwa-install-button{display:grid!important}.pwa-install-button .pwa-install-label{display:none}.pwa-dialog{padding:20px;border-radius:22px}.pwa-update-toast{left:16px;right:16px;bottom:16px;max-width:none}}
 @media(display-mode:standalone){.pwa-install-button{display:none!important}}
 @media(prefers-reduced-motion:reduce){.pwa-dialog-backdrop,.pwa-update-toast{transition:none}}
+
+/* Yara Mist Pine 4.0 · install and update surfaces */
+.pwa-install-button.is-ready{color:var(--primary,#78b7a4);border-color:rgba(120,183,164,.38);box-shadow:0 0 18px rgba(120,183,164,.14)}
+.pwa-dialog-backdrop{background:rgba(8,16,13,.64)}
+.pwa-dialog{background:linear-gradient(145deg,rgba(32,44,40,.99),rgba(23,33,30,.99));color:var(--ink,#f2f5f3);box-shadow:0 24px 80px rgba(3,10,7,.48),0 0 40px rgba(172,160,201,.1)}
+body[data-theme="dawn"] .pwa-dialog{background:linear-gradient(145deg,rgba(255,255,255,.99),rgba(238,242,238,.99));color:#24322d;box-shadow:0 24px 70px rgba(36,50,45,.18)}
+.pwa-dialog-icon{background:linear-gradient(135deg,#4f8a79,#7a6b9b 58%,#d8896b);box-shadow:0 8px 22px rgba(79,138,121,.24)}
+.pwa-dialog-copy p{color:var(--sub,#8f9d96)}
+.pwa-install-step strong{background:rgba(120,183,164,.14);color:var(--primary,#78b7a4)}
+body[data-theme="dawn"] .pwa-install-step{background:rgba(63,117,103,.07)}
+.pwa-dialog-actions .pwa-primary{background:linear-gradient(135deg,#4f8a79,#7a6b9b 64%,#d8896b);box-shadow:0 8px 20px rgba(79,138,121,.22)}
+.pwa-update-toast{border-color:rgba(120,183,164,.3);background:rgba(23,33,30,.97);color:#f2f5f3;box-shadow:0 16px 50px rgba(3,10,7,.4)}
+.pwa-update-toast button{background:linear-gradient(135deg,#91c8b7,#78b7a4);color:#14231e}
