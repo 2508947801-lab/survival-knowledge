@@ -1,5 +1,5 @@
-/* Yara PWA service worker. 20260820173430 is replaced by the release script. */
-const YARA_BUILD = '20260820173430';
+/* Yara PWA service worker. 20260821132346 is replaced by the release script. */
+const YARA_BUILD = '20260821132346';
 const CACHE_PREFIX = 'yara-pwa-';
 const CACHE_NAME = CACHE_PREFIX + YARA_BUILD;
 const OFFLINE_URL = './离线.html';

@@ -57,8 +57,8 @@ new Chart(document.getElementById('chart1'), {
     type:'line',
     data:{ labels:['7/7','7/8','7/9','7/10'],
       datasets:[
-        { label:'上证指数', data:[3990.24,4015,4045,4062], borderColor:'#667eea', backgroundColor:'rgba(102,126,234,0.15)', fill:true, tension:0.35, pointRadius:4 },
-        { label:'科创综指', data:[2315.59,2388,2469.08,2503], borderColor:'#764ba2', backgroundColor:'rgba(118,75,162,0.12)', fill:true, tension:0.35, pointRadius:4 }
+        { label:'上证指数', data:[3990.24,4015,4045,4062], borderColor:'#4f7cff', backgroundColor:'rgba(102,126,234,0.15)', fill:true, tension:0.35, pointRadius:4 },
+        { label:'科创综指', data:[2315.59,2388,2469.08,2503], borderColor:'#8174d8', backgroundColor:'rgba(118,75,162,0.12)', fill:true, tension:0.35, pointRadius:4 }
       ]},
     options:{ plugins:{ legend:{ labels:{ color:'rgba(60,60,90,0.85)', font:{size:13} } } },
       scales:{ x:{ ticks:{ color:'rgba(90,90,110,0.9)' }, grid:{ color:'rgba(0,0,0,0.06)' } },
@@ -99,7 +99,7 @@ new Chart(document.getElementById('chart2'), {
     type:'bar',
     data:{ labels:['上证指数','深证成指','创业板指','科创50','万得全A','中证A500'],
       datasets:[{ label:'7/7涨跌幅%', data:[-1.26,-1.24,-0.94,0.27,-1.66,-1.21],
-        backgroundColor:['#764ba2','#764ba2','#764ba2','#667eea','#764ba2','#764ba2'], borderRadius:6 }]},
+        backgroundColor:['#8174d8','#8174d8','#8174d8','#4f7cff','#8174d8','#8174d8'], borderRadius:6 }]},
     options:{ plugins:{ legend:{ labels:{ color:'rgba(60,60,90,0.85)' } } },
       scales:{ x:{ ticks:{ color:'rgba(90,90,110,0.9)' }, grid:{ display:false } },
                y:{ ticks:{ color:'rgba(90,90,110,0.9)' }, grid:{ color:'rgba(0,0,0,0.06)' } } } }
@@ -139,7 +139,7 @@ new Chart(document.getElementById('chart3'), {
     type:'bar',
     data:{ labels:['活期','1年定存','3年定存','5年定存','大额存单(1年)','3年国债','5年国债'],
       datasets:[{ label:'年利率%', data:[0.05,0.95,1.25,1.30,1.20,1.63,1.70],
-        backgroundColor:['#c9c9d6','#a5a8c4','#8a8dbe','#7d80b8','#6f73b4','#667eea','#5a3e9c'], borderRadius:6 }]},
+        backgroundColor:['#c9c9d6','#a5a8c4','#8a8dbe','#7d80b8','#6f73b4','#4f7cff','#5a3e9c'], borderRadius:6 }]},
     options:{ plugins:{ legend:{ labels:{ color:'rgba(60,60,90,0.85)' } } },
       scales:{ x:{ ticks:{ color:'rgba(90,90,110,0.9)' }, grid:{ display:false } },
                y:{ ticks:{ color:'rgba(90,90,110,0.9)', callback:v=>v+'%' }, grid:{ color:'rgba(0,0,0,0.06)' } } } }
@@ -179,7 +179,7 @@ new Chart(document.getElementById('chart4'), {
     type:'bar',
     data:{ labels:['摩尔线程(科创板)','沐曦股份(科创板)','壁仞科技(港股GPU第一股)'],
       datasets:[{ label:'首日涨幅%', data:[400,700,260],
-        backgroundColor:['#667eea','#5a3e9c','#764ba2'], borderRadius:6 }]},
+        backgroundColor:['#4f7cff','#5a3e9c','#8174d8'], borderRadius:6 }]},
     options:{ plugins:{ legend:{ labels:{ color:'rgba(60,60,90,0.85)' } },
         tooltip:{ callbacks:{ label:c=>'首日涨幅约 '+c.parsed.y+'%' } } },
       scales:{ x:{ ticks:{ color:'rgba(90,90,110,0.9)' }, grid:{ display:false } },

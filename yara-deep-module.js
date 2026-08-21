@@ -127,7 +127,7 @@
     }
 
     var openLayer = Array.prototype.slice.call(document.querySelectorAll(
-      '.modal.open,.modal.show,.modal-backdrop.open,.modal-backdrop.show,[aria-modal="true"].open'
+      '.modal.open,.modal.show,.modal-backdrop.open,.modal-backdrop.show,.board-detail-backdrop.open,[data-yara-layer].open,[aria-modal="true"].open'
     )).pop();
     if (openLayer) {
       var closeControl = openLayer.querySelector(
