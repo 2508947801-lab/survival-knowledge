@@ -154,6 +154,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 // ===== 每日工作待办 =====
 const LS_KEY = 'yara_daily_todo_v1';
 const WEEK = ['周日','周一','周二','周三','周四','周五','周六'];
+const WORK_TODO_CUTOFF = '2026-08-31';
 
 // 首次使用预置：历史任务 + 2026 年 8 月日常运营排期。
 // 预置任务使用稳定 seed ID；用户删除后会进入 deletedSeeds，不会在刷新或云同步后复活。
@@ -247,6 +248,23 @@ function mergeSeeds(s){
       });
     }
     s.seedVersions.augustOpsV2=true;
+  }
+  // 离职边界：2026-08-31 后不再保留岗位日常预置；用户手动新增的任务不受影响。
+  if(!s.seedVersions.leaveOpsCutoffV1){
+    for(const date in (s.tasks||{})){
+      if(date<=WORK_TODO_CUTOFF) continue;
+      const kept=[];
+      (s.tasks[date]||[]).forEach(function(task){
+        if(/^seed-ops-\d{8}-/.test(task.id)){
+          if(s.deletedSeeds.indexOf(task.id)<0) s.deletedSeeds.push(task.id);
+          seedMergeChanged=true;
+          return;
+        }
+        kept.push(task);
+      });
+      s.tasks[date]=kept;
+    }
+    s.seedVersions.leaveOpsCutoffV1=true;
   }
   // 合并新增的预置任务（按 id 判断，已删除的不再恢复）
   for(const date in SEED){
@@ -455,7 +473,11 @@ function renderSummary(){
 }
 function updateEmpty(){
   const total=getTasks(current).length;
-  document.getElementById('emptyState').style.display = total? 'none':'block';
+  const empty=document.getElementById('emptyState');
+  empty.innerHTML=current>WORK_TODO_CUTOFF
+    ? '离职后的岗位日常待办已停止预置～<br>如有个人安排，仍可在上方自行添加 ☕'
+    : '这一天还没有任务～<br>在上方添加，或给自己放个假 ☕';
+  empty.style.display = total? 'none':'block';
 }
 
 function render(){

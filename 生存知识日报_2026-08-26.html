@@ -1,53 +1,109 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-yara-theme="dawn"><head>
+<html lang="zh-CN" data-yara-theme="dawn">
+<head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="description" content="同时管理任务数量、预计时长与切换成本"><title>生存知识日报 · 2026-08-26</title>
-<link rel="stylesheet" href="daily-report.css"></head><body data-report-kind="scheduled">
+<meta name="description" content="用在制品上限、小批量、交付定义和机动缓冲管理真实产能">
+<title>生存知识日报 · 2026-08-26 · 交付产能</title>
+<link rel="stylesheet" href="daily-report.css">
+</head>
+<body>
 <nav class="nav-bar" aria-label="日报章节">
 <a href="#module-1">① 运营方法</a><a href="#module-2">② 行业观察</a><a href="#module-3">③ AI与工具</a>
 <a href="#module-4">④ 财务与资源</a><a href="#module-5">⑤ 职场成长</a><a href="#module-6">⑥ 深度阅读</a><a href="#module-7">⑦ 五栏分析</a>
 </nav>
-<header class="hero"><div class="hero-badge">预设专题 · 非实时新闻</div><h1>预设专题：从待办清单到产能管理</h1>
-<div class="date-info">2026-08-26 · 星期三</div><div class="hero-sub">同时管理任务数量、预计时长与切换成本</div><div class="hero-meta">本页为提前安排的常青知识主题，日期到达后如需加入时效信息，应重新检索并核验。</div></header>
+<header class="hero">
+<div class="hero-badge">交付专题 · 已核验</div>
+<h1>从待办清单到产能系统：少开工，快交付</h1>
+<div class="date-info">2026-08-26 · 星期三 · 第 42 期</div>
+<div class="hero-sub">在制品上限 · 小批量 · 阻塞优先 · 恢复缓冲</div>
+<div class="hero-meta">计划不是把每一分钟占满，而是让高价值工作在现实波动中仍能完成、验收和恢复。</div>
+</header>
 <div class="toc"><div class="toc-grid"><a href="#module-1">运营方法</a><a href="#module-2">行业观察</a><a href="#module-3">AI与工具</a><a href="#module-4">财务与资源</a><a href="#module-5">职场成长</a><a href="#module-6">深度阅读</a><a href="#module-7">五栏分析</a></div></div>
 
-<section id="module-1" class="module"><div class="module-header"><span class="module-num">01</span><div><div class="module-title">运营方法</div><div class="module-subtitle">把抽象原则变成今天可以执行的工作动作</div></div></div><div class="content">
-<h3>预设专题：从待办清单到产能管理</h3><p><strong>核心判断：</strong>塞满日历不等于提高产出，缓冲是系统的一部分。在运营工作里，方法的价值不在概念听起来先进，而在它能否减少重复劳动、缩短反馈时间，并让异常更早暴露。</p>
-<p><strong>最小行动：</strong>每天只承诺三项结果，并预留百分之二十机动时间。动作完成后，不只记录“做过”，还要记录输入是什么、采用了什么判断、交付给谁、结果是否达到预期。这样才能把一次经验变成可复用的工作资产。</p>
-<div class="highlight"><h4>今日三步卡</h4><ol><li>先写清楚目标：这次要解决的核心问题是否与“同时管理任务数量、预计时长与切换成本”直接相关？</li><li>留下证据：完成“每天只承诺三项结果，并预留百分之二十机动时间”后，保存结果、偏差与下一步。</li><li>设置边界：主动检查“过度压缩会让突发事项持续挤占重要工作”是否已经出现。</li></ol></div></div></section>
+<section id="module-1" class="module"><div class="module-header"><span class="module-num">①</span><div><div class="module-title">运营方法</div><div class="module-subtitle">产能不是“手上有多少任务”，而是单位时间能验收多少结果</div></div></div><div class="content">
+<h3>📌 今天的判断：限制开工数，暴露真正瓶颈</h3>
+<p><strong>事实：</strong>英国政府的敏捷采购指南把看板描述为可视化并改进现有工作方式的方法，重点是减少交付周期和在制品（WIP），让工作更快流过系统。DORA 的能力指南也建议优先级排序、限制同时进行的工作并聚焦少量高优先事项；其结论主要来自软件交付研究。</p>
+<a class="source-link" href="https://www.gov.uk/government/publications/the-digital-data-and-technology-playbook/contracting-for-agile-guidance-note-html" target="_blank" rel="noopener noreferrer">直接来源：UK Cabinet Office · Contracting for Agile Guidance Note（核验于 2026-08-27）↗</a>
+<a class="source-link" href="https://dora.dev/capabilities/wip-limits/" target="_blank" rel="noopener noreferrer">直接来源：DORA · Work in process limits（核验于 2026-08-27）↗</a>
+<p><strong>推断到课程运营：</strong>同时开 12 个任务并不代表产出更高；每个任务都在等待资料、审批、讲师或复核时，真正稀缺的是“完成能力”。先给关键流程设试验性上限，再用两周数据调整，不把软件团队经验冒充课程运营定律。</p>
+<div class="highlight"><h4>一块四列产能板</h4><ol>
+<li><strong>待承诺：</strong>需求可以很多，但尚未占用交付承诺。</li>
+<li><strong>进行中：</strong>个人先试行最多 2 项，团队按实际角色与瓶颈设上限。</li>
+<li><strong>待他人：</strong>写清等待对象、下一次追踪时间与超时升级。</li>
+<li><strong>已验收：</strong>只有满足完成定义、链接可开、结果有人确认，才算完成。</li>
+</ol></div>
+<p><strong>建议：</strong>达到上限时不再偷偷开新任务，而是协助清阻塞、缩小批次或明确替换掉哪项承诺。</p>
+</div></section>
 
-<section id="module-2" class="module"><div class="module-header"><span class="module-num">02</span><div><div class="module-title">行业观察</div><div class="module-subtitle">观察长期模式，不把常青知识伪装成当天新闻</div></div></div><div class="content">
-<h3>从个别事件提炼可迁移的规律</h3><p>成熟团队会逐步把“靠某个人记得”改造成“系统可以提醒、检查和回溯”。但系统化并不等于无限增加流程：真正值得固化的是高频、影响大、判断边界清楚的部分，低频复杂问题仍需要经验和升级通道。</p>
-<p>围绕本期主题，建议观察三个信号：信息是否重复录入、同类错误是否反复出现、异常发生时是否知道由谁接手。若三个问题中有两个答案不清楚，就说明流程仍然过度依赖个人记忆。</p>
-<div class="highlight"><h4>观察问题</h4><ul><li>用户或同事在哪一步等待最久？</li><li>哪个字段或状态最容易产生不同解释？</li><li>问题出现后，团队是在修复原因还是只处理表面？</li></ul></div></div></section>
+<section id="module-2" class="module"><div class="module-header"><span class="module-num">②</span><div><div class="module-title">行业观察</div><div class="module-subtitle">近处详细、远处粗略，计划要随证据更新</div></div></div><div class="content">
+<h3>🗺️ 把路线图、迭代和今天的承诺分开</h3>
+<p><strong>事实：</strong>GOV.UK Service Manual 建议对短期即将开展的工作做更详细计划，对远期工作保持高层级，并随着对用户的学习持续调整；规划应可见，让团队看见目标、依赖和即将进行的工作。该页在 2026 年 3 月 31 日更新了虚拟与实体团队看板相关表述。</p>
+<a class="source-link" href="https://www.gov.uk/service-manual/agile-delivery/planning-agile" target="_blank" rel="noopener noreferrer">直接来源：GOV.UK Service Manual · Planning in agile（2026-03-31 更新，核验于 2026-08-27）↗</a>
+<p><strong>对交付运营的建议：</strong>月度路线图写结果与顺序，周计划写可验收批次，日计划只承诺最关键的 1—3 个结果。未来事项继续保留意图和边界，不提前伪装成已经确定的工时。</p>
+<table class="metric-table"><thead><tr><th>层级</th><th>应写什么</th><th>不应写什么</th></tr></thead><tbody>
+<tr><td>路线图</td><td>目标、优先级、依赖、复核点</td><td>虚假精确的每日安排</td></tr>
+<tr><td>本周批次</td><td>可独立验收的结果</td><td>只有动作、没有完成定义</td></tr>
+<tr><td>今日承诺</td><td>负责人、截止、验收、阻塞</td><td>无限延伸的待办愿望</td></tr>
+</tbody></table>
+</div></section>
 
-<section id="module-3" class="module"><div class="module-header"><span class="module-num">03</span><div><div class="module-title">AI 与工具</div><div class="module-subtitle">让工具扩大判断力，而不是替代责任</div></div></div><div class="content">
-<h3>用 AI 做整理、比较和提醒，把关键判断留给人</h3><p>本期主题适合让 AI 协助完成资料归类、格式检查、选项对比和草稿生成。输入时应先说明目标、材料范围、禁止修改项和输出格式；结果出来后，再由人检查事实、业务边界与可能遗漏的反例。</p>
-<p><strong>推荐提示结构：</strong>“基于以下材料，按照目标—现状—风险—动作整理；不得补造事实；不确定项单独列出；给出一条反对意见。”这比只说“帮我优化”更容易获得可检查的结果。</p>
-<p><strong>数据边界：</strong>真实姓名、订单、财务流水、学员隐私和密钥不应直接进入未确认权限的外部工具。先脱敏，再决定是否需要上传。</p></div></section>
+<section id="module-3" class="module"><div class="module-header"><span class="module-num">③</span><div><div class="module-title">AI 与工具</div><div class="module-subtitle">AI 提高生成速度时，更要缩小批次并保留人工验收</div></div></div><div class="content">
+<h3>🤖 不要让 AI 一次生成“大而全”的不可审查交付</h3>
+<p><strong>事实：</strong>DORA 的小批量能力页面认为，小批量能缩短反馈、便于修正；该页还明确提示，在其软件交付研究语境中，AI 采用可能伴随更高交付不稳定性，小批量可作为降低风险的配套能力。这个结论不能直接证明所有办公或课程任务都会得到相同效果。</p>
+<a class="source-link" href="https://dora.dev/capabilities/working-in-small-batches/" target="_blank" rel="noopener noreferrer">直接来源：DORA · Working in small batches（核验于 2026-08-27）↗</a>
+<div class="highlight"><h4>AI 任务的四批交付法</h4><ol>
+<li>先交字段和完成定义，不生成正文。</li>
+<li>再用一条脱敏样例跑通，核对来源、格式与边界。</li>
+<li>批量处理时每批保留数量上限和失败日志。</li>
+<li>最后独立复核总数、异常和链接，不让同一模型自己验收自己。</li>
+</ol></div>
+<p><strong>建议：</strong>把“帮我全部做完”改成“先完成一个可验证切片”。如果首批就暴露字段、隐私或口径问题，停止扩散，先修规则。</p>
+</div></section>
 
-<section id="module-4" class="module"><div class="module-header"><span class="module-num">04</span><div><div class="module-title">财务与资源</div><div class="module-subtitle">同时计算时间、返工、机会成本和风险损失</div></div></div><div class="content">
-<h3>资源判断不能只看“做这件事花了多久”</h3><p>一项工作的真实成本包括执行时间、沟通等待、返工、工具费用和占用关键注意力的机会成本。同时管理任务数量、预计时长与切换成本，意味着评估时还要问：这个动作是否降低了未来重复成本，是否让风险更早被发现。</p>
-<table class="metric-table"><thead><tr><th>资源项</th><th>应记录的问题</th><th>改进方向</th></tr></thead><tbody><tr><td>时间</td><td>执行与等待分别多久</td><td>减少切换与重复确认</td></tr><tr><td>返工</td><td>错误在第几步被发现</td><td>把检查点前移</td></tr><tr><td>风险</td><td>一旦出错影响多大</td><td>增加备份、撤销和升级</td></tr></tbody></table>
-<p>不要急着把所有工作货币化。先连续记录两周，再用真实频次决定哪些值得自动化、模板化或停止。</p></div></section>
+<section id="module-4" class="module"><div class="module-header"><span class="module-num">④</span><div><div class="module-title">财务与资源</div><div class="module-subtitle">把等待、返工和占用关键角色的时间计入真实成本</div></div></div><div class="content">
+<h3>💰 产能账比工时账多看三件事</h3>
+<table class="metric-table"><thead><tr><th>指标</th><th>定义</th><th>用于回答</th></tr></thead><tbody>
+<tr><td>吞吐量</td><td>一周真正验收的结果数</td><td>团队实际交付多少</td></tr>
+<tr><td>交付周期</td><td>从承诺到验收的时间</td><td>用户等待多久</td></tr>
+<tr><td>在制品</td><td>已开工但未验收的事项</td><td>系统压了多少半成品</td></tr>
+<tr><td>阻塞时长</td><td>等待资料、审批或资源的时间</td><td>瓶颈到底在哪里</td></tr>
+</tbody></table>
+<p><strong>建议：</strong>连续两周记录，不先追求漂亮数字。如果“人都很忙但吞吐量不变”，先减少切换与等待，不自动得出“需要加人”的结论。</p>
+<p><strong>推断：</strong>机动缓冲并非浪费。没有任何缓冲时，一次学员权益问题、讲师临时变更或系统故障就会把所有承诺一起推迟。缓冲比例应由历史突发频率和损失决定，本文不规定统一的 20%。</p>
+</div></section>
 
-<section id="module-5" class="module"><div class="module-header"><span class="module-num">05</span><div><div class="module-title">职场成长</div><div class="module-subtitle">把可靠交付转化成可说明、可迁移的职业证据</div></div></div><div class="content">
-<h3>能力证据比“我很负责”更有说服力</h3><p>职业成长不是不断承担更多杂事，而是逐渐提高判断质量、交付稳定性和系统影响。把本期方法用于真实工作后，可以用“原问题—我的判断—采取动作—结果—复盘”保存一条案例。</p>
-<p>这类记录在绩效沟通和求职时都更有价值：它说明你不仅执行，还能识别风险、设计流程并留下复用资产。若结果不理想，也可以诚实说明限制和下一次如何调整。</p>
-<div class="highlight"><h4>一句话证据模板</h4><p>面对【具体问题】，我基于【判断依据】完成【动作】，使【可复核结果】发生变化，并沉淀了【模板、规则或工具】。</p></div></div></section>
+<section id="module-5" class="module"><div class="module-header"><span class="module-num">⑤</span><div><div class="module-title">职场成长</div><div class="module-subtitle">可持续交付是岗位能力，不是个人硬扛</div></div></div><div class="content">
+<h3>🎯 用“可实现需求”替代“永远可以接”</h3>
+<p><strong>事实：</strong>英国职业健康与安全执行局（HSE）的工作压力管理标准把工作量、工作模式和工作环境纳入“需求”维度，并提出组织应在约定工时内提供充分且可实现的要求，让技能与工作需求匹配。</p>
+<a class="source-link" href="https://www.hse.gov.uk/stress/standards/demands.htm" target="_blank" rel="noopener noreferrer">直接来源：UK HSE · Management Standards — Demands（核验于 2026-08-27）↗</a>
+<p><strong>职场表达：</strong>“我不是拒绝这项任务；当前进行中有 A、B，两项验收时间分别是 X、Y。若新事项今天进入，需要把 B 延至 Z，或补充审批/复核资源。请确认取舍。”这比沉默加班或含糊答应更可管理。</p>
+<div class="highlight"><h4>职业证据模板</h4><p>我为【流程】建立在制品上限与阻塞台账，把平均交付周期从【原值】变为【新值】，同时保持【质量/投诉/返工】口径不恶化；数据不足时明确写“尚未证明”。</p></div>
+</div></section>
 
-<section id="module-6" class="module"><div class="module-header"><span class="module-num">06</span><div><div class="module-title">深度阅读</div><div class="module-subtitle">把一个方法放回真实限制中重新理解</div></div></div><div class="content">
-<h3>任何好方法都有适用边界</h3><p>塞满日历不等于提高产出，缓冲是系统的一部分。它之所以有用，是因为帮助我们减少无意识反应，把判断拆成可见步骤；但它并不能消除信息不完整、利益冲突和环境变化。</p>
-<p>真正成熟的使用方式，是在采用方法的同时主动寻找它何时会失效。本期最重要的反证是：过度压缩会让突发事项持续挤占重要工作。当这个信号出现时，应暂停机械执行，补充信息或升级给更合适的人处理。</p>
-<p>因此，学习的终点不是记住一句话，而是能回答三个问题：它解决什么问题？在什么条件下有效？出现什么信号时必须停止或调整？</p></div></section>
+<section id="module-6" class="module"><div class="module-header"><span class="module-num">⑥</span><div><div class="module-title">深度阅读</div><div class="module-subtitle">长期超负荷不是效率策略，健康损失也会进入运营账</div></div></div><div class="content">
+<h3>🧠 工时超过边界时，问题不再只是“排期不准”</h3>
+<p><strong>事实：</strong>WHO/ILO 基于系统综述和跨国暴露数据的联合估计指出，与每周工作 35—40 小时相比，每周至少 55 小时与缺血性心脏病和卒中风险上升相关；其 2016 年疾病负担估计为约 74.5 万例相关死亡。该证据是人群层面的观察与模型估计，不能预测某个个体的结果，也不能把某周加班直接归因为疾病。</p>
+<a class="source-link" href="https://www.who.int/news-room/questions-and-answers/item/global-regional-and-national-burdens-of-ischemic-heart-disease-and-stroke-attributable-to-exposure-to-long-working-hours-for-194-countries-2000-2016" target="_blank" rel="noopener noreferrer">直接来源：WHO/ILO · Long working hours and disease burden Q&amp;A（2021-05-17，核验于 2026-08-27）↗</a>
+<p><strong>建议：</strong>若系统持续依赖超长工时才能履约，应升级为容量、优先级或资源问题，而不是把恢复责任完全交给个人。出现胸痛、呼吸困难或其他急性症状时，应及时寻求医疗帮助；本文不是医学诊断。</p>
+<p><strong>反证：</strong>限制 WIP 可能让局部人员短暂空闲，也可能因设置过低而延误必要并行任务。它的目的不是追求最小数字，而是让瓶颈可见并用实际吞吐、周期、质量和健康信号迭代。</p>
+</div></section>
 
-<section id="module-7" class="module"><div class="module-header"><span class="module-num">07</span><div><div class="module-title">五栏分析</div><div class="module-subtitle">把知识压缩成一页可执行决策卡</div></div></div><div class="content"><div class="analysis-grid">
-<article class="analysis-card"><h3>发生了什么</h3><p>本期聚焦“预设专题：从待办清单到产能管理”，把分散经验整理成可检查的方法。</p></article>
-<article class="analysis-card"><h3>为什么重要</h3><p>塞满日历不等于提高产出，缓冲是系统的一部分，它直接影响工作是否稳定、价值是否可见。</p></article>
-<article class="analysis-card"><h3>对我的启发</h3><p>先从一个高频场景试用，不追求一次重做整个系统。</p></article>
-<article class="analysis-card"><h3>今天的动作</h3><p>每天只承诺三项结果，并预留百分之二十机动时间，并为结果保留一条可复核记录。</p></article>
-<article class="analysis-card"><h3>风险与反证</h3><p>过度压缩会让突发事项持续挤占重要工作；发现信号后及时暂停、补信息或升级处理。</p></article>
-</div></div></section>
-
-<div class="back-link"><a href="index.html">← 返回日报首页</a></div><footer class="footer"><p>生存知识日报 · 2026-08-26 · 星期三</p><p>本页为提前安排的常青知识主题，日期到达后如需加入时效信息，应重新检索并核验。</p></footer>
-<script src="yara-daily-detail.js"></script></body></html>
+<section id="module-7" class="module"><div class="module-header"><span class="module-num">⑦</span><div><div class="module-title">五栏分析</div><div class="module-subtitle">把忙碌重新定义为可验收的流动</div></div></div><div class="content">
+<h3>① 发生了什么</h3><p>敏捷交付与 DORA 能力资料都强调可视化、减少在制品和缩小批次；职业健康框架要求工作需求在约定工时内可实现，长期超时还有明确的人群健康风险信号。</p>
+<h3>② 为什么重要</h3><p>课程运营同时打开过多任务，会把问题藏在等待与切换里。最终用户只看到延迟、错漏和模糊承诺，团队却误以为“大家都很忙”就是产能不足的证据。</p>
+<h3>③ 对 Yara 的启发</h3><p>把待办、在制、等待和已验收分开；用吞吐量、交付周期、阻塞时长和返工率观察系统，不用清单长度衡量价值。</p>
+<h3>④ 今天可采取的行动</h3><p>选一个真实交付流程，给“进行中”设两周试验上限；达到上限时先清阻塞或完成一项，再开新项。记录例外，不机械拒绝紧急学员权益问题。</p>
+<h3>⑤ 风险与反证</h3><p>软件交付和英国公共部门指南不是课程运营的直接因果证据；WIP 上限、批次大小和缓冲没有通用最优值。突发事件、不同角色和必须并行的工作会改变设计，应以两周真实数据和用户结果调整。</p>
+<div class="highlight"><h4>来源审计 · 6 个政府/官方/研究直接来源</h4><ol class="source-list">
+<li><a href="https://www.gov.uk/government/publications/the-digital-data-and-technology-playbook/contracting-for-agile-guidance-note-html" target="_blank" rel="noopener noreferrer">UK Cabinet Office：Contracting for Agile Guidance Note</a></li>
+<li><a href="https://www.gov.uk/service-manual/agile-delivery/planning-agile" target="_blank" rel="noopener noreferrer">GOV.UK Service Manual：Planning in agile</a></li>
+<li><a href="https://dora.dev/capabilities/wip-limits/" target="_blank" rel="noopener noreferrer">DORA：Work in process limits</a></li>
+<li><a href="https://dora.dev/capabilities/working-in-small-batches/" target="_blank" rel="noopener noreferrer">DORA：Working in small batches</a></li>
+<li><a href="https://www.hse.gov.uk/stress/standards/demands.htm" target="_blank" rel="noopener noreferrer">UK HSE：Management Standards — Demands</a></li>
+<li><a href="https://www.who.int/news-room/questions-and-answers/item/global-regional-and-national-burdens-of-ischemic-heart-disease-and-stroke-attributable-to-exposure-to-long-working-hours-for-194-countries-2000-2016" target="_blank" rel="noopener noreferrer">WHO/ILO：Long working hours and disease burden</a></li>
+</ol></div>
+</div></section>
+<div class="back-link"><a href="index.html">← 返回日报首页</a></div>
+<footer class="footer"><p>生存知识日报 · 2026-08-26 · 星期三 · 第 42 期</p><p>内容基于 6 个可点击政府/官方/研究直接来源整理 · 时效事实核验于 2026-08-27（Asia/Shanghai）</p></footer>
+<script src="yara-daily-detail.js"></script>
+</body></html>

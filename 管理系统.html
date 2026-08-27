@@ -1445,6 +1445,16 @@ body[data-theme="twilight"] .hero-panel{
       </div>
     </div>
 
+    <!-- 一级：创业筹备 -->
+    <div class="nav-group">
+      <div class="nav-group-title" onclick="toggleGroup(this)">
+        <span class="icon">🚀</span>创业筹备<span class="arrow">▶</span>
+      </div>
+      <div class="nav-children">
+        <div class="nav-child" data-src="私密模块说明.html#venture" data-name="求职陪跑 · MVP工作台" data-group="创业筹备"><span class="dot"></span>求职陪跑 · MVP工作台</div>
+      </div>
+    </div>
+
     <!-- 一级：工作管理 -->
     <div class="nav-group">
       <div class="nav-group-title" onclick="toggleGroup(this)">
@@ -1521,7 +1531,7 @@ body[data-theme="twilight"] .hero-panel{
           <h2 id="dashGreeting">你好，Yara</h2>
           <p class="sub" id="dashDate"></p>
           <div class="hero-chips">
-            <span class="hero-chip"><strong>14</strong> 个核心工具</span>
+            <span class="hero-chip"><strong>15</strong> 个核心工具</span>
             <span class="hero-chip" id="dataHubChip"><strong>连接中</strong> 数据中心</span>
             <span class="hero-chip">按 <strong>⌘ K</strong> 快速搜索</span>
           </div>
@@ -1579,6 +1589,7 @@ body[data-theme="twilight"] .hero-panel{
           <div class="quick-btn" onclick="openTool('私密模块说明.html#reconcile','对账对比看板','对帐工具')"><span class="qb-icon">🧾</span><span class="qb-name">对账看板</span></div>
           <div class="quick-btn" onclick="openTool('index.html','每日生存知识系统','日报系统')"><span class="qb-icon">📰</span><span class="qb-name">日报系统</span></div>
           <div class="quick-btn" onclick="openTool('私密模块说明.html#career?view=overview','把把必中','职业发展')"><span class="qb-icon">🎯</span><span class="qb-name">把把必中</span></div>
+          <div class="quick-btn" onclick="openTool('私密模块说明.html#venture','求职陪跑 · MVP工作台','创业筹备')"><span class="qb-icon">🚀</span><span class="qb-name">创业筹备</span></div>
           <div class="quick-btn" onclick="openTool('工作管理/每日工作待办.html','每日工作待办','工作管理')"><span class="qb-icon">✅</span><span class="qb-name">每日待办</span></div>
           <div class="quick-btn" onclick="openTool('生活管理/每日生活待办.html','每日生活待办','生活管理')"><span class="qb-icon">🏠</span><span class="qb-name">生活待办</span></div>
           <div class="quick-btn" onclick="openTool('财务管理/记账本.html','记账本','财务管理')"><span class="qb-icon">💰</span><span class="qb-name">记账本</span></div>
@@ -1635,7 +1646,7 @@ body[data-theme="twilight"] .hero-panel{
 <script src="yara-pwa.js?v=1.0" defer></script>
 <script>
 // 构建版本号：部署时由「一键部署.command」替换为时间戳，用于强制手机端拉取最新工具（防止缓存导致 web/手机不一致）。本地打开时保持 'DEV'。
-var BUILD_VERSION = '20260824144133';
+var BUILD_VERSION = '20260827142135';
 var shellRouteLevels = {};
 var sidebarFlyoutTimer = null;
 var activeFlyoutTrigger = null;
@@ -1975,6 +1986,7 @@ function detectModuleType(pathname, title){
   if(source.indexOf('生存知识日报_') >= 0 || source.indexOf('生存知识日报.html') >= 0) return 'daily-article';
   if(source.indexOf('每日生存知识系统') >= 0 || source.indexOf('生存知识日报文件/index') >= 0) return 'daily-index';
   if(source.indexOf('把把必中') >= 0 || source.indexOf('简历与JD匹配中心') >= 0) return 'career-match';
+  if(source.indexOf('创业筹备中心') >= 0 || source.indexOf('求职陪跑 · MVP工作台') >= 0) return 'venture';
   if(source.indexOf('每日工作待办') >= 0) return 'todo-work';
   if(source.indexOf('每日生活待办') >= 0) return 'todo-life';
   if(source.indexOf('记账本') >= 0) return 'finance';
