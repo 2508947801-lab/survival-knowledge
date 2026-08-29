@@ -7,7 +7,7 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --primary: #4F7CFF; --primary-light: #EEF3FF; --primary-dark: #416DE8;
+    --primary: #7C5CFF; --primary-light: #F0EBFF; --primary-dark: #6847F0;
     --bg: #F7F9FC; --card-bg: #ffffff; --text: #1F2937; --text-secondary: #4B5563;
     --text-muted: #98A2B3; --border: #E8EDF4; --border-light: #EEF2F7;
     --shadow: 0 1px 3px 0 rgba(0,0,0,0.05), 0 1px 2px 0 rgba(0,0,0,0.03);
@@ -824,7 +824,7 @@ function renderCurrentWeekBoard() {
   }).join('');
   return `<div class="card week-board-card">
     <div class="card-header">
-      <div><h3>本周行课看板 <span class="en">Weekly Course Board</span></h3><div class="week-board-subtitle">读取主课表实时汇总；当前日期所在列自动高亮</div></div>
+      <div><h3>本周行课看板</h3><div class="week-board-subtitle">主课表实时汇总 · 今日自动高亮</div></div>
       <div class="week-board-toolbar">
         <button class="btn btn-sm" type="button" onclick="changeAcademicWeek(-1)">← 上一周</button>
         <span class="week-range-label">${boardShortDate(monday)} — ${boardShortDate(sunday)}${currentWeek?' · 本周':''}</span>
@@ -854,11 +854,11 @@ function renderAllPeriodWeekSummary() {
   });
   return `<div class="card week-board-card">
     <div class="card-header">
-      <div><h3>期班周行课汇总 <span class="en">Period Weekly Rhythm</span></h3><div class="week-board-subtitle">每个期班、每个星期只保留一个主要课型与固定时刻；当前星期列自动高亮</div></div>
+      <div><h3>期班周行课汇总</h3><div class="week-board-subtitle">每期班每周保留主课型与固定时刻 · 本周列高亮</div></div>
       <div class="board-legend">${['亲授','外教','纠音/语聊','答疑','导学'].map(boardTypeChip).join('')}</div>
     </div>
     <div class="pattern-table-wrap"><table class="pattern-table"><thead><tr><th>项目 · 期班</th><th>课节总数</th>${BOARD_DAYS.map((day,index)=>`<th class="${index===todayIndex?'is-today-col':''}">${day.name}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>
-    <div class="card-body" style="padding-top:12px"><p class="board-note">提示：该表是周节奏摘要，不是把全部课节堆进同一天。杨家成周三纠音与语聊合并为一个共同上课节奏；点击“明细”可维护对应主课表记录。</p></div>
+    <div class="card-body" style="padding-top:12px"><p class="board-note">周节奏摘要，非全部课节；杨家成周三纠音/语聊为共同上课；点「明细」维护主课表。</p></div>
   </div>`;
 }
 function changeAcademicWeek(delta) {
@@ -1083,7 +1083,7 @@ function renderDashboard() {
   const todayLessons = getTodayLessons();
   let todayBody;
   if (todayLessons.length === 0) {
-    todayBody = `<div class="today-empty"><div class="icon">🎉</div><div>今天没有安排课程，好好休息！<br><span style="font-size:12px">No classes scheduled for today.</span></div></div>`;
+    todayBody = `<div class="today-empty"><div class="icon">🎉</div><div>今天没有安排课程，好好休息！</div></div>`;
   } else {
     todayBody = `<div class="today-list">` + todayLessons.map(t => {
       const hhmm = t.time.toTimeString().slice(0, 5);
@@ -1108,7 +1108,7 @@ function renderDashboard() {
   const todayHtml = `
     <div class="card today-card" style="margin-bottom:32px">
       <div class="card-header">
-        <div><h3>今日行课 <span class="en">Today's Classes</span></h3><div class="week-board-subtitle">以行课日期为准；时间按项目官方规则补齐</div></div>
+        <div><h3>今日行课</h3><div class="week-board-subtitle">以行课日期为准 · 时间自动补齐</div></div>
         <div class="today-header-actions"><span class="today-count">${todayLessons.length > 0 ? `共 ${todayLessons.length} 节` : '今日无课'}</span><button class="btn btn-sm" type="button" onclick="openYangSharedSchedule()">维护杨老师纠音 / 语聊</button></div>
       </div>
       <div class="card-body">${todayBody}</div>
@@ -1120,9 +1120,9 @@ function renderDashboard() {
   return `
     ${todayHtml}
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-icon blue"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div><div class="stat-label">项目总数<span class="en">Total Projects</span></div><div class="stat-value">3</div></div>
-      <div class="stat-card"><div class="stat-icon green"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="stat-label">期班总数<span class="en">Total Periods</span></div><div class="stat-value">${totalPeriods}</div></div>
-      <div class="stat-card"><div class="stat-icon amber"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div><div class="stat-label">课节总数<span class="en">Total Lessons</span></div><div class="stat-value">${totalLessons}</div></div>
+      <div class="stat-card"><div class="stat-icon blue"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div><div class="stat-label">项目总数</div><div class="stat-value">3</div></div>
+      <div class="stat-card"><div class="stat-icon green"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><div class="stat-label">期班总数</div><div class="stat-value">${totalPeriods}</div></div>
+      <div class="stat-card"><div class="stat-icon amber"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div><div class="stat-label">课节总数</div><div class="stat-value">${totalLessons}</div></div>
     </div>
     <div class="schedule-board-stack">${currentWeekHtml}</div>
     <div class="schedule-board-stack">${periodSummaryHtml}</div>`;

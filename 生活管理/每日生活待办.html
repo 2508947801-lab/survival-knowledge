@@ -6,7 +6,7 @@
 <title>每日生活待办 · Yara</title>
 <style>
 :root{
-  --primary:#24B8A6; --primary-l:#ECFBF8; --ink:#1F2937; --sub:#4B5563;
+  --primary:#7C5CFF; --primary-l:#F0EBFF; --ink:#1F2937; --sub:#4B5563;
   --border:#E8EDF4; --bg:#F7F9FC; --success:#16a34a; --success-l:#ECFBF8;
   --warning:#F59E42; --warning-l:#FFF6E9; --danger:#E85D67;
 }
@@ -38,7 +38,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 #newTitle{flex:1;border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:.9rem;font-family:inherit;outline:none;transition:border .15s;}
 #newTitle:focus{border-color:var(--primary);}
 .add-btn{flex:0 0 auto;background:var(--primary);color:#fff;border:none;border-radius:10px;padding:10px 18px;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .15s;}
-.add-btn:hover{background:#0b7c72;}
+.add-btn:hover{background:#6847F0;}
 .field{flex:1;border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:.84rem;font-family:inherit;outline:none;transition:border .15s;}
 .field:focus{border-color:var(--primary);}
 #newTarget{flex:0 0 46%;}
@@ -96,8 +96,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
       <button class="add-btn" id="addBtn">＋ 记下</button>
     </div>
     <div class="add-row">
-      <input id="newTarget" class="field" type="text" placeholder="目标时间（可选）：2026年8月 / 10月22日前 / 时间待定" maxlength="40">
-      <input id="newNotes" class="field" type="text" placeholder="备注（可选）：证件号、医院、办理方式…" maxlength="200">
+      <input id="newTarget" class="field" type="text" placeholder="目标时间（可选）· 如：10月22日前" maxlength="40">
+      <input id="newNotes" class="field" type="text" placeholder="备注（可选）· 如：医院、证件号" maxlength="200">
     </div>
   </div>
 
@@ -267,8 +267,7 @@ function render(){
       '<div class="sum-chip"><div class="v">'+pending.length+'</div><div class="k">待办</div></div>'+
       '<div class="sum-chip done"><div class="v">'+done.length+'</div><div class="k">已完成</div></div>'+
       '<div class="sum-chip"><div class="v">'+all.length+'</div><div class="k">全部</div></div>'+
-    '</div>'+
-    '<div class="sum-note">'+(pending.length? '想到就记，别让灵感跑掉 💡' : '生活待办都搞定啦，给自己点个赞 🎉')+'</div>';
+    '</div>'+(pending.length? '' : '<div class="sum-note">生活待办都搞定啦 🎉</div>');
 
   document.getElementById('pendingCnt').textContent = pending.length ? '· '+pending.length : '';
   document.getElementById('pendingList').innerHTML = pending.map(taskHtml).join('');

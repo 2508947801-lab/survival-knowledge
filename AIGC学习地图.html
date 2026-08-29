@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="zh-CN" data-yara-theme="dawn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#F7F9FC">
+  <title>AIGC 学习地图 · Yara</title>
+  <style>
+    :root{
+      --bg:#F7F9FC;--card:#FFFFFF;--ink:#1F2937;--sub:#6B7280;--line:#E8EDF4;
+      --accent:#7C5CFF;--accent-soft:#F1EDFF;--accent-line:#DCD3FF;
+      --green:#18A076;--green-soft:#EAF7F2;
+      --shadow:0 16px 45px rgba(15,23,42,.06);--r:14px;
+      --font:"Avenir Next","MiSans","HarmonyOS Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;background:var(--bg)}
+    body{min-height:100vh;font:400 15px/1.65 var(--font);color:var(--ink);background:
+      radial-gradient(circle at 6% 0,rgba(124,92,255,.12),transparent 30%),
+      radial-gradient(circle at 96% 4%,rgba(24,160,118,.08),transparent 26%),var(--bg)}
+    button{font:inherit;cursor:pointer}
+    .app{width:min(1080px,100%);margin:auto;padding:26px clamp(14px,3vw,30px) 90px}
+
+    .hero{padding:24px 26px;border:1px solid rgba(255,255,255,.85);border-radius:24px;background:linear-gradient(135deg,rgba(241,237,255,.96),rgba(247,249,252,.94) 55%,rgba(234,247,242,.9));box-shadow:var(--shadow)}
+    .kicker{display:flex;align-items:center;gap:8px;color:var(--accent);font-size:.72rem;font-weight:800;letter-spacing:.1em}
+    .kicker i{display:grid;place-items:center;width:30px;height:30px;border-radius:11px;background:linear-gradient(145deg,#9F86FF,#7C5CFF);color:#fff;font-style:normal;font-size:1rem}
+    h1{margin-top:10px;font-size:clamp(1.55rem,4vw,2.2rem);letter-spacing:-.04em}
+    .hero-sub{margin-top:6px;color:var(--sub);font-size:.8rem}
+    .hero-stats{display:flex;align-items:center;gap:16px;margin-top:18px;flex-wrap:wrap}
+    .big-num{font-size:2rem;font-weight:800;color:var(--accent);letter-spacing:-.03em}
+    .big-num small{font-size:.95rem;color:var(--sub);font-weight:600}
+    .progress-wrap{flex:1;min-width:200px}
+    .progress-track{height:10px;border-radius:999px;background:rgba(124,92,255,.12);overflow:hidden}
+    .progress-fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#9F86FF,#7C5CFF);transition:width .4s ease}
+    .progress-note{margin-top:6px;font-size:.72rem;color:var(--sub)}
+    .sync-pill{padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.7);font-size:.7rem;font-weight:700;color:var(--sub);white-space:nowrap}
+    .sync-pill.online{color:var(--green);border-color:#BFE8DA;background:var(--green-soft)}
+    .sync-pill.error{color:#C2554F;border-color:#F0D3D1;background:#FBEFEE}
+
+    .now-card{margin-top:16px;padding:18px 20px;border-radius:18px;border:1px solid var(--accent-line);background:linear-gradient(135deg,#FFFFFF,rgba(241,237,255,.75));box-shadow:var(--shadow)}
+    .now-tag{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:var(--accent);color:#fff;font-size:.68rem;font-weight:800}
+    .now-title{margin-top:10px;font-size:1.05rem;font-weight:800}
+    .now-note{margin-top:4px;color:var(--sub);font-size:.78rem}
+    .now-meta{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+
+    .stage-nav{position:sticky;top:8px;z-index:20;display:flex;gap:7px;margin:18px 0;padding:7px;border:1px solid rgba(255,255,255,.8);border-radius:16px;background:rgba(255,255,255,.86);backdrop-filter:blur(14px);box-shadow:0 8px 24px rgba(15,23,42,.05);overflow-x:auto}
+    .stage-chip{flex:0 0 auto;padding:8px 13px;border:0;border-radius:10px;background:transparent;color:var(--sub);font-size:.72rem;font-weight:750;white-space:nowrap}
+    .stage-chip.active{color:#fff;background:var(--accent)}
+    .stage-chip small{opacity:.75;font-weight:600}
+
+    .stage{margin-top:22px}
+    .stage-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+    .stage-badge{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:linear-gradient(145deg,#9F86FF,#7C5CFF);color:#fff;font-weight:800;font-size:.95rem;flex:0 0 auto}
+    .stage-head h2{font-size:1.05rem;letter-spacing:-.01em}
+    .stage-head p{color:var(--sub);font-size:.72rem}
+    .stage-count{margin-left:auto;padding:4px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:.7rem;font-weight:800;white-space:nowrap}
+    .stage-count.done{background:var(--green-soft);color:var(--green)}
+
+    .item{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--card);margin-bottom:8px;transition:border-color .2s,background .2s}
+    .item.now{border-color:var(--accent-line);background:linear-gradient(135deg,#fff,rgba(241,237,255,.55))}
+    .check{flex:0 0 auto;width:44px;height:44px;margin:-6px -4px -6px -6px;border:2px solid var(--line);border-radius:13px;background:#fff;color:transparent;font-size:1.1rem;font-weight:800;display:grid;place-items:center;transition:all .18s}
+    .check:hover{border-color:var(--accent)}
+    .item.done .check{border-color:var(--green);background:var(--green);color:#fff}
+    .item-copy{flex:1;min-width:0}
+    .item-title{font-size:.86rem;font-weight:750}
+    .item.done .item-title{color:#9AA3B2;text-decoration:line-through;text-decoration-color:rgba(154,163,178,.5)}
+    .item-note{margin-top:2px;color:var(--sub);font-size:.72rem}
+    .item.done .item-note{color:#B3BAC7}
+    .chips{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+    .chip{padding:3px 9px;border-radius:999px;font-size:.64rem;font-weight:750;border:1px solid var(--line);background:#FAFBFD;color:#5B6472}
+    .chip.video{color:#7C5CFF;border-color:var(--accent-line);background:var(--accent-soft)}
+    .chip.tool{color:#1673B8;border-color:#C9E2F5;background:#EEF6FC}
+    .chip.practice{color:var(--green);border-color:#BFE8DA;background:var(--green-soft)}
+    .chip.read{color:#B7791F;border-color:#EEDDBE;background:#FBF4E6}
+
+    .res-card{margin-top:26px;padding:20px 22px;border:1px solid var(--line);border-radius:18px;background:var(--card);box-shadow:var(--shadow)}
+    .res-card h2{font-size:1rem}
+    .res-card>p{color:var(--sub);font-size:.72rem;margin-top:2px}
+    .res-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;margin-top:12px}
+    .res{padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#FAFBFD}
+    .res b{font-size:.78rem}
+    .res span{display:block;margin-top:2px;color:var(--sub);font-size:.68rem}
+    .res-tag{display:inline-block;margin-bottom:4px;padding:2px 8px;border-radius:999px;font-size:.6rem;font-weight:800}
+    .res-tag.free{background:var(--green-soft);color:var(--green)}
+    .res-tag.paid{background:#FBF4E6;color:#B7791F}
+
+    .rules{margin-top:14px;padding:14px 16px;border-radius:14px;border:1px dashed var(--accent-line);background:rgba(241,237,255,.5);color:#5F5580;font-size:.72rem;line-height:1.8}
+    .rules b{color:var(--accent)}
+
+    @media (max-width:768px){
+      .app{padding:18px 12px 80px}
+      .hero{padding:18px 16px;border-radius:20px}
+      .hero-stats{gap:10px}
+      .big-num{font-size:1.6rem}
+      .stage-nav{top:6px}
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <div class="kicker"><i>🎓</i>技能学习 · 从 2026 年 9 月开始</div>
+      <h1>AIGC 学习地图</h1>
+      <p class="hero-sub">不设日期，只设小任务：每天弄懂一个小知识，日积月累。</p>
+      <div class="hero-stats">
+        <div class="big-num"><span id="doneCount">0</span><small> / <span id="totalCount">0</span> 项</small></div>
+        <div class="progress-wrap">
+          <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+          <p class="progress-note" id="progressNote">从第 1 项开始吧。</p>
+        </div>
+        <span class="sync-pill" id="syncPill">正在连接云同步…</span>
+      </div>
+      <div class="now-card" id="nowCard"></div>
+      <div class="rules"><b>规则：</b>完成一项就打勾，勾完自动亮出下一项。<b>今天没学也没关系</b>——没完成的项会留在原位，明天接着它继续。手机和网页的进度自动互相同步。</div>
+    </header>
+
+    <nav class="stage-nav" id="stageNav" aria-label="阶段导航"></nav>
+    <div id="stageRoot"></div>
+
+    <section class="res-card" aria-label="学习资源库">
+      <h2>📺 资源库 · 跟着谁学</h2>
+      <p>在 B 站直接搜索名字即可找到；先免费自学，付费课程仅供后期可选。</p>
+      <div class="res-list">
+        <div class="res"><span class="res-tag free">B站免费</span><b>Nenly同学</b><span>SD / ComfyUI 喂饭式入门，细致出效快</span></div>
+        <div class="res"><span class="res-tag free">B站免费</span><b>秋葉aaaki</b><span>SD 整合包安装部署，环境问题救星</span></div>
+        <div class="res"><span class="res-tag free">B站免费</span><b>小星AI设计入门课</b><span>零基础友好，提示词拆成一步步小教程</span></div>
+        <div class="res"><span class="res-tag free">B站免费</span><b>Genji是真想教会你</b><span>项目式教学，边做边学出成片</span></div>
+        <div class="res"><span class="res-tag free">B站免费</span><b>青龙圣者</b><span>ControlNet 精准控制，解决姿势/五官失真</span></div>
+        <div class="res"><span class="res-tag free">B站免费</span><b>老周的AIGC工坊</b><span>SD + MJ 全流程，体系化建知识框架</span></div>
+        <div class="res"><span class="res-tag free">B站免费</span><b>只剩一瓶辣椒酱</b><span>ComfyUI 专业工作流，进阶必看</span></div>
+        <div class="res"><span class="res-tag free">B站免费</span><b>图灵的猫</b><span>创意玩法，打破出图同质化</span></div>
+        <div class="res"><span class="res-tag free">官方免费</span><b>百度智能云学院 / 阿里云大学</b><span>官方课程权威，适合考证与补技术底层</span></div>
+        <div class="res"><span class="res-tag paid">付费可选</span><b>火星时代 AIGC 导演大师班</b><span>4 个月，AI 动画 / 广告 / 短剧制作</span></div>
+        <div class="res"><span class="res-tag paid">付费可选</span><b>一躺科技</b><span>职业认证向，企业级实战案例可做作品集</span></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="yara-runtime-config.js?v=1.0"></script>
+  <script src="yara-module-ui.js?v=1.1"></script>
+  <script>
+    (function(){
+      'use strict';
+      var KEY='yara_aigc_study_v1';
+      var SB_ROW='aigc-study-v1';
+
+      // tag: video=配套视频 / tool=上手工具 / practice=动手练习 / read=阅读概念
+      var STAGES=[
+        {id:1,name:'基础认知',sub:'先懂 AIGC 是什么，建立提示词思维',items:[
+          {id:'s1-01',t:'AIGC 是什么',n:'看懂它与传统内容生产的区别：AI 生成文字、图像、音频、视频。',tag:'read'},
+          {id:'s1-02',t:'认识主流工具版图',n:'文本/图像/视频/音频各列出 2 个代表工具，知道它们各自干什么。',tag:'read'},
+          {id:'s1-03',t:'提示词（Prompt）的概念',n:'它是给 AI 的核心指令；看一个入门视频，理解"怎么问决定怎么答"。',tag:'video',res:'B站搜「AIGC 入门」'},
+          {id:'s1-04',t:'结构化提问公式',n:'记住四件套：角色 + 任务 + 要求 + 输出格式，抄在备忘录里。',tag:'practice'},
+          {id:'s1-05',t:'选定一个 AI 对话工具',n:'任选一个（豆包/DeepSeek/通义等），完成 3 轮完整问答。',tag:'tool'},
+          {id:'s1-06',t:'写出第一条自己的提示词模板',n:'用四件套公式描述一个真实需求，保存下来复用。',tag:'practice'},
+          {id:'s1-07',t:'理解生成模型的分类',n:'文生文、文生图、文生视频分别是什么，一句话各说清楚。',tag:'read'},
+          {id:'s1-08',t:'扫盲核心名词',n:'模型、参数、推理、微调——每个词用自己的话解释一句。',tag:'read'}
+        ]},
+        {id:2,name:'文本精通',sub:'文本是一切创作的根基，先让写作效率翻倍',items:[
+          {id:'s2-01',t:'AI 写短脚本',n:'给一个主题，让 AI 写 300 字短视频脚本，读一遍找问题。',tag:'tool'},
+          {id:'s2-02',t:'AI 写社媒文案',n:'同一主题分别生成小红书 / 公众号风格，体会语气差异。',tag:'tool'},
+          {id:'s2-03',t:'追问迭代法',n:'对同一篇稿子让 AI 改 3 轮，记录每轮改了什么、为什么更好。',tag:'practice'},
+          {id:'s2-04',t:'AI 摘要长文',n:'找一篇 3000 字长文让 AI 总结，和自己的概括对比。',tag:'practice'},
+          {id:'s2-05',t:'建个人提示词库',n:'整理 5 条最常用的写作提示词，存进备忘录或闪念中心。',tag:'practice'}
+        ]},
+        {id:3,name:'图像实操',sub:'AI 绘画核心逻辑：从出图到控图',items:[
+          {id:'s3-01',t:'AI 绘画的基本流程',n:'看懂"提示词 → 模型采样 → 输出图像"这条链路。',tag:'video',res:'Nenly同学'},
+          {id:'s3-02',t:'SD 入门三条路',n:'本地部署 / 在线平台 / 云端部署各有什么优缺点，先选一条。',tag:'read'},
+          {id:'s3-03',t:'看整合包安装教程',n:'理解 Stable Diffusion 对环境的要求，不必装好，先看懂流程。',tag:'video',res:'秋葉aaaki'},
+          {id:'s3-04',t:'生成第一张图',n:'用在线平台出一个简单场景+风格词，截图保存。',tag:'practice'},
+          {id:'s3-05',t:'权重语法与负面提示词',n:'学会 (词:1.2) 提权重，学会用负面提示词排除不要的东西。',tag:'video',res:'小星AI设计入门课'},
+          {id:'s3-06',t:'图生图（img2img）',n:'上传一张图，让 AI 改变它的画风，对比重绘强度影响。',tag:'practice',res:'Nenly同学'},
+          {id:'s3-07',t:'局部重绘（Inpaint）',n:'只改画面的一部分：换衣服、换背景，体会蒙版的作用。',tag:'practice'},
+          {id:'s3-08',t:'大模型与 LoRA 的分工',n:'Checkpoint 决定整体画风，LoRA 管人物/风格细节——用自己的话说清楚。',tag:'video'},
+          {id:'s3-09',t:'学会找模型',n:'在 Liblib 或 C 站找一个喜欢的画风模型，记录名字和来源。',tag:'tool'},
+          {id:'s3-10',t:'体验第二款绘图工具',n:'Midjourney / 即梦 / 可灵任选一个，跑通一次出图流程。',tag:'tool'},
+          {id:'s3-11',t:'常见崩坏排查',n:'手崩、五官失真的常见原因与解法，记 3 条笔记。',tag:'video',res:'青龙圣者'},
+          {id:'s3-12',t:'ControlNet 入门',n:'理解它如何"让 AI 照着构图来"，看懂开线稿/姿态控制的思路。',tag:'video',res:'青龙圣者'},
+          {id:'s3-13',t:'ControlNet 实战',n:'用姿势控制固定一个人物动作，成功出图一次。',tag:'practice',res:'青龙圣者'},
+          {id:'s3-14',t:'ComfyUI 初识',n:'理解节点式工作流和整合包的区别，知道它强在哪。',tag:'video',res:'只剩一瓶辣椒酱'},
+          {id:'s3-15',t:'跑通第一个工作流',n:'加载 ComfyUI 默认工作流，成功出图一次。',tag:'practice'},
+          {id:'s3-16',t:'认识核心节点',n:'加载模型 / 采样器 / 解码输出——说清每个节点在做什么。',tag:'video',res:'只剩一瓶辣椒酱'},
+          {id:'s3-17',t:'角色一致性',n:'让同一个人物在两张图里保持长相一致，掌握一种方法即可。',tag:'practice',res:'图灵的猫'}
+        ]},
+        {id:4,name:'音视频进阶',sub:'从静态图到完整视频成片',items:[
+          {id:'s4-01',t:'AI 配音',n:'把一段文字转成配音，挑音色、调语速，导出音频。',tag:'tool'},
+          {id:'s4-02',t:'文生视频初体验',n:'选一个视频工具（可灵/即梦等），用一句话生成 5 秒视频。',tag:'tool'},
+          {id:'s4-03',t:'图生视频',n:'让自己的一张 AI 图"动起来"，体会首帧控制。',tag:'practice'},
+          {id:'s4-04',t:'剪出 30 秒 AI 短片',n:'素材生成 + 剪辑 + 字幕 + 配乐，完成一条完整短片。',tag:'practice',res:'Genji是真想教会你'},
+          {id:'s4-05',t:'复刻一个小作品',n:'跟一个项目式教程，从头到尾复刻出成片。',tag:'video',res:'Genji是真想教会你'}
+        ]},
+        {id:5,name:'优化落地',sub:'二次加工、合规意识与变现探索',items:[
+          {id:'s5-01',t:'AI 内容二次优化',n:'理解"AI 生成≠成品"：剪辑、修图、校对各补一刀。',tag:'practice'},
+          {id:'s5-02',t:'版权与合规',n:'AI 作品的商用规则、素材来源边界，记住 3 条底线。',tag:'read'},
+          {id:'s5-03',t:'AI 内容标注规范',n:'了解平台对 AI 生成内容的标识要求，发布时照做。',tag:'read'},
+          {id:'s5-04',t:'梳理变现方向',n:'约稿出图 / 代写文案 / 短视频制作 / 教学——列出并初步排序。',tag:'read'},
+          {id:'s5-05',t:'完成一件作品集级作品',n:'一条可以公开代表自己水平的完整作品。',tag:'practice'},
+          {id:'s5-06',t:'整理作品集',n:'把阶段性作品归拢成一个文件夹或页面，能一键给别人看。',tag:'practice'},
+          {id:'s5-07',t:'复盘个人工具链',n:'写下自己现在最常用的 5 个 AIGC 工具和各自用途。',tag:'read'},
+          {id:'s5-08',t:'选定进阶方向',n:'ComfyUI 工作流 / 视频生成 / 精准控图三选一，定一个两周小目标。',tag:'practice'}
+        ]}
+      ];
+
+      var config=(window.YaraRuntimeConfig&&YaraRuntimeConfig.supabase)?YaraRuntimeConfig.supabase():{url:'',anonKey:'',ready:false};
+      var state=loadState();
+      var cloudTimer=0,pollTimer=0;
+
+      var TAG_LABEL={video:'视频',tool:'工具',practice:'练习',read:'阅读'};
+      var ALL=[];STAGES.forEach(function(s){s.items.forEach(function(it){ALL.push(it)})});
+
+      function loadState(){
+        try{
+          var raw=localStorage.getItem(KEY);
+          if(raw){var parsed=JSON.parse(raw);if(parsed&&parsed.items)return {items:parsed.items};}
+        }catch(e){}
+        return {items:{}};
+      }
+      function saveState(){try{localStorage.setItem(KEY,JSON.stringify({version:1,items:state.items,updatedAt:new Date().toISOString()}))}catch(e){}}
+      function isDone(id){return !!(state.items[id]&&state.items[id].done)}
+
+      function mergeStates(local,remote){
+        var out={},id;
+        for(id in local.items)out[id]=local.items[id];
+        for(id in remote.items){
+          if(!out[id]||(remote.items[id].ts||'')>=(out[id].ts||''))out[id]=remote.items[id];
+        }
+        return {items:out};
+      }
+
+      function escapeHtml(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+
+      function firstPending(){for(var i=0;i<ALL.length;i++){if(!isDone(ALL[i].id))return ALL[i]}return null}
+
+      function chipsHtml(item){
+        var chips='<span class="chip '+item.tag+'">'+TAG_LABEL[item.tag]+'</span>';
+        if(item.res)chips+='<span class="chip">🔎 '+escapeHtml(item.res)+'</span>';
+        return chips;
+      }
+
+      function render(){
+        var done=ALL.filter(function(it){return isDone(it.id)}).length;
+        var total=ALL.length;
+        var pct=total?Math.round(done/total*100):0;
+        document.getElementById('doneCount').textContent=done;
+        document.getElementById('totalCount').textContent=total;
+        document.getElementById('progressFill').style.width=pct+'%';
+        document.getElementById('progressNote').textContent=total?(pct===100?'🎉 全部完成！可以去进阶方向深耕了。':'已完成 '+pct+'%，下一小步就在下面。'):'';
+
+        var pending=firstPending();
+        var nowCard=document.getElementById('nowCard');
+        if(pending){
+          nowCard.innerHTML='<span class="now-tag">🎯 当前任务</span><div class="now-title">'+escapeHtml(pending.t)+'</div><div class="now-note">'+escapeHtml(pending.n)+'</div><div class="now-meta">'+chipsHtml(pending)+'</div>';
+        }else{
+          nowCard.innerHTML='<span class="now-tag">🏁 地图走完</span><div class="now-title">恭喜！43 项小任务全部完成</div><div class="now-note">回到资源库选一个进阶方向，或把学习收获沉淀进知识资产中心。</div>';
+        }
+
+        var nav=document.getElementById('stageNav');
+        nav.innerHTML=STAGES.map(function(s){
+          var d=s.items.filter(function(it){return isDone(it.id)}).length;
+          return '<button class="stage-chip" data-stage="'+s.id+'">'+s.name+' <small>'+d+'/'+s.items.length+'</small></button>';
+        }).join('');
+
+        document.getElementById('stageRoot').innerHTML=STAGES.map(function(s){
+          var d=s.items.filter(function(it){return isDone(it.id)}).length;
+          var allDone=d===s.items.length;
+          var rows=s.items.map(function(it){
+            var doneCls=isDone(it.id)?' done':'';
+            var nowCls=(pending&&it.id===pending.id)?' now':'';
+            return '<div class="item'+doneCls+nowCls+'" data-id="'+it.id+'">'
+              +'<button class="check" type="button" aria-label="'+(isDone(it.id)?'取消完成':'标记完成')+'：'+escapeHtml(it.t)+'">'+(isDone(it.id)?'✓':'')+'</button>'
+              +'<div class="item-copy"><div class="item-title">'+escapeHtml(it.t)+'</div><div class="item-note">'+escapeHtml(it.n)+'</div><div class="chips">'+chipsHtml(it)+'</div></div>'
+              +'</div>';
+          }).join('');
+          return '<section class="stage" id="stage-'+s.id+'">'
+            +'<div class="stage-head"><div class="stage-badge">'+String(s.id).padStart(2,'0')+'</div>'
+            +'<div><h2>'+escapeHtml(s.name)+'</h2><p>'+escapeHtml(s.sub)+'</p></div>'
+            +'<span class="stage-count'+(allDone?' done':'')+'">'+(allDone?'✓ 已完成':d+' / '+s.items.length)+'</span></div>'
+            +rows+'</section>';
+        }).join('');
+      }
+
+      function toggle(id){
+        var was=isDone(id);
+        state.items[id]={done:!was,ts:new Date().toISOString()};
+        saveState();render();scheduleCloud();
+        if(window.YaraModuleUI)YaraModuleUI.notify(was?'已取消勾选':'已完成一项，继续加油');
+      }
+
+      // ---- 云同步（与闪念中心同模式：匿名 key + RLS，行 ID 独立）----
+      function setSync(cls,text){
+        var pill=document.getElementById('syncPill');
+        pill.className='sync-pill'+(cls?' '+cls:'');
+        pill.textContent=text;
+      }
+      function headers(extra){
+        var base={'apikey':config.anonKey,'Authorization':'Bearer '+config.anonKey,'Content-Type':'application/json'};
+        for(var k in extra)base[k]=extra[k];
+        return base;
+      }
+      function cloudSave(){
+        if(!config.ready)return Promise.resolve(false);
+        var iso=new Date().toISOString();
+        return fetch(config.url+'/rest/v1/yara_todo',{method:'POST',headers:headers({'Prefer':'resolution=merge-duplicates'}),body:JSON.stringify({id:SB_ROW,data:{version:1,items:state.items},updated_at:iso})})
+          .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);setSync('online','已同步 · 手机与网页共享进度');return true})
+          .catch(function(){setSync('error','同步失败 · 已保存在当前设备');return false});
+      }
+      function cloudLoad(){
+        return fetch(config.url+'/rest/v1/yara_todo?id=eq.'+encodeURIComponent(SB_ROW)+'&select=data',{headers:headers()})
+          .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json()})
+          .then(function(rows){return rows&&rows[0]?rows[0].data:null})
+          .catch(function(){return null});
+      }
+      function scheduleCloud(){clearTimeout(cloudTimer);cloudTimer=setTimeout(cloudSave,700)}
+      function syncCloud(){
+        cloudLoad().then(function(remote){
+          if(!remote||!remote.items){cloudSave();return}
+          var merged=mergeStates(state,{items:remote.items||{}});
+          var needsPush=JSON.stringify(merged.items)!==JSON.stringify(remote.items);
+          state=merged;saveState();render();
+          setSync('online','已同步 · 手机与网页共享进度');
+          if(needsPush)cloudSave();
+        });
+      }
+      function initCloud(){
+        if(!config.ready){setSync('','仅保存在此设备 · 配置后可跨设备同步');return}
+        setSync('','正在连接云同步…');
+        syncCloud();
+        pollTimer=setInterval(syncCloud,8000);
+        window.addEventListener('focus',syncCloud);
+        document.addEventListener('visibilitychange',function(){if(!document.hidden)syncCloud()});
+      }
+
+      document.getElementById('stageRoot').addEventListener('click',function(e){
+        var check=e.target.closest('.check');
+        if(!check)return;
+        var item=check.closest('.item');
+        if(item)toggle(item.dataset.id);
+      });
+      document.getElementById('stageNav').addEventListener('click',function(e){
+        var chip=e.target.closest('.stage-chip');
+        if(!chip)return;
+        var target=document.getElementById('stage-'+chip.dataset.stage);
+        if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+      });
+      window.addEventListener('message',function(event){
+        var message=event.data||{};
+        if(message.source==='yara-shell'&&message.type==='theme')document.documentElement.dataset.yaraTheme=message.theme||'dawn';
+      });
+
+      render();initCloud();
+    })();
+  </script>
+</body>
+</html>

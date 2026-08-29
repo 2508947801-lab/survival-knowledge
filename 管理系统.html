@@ -2093,7 +2093,7 @@ body.sidebar-collapsed .dock-item{justify-content:center;padding:9px 0;min-heigh
 <script src="yara-pwa.js?v=1.0" defer></script>
 <script>
 // 构建版本号：部署时由「一键部署.command」替换为时间戳，用于强制手机端拉取最新工具（防止缓存导致 web/手机不一致）。本地打开时保持 'DEV'。
-var BUILD_VERSION = '20260829175044';
+var BUILD_VERSION = '20260829181835';
 var shellRouteLevels = {};
 var sidebarFlyoutTimer = null;
 var activeFlyoutTrigger = null;
@@ -2457,6 +2457,7 @@ var YARA_MODULES = [
   {cluster:'academic', src:'私密模块说明.html#reconcile', name:'对账对比看板', group:'对帐工具', icon:'shield', glyph:'🔍', desc:'学员账号异常 · 比对核验'},
   {cluster:'growth', src:'index.html', name:'每日生存知识系统', group:'日报系统', icon:'news', glyph:'📰', desc:'每日知识沉淀与发布'},
   {cluster:'growth', src:'知识资产中心.html', name:'知识资产中心', group:'灵感管理', icon:'book', glyph:'📚', desc:'知识 · 判断 · 证据库'},
+  {cluster:'growth', src:'AIGC学习地图.html', name:'AIGC 学习地图', group:'技能学习', icon:'gradcap', glyph:'🎓', desc:'五阶段自学 · 每天一小步 · 双端同步'},
   {cluster:'growth', src:'运营能力地图/运营能力地图.html', name:'能力地图', group:'运营能力', icon:'compass', glyph:'🗺️', desc:'20 张能力卡 · 自评成长'},
   {cluster:'growth', src:'运营能力地图/交付运营总系统.html', name:'自查总系统', group:'运营能力', icon:'clipboard', glyph:'📋', desc:'8 模块交付自查'},
   {cluster:'growth', src:'私密模块说明.html#career?view=profile', name:'职业画像与定位', group:'职业发展', icon:'user', glyph:'👤', desc:'能力画像 · 定位方向'},
@@ -2481,6 +2482,7 @@ var HUB_ICONS = {
   shield:'<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
   news:'<path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-4 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/>',
   book:'<path d="M10 2v8l3-3 3 3V2"/><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>',
+  gradcap:'<path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/>',
   compass:'<circle cx="12" cy="12" r="10"/><path d="m16.24 7.76-2.12 6.36-6.36 2.12 2.12-6.36z"/>',
   clipboard:'<rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/>',
   user:'<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',

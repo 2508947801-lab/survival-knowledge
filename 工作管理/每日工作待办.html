@@ -6,7 +6,7 @@
 <title>每日工作待办 · Yara</title>
 <style>
 :root{
-  --primary:#4F7CFF; --primary-l:#EEF3FF; --ink:#1F2937; --sub:#4B5563;
+  --primary:#7C5CFF; --primary-l:#EEF3FF; --ink:#1F2937; --sub:#4B5563;
   --border:#E8EDF4; --bg:#F7F9FC; --success:#16a34a; --success-l:#ECFBF8;
   --warning:#F59E42; --warning-l:#FFF6E9; --danger:#E85D67;
 }
@@ -53,7 +53,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .min-input:focus{border-color:var(--primary);}
 .min-unit{font-size:.75rem;color:var(--sub);flex:0 0 auto;}
 .add-btn{flex:0 0 auto;background:var(--primary);color:#fff;border:none;border-radius:10px;padding:10px 18px;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .15s;}
-.add-btn:hover{background:#1d4ed8;}
+.add-btn:hover{background:#6847F0;}
 .presets{display:flex;gap:6px;margin-top:9px;align-items:center;}
 .presets .pl{font-size:.7rem;color:var(--sub);}
 .preset{border:1px solid var(--border);background:#fff;border-radius:20px;padding:3px 12px;font-size:.72rem;color:var(--ink);cursor:pointer;transition:all .15s;}
@@ -72,7 +72,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .t-min{flex:0 0 auto;background:var(--primary-l);color:var(--primary);border-radius:20px;padding:3px 11px;font-size:.74rem;font-weight:700;white-space:nowrap;}
 .task.done .t-min{background:var(--success-l);color:var(--success);}
 .t-actions{display:flex;gap:5px;flex:0 0 auto;align-items:center;}
-.edit,.del{min-width:52px;height:30px;padding:0 8px;border:1px solid var(--border);background:#fff;color:var(--sub);font-size:.72rem;font-weight:700;white-space:nowrap;cursor:pointer;border-radius:8px;transition:all .15s;line-height:1;}
+.edit,.del{min-width:36px;height:30px;padding:0 8px;border:1px solid var(--border);background:#fff;color:var(--sub);font-size:.85rem;font-weight:700;white-space:nowrap;cursor:pointer;border-radius:8px;transition:all .15s;line-height:1;}
 .edit:hover{background:var(--primary-l);color:var(--primary);}
 .del:hover{background:#fee2e2;color:var(--danger);}
 
@@ -86,7 +86,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .task.editing .edit-body .em-unit{font-size:.74rem;color:var(--sub);flex:0 0 auto;}
 .task.editing .eb{padding:7px 13px;border:none;border-radius:9px;font-size:.78rem;font-weight:700;cursor:pointer;transition:all .15s;}
 .task.editing .eb.save{background:var(--primary);color:#fff;}
-.task.editing .eb.save:hover{background:#1d4ed8;}
+.task.editing .eb.save:hover{background:#6847F0;}
 .task.editing .eb.cancel{background:#f1f5f9;color:var(--sub);}
 .task.editing .eb.cancel:hover{background:#e2e8f0;}
 .task.removing{opacity:0;transform:translateX(48px);}
@@ -463,13 +463,13 @@ function renderSummary(){
 
   document.getElementById('summary').innerHTML =
     '<div class="sum-row">'+
-      '<div class="sum-chip"><div class="v">'+doneN+' / '+total+'</div><div class="k">已完成 / 总任务</div></div>'+
-      '<div class="sum-chip done"><div class="v">'+fmtMin(doneMin)+'</div><div class="k">已完成耗时</div></div>'+
-      '<div class="sum-chip"><div class="v">'+fmtMin(totalMin)+'</div><div class="k">预计总耗时</div></div>'+
-      '<div class="sum-chip"><div class="v">'+fmtMin(totalMin-doneMin)+'</div><div class="k">剩余耗时</div></div>'+
+      '<div class="sum-chip"><div class="v">'+doneN+' / '+total+'</div><div class="k">完成 / 总数</div></div>'+
+      '<div class="sum-chip done"><div class="v">'+fmtMin(doneMin)+'</div><div class="k">已投入</div></div>'+
+      '<div class="sum-chip"><div class="v">'+fmtMin(totalMin)+'</div><div class="k">总预计</div></div>'+
+      '<div class="sum-chip"><div class="v">'+fmtMin(totalMin-doneMin)+'</div><div class="k">剩余</div></div>'+
     '</div>'+
     '<div class="progress"><div class="fill'+(pct>=100?' full':'')+'" style="width:'+pct+'%"></div></div>'+
-    '<div class="sum-note">'+(total? ('本日进度 '+pct+'%'+(pct>=100?' · 全部完成，辛苦啦 🎉':'')) :'安排好今天的任务，心里更有底 💪')+'</div>';
+    '<div class="sum-note">'+(total? ('今日进度 '+pct+'%'+(pct>=100?' · 全部完成 🎉':'')) :'今天还没安排任务 💪')+'</div>';
 }
 function updateEmpty(){
   const total=getTasks(current).length;
@@ -499,8 +499,8 @@ function render(){
       '<div class="t-body"><div class="t-title">'+escHtml(t.title)+'</div></div>'+
       '<span class="t-min">'+fmtMin(t.minutes)+'</span>'+
       '<div class="t-actions">'+
-        '<button class="edit" type="button" data-act="edit" aria-label="编辑任务" title="编辑任务">✎ 编辑</button>'+
-        '<button class="del" type="button" data-act="del" data-yara-confirm="module" aria-label="删除任务" title="删除任务">× 删除</button>'+
+        '<button class="edit" type="button" data-act="edit" aria-label="编辑任务" title="编辑任务">✎</button>'+
+        '<button class="del" type="button" data-act="del" data-yara-confirm="module" aria-label="删除任务" title="删除任务">×</button>'+
       '</div>'+
     '</li>'
   ).join('');

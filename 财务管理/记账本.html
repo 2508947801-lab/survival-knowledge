@@ -7,7 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <style>
 :root{
-  --primary:#24B8A6; --primary-l:#ECFBF8; --ink:#1F2937; --sub:#4B5563;
+  --primary:#7C5CFF; --primary-l:#F0EBFF; --ink:#1F2937; --sub:#4B5563;
   --border:#E8EDF4; --bg:#F7F9FC; --card:#fff;
   --income:#16a34a; --income-l:#ECFBF8; --expense:#E85D67; --expense-l:#FFF0F2;
   --warning:#F59E42; --warning-l:#FFF6E9;
@@ -94,7 +94,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .fld input:focus,.fld select:focus{border-color:var(--primary);outline:none;}
 #fAmount{font-size:1.1rem;font-weight:800;}
 .add-btn{grid-column:1 / -1;background:var(--primary);color:#fff;border:none;border-radius:10px;padding:11px;font-size:.92rem;font-weight:700;cursor:pointer;}
-.add-btn:hover{background:#047857;}
+.add-btn:hover{background:#6847F0;}
 
 /* ledger */
 .filter-row{display:flex;gap:8px;margin-bottom:10px;}
@@ -178,7 +178,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 
   <!-- 原始账单来源档案：只展示元数据；真实逐行来源保存在私密数据层 -->
   <div class="card" id="sourceArchiveCard" aria-live="polite">
-    <div class="card-title">来源档案 <span style="font-weight:400;font-size:.68rem">原记录只读 · 分析口径另行派生</span></div>
+    <div class="card-title">来源档案 <span style="font-weight:400;font-size:.68rem">原记录只读 · 分析另派生</span></div>
     <div id="sourceArchiveBody"></div>
   </div>
 
@@ -211,7 +211,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 
   <!-- 定存规划；旧基金数据继续保留但不再展示 -->
   <div class="card">
-    <div class="card-title">定存规划 <span style="font-weight:400;color:var(--sub);font-size:.7rem">先保流动性，再安排到期梯队</span></div>
+    <div class="card-title">定存规划 <span style="font-weight:400;color:var(--sub);font-size:.7rem">先保流动性 · 到期梯队</span></div>
     <div class="deposit-summary" id="depositSummary"></div>
     <div id="depositList"></div>
     <div class="add-grid" style="margin-top:10px">
@@ -222,7 +222,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
       <div class="fld"><label>期限（月）</label><input id="dMonths" type="number" min="1" max="120" placeholder="如 12"></div>
       <button class="add-btn" id="depositSaveBtn">＋ 添加定存计划</button>
     </div>
-    <div style="font-size:.68rem;color:var(--sub);margin-top:9px">利息为规划估算，不代表银行承诺收益；在应急备用金不足时，不建议锁定全部现金。</div>
+    <div style="font-size:.68rem;color:var(--sub);margin-top:9px">利息为规划估算，非银行保证收益；先留足应急资金。</div>
   </div>
 
   <!-- 财务目标 -->
@@ -262,7 +262,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
     <div class="import-row">
       <div class="import-copy">
         <strong>批量导入流水</strong>
-        <span>使用 Yara 账本 JSON；稳定交易 ID 去重，来源字段只读留档</span>
+        <span>Yara 账本 JSON · 稳定 ID 去重 · 来源只读留档</span>
       </div>
       <button class="import-btn" id="importLedgerBtn" type="button">选择文件</button>
       <input id="ledgerImportFile" type="file" accept=".json,application/json" hidden>
@@ -283,7 +283,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 // ===== 记账本 =====
 const LS_KEY = 'yara_ledger_v1';
 const CAT_ICO = {'餐饮':'🍜','交通':'🚇','购物':'🛍️','居住':'🏠','娱乐':'🎮','医疗':'💊','教育':'📚','人情':'🧧','服饰':'👕','日用':'🧴','通讯':'📱','工资':'💰','奖金':'🎁','兼职':'💼','理财':'📈','红包':'🧧','退款':'↩️','其他':'📌'};
-const PALETTE = ['#e11d48','#f59e0b','#059669','#3b82f6','#8b5cf6','#ec4899','#14b8a6','#f97316','#6366f1','#84cc16','#06b6d4','#a855f7'];
+const PALETTE = ['#e11d48','#f59e0b','#059669','#3b82f6','#e85d8f','#ec4899','#14b8a6','#f97316','#6366f1','#84cc16','#06b6d4','#a855f7'];
 
 const DEFAULT_CATEGORIES = {
   expense: ['餐饮','交通','购物','居住','娱乐','医疗','教育','人情','服饰','日用','通讯','其他'],
@@ -760,7 +760,7 @@ function renderSourceArchive(){
   const rows=(state.sourceImports||[]).slice().sort(function(a,b){return String(b.periodEnd||'').localeCompare(String(a.periodEnd||''));});
   if(!rows.length){box.innerHTML='<div class="source-empty">还没有账单来源档案。导入支付宝、微信或银行卡明细后，这里会显示文件范围、记录数和校验值。</div>';return;}
   const rawCount=(state.sourceRecords||[]).length;
-  box.innerHTML='<div class="source-policy">已留存 '+rawCount+' 条逐行来源记录。原始字段、交易单号和来源文件校验值只读保存；关闭交易与不计收支不进入消费，退款仅在能对应到已计支出的原交易时用于冲减，所有分析结果都与原记录分层。</div><div class="source-grid">'+rows.map(function(row){
+  box.innerHTML='<div class="source-policy">已留存 '+rawCount+' 条来源记录 · 原始字段只读 · 退款仅在对应到已计支出时冲减 · 分析与来源分层</div><div class="source-grid">'+rows.map(function(row){
     const period=esc(row.periodStart||'')+' — '+esc(row.periodEnd||'');
     const accounting=row.accountingView||{};
     const accountingHint=accounting.transactionCount!=null?'会计视图 '+accounting.transactionCount+' 条；来源净额与账单汇总一致。':'';
@@ -781,9 +781,9 @@ function renderAnnualOverview(){
   if(income>0&&net<0){level='danger';diagnosis='年度支出已经超过收入 '+money(Math.abs(net))+' 元，支出/收入比为 '+spendRate.toFixed(1)+'%。当前第一目标不是追求收益，而是先让现金流恢复为正。';}
   else if(income>0&&spendRate>80){level='warn';diagnosis='年度仍有正结余，但支出已占收入 '+spendRate.toFixed(1)+'%。建议先把储蓄列为固定预算，再安排定存。';}
   else if(income>0){diagnosis='年度现金流保持正结余，当前结余率 '+((net/income)*100).toFixed(1)+'%。可以在保留应急资金后，分批规划定存。';}
-  document.getElementById('annualBody').innerHTML='<div class="annual-head"><div class="annual-title"><span class="annual-logo">'+year.toString().slice(-2)+'</span><div><strong>'+year+' 年收入与消费</strong><span>年度累计直接进入资金总览，不重复生成流水</span></div></div><div class="annual-scope">'+esc(row.account||'已录入流水')+'<br>截至 '+esc(row.endDate||todayStr())+'</div></div>'+
+  document.getElementById('annualBody').innerHTML='<div class="annual-head"><div class="annual-title"><span class="annual-logo">'+year.toString().slice(-2)+'</span><div><strong>'+year+' 年收入与消费</strong><span>年度汇总 · 不重复生成流水</span></div></div><div class="annual-scope">'+esc(row.account||'已录入流水')+'<br>截至 '+esc(row.endDate||todayStr())+'</div></div>'+
     '<div class="annual-grid"><div class="annual-cell inc"><div class="v">'+money(income)+'</div><div class="k">年度收入</div></div><div class="annual-cell exp"><div class="v">'+money(expense)+'</div><div class="k">年度消费</div></div><div class="annual-cell net"><div class="v">'+(net>0?'+':'')+money(net)+'</div><div class="k">年度结余</div></div><div class="annual-cell"><div class="v">'+(income?spendRate.toFixed(1):'—')+(income?'%':'')+'</div><div class="k">支出 / 收入</div></div></div>'+
-    '<div class="money-diagnosis '+level+'">'+diagnosis+(row.isSummary?' 当前口径：'+esc(row.account)+'区间累计；后续补充其他账户后再完善年度全景。':' 当前判断仅依据已录入流水。')+'</div>';
+    '<div class="money-diagnosis '+level+'">'+diagnosis+(row.isSummary?' 口径：'+esc(row.account)+' 区间累计。':' 仅依据已录入流水。')+'</div>';
 }
 function renderMoneyCoach(list,inc,exp){
   const plan=state.financialPlan||{targetSavingsRate:20,emergencyMonths:6};
@@ -799,8 +799,7 @@ function renderMoneyCoach(list,inc,exp){
   if(level==='danger')advice.push('先暂停非必要大额支出，找出本月金额最高的 3 个可调整分类。');
   if(inc>0)advice.push('建议本月优先留出约 '+money(inc*target/100)+' 元作为储蓄目标；比例可按实际生活成本调整。');
   else advice.push('补齐本月工资与固定支出后，再决定可存金额，避免用不完整数据制造焦虑。');
-  advice.push('定存前先保留可随时取用的应急资金；金额应结合你的固定生活成本与工作稳定性。');
-  document.getElementById('moneyCoachBody').innerHTML='<div class="coach-status '+level+'"><span class="coach-dot"></span><div><strong>'+title+'</strong><span>'+detail+' · 统计月份 '+curMonth+'</span></div></div><ul class="coach-advice">'+advice.map(function(item){return'<li>'+item+'</li>';}).join('')+'</ul><div class="plan-row"><label>目标储蓄率（不是硬指标，可随生活阶段调整）<input id="targetSavingsRate" type="number" min="0" max="90" step="1" value="'+target+'"></label><label>应急资金目标（月）<input id="emergencyMonths" type="number" min="1" max="24" step="1" value="'+(Number(plan.emergencyMonths)||6)+'"></label><button id="saveFinancialPlan" type="button">保存规划</button></div>';
+  document.getElementById('moneyCoachBody').innerHTML='<div class="coach-status '+level+'"><span class="coach-dot"></span><div><strong>'+title+'</strong><span>'+detail+'</span></div></div>'+(advice.length?'<ul class="coach-advice">'+advice.map(function(item){return'<li>'+item+'</li>';}).join('')+'</ul>':'')+'<div class="plan-row"><label>目标储蓄率（%）<input id="targetSavingsRate" type="number" min="0" max="90" step="1" value="'+target+'"></label><label>应急资金目标（月）<input id="emergencyMonths" type="number" min="1" max="24" step="1" value="'+(Number(plan.emergencyMonths)||6)+'"></label><button id="saveFinancialPlan" type="button">保存规划</button></div>';
 }
 
 function renderBudget(list, exp){
@@ -829,7 +828,7 @@ function renderGoal(){
   const invest=totalValue();
   const net=(g.currentSavings||0)+invest;
   if(!g.targetAmount){
-    body.innerHTML='<div style="font-size:.8rem;color:var(--sub);margin-bottom:8px">设定一个真实可执行的储蓄目标。定存是现金安排，不自动重复计入总资产；历史投资数据仍安全保留但不再展示。</div>'+goalFormHtml();
+    body.innerHTML='<div style="font-size:.8rem;color:var(--sub);margin-bottom:8px">设定真实可执行的储蓄目标；定存计入现金，不重复计入总资产。</div>'+goalFormHtml();
     return;
   }
   const now=new Date();
