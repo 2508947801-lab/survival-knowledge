@@ -22,21 +22,7 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{height:100%;overflow:hidden;}
 body{font-family:var(--sans);background:var(--bg);color:var(--ink);}
-::selection{background:rgba(255,107,157,.35);}
-
-/* === 极光背景 + 星光 === */
-.aurora{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;
-  background:radial-gradient(1200px 800px at 85% -10%,rgba(122,165,255,.14),transparent 60%),
-             radial-gradient(1000px 700px at -10% 110%,rgba(94,234,212,.10),transparent 60%),var(--bg);}
-.aurora i{position:absolute;border-radius:50%;filter:blur(90px);opacity:.5;mix-blend-mode:screen;}
-.aurora i:nth-child(1){width:520px;height:520px;left:-140px;top:-120px;background:radial-gradient(circle,#ff6b9d,transparent 70%);animation:drift1 26s ease-in-out infinite alternate;}
-.aurora i:nth-child(2){width:620px;height:620px;right:-180px;top:22%;background:radial-gradient(circle,#a78bfa,transparent 70%);animation:drift2 32s ease-in-out infinite alternate;}
-.aurora i:nth-child(3){width:460px;height:460px;left:32%;bottom:-180px;background:radial-gradient(circle,#5eead4,transparent 70%);opacity:.35;animation:drift3 38s ease-in-out infinite alternate;}
-@keyframes drift1{to{transform:translate(120px,90px) scale(1.15);}}
-@keyframes drift2{to{transform:translate(-140px,70px) scale(1.1);}}
-@keyframes drift3{to{transform:translate(90px,-80px) scale(1.2);}}
-.sparkle{position:fixed;z-index:1;pointer-events:none;color:#fff;font-style:normal;animation:twinkle 3.2s ease-in-out infinite;}
-@keyframes twinkle{0%,100%{opacity:.15;transform:scale(.7) rotate(0deg);}50%{opacity:.9;transform:scale(1.15) rotate(20deg);}}
+::selection{background:rgba(124,92,255,.22);}
 
 /* === SIDEBAR === */
 .sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;z-index:100;display:flex;flex-direction:column;
@@ -87,15 +73,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);}
 .home::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:99px;}
 .home h2{font-family:var(--disp);font-size:1.7rem;font-weight:800;margin-bottom:8px;}
 .home .sub{font-size:.82rem;color:var(--sub);margin-bottom:30px;}
-.home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;max-width:820px;}
-.home-card{background:var(--glass);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--glass-bd);border-radius:var(--r-lg);padding:20px;cursor:pointer;transition:all .25s;animation:pop .5s ease backwards;}
-.home-card:hover{transform:translateY(-4px);border-color:rgba(255,107,157,.5);box-shadow:0 12px 32px rgba(0,0,0,.35),0 0 24px rgba(255,107,157,.15);}
-.home-card .hc-icon{font-size:1.5rem;margin-bottom:10px;display:inline-block;animation:bob 3.5s ease-in-out infinite;}
-.home-card .hc-title{font-size:.88rem;font-weight:700;margin-bottom:4px;}
-.home-card .hc-desc{font-size:.72rem;color:var(--sub);line-height:1.55;}
-.home-card .hc-tag{display:inline-block;margin-top:10px;padding:3px 10px;background:linear-gradient(90deg,rgba(255,107,157,.2),rgba(167,139,250,.2));border:1px solid rgba(255,107,157,.3);border-radius:99px;font-size:.62rem;font-weight:700;color:#ffd7e6;}
 @keyframes pop{from{opacity:0;transform:translateY(16px) scale(.96);}to{opacity:1;transform:none;}}
-@keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
 
 /* === DASHBOARD === */
 .dash-greeting h2{font-family:var(--disp);font-size:1.65rem;font-weight:800;margin-bottom:5px;
@@ -157,7 +135,6 @@ body{font-family:var(--sans);background:var(--bg);color:var(--ink);}
   .menu-toggle{display:block;}
   .topbar{padding-left:58px;}
   .home{padding:26px 16px;}
-  .home-grid{grid-template-columns:1fr;}
   .dash-stats{gap:9px;}
   .stat-card{padding:13px 12px;}
   .stat-card .stat-num{font-size:1.25rem;}
@@ -431,6 +408,7 @@ body.shell-scrolled .icon-btn{height:34px;}
 body.shell-scrolled .frame-wrap{border-radius:18px;box-shadow:0 18px 48px rgba(2,6,18,.2);}
 .frame-wrap iframe{position:relative;z-index:2;background:var(--bg);opacity:1;transition:opacity .25s;}
 .frame-wrap iframe.is-loading{opacity:.28;}
+.frame-wrap iframe.hub-frame{position:absolute;left:0;top:0;width:100%;height:100%;}
 .frame-loader{
   position:absolute;
   z-index:3;
@@ -696,7 +674,7 @@ body.shell-scrolled .frame-wrap{border-radius:18px;box-shadow:0 18px 48px rgba(2
 .command-results{max-height:min(52vh,410px);overflow-y:auto;padding:9px;}
 .command-item{width:100%;display:flex;align-items:center;gap:11px;padding:11px 12px;border:1px solid transparent;border-radius:13px;background:transparent;text-align:left;cursor:pointer;}
 .command-item:hover,.command-item.is-selected{background:var(--surface-soft);border-color:var(--glass-bd);}
-.command-item-icon{width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:linear-gradient(145deg,rgba(155,140,255,.16),rgba(93,229,210,.08));border:1px solid var(--glass-bd);}
+.command-item-icon{width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:linear-gradient(145deg,rgba(155,140,255,.16),rgba(93,229,210,.08));border:1px solid var(--glass-bd);font-size:16px;line-height:1;}
 .command-item-copy{display:flex;flex-direction:column;min-width:0;}
 .command-item-copy strong{font-size:.72rem;color:var(--ink);}
 .command-item-copy span{margin-top:2px;font-size:.58rem;color:var(--sub);}
@@ -812,13 +790,10 @@ body[data-theme="twilight"] .flash-home-card{color:#f1efff;border-color:rgba(255
   .cursor-glow{display:none;}
 }
 </style>
-<link rel="stylesheet" href="yara-game-shell.css?v=4.0">
-<style id="yara-bright-v5">
-/* ===== YARA OS · Bright 5.0 =====
- * 依据《H5/HTML全局视觉优化总提示词》建立的统一设计系统。
- * 明亮 / 通透 / 现代 / 专业：白色工作台 + 浅色科技感 + 品牌蓝 #4F7CFF。
- * 本层为最终层：所有组件只引用 Design Tokens，页面不再各自写颜色。
- * Dawn（默认）= 明亮模式；Twilight = 可选深夜蓝（非默认，仍受令牌约束）。
+<style id="yara-aurora-canvas">
+/* ===== YARA OS · 视觉令牌层（明亮宝蓝 V2.0） =====
+ * 沉浸式系统外壳 + 高可读工作台：白色为主、明亮宝蓝主色、鲜艳点缀。
+ * 本层是唯一产品视觉令牌入口；Dawn 保持轻盈，Twilight 为同一令牌体系的深色变体。
  */
 
 /* ---------- 一、Design Tokens ---------- */
@@ -826,49 +801,50 @@ body[data-theme="twilight"] .flash-home-card{color:#f1efff;border-color:rgba(255
   --sans:var(--ys-font,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI Variable","Segoe UI","PingFang SC","Microsoft YaHei",sans-serif);
   --disp:var(--ys-font-display,var(--sans));
   /* 背景层级 */
-  --bg-deep:#EDF2F9;
-  --bg:#F7F9FC;                 /* 主背景 */
-  --surface:#FFFFFF;            /* 一级容器 */
+  --bg-deep:#EEF2F9;
+  --bg:#F6F8FC;                 /* 主背景 */
+  --surface:#FFFFFF;            /* 白色一级容器 */
   --surface-strong:#FFFFFF;
-  --surface-soft:#F3F6FA;       /* 次级区域 */
-  /* 品牌主色：明亮蓝 */
-  --primary:#4F7CFF;
-  --primary-strong:#3F6DE8;     /* Hover */
-  --primary-soft:#EEF3FF;       /* 浅色主色背景 */
-  --primary-bd:#C9D8FF;
-  /* 辅助色（同时出现的强调色 ≤3） */
-  --primary-2:#8FA8FF;
-  --lavender:#A78BFA;
-  --lavender-soft:#F5F1FF;
-  --lavender-bd:#DED6FF;
-  --blue:#4F7CFF;
-  --teal:#4F7CFF;               /* legacy 点缀位 → 统一收编为品牌蓝 */
+  --surface-soft:#F0F3FA;       /* 次级区域 */
+  /* 品牌主色：暮光紫 */
+  --primary:#7C5CFF;
+  --primary-strong:#6847F0;     /* Hover */
+  --primary-soft:#F0EBFF;       /* 浅色主色背景 */
+  --primary-bd:#D9CDFF;
+  /* 辅助色：浅紫 + 玫瑰 */
+  --primary-2:#A78BFF;
+  --lavender:#E85D8F;
+  --lavender-soft:#FDEEF5;
+  --lavender-bd:#F7CFE0;
+  --blue:#4C82C9;
+  --teal:#7C5CFF;
   /* 状态色 */
   --success:#22C55E;
   --success-ink:#16A34A;
   --warning:#F59E0B;
   --warning-ink:#D97706;
-  --danger:#EF4444;
-  --danger-ink:#DC2626;
-  --info:#4F7CFF;
+  --danger:#F0455B;
+  --danger-ink:#E11D48;
+  --info:#4C82C9;
   --peach:#F59E0B;
-  --gold:#F59E0B;
-  --coral:#EF4444;
-  /* 文字四级层级 */
-  --ink:#1F2937;                /* 主文字 */
-  --ink-l:#4B5563;              /* 次级文字 */
-  --sub:#6B7280;                /* 辅助文字 */
-  --muted:#9CA3AF;              /* 弱提示 */
+  --gold:#FFB020;
+  --coral:#FF6B6B;
+  /* 文字四级层级（深色高对比） */
+  --ink:#1B2330;                /* 主文字 */
+  --ink-l:#5A6473;              /* 次级文字 */
+  --sub:#7C8698;                /* 辅助文字 */
+  --muted:#A2ABBB;              /* 弱提示 */
   /* 边框 / 容器 */
-  --glass:#FFFFFF;
-  --glass-2:#F3F6FA;
-  --glass-bd:#E8EDF5;
-  --border:#E8EDF5;
-  /* 渐变仅用于品牌标识，不做大面积铺色 */
-  --grad:linear-gradient(135deg,#4F7CFF 0%,#607CF2 68%,#9B8AF0 100%);
+  --glass:rgba(255,255,255,.78);
+  --glass-2:rgba(255,255,255,.92);
+  --glass-bd:rgba(124,92,255,.14);
+  --border:#E6EAF2;
+  --warm:#FFB020;
+  /* 渐变只用于品牌标识和微小强调 */
+  --grad:linear-gradient(135deg,#7C5CFF 0%,#9B7BFF 56%,#E85D8F 100%);
   /* 阴影：轻 */
-  --glow:0 4px 20px rgba(15,23,42,.05);
-  --shadow-hover:0 8px 28px rgba(15,23,42,.09);
+  --glow:0 10px 34px rgba(27,35,48,.07);
+  --shadow-hover:0 18px 48px rgba(27,35,48,.12);
   /* 圆角 / 布局 */
   --r-lg:16px;
   --r-md:12px;
@@ -877,21 +853,21 @@ body[data-theme="twilight"] .flash-home-card{color:#f1efff;border-color:rgba(255
 /* Dawn 直接使用 :root；不再维护一份重复令牌。 */
 /* Twilight：可选深夜蓝（保留 toggle 功能，令牌化不重写组件） */
 body[data-theme="twilight"]{
-  --bg-deep:#0F1728;
-  --bg:#141E33;
-  --surface:#1B2740;
-  --surface-strong:#22304E;
+  --bg-deep:#080D16;
+  --bg:#0F1420;
+  --surface:#171E2D;
+  --surface-strong:#1E2739;
   --surface-soft:rgba(255,255,255,.055);
-  --primary:#7A9BFF;
-  --primary-strong:#A9BEFF;
-  --primary-soft:rgba(122,155,255,.15);
-  --primary-bd:rgba(122,155,255,.32);
-  --primary-2:#93A9E8;
-  --lavender:#B3A4EA;
-  --lavender-soft:rgba(179,164,234,.14);
-  --lavender-bd:rgba(179,164,234,.32);
-  --blue:#7A9BFF;
-  --teal:#7A9BFF;
+  --primary:#A78BFF;
+  --primary-strong:#C4B2FF;
+  --primary-soft:rgba(167,139,255,.16);
+  --primary-bd:rgba(167,139,255,.3);
+  --primary-2:#C4B2FF;
+  --lavender:#FF8FB8;
+  --lavender-soft:rgba(255,143,184,.15);
+  --lavender-bd:rgba(255,143,184,.3);
+  --blue:#8EA8C2;
+  --teal:#A78BFF;
   --success:#4ADE80;
   --success-ink:#4ADE80;
   --warning:#FBBF24;
@@ -900,16 +876,16 @@ body[data-theme="twilight"]{
   --danger-ink:#F87171;
   --peach:#FBBF24;
   --gold:#FBBF24;
-  --coral:#F87171;
-  --ink:#EDF1FA;
-  --ink-l:#B9C3D9;
-  --sub:#8B96B0;
-  --muted:#6B7690;
+  --coral:#FF8F8F;
+  --ink:#EEF2FA;
+  --ink-l:#C3CCDC;
+  --sub:#94A0B5;
+  --muted:#727E93;
   --glass:rgba(255,255,255,.06);
   --glass-2:rgba(255,255,255,.1);
   --glass-bd:rgba(255,255,255,.12);
   --border:rgba(255,255,255,.1);
-  --grad:linear-gradient(135deg,#7A9BFF 0%,#8090EE 68%,#B3A4EA 100%);
+  --grad:linear-gradient(135deg,#A78BFF 0%,#C4B2FF 56%,#FF8FB8 100%);
   --glow:0 10px 30px rgba(3,7,18,.32);
   --shadow-hover:0 14px 36px rgba(3,7,18,.42);
 }
@@ -918,24 +894,24 @@ body[data-theme="twilight"]{
 html{background:var(--bg-deep);}
 body{
   background:
-    radial-gradient(circle at 12% -8%,rgba(79,124,255,.07),transparent 32%),
-    radial-gradient(circle at 90% 4%,rgba(143,168,255,.06),transparent 30%),
-    radial-gradient(circle at 55% 112%,rgba(79,124,255,.045),transparent 34%),
+    radial-gradient(circle at 12% -8%,rgba(124,92,255,.07),transparent 32%),
+    radial-gradient(circle at 90% 4%,rgba(167,139,255,.06),transparent 30%),
+    radial-gradient(circle at 55% 112%,rgba(124,92,255,.045),transparent 34%),
     var(--bg);
   color:var(--ink);
 }
 body[data-theme="twilight"]{
   background:
-    radial-gradient(circle at 12% -8%,rgba(122,155,255,.12),transparent 33%),
-    radial-gradient(circle at 90% 4%,rgba(147,169,232,.1),transparent 31%),
+    radial-gradient(circle at 12% -8%,rgba(167,139,255,.12),transparent 33%),
+    radial-gradient(circle at 90% 4%,rgba(196,178,255,.1),transparent 31%),
     var(--bg);
 }
-::selection{background:rgba(79,124,255,.24);}
-.atmosphere .orb-a{background:radial-gradient(circle,rgba(79,124,255,.10),transparent 68%);}
-.atmosphere .orb-b{background:radial-gradient(circle,rgba(143,168,255,.10),transparent 68%);}
+::selection{background:rgba(124,92,255,.24);}
+.atmosphere .orb-a{background:radial-gradient(circle,rgba(124,92,255,.10),transparent 68%);}
+.atmosphere .orb-b{background:radial-gradient(circle,rgba(167,139,255,.10),transparent 68%);}
 .atmosphere .orb-c{background:radial-gradient(circle,rgba(167,139,250,.07),transparent 68%);}
 .grain{opacity:.05;}
-.cursor-glow{background:radial-gradient(circle,rgba(79,124,255,.07),transparent 67%);}
+.cursor-glow{background:radial-gradient(circle,rgba(124,92,255,.07),transparent 67%);}
 .sidebar .nav-scroll::-webkit-scrollbar-thumb,
 .home::-webkit-scrollbar-thumb{background:rgba(15,23,42,.16);}
 button:focus-visible,.nav-group-title:focus-visible,.nav-child:focus-visible,.quick-btn:focus-visible{
@@ -959,7 +935,7 @@ body[data-theme="twilight"] .sidebar{
   border:1px solid var(--glass-bd);
   box-shadow:var(--glow);
 }
-.sidebar .logo::after{background:radial-gradient(circle,rgba(79,124,255,.12),transparent 68%);}
+.sidebar .logo::after{background:radial-gradient(circle,rgba(124,92,255,.12),transparent 68%);}
 .sidebar .logo h1{
   background:none;
   -webkit-text-fill-color:currentColor;
@@ -967,7 +943,7 @@ body[data-theme="twilight"] .sidebar{
   font-size:19px;
 }
 .sidebar .logo small{color:var(--muted);font-size:12px;letter-spacing:1.5px;}
-.brand-mark{background:var(--grad);box-shadow:0 8px 20px rgba(79,124,255,.25),0 0 0 1px rgba(255,255,255,.4) inset;}
+.brand-mark{background:var(--grad);box-shadow:0 8px 20px rgba(124,92,255,.25),0 0 0 1px rgba(255,255,255,.4) inset;}
 .nav-group-title{font-size:14px;color:var(--ink-l);}
 .nav-group-title:hover,
 .nav-group.open>.nav-group-title{background:var(--surface-soft);border-color:var(--glass-bd);color:var(--ink);}
@@ -1056,15 +1032,16 @@ body[data-theme="twilight"].shell-scrolled .topbar{
 }
 .icon-btn .keycap{background:var(--surface-soft);color:var(--muted);}
 /* Secondary：浅主色底 + 主色字 */
+/* Primary：主色实底，返回按钮必须一眼可见 */
 .route-back{
   height:36px;
-  background:var(--primary-soft);
+  background:var(--primary);
   border:1px solid transparent;
-  color:var(--primary-strong);
+  color:var(--hub-badge-ink,#fff);
   font-size:13px;
   font-weight:700;
 }
-.route-back:hover{background:#E2EAFF;box-shadow:var(--glow);}
+.route-back:hover{background:var(--primary-strong);color:var(--hub-badge-ink,#fff);box-shadow:var(--glow);}
 /* Primary：主色底 + 白字 */
 .flash-home-action{
   min-height:40px;
@@ -1074,7 +1051,7 @@ body[data-theme="twilight"].shell-scrolled .topbar{
   color:#FFFFFF;
   font-size:14px;
   font-weight:700;
-  box-shadow:0 4px 14px rgba(79,124,255,.28);
+  box-shadow:0 4px 14px rgba(124,92,255,.28);
   border:0;
 }
 .flash-home-action:hover{background:var(--primary-strong);transform:translateY(-1px);}
@@ -1089,7 +1066,7 @@ body[data-theme="dawn"] .frame-wrap{border:1px solid var(--glass-bd);box-shadow:
 .loader-card{color:var(--sub);font-size:13px;}
 .loader-orbit{border-color:var(--primary-bd);}
 .loader-orbit::before{background:var(--primary);box-shadow:none;}
-.loader-orbit::after{border-color:rgba(79,124,255,.55);border-left-color:transparent;}
+.loader-orbit::after{border-color:rgba(124,92,255,.55);border-left-color:transparent;}
 .hero-panel,
 body[data-theme="dawn"] .hero-panel{
   border:1px solid var(--glass-bd);
@@ -1098,10 +1075,10 @@ body[data-theme="dawn"] .hero-panel{
   box-shadow:var(--glow);
 }
 body[data-theme="twilight"] .hero-panel{
-  background:linear-gradient(118deg,rgba(122,155,255,.14),rgba(122,155,255,.05) 62%),var(--surface);
+  background:linear-gradient(118deg,rgba(167,139,255,.14),rgba(167,139,255,.05) 62%),var(--surface);
 }
-.hero-panel::before{box-shadow:0 0 0 34px rgba(79,124,255,.05),0 0 0 70px rgba(79,124,255,.03);border-color:rgba(79,124,255,.1);}
-.hero-panel::after{-webkit-text-stroke:1px rgba(79,124,255,.07);}
+.hero-panel::before{box-shadow:0 0 0 34px rgba(124,92,255,.05),0 0 0 70px rgba(124,92,255,.03);border-color:rgba(124,92,255,.1);}
+.hero-panel::after{-webkit-text-stroke:1px rgba(124,92,255,.07);}
 .eyebrow{color:var(--primary);font-size:12px;letter-spacing:2px;}
 .eyebrow::before{background:var(--primary);box-shadow:none;}
 .dash-greeting h2{
@@ -1113,7 +1090,7 @@ body[data-theme="twilight"] .hero-panel{
 .dash-greeting .sub{color:var(--sub);font-size:14px;}
 .hero-chip{background:var(--surface);border:1px solid var(--glass-bd);color:var(--sub);font-size:12px;}
 .hero-chip strong{color:var(--ink-l);}
-.hero-emblem{background:var(--grad);box-shadow:0 14px 36px rgba(79,124,255,.24),0 0 0 1px rgba(255,255,255,.48) inset;}
+.hero-emblem{background:var(--grad);box-shadow:0 14px 36px rgba(124,92,255,.24),0 0 0 1px rgba(255,255,255,.48) inset;}
 .stat-card,.class-list,.cap-summary,#dashProgress,.quick-btn,.action-center,.risk-center{
   background:var(--surface);
   border:1px solid var(--glass-bd);
@@ -1131,7 +1108,7 @@ body[data-theme="dawn"] .quick-btn:hover{
 .stat-card.st-green::before{background:var(--success);}
 .stat-card.st-gold::before{background:var(--warning);}
 .stat-card.st-red::before{background:var(--danger);}
-.stat-card::after{background:radial-gradient(circle,rgba(79,124,255,.08),transparent 70%);}
+.stat-card::after{background:radial-gradient(circle,rgba(124,92,255,.08),transparent 70%);}
 .stat-card.st-green::after{background:radial-gradient(circle,rgba(34,197,94,.09),transparent 70%);}
 .stat-card.st-gold::after{background:radial-gradient(circle,rgba(245,158,11,.09),transparent 70%);}
 .stat-card.st-red::after{background:radial-gradient(circle,rgba(239,68,68,.08),transparent 70%);}
@@ -1204,7 +1181,7 @@ body[data-theme="dawn"] .quick-btn:hover{
   box-shadow:var(--glow);
   color:var(--ink);
 }
-.flash-home-icon{background:var(--grad);box-shadow:0 8px 20px rgba(79,124,255,.22);}
+.flash-home-icon{background:var(--grad);box-shadow:0 8px 20px rgba(124,92,255,.22);}
 .flash-home-kicker{color:var(--primary);font-size:12px;}
 .flash-home-copy h3{font-size:17px;color:var(--ink);}
 .flash-home-copy p{color:var(--sub);font-size:13px;}
@@ -1253,7 +1230,7 @@ body[data-theme="twilight"] .flash-home-action{background:var(--primary);}
 .yara-confirm-actions button.danger{color:var(--danger-ink);border-color:rgba(239,68,68,.25);background:rgba(239,68,68,.07);}
 .yara-confirm-actions button.primary{background:var(--primary);border-color:var(--primary);color:#FFFFFF;}
 .yara-confirm-actions button.primary:hover{background:var(--primary-strong);}
-.ripple{background:rgba(79,124,255,.18);}
+.ripple{background:rgba(124,92,255,.18);}
 
 /* ---------- 十、移动端适配补强 ---------- */
 @media(max-width:768px){
@@ -1270,15 +1247,15 @@ body[data-theme="twilight"] .flash-home-action{background:var(--primary);}
 body,
 body[data-theme="dawn"]{
   background:
-    radial-gradient(circle at 12% -8%,rgba(79,124,255,.07),transparent 32%),
-    radial-gradient(circle at 90% 4%,rgba(143,168,255,.06),transparent 30%),
-    radial-gradient(circle at 55% 112%,rgba(79,124,255,.045),transparent 34%),
+    radial-gradient(circle at 12% -8%,rgba(124,92,255,.07),transparent 32%),
+    radial-gradient(circle at 90% 4%,rgba(167,139,255,.06),transparent 30%),
+    radial-gradient(circle at 55% 112%,rgba(124,92,255,.045),transparent 34%),
     var(--bg)!important;
 }
 body[data-theme="twilight"]{
   background:
-    radial-gradient(circle at 12% -8%,rgba(122,155,255,.12),transparent 33%),
-    radial-gradient(circle at 90% 4%,rgba(147,169,232,.1),transparent 31%),
+    radial-gradient(circle at 12% -8%,rgba(167,139,255,.12),transparent 33%),
+    radial-gradient(circle at 90% 4%,rgba(196,178,255,.1),transparent 31%),
     var(--bg)!important;
 }
 .sidebar,
@@ -1306,7 +1283,7 @@ body[data-theme="dawn"] .nav-child.active{
   box-shadow:inset 3px 0 0 var(--primary)!important;
 }
 body[data-theme="twilight"] .nav-child.active{background:var(--primary-soft)!important;color:var(--primary-strong)!important;}
-.nav-child.active .dot{background:var(--primary)!important;box-shadow:0 0 0 4px rgba(79,124,255,.14)!important;}
+.nav-child.active .dot{background:var(--primary)!important;box-shadow:0 0 0 4px rgba(124,92,255,.14)!important;}
 .status-signal{background:var(--success)!important;box-shadow:0 0 0 5px rgba(34,197,94,.14)!important;}
 .hero-panel,
 body[data-theme="dawn"] .hero-panel{
@@ -1315,13 +1292,13 @@ body[data-theme="dawn"] .hero-panel{
   box-shadow:var(--glow)!important;
 }
 body[data-theme="twilight"] .hero-panel{
-  background:linear-gradient(118deg,rgba(122,155,255,.14),rgba(122,155,255,.05) 62%),var(--surface)!important;
+  background:linear-gradient(118deg,rgba(167,139,255,.14),rgba(167,139,255,.05) 62%),var(--surface)!important;
 }
 .hero-panel::before{
   background:none!important;
   opacity:1;
-  border:1px solid rgba(79,124,255,.1);
-  box-shadow:0 0 0 34px rgba(79,124,255,.05),0 0 0 70px rgba(79,124,255,.03);
+  border:1px solid rgba(124,92,255,.1);
+  box-shadow:0 0 0 34px rgba(124,92,255,.05),0 0 0 70px rgba(124,92,255,.03);
 }
 .hero-panel::after{opacity:1;background-image:none!important;}
 .stat-card::before{background:var(--primary)!important;}
@@ -1358,9 +1335,587 @@ body[data-theme="twilight"] .hero-panel{
   .companion-suggestions button{padding:8px 12px;}
   .companion-form input{min-height:44px;}
 }
+
+/* ---------- 十二、封面首页 · V2.0 对齐 ---------- */
+/* 保留沉浸式封面版式与入场动画；颜色全部走明亮宝蓝令牌，移除 Aurora 时代雾松绿/深松绿硬编码。 */
+.hero-panel,
+body[data-theme="dawn"] .hero-panel,
+body[data-theme="twilight"] .hero-panel{
+  min-height:330px;
+  padding:42px clamp(28px,5vw,62px);
+  border-radius:30px;
+}
+.hero-panel::before{
+  width:520px!important;height:520px!important;
+  right:-150px!important;top:-265px!important;
+  animation:heroHalo 9s ease-in-out infinite;
+}
+.hero-panel::after{
+  right:19%;bottom:-50px;
+  color:transparent;
+  opacity:1;
+  font-size:9.5rem;
+  -webkit-text-stroke:1px rgba(124,92,255,.08)!important;
+}
+.hero-copy{max-width:min(820px,calc(100% - 170px));}
+.eyebrow{margin-bottom:17px;}
+.dash-greeting .hero-statement{
+  margin:0;
+  font-size:clamp(36px,4.9vw,64px);
+  font-weight:650;
+  letter-spacing:-.065em;
+  line-height:.98;
+  text-wrap:balance;
+}
+.hero-statement span{display:block;color:var(--ink)!important;-webkit-text-fill-color:var(--ink)!important;opacity:0;transform:translateY(22px);animation:heroLineIn .72s var(--ys-ease,cubic-bezier(.22,1,.36,1)) forwards;}
+.hero-statement span:nth-child(2){margin-top:6px;color:var(--primary-strong)!important;-webkit-text-fill-color:var(--primary-strong)!important;animation-delay:.11s;}
+body[data-theme="twilight"] .hero-statement span:nth-child(2){color:var(--primary)!important;-webkit-text-fill-color:var(--primary)!important;}
+.hero-welcome-row{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;margin:22px 0 17px;}
+.hero-welcome{color:var(--ink);font-size:14px;font-weight:720;}
+.dash-greeting .sub{margin:0;}
+.hero-emblem{right:clamp(30px,5vw,70px);width:132px;height:132px;border-radius:42px;}
+.hero-emblem span{font-size:3.5rem;}
+.hero-emblem small{position:absolute;left:50%;bottom:-31px;white-space:nowrap;transform:translateX(-50%) rotate(-8deg);color:var(--muted);font-size:8px;font-weight:750;letter-spacing:.18em;}
+
+/* ---------- 十三、扁平化导航：子项全部直接可见，减少点击层级 ---------- */
+.nav-group{margin-bottom:12px;border-radius:0;}
+.nav-children{display:block!important;padding:2px 0 2px 8px;}
+.nav-group-title{cursor:default;padding:6px 12px 5px;font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--muted);transition:none;}
+.nav-group-title:hover,
+.nav-group.open>.nav-group-title{background:transparent;color:var(--muted);}
+.nav-group-title .icon{width:22px;height:22px;flex:0 0 22px;font-size:.78rem;border-radius:8px;}
+.nav-group.open>.nav-group-title .icon{box-shadow:none;}
+.nav-group-title .arrow{display:none;}
+
+/* ---------- 十四、随身助手（原 yara-game-shell.css 结构迁移 · V2.0 令牌） ---------- */
+.companion-backdrop{
+  position:fixed;inset:0;z-index:1000;background:rgba(15,23,42,.35);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
+  opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.companion-backdrop.open{opacity:1;pointer-events:auto;}
+.companion-panel{
+  position:absolute;right:18px;top:18px;bottom:18px;width:min(410px,calc(100vw - 36px));
+  display:flex;flex-direction:column;border:1px solid var(--glass-bd);border-radius:26px;
+  background:var(--surface-strong);box-shadow:0 28px 90px rgba(15,23,42,.25);
+  transform:translateX(24px);transition:transform .28s cubic-bezier(.22,1,.36,1);overflow:hidden;
+}
+.companion-backdrop.open .companion-panel{transform:none;}
+.companion-head{display:flex;align-items:center;gap:11px;padding:17px;border-bottom:1px solid var(--border);}
+.companion-avatar{display:grid;place-items:center;width:42px;height:42px;border-radius:15px;background:var(--grad);color:#FFFFFF;font-size:1.1rem;}
+.companion-title{flex:1;}
+.companion-title strong{display:block;color:var(--ink);font-size:.85rem;}
+.companion-title span{font-size:.62rem;color:var(--muted);}
+.companion-close{width:34px;height:34px;border:0;border-radius:11px;background:var(--surface-soft);color:var(--sub);cursor:pointer;}
+.companion-close:hover{background:var(--primary-soft);color:var(--primary-strong);}
+.companion-messages{flex:1;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:11px;}
+.companion-message{max-width:84%;padding:10px 12px;border-radius:15px;font-size:.75rem;line-height:1.65;white-space:pre-wrap;}
+.companion-message.bot{align-self:flex-start;color:var(--ink-l);background:var(--surface-soft);border-bottom-left-radius:5px;}
+.companion-message.user{align-self:flex-end;color:#FFFFFF;background:var(--primary);border-bottom-right-radius:5px;}
+.companion-suggestions{display:flex;gap:6px;overflow:auto;padding:0 16px 10px;}
+.companion-suggestions button{flex:0 0 auto;padding:7px 12px;border:1px solid var(--glass-bd);border-radius:999px;background:var(--surface);color:var(--ink-l);font-size:.65rem;cursor:pointer;}
+.companion-suggestions button:hover{background:var(--primary-soft);color:var(--primary-strong);border-color:var(--primary-bd);}
+.companion-form{display:flex;gap:8px;padding:13px 15px calc(13px + env(safe-area-inset-bottom));border-top:1px solid var(--border);}
+.companion-form input{flex:1;min-width:0;padding:11px 12px;border:1px solid var(--glass-bd);border-radius:13px;background:var(--surface);color:var(--ink);outline:none;font-size:.78rem;}
+.companion-form input:focus{border-color:var(--primary-bd);box-shadow:0 0 0 3px rgba(124,92,255,.12);}
+.companion-form button{padding:0 16px;border:0;border-radius:13px;background:var(--primary);color:#FFFFFF;font-weight:750;cursor:pointer;}
+.companion-form button:hover{background:var(--primary-strong);}
+.assistant-launch{position:relative;}
+.assistant-launch::after{
+  content:"";position:absolute;right:4px;top:4px;width:7px;height:7px;border-radius:50%;
+  background:var(--success);box-shadow:0 0 0 3px rgba(34,197,94,.14);
+}
+
+@keyframes heroLineIn{to{opacity:1;transform:none;}}
+@keyframes heroHalo{50%{transform:translate3d(-18px,18px,0) scale(1.04);opacity:.78;}}
+
+@media(max-width:1040px){
+  .hero-copy{max-width:calc(100% - 132px);}
+  .hero-emblem{width:106px;height:106px;right:34px;}
+  .hero-emblem span{font-size:3rem;}
+}
+@media(max-width:768px){
+  .hero-panel,body[data-theme="dawn"] .hero-panel,body[data-theme="twilight"] .hero-panel{min-height:300px;padding:33px 23px;border-radius:26px;}
+  .hero-copy{max-width:100%;}
+  .dash-greeting .hero-statement{font-size:clamp(32px,10.5vw,44px);line-height:1.02;}
+  .hero-welcome-row{align-items:flex-start;flex-direction:column;margin:20px 0 15px;}
+  .hero-emblem,.hero-panel::after{display:none;}
+  .companion-panel{inset:0;width:100%;height:100%;border-radius:0;}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-statement span{opacity:1;transform:none;animation:none!important;}
+  .hero-panel::before{animation:none!important;}
+}
+</style>
+<!-- 身份门禁：自包含样式，不依赖外壳令牌，先于主题初始化渲染 -->
+<style id="yara-lock-style">
+.yl-backdrop{
+  position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
+  padding:24px 20px calc(24px + env(safe-area-inset-bottom));overflow:auto;-webkit-overflow-scrolling:touch;
+  background:
+    radial-gradient(circle at 12% -8%,rgba(124,92,255,.14),transparent 34%),
+    radial-gradient(circle at 96% 4%,rgba(142,121,255,.12),transparent 30%),
+    radial-gradient(circle at 60% 115%,rgba(88,166,255,.10),transparent 36%),
+    #f4f6fb;
+}
+body[data-theme="twilight"] .yl-backdrop{
+  background:
+    radial-gradient(circle at 12% -8%,rgba(124,92,255,.24),transparent 36%),
+    radial-gradient(circle at 96% 4%,rgba(142,121,255,.16),transparent 30%),
+    radial-gradient(circle at 60% 115%,rgba(88,166,255,.08),transparent 36%),
+    #0f1420;
+}
+body.yara-locked{overflow:hidden;}
+.yl-card{
+  width:min(392px,100%);border-radius:28px;padding:32px 28px calc(24px + env(safe-area-inset-bottom));
+  background:#fff;border:1px solid rgba(31,42,66,.08);box-shadow:0 26px 80px rgba(20,32,60,.16);
+  text-align:center;animation:ylCardIn .5s cubic-bezier(.22,1,.36,1);
+}
+body[data-theme="twilight"] .yl-card{background:#161d2c;border-color:rgba(255,255,255,.08);box-shadow:0 26px 80px rgba(0,0,0,.5);}
+@keyframes ylCardIn{from{opacity:0;transform:translateY(18px) scale(.98);}to{opacity:1;transform:none;}}
+.yl-emblem{
+  width:62px;height:62px;margin:0 auto 15px;border-radius:21px;display:grid;place-items:center;
+  background:linear-gradient(135deg,#7C5CFF 0%,#B9A5FF 100%);color:#fff;font-size:1.65rem;font-weight:800;
+  box-shadow:0 12px 30px rgba(124,92,255,.32);
+}
+.yl-title{margin:0 0 6px;font-size:1.14rem;font-weight:750;letter-spacing:-.01em;color:#1b2330;}
+body[data-theme="twilight"] .yl-title{color:#eef2fa;}
+.yl-sub{margin:0 0 20px;font-size:.76rem;line-height:1.75;color:#66738c;}
+body[data-theme="twilight"] .yl-sub{color:#93a0b8;}
+.yl-tabs{display:flex;gap:6px;background:#eef2f9;border-radius:13px;padding:5px;margin-bottom:16px;}
+body[data-theme="twilight"] .yl-tabs{background:rgba(255,255,255,.06);}
+.yl-tab{flex:1;padding:9px 6px;border:0;border-radius:9px;background:transparent;color:#5a6880;font-size:.76rem;font-weight:650;cursor:pointer;transition:.18s;}
+.yl-tab.active{background:#fff;color:#7C5CFF;box-shadow:0 4px 14px rgba(31,42,66,.1);}
+body[data-theme="twilight"] .yl-tab{color:#93a0b8;}
+body[data-theme="twilight"] .yl-tab.active{background:#232c40;color:#8fb4ff;}
+.yl-field{display:block;margin-bottom:12px;}
+.yl-input{
+  width:100%;box-sizing:border-box;padding:13px 14px;border:1px solid rgba(31,42,66,.14);border-radius:14px;
+  background:#fbfcfe;color:#1b2330;font-size:16px;outline:none;transition:border-color .18s,box-shadow .18s;
+}
+body[data-theme="twilight"] .yl-input{background:#101624;border-color:rgba(255,255,255,.12);color:#eef2fa;}
+.yl-input:focus{border-color:#7C5CFF;box-shadow:0 0 0 3px rgba(124,92,255,.16);}
+.yl-input.yl-center{text-align:center;letter-spacing:.35em;font-weight:700;}
+.yl-btn{
+  width:100%;padding:14px 16px;border:0;border-radius:15px;cursor:pointer;
+  background:linear-gradient(135deg,#7C5CFF 0%,#B9A5FF 100%);color:#fff;font-size:.86rem;font-weight:750;letter-spacing:.02em;
+  box-shadow:0 12px 28px rgba(124,92,255,.3);transition:transform .16s,box-shadow .16s,opacity .16s;
+}
+.yl-btn:hover{transform:translateY(-1px);box-shadow:0 16px 34px rgba(124,92,255,.36);}
+.yl-btn:active{transform:translateY(0) scale(.99);}
+.yl-btn:disabled{opacity:.55;cursor:not-allowed;transform:none;}
+.yl-btn.yl-ghost{background:transparent;border:1px solid rgba(31,42,66,.14);color:#4a5872;box-shadow:none;font-weight:650;}
+body[data-theme="twilight"] .yl-btn.yl-ghost{border-color:rgba(255,255,255,.14);color:#a9b6cc;}
+.yl-btn.yl-danger{background:transparent;border:1px solid rgba(217,82,94,.4);color:#c4525f;box-shadow:none;font-weight:650;}
+.yl-msg{min-height:20px;margin:10px 0 2px;font-size:.72rem;line-height:1.6;color:#c4525f;}
+.yl-msg.ok{color:#2f8f6f;}
+body[data-theme="twilight"] .yl-msg{color:#e08a94;}
+body[data-theme="twilight"] .yl-msg.ok{color:#6fd0ab;}
+.yl-dots{display:flex;justify-content:center;gap:13px;margin:6px 0 20px;}
+.yl-dot{width:13px;height:13px;border-radius:50%;background:rgba(31,42,66,.14);transition:.15s;}
+body[data-theme="twilight"] .yl-dot{background:rgba(255,255,255,.16);}
+.yl-dot.on{background:#7C5CFF;transform:scale(1.12);box-shadow:0 0 0 4px rgba(124,92,255,.14);}
+.yl-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:4px;}
+.yl-key{
+  padding:14px 0;border:0;border-radius:15px;background:#f2f5fa;color:#1b2330;
+  font-size:1.15rem;font-weight:700;cursor:pointer;transition:.13s;-webkit-tap-highlight-color:transparent;
+}
+.yl-key:active{background:#7C5CFF;color:#fff;transform:scale(.96);}
+body[data-theme="twilight"] .yl-key{background:rgba(255,255,255,.07);color:#eef2fa;}
+body[data-theme="twilight"] .yl-key:active{background:#7C5CFF;color:#fff;}
+.yl-key.yl-key-util{font-size:.85rem;font-weight:650;color:#66738c;}
+body[data-theme="twilight"] .yl-key.yl-key-util{color:#93a0b8;}
+.yl-foot{display:flex;justify-content:center;gap:16px;margin-top:18px;flex-wrap:wrap;}
+.yl-link{border:0;background:none;padding:4px 2px;color:#7181a0;font-size:.68rem;cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px;}
+.yl-link:hover{color:#7C5CFF;}
+body[data-theme="twilight"] .yl-link{color:#7f8db0;}
+body[data-theme="twilight"] .yl-link:hover{color:#8fb4ff;}
+.yl-hint{margin:14px 0 0;font-size:.62rem;line-height:1.7;color:#9aa5ba;}
+body[data-theme="twilight"] .yl-hint{color:#5f6d8c;}
+@keyframes ylShake{0%,100%{transform:translateX(0);}20%{transform:translateX(-9px);}40%{transform:translateX(8px);}60%{transform:translateX(-6px);}80%{transform:translateX(4px);}}
+.yl-card.shake{animation:ylShake .42s;}
+@media(max-width:430px){
+  .yl-card{padding:26px 20px calc(20px + env(safe-area-inset-bottom));border-radius:24px;}
+  .yl-key{padding:15px 0;}
+}
+</style>
+<!-- 枢纽发射台 + 侧栏 Dock（导航重构 方向C：枢纽首页） -->
+<style id="yara-hub">
+:root{
+  --hub-daily:#7C5CFF;--hub-daily-soft:rgba(124,92,255,.10);--hub-daily-bd:rgba(124,92,255,.30);
+  --hub-academic:#0D9488;--hub-academic-soft:rgba(13,148,136,.10);--hub-academic-bd:rgba(13,148,136,.32);
+  --hub-growth:#E85D8F;--hub-growth-soft:rgba(232,93,143,.10);--hub-growth-bd:rgba(232,93,143,.32);
+  --hub-system:#64748B;--hub-system-soft:rgba(100,116,139,.12);--hub-system-bd:rgba(100,116,139,.34);
+  --hub-badge-ink:#FFFFFF;
+}
+body[data-theme="twilight"]{
+  --hub-daily:#A78BFF;--hub-daily-soft:rgba(167,139,255,.14);--hub-daily-bd:rgba(167,139,255,.34);
+  --hub-academic:#2DD4BF;--hub-academic-soft:rgba(45,212,191,.12);--hub-academic-bd:rgba(45,212,191,.32);
+  --hub-growth:#FF8FB8;--hub-growth-soft:rgba(255,143,184,.13);--hub-growth-bd:rgba(255,143,184,.34);
+  --hub-system:#94A3B8;--hub-system-soft:rgba(148,163,184,.12);--hub-system-bd:rgba(148,163,184,.32);
+  --hub-badge-ink:#0B1120;
+}
+/* ---- 侧栏 Dock ---- */
+.dock{display:flex;flex-direction:column;gap:6px;padding:4px 0 10px;}
+.dock-item{
+  position:relative;overflow:hidden;display:flex;align-items:center;gap:11px;width:100%;
+  min-height:46px;padding:9px 12px;border:1px solid transparent;border-radius:14px;
+  background:transparent;color:var(--ink-l);font:inherit;font-size:.82rem;font-weight:650;
+  cursor:pointer;text-align:left;transition:background .18s,color .18s,border-color .18s,transform .18s;
+}
+.dock-item:hover{background:var(--surface-soft);color:var(--ink);transform:translateX(2px);}
+.dock-ico{
+  width:32px;height:32px;flex:0 0 32px;display:grid;place-items:center;border-radius:11px;
+  background:var(--surface-soft);border:1px solid var(--glass-bd);color:var(--sub);
+  transition:background .18s,color .18s,border-color .18s;
+}
+.dock-ico svg{width:17px;height:17px;}
+.dock-label{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.dock-item[data-hub="home"]{--hub-accent:var(--primary);--hub-soft:var(--primary-soft);--hub-bd:var(--primary-bd);}
+.dock-item[data-hub="daily"]{--hub-accent:var(--hub-daily);--hub-soft:var(--hub-daily-soft);--hub-bd:var(--hub-daily-bd);}
+.dock-item[data-hub="academic"]{--hub-accent:var(--hub-academic);--hub-soft:var(--hub-academic-soft);--hub-bd:var(--hub-academic-bd);}
+.dock-item[data-hub="growth"]{--hub-accent:var(--hub-growth);--hub-soft:var(--hub-growth-soft);--hub-bd:var(--hub-growth-bd);}
+.dock-item[data-hub="system"]{--hub-accent:var(--hub-system);--hub-soft:var(--hub-system-soft);--hub-bd:var(--hub-system-bd);}
+.dock-item.active{background:var(--hub-soft);border-color:var(--hub-bd);color:var(--hub-accent);font-weight:750;}
+.dock-item.active .dock-ico{background:var(--hub-soft);border-color:var(--hub-bd);color:var(--hub-accent);}
+.dock-item:focus-visible{outline:2px solid var(--hub-accent,var(--primary));outline-offset:2px;}
+body.sidebar-collapsed .dock{gap:8px;padding-top:8px;}
+body.sidebar-collapsed .dock-label{display:none;}
+body.sidebar-collapsed .dock-item{justify-content:center;padding:9px 0;min-height:48px;}
+/* ---- 枢纽发射台 ---- */
+.hub-launchpad{display:flex;flex-direction:column;gap:18px;margin-top:20px;}
+.hub-cluster{
+  background:var(--glass);border:1px solid var(--glass-bd);border-radius:20px;
+  padding:18px;box-shadow:var(--glow);scroll-margin-top:14px;
+}
+.hub-cluster[data-accent="daily"]{--hub-accent:var(--hub-daily);--hub-soft:var(--hub-daily-soft);--hub-bd:var(--hub-daily-bd);}
+.hub-cluster[data-accent="academic"]{--hub-accent:var(--hub-academic);--hub-soft:var(--hub-academic-soft);--hub-bd:var(--hub-academic-bd);}
+.hub-cluster[data-accent="growth"]{--hub-accent:var(--hub-growth);--hub-soft:var(--hub-growth-soft);--hub-bd:var(--hub-growth-bd);}
+.hub-cluster[data-accent="system"]{--hub-accent:var(--hub-system);--hub-soft:var(--hub-system-soft);--hub-bd:var(--hub-system-bd);}
+.hub-cluster-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.hub-cluster-ico{
+  width:40px;height:40px;flex:0 0 40px;display:grid;place-items:center;border-radius:13px;
+  background:var(--hub-soft);border:1px solid var(--hub-bd);color:var(--hub-accent);
+}
+.hub-cluster-ico svg{width:20px;height:20px;}
+.hub-cluster-copy{flex:1;min-width:0;}
+.hub-cluster-copy h3{margin:0;font-size:.98rem;font-weight:800;color:var(--ink);letter-spacing:.01em;}
+.hub-cluster-copy p{margin:2px 0 0;font-size:.7rem;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hub-cluster-count{
+  flex-shrink:0;padding:4px 10px;border-radius:99px;background:var(--hub-soft);
+  border:1px solid var(--hub-bd);color:var(--hub-accent);font-size:.62rem;font-weight:750;letter-spacing:.04em;
+}
+.hub-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:10px;}
+.hub-tile{
+  position:relative;overflow:hidden;display:flex;align-items:center;gap:12px;min-height:64px;
+  padding:12px 14px;border:1px solid var(--border);border-radius:15px;background:var(--surface);
+  cursor:pointer;text-align:left;font:inherit;transition:border-color .18s,box-shadow .18s,transform .18s;
+}
+.hub-tile:hover{border-color:var(--hub-bd);box-shadow:var(--shadow-hover);transform:translateY(-2px);}
+.hub-tile:active{transform:translateY(0) scale(.99);}
+.hub-tile:focus-visible{outline:2px solid var(--hub-accent);outline-offset:2px;}
+.hub-tile-ico{
+  width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;border-radius:12px;
+  background:var(--hub-soft);border:1px solid var(--hub-bd);color:var(--hub-accent);
+}
+.hub-tile-ico svg{width:18px;height:18px;}
+.hub-tile-ico.is-glyph{font-size:19px;line-height:1;letter-spacing:0;}
+.hub-tile-copy{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+.hub-tile-copy strong{font-size:.82rem;font-weight:750;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hub-tile-desc{font-size:.66rem;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hub-badge{
+  position:absolute;top:8px;right:8px;min-width:19px;height:19px;padding:0 5px;box-sizing:border-box;
+  display:grid;place-items:center;border-radius:99px;background:var(--hub-accent);color:var(--hub-badge-ink);
+  font-size:.62rem;font-weight:800;box-shadow:0 3px 8px var(--hub-bd);
+}
+@media(max-width:768px){
+  .hub-launchpad{gap:14px;margin-top:14px;}
+  .hub-cluster{padding:14px;border-radius:17px;}
+  .hub-grid{grid-template-columns:repeat(2,1fr);gap:8px;}
+  .hub-tile{min-height:56px;padding:10px 12px;gap:10px;}
+  .hub-tile-ico{width:34px;height:34px;flex-basis:34px;}
+  .dock-item{min-height:48px;}
+}
+@media(max-width:360px){
+  .hub-grid{grid-template-columns:1fr;}
+}
+@media(prefers-reduced-motion:reduce){
+  .dock-item,.hub-tile{transition:none;}
+  .hub-tile:hover,.dock-item:hover{transform:none;}
+}
 </style>
 </head>
 <body>
+<!-- 身份门禁：静态本地保护（防偷看级别），数据契约键之外的新增键 yara_auth_v1 -->
+<div class="yl-backdrop" id="yaraLock" hidden role="dialog" aria-modal="true" aria-label="身份验证">
+  <div class="yl-card" id="yaraLockCard"></div>
+</div>
+<script>
+(function(){
+  var AUTH_KEY='yara_auth_v1';
+  var backdrop=document.getElementById('yaraLock');
+  var card=document.getElementById('yaraLockCard');
+  var pinBuffer=[];
+  var keyListener=null;
+
+  try{
+    var t=localStorage.getItem('yara_shell_theme');
+    if(t) document.body.dataset.theme=t;
+  }catch(e){}
+
+  function read(){
+    try{ return JSON.parse(localStorage.getItem(AUTH_KEY)||'null'); }catch(e){ return null; }
+  }
+  function save(a){
+    try{ localStorage.setItem(AUTH_KEY,JSON.stringify(a)); }catch(e){}
+  }
+  function auth(){ return read(); }
+  function makeSalt(){
+    return Math.random().toString(36).slice(2,10)+Date.now().toString(36);
+  }
+  function hashSecret(secret,salt){
+    var input='yara:'+salt+':'+secret;
+    if(window.crypto&&window.crypto.subtle&&window.crypto.subtle.digest&&window.TextEncoder){
+      return window.crypto.subtle.digest('SHA-256',new TextEncoder().encode(input)).then(function(buf){
+        return Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2);}).join('');
+      });
+    }
+    var h=2166136261,s=input,r,i;
+    for(r=0;r<64;r++){
+      for(i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619); }
+      s=s+(h>>>0).toString(16);
+    }
+    return Promise.resolve('fnv:'+(h>>>0).toString(16));
+  }
+  function show(){
+    backdrop.hidden=false;
+    document.body.classList.add('yara-locked');
+  }
+  function release(){
+    document.body.classList.remove('yara-locked');
+    backdrop.style.transition='opacity .26s';
+    backdrop.style.opacity='0';
+    setTimeout(function(){ backdrop.remove(); },270);
+    if(keyListener){ window.removeEventListener('keydown',keyListener); keyListener=null; }
+  }
+  function unlockSuccess(a){
+    a.unlocked=true;
+    a.updatedAt=new Date().toISOString();
+    save(a);
+    release();
+  }
+  function msg(text,ok){
+    var m=card.querySelector('.yl-msg');
+    if(m){ m.textContent=text||''; m.classList.toggle('ok',!!ok); }
+  }
+  function shake(){
+    card.classList.remove('shake');
+    void card.offsetWidth;
+    card.classList.add('shake');
+  }
+
+  /* ---------- 视图：设置（首次启用 / 修改） ---------- */
+  function renderSetup(changing){
+    var mode='pin';
+    card.innerHTML=
+      '<div class="yl-emblem" aria-hidden="true">Y</div>'+
+      '<h2 class="yl-title">'+(changing?'重新设置解锁':'设置解锁方式')+'</h2>'+
+      '<p class="yl-sub">'+(changing?'验证通过，可以为系统设置新的解锁方式。':'为你的 Yara 超级大脑设置一道本地门禁，防止他人随意查看。')+'</p>'+
+      '<div class="yl-tabs" role="tablist">'+
+        '<button type="button" class="yl-tab active" data-mode="pin" role="tab">PIN 码（4-6 位）</button>'+
+        '<button type="button" class="yl-tab" data-mode="password" role="tab">自定义密码</button>'+
+      '</div>'+
+      '<div class="yl-pane-pin">'+
+        '<label class="yl-field"><input class="yl-input yl-center" id="ylPin1" type="tel" inputmode="numeric" autocomplete="off" maxlength="6" placeholder="输入 4-6 位数字"></label>'+
+        '<label class="yl-field"><input class="yl-input yl-center" id="ylPin2" type="tel" inputmode="numeric" autocomplete="off" maxlength="6" placeholder="再输入一次"></label>'+
+      '</div>'+
+      '<div class="yl-pane-password" hidden>'+
+        '<label class="yl-field"><input class="yl-input" id="ylPwd1" type="password" autocomplete="new-password" placeholder="至少 6 位"></label>'+
+        '<label class="yl-field"><input class="yl-input" id="ylPwd2" type="password" autocomplete="new-password" placeholder="再输入一次"></label>'+
+      '</div>'+
+      '<button type="button" class="yl-btn" id="ylSetupGo">确认启用</button>'+
+      '<p class="yl-msg" role="alert" aria-live="polite"></p>'+
+      (changing?'<div class="yl-foot"><button type="button" class="yl-link" id="ylSetupCancel">取消，返回解锁</button></div>':'')+
+      '<p class="yl-hint">保护仅保存在当前浏览器本地，用于防止旁人顺手查看；<br>请勿使用与银行等重要账户相同的密码。</p>';
+    var panePin=card.querySelector('.yl-pane-pin');
+    var panePwd=card.querySelector('.yl-pane-password');
+    card.querySelectorAll('.yl-tab').forEach(function(tab){
+      tab.addEventListener('click',function(){
+        mode=tab.dataset.mode;
+        card.querySelectorAll('.yl-tab').forEach(function(x){x.classList.toggle('active',x===tab);});
+        panePin.hidden=(mode!=='pin');
+        panePwd.hidden=(mode!=='password');
+        msg('');
+      });
+    });
+    card.querySelector('#ylSetupGo').addEventListener('click',function(){
+      if(mode==='pin'){
+        var p1=card.querySelector('#ylPin1').value.trim();
+        var p2=card.querySelector('#ylPin2').value.trim();
+        if(!/^\d{4,6}$/.test(p1)){ msg('PIN 需要是 4-6 位数字。'); shake(); return; }
+        if(p1!==p2){ msg('两次输入的 PIN 不一致。'); shake(); return; }
+        var salt=makeSalt();
+        hashSecret(p1,salt).then(function(h){
+          var a=read()||{};
+          a.v=1; a.mode='pin'; a.salt=salt; a.pinHash=h; a.pinLen=p1.length; a.unlocked=true;
+          a.updatedAt=new Date().toISOString();
+          save(a);
+          msg('已启用，正在进入系统…',true);
+          setTimeout(function(){ release(); },320);
+        });
+      }else{
+        var w1=card.querySelector('#ylPwd1').value;
+        var w2=card.querySelector('#ylPwd2').value;
+        if(!w1||w1.length<6){ msg('密码至少需要 6 位。'); shake(); return; }
+        if(w1!==w2){ msg('两次输入的密码不一致。'); shake(); return; }
+        var salt2=makeSalt();
+        hashSecret(w1,salt2).then(function(h){
+          var a=read()||{};
+          a.v=1; a.mode='password'; a.salt=salt2; a.pwdHash=h; a.unlocked=true;
+          delete a.pinLen;
+          a.updatedAt=new Date().toISOString();
+          save(a);
+          msg('已启用，正在进入系统…',true);
+          setTimeout(function(){ release(); },320);
+        });
+      }
+    });
+    var cancelBtn=card.querySelector('#ylSetupCancel');
+    if(cancelBtn) cancelBtn.addEventListener('click',function(){ renderUnlock(); });
+  }
+
+  /* ---------- 视图：解锁 ---------- */
+  function renderUnlock(){
+    var a=auth();
+    if(!a||!a.mode){ renderSetup(false); return; }
+    pinBuffer=[];
+    if(keyListener){ window.removeEventListener('keydown',keyListener); keyListener=null; }
+    if(a.mode==='pin'){
+      var dots='';
+      for(var i=0;i<a.pinLen;i++) dots+='<span class="yl-dot"></span>';
+      card.innerHTML=
+        '<div class="yl-emblem" aria-hidden="true">Y</div>'+
+        '<h2 class="yl-title">欢迎回来</h2>'+
+        '<p class="yl-sub">输入 PIN 码解锁 Yara 超级大脑</p>'+
+        '<div class="yl-dots" id="ylDots">'+dots+'</div>'+
+        '<div class="yl-pad">'+
+          ['1','2','3','4','5','6','7','8','9'].map(function(n){return '<button type="button" class="yl-key" data-k="'+n+'">'+n+'</button>';}).join('')+
+          '<button type="button" class="yl-key yl-key-util" data-k="clear">清空</button>'+
+          '<button type="button" class="yl-key" data-k="0">0</button>'+
+          '<button type="button" class="yl-key yl-key-util" data-k="del">删除</button>'+
+        '</div>'+
+        '<p class="yl-msg" role="alert" aria-live="polite"></p>'+
+        '<div class="yl-foot"><button type="button" class="yl-link" id="ylManage">忘记或修改解锁方式</button></div>';
+      var dotsEl=card.querySelector('#ylDots');
+      function paint(){
+        dotsEl.querySelectorAll('.yl-dot').forEach(function(d,i){ d.classList.toggle('on',i<pinBuffer.length); });
+      }
+      function tryPin(){
+        var entry=pinBuffer.join('');
+        hashSecret(entry,a.salt).then(function(h){
+          if(h===a.pinHash){ unlockSuccess(a); }
+          else{
+            pinBuffer=[]; paint(); shake(); msg('PIN 不正确，请重试。');
+          }
+        });
+      }
+      function press(k){
+        if(k==='clear'){ pinBuffer=[]; paint(); msg(''); return; }
+        if(k==='del'){ pinBuffer.pop(); paint(); msg(''); return; }
+        if(!/^\d$/.test(k)||pinBuffer.length>=a.pinLen) return;
+        pinBuffer.push(k); paint(); msg('');
+        if(pinBuffer.length===a.pinLen) tryPin();
+      }
+      card.querySelector('.yl-pad').addEventListener('click',function(ev){
+        var btn=ev.target.closest('.yl-key');
+        if(btn) press(btn.dataset.k);
+      });
+      keyListener=function(ev){
+        if(ev.key>='0'&&ev.key<='9') press(ev.key);
+        else if(ev.key==='Backspace') press('del');
+      };
+      window.addEventListener('keydown',keyListener);
+    }else{
+      card.innerHTML=
+        '<div class="yl-emblem" aria-hidden="true">Y</div>'+
+        '<h2 class="yl-title">欢迎回来</h2>'+
+        '<p class="yl-sub">输入密码解锁 Yara 超级大脑</p>'+
+        '<label class="yl-field"><input class="yl-input" id="ylPwdInput" type="password" autocomplete="current-password" placeholder="输入密码"></label>'+
+        '<button type="button" class="yl-btn" id="ylUnlockGo">解锁</button>'+
+        '<p class="yl-msg" role="alert" aria-live="polite"></p>'+
+        '<div class="yl-foot"><button type="button" class="yl-link" id="ylManage">忘记或修改解锁方式</button></div>';
+      var input=card.querySelector('#ylPwdInput');
+      function tryPwd(){
+        var val=input.value;
+        if(!val){ msg('请输入密码。'); return; }
+        hashSecret(val,a.salt).then(function(h){
+          if(h===a.pwdHash){ unlockSuccess(a); }
+          else{ shake(); msg('密码不正确，请重试。'); input.select(); }
+        });
+      }
+      card.querySelector('#ylUnlockGo').addEventListener('click',tryPwd);
+      input.addEventListener('keydown',function(ev){ if(ev.key==='Enter') tryPwd(); });
+      setTimeout(function(){ input.focus(); },80);
+    }
+    card.querySelector('#ylManage').addEventListener('click',renderManage);
+  }
+
+  /* ---------- 视图：验证当前凭据后修改，或重置 ---------- */
+  function renderManage(){
+    var a=auth();
+    card.innerHTML=
+      '<div class="yl-emblem" aria-hidden="true">Y</div>'+
+      '<h2 class="yl-title">修改解锁方式</h2>'+
+      '<p class="yl-sub">请先验证当前'+(a.mode==='pin'?' PIN 码':'密码')+'，验证通过后可以重新设置。</p>'+
+      (a.mode==='pin'
+        ? '<label class="yl-field"><input class="yl-input yl-center" id="ylManagePin" type="tel" inputmode="numeric" autocomplete="off" maxlength="6" placeholder="当前 PIN"></label>'
+        : '<label class="yl-field"><input class="yl-input" id="ylManagePwd" type="password" autocomplete="current-password" placeholder="当前密码"></label>')+
+      '<button type="button" class="yl-btn" id="ylManageGo">验证并继续</button>'+
+      '<p class="yl-msg" role="alert" aria-live="polite"></p>'+
+      '<button type="button" class="yl-btn yl-ghost" id="ylManageBack" style="margin-top:10px;">返回解锁</button>'+
+      '<div class="yl-foot" style="margin-top:22px;flex-direction:column;align-items:center;gap:10px;">'+
+        '<label class="yl-field" style="width:100%;margin:0;"><input class="yl-input" id="ylResetWord" placeholder="彻底想不起来？在这里输入「重置」"></label>'+
+        '<button type="button" class="yl-btn yl-danger" id="ylResetGo">重置解锁保护（不影响系统数据）</button>'+
+      '</div>';
+    card.querySelector('#ylManageBack').addEventListener('click',renderUnlock);
+    card.querySelector('#ylManageGo').addEventListener('click',function(){
+      var cred=a.mode==='pin'
+        ? card.querySelector('#ylManagePin').value.trim()
+        : card.querySelector('#ylManagePwd').value;
+      if(!cred){ msg('请先输入当前'+(a.mode==='pin'?' PIN':'密码')+'。'); return; }
+      hashSecret(cred,a.salt).then(function(h){
+        var ok=(a.mode==='pin')?(h===a.pinHash):(h===a.pwdHash);
+        if(ok){ renderSetup(true); }
+        else{ shake(); msg('验证失败，请重试。'); }
+      });
+    });
+    card.querySelector('#ylResetGo').addEventListener('click',function(){
+      var word=card.querySelector('#ylResetWord').value.trim();
+      if(word!=='重置'){ msg('请输入「重置」两个字以确认。'); shake(); return; }
+      try{ localStorage.removeItem(AUTH_KEY); }catch(e){}
+      renderSetup(false);
+    });
+  }
+
+  /* ---------- 对外：立即上锁 ---------- */
+  window.yaraLockNow=function(){
+    var a=read();
+    if(a&&a.mode){
+      a.unlocked=false;
+      save(a);
+      window.location.reload();
+    }
+  };
+
+  /* ---------- 启动 ---------- */
+  var initial=auth();
+  if(initial&&initial.v===1&&initial.mode&&initial.unlocked){
+    backdrop.remove();
+  }else{
+    show();
+    if(initial&&initial.mode){ renderUnlock(); }else{ renderSetup(false); }
+  }
+})();
+</script>
 <div class="atmosphere" aria-hidden="true"><span class="orb-a"></span><span class="orb-b"></span><span class="orb-c"></span></div>
 <div class="grain" aria-hidden="true"></div>
 <div class="cursor-glow" aria-hidden="true"></div>
@@ -1378,123 +1933,28 @@ body[data-theme="twilight"] .hero-panel{
     </div>
   </div>
   <div class="nav-scroll">
-
-    <!-- 一级：教务管理 -->
-    <div class="nav-group open">
-      <div class="nav-group-title" onclick="toggleGroup(this)">
-        <span class="icon">📚</span>教务管理<span class="arrow">▶</span>
-      </div>
-      <div class="nav-children">
-        <div class="nav-child" data-src="运营能力地图/academic-system.html?view=dashboard" data-name="教务首页概览" data-group="教务管理"><span class="dot"></span>教务首页概览</div>
-        <div class="nav-child" data-src="运营能力地图/master-schedule.html" data-name="主课表中心" data-group="教务管理"><span class="dot"></span>主课表中心</div>
-        <div class="nav-child" data-src="运营能力地图/yang-shared-schedule.html" data-name="杨老师纠音与语聊" data-group="教务管理"><span class="dot"></span>杨老师纠音 / 语聊联动</div>
-        <div class="nav-child" data-src="运营能力地图/academic-system.html?view=tools" data-name="建课系统" data-group="教务管理"><span class="dot"></span>建课系统 · 3个排课工具</div>
-        <div class="nav-child" data-src="运营能力地图/academic-system.html?view=allocation" data-name="接量预排" data-group="教务管理"><span class="dot"></span>接量预排</div>
-      </div>
+    <div class="dock" aria-label="业务簇导航">
+      <button class="dock-item active" type="button" data-hub="home" aria-current="true" onclick="hubGoHome()">
+        <span class="dock-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span>
+        <span class="dock-label">首页</span>
+      </button>
+      <button class="dock-item" type="button" data-hub="daily" aria-current="false" onclick="hubGoCluster('daily')" title="工作待办 · 生活待办 · 记账 · 闪念">
+        <span class="dock-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>
+        <span class="dock-label">每日引擎</span>
+      </button>
+      <button class="dock-item" type="button" data-hub="academic" aria-current="false" onclick="hubGoCluster('academic')" title="主课表 · 排课 · 纠音 · 对账">
+        <span class="dock-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
+        <span class="dock-label">教务作战</span>
+      </button>
+      <button class="dock-item" type="button" data-hub="growth" aria-current="false" onclick="hubGoCluster('growth')" title="知识资产 · 职业 · 创业筹备">
+        <span class="dock-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 7 13.5 15.5 8.5 10.5 2 17"/><path d="M16 7h6v6"/></svg></span>
+        <span class="dock-label">成长与事业</span>
+      </button>
+      <button class="dock-item" type="button" data-hub="system" aria-current="false" onclick="hubGoCluster('system')" title="运行配置与云同步">
+        <span class="dock-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/></svg></span>
+        <span class="dock-label">系统设置</span>
+      </button>
     </div>
-
-    <!-- 一级：运营能力 -->
-    <div class="nav-group">
-      <div class="nav-group-title" onclick="toggleGroup(this)">
-        <span class="icon">🗺️</span>运营能力<span class="arrow">▶</span>
-      </div>
-      <div class="nav-children">
-        <div class="nav-child" data-src="运营能力地图/运营能力地图.html" data-name="能力地图" data-group="运营能力"><span class="dot"></span>能力地图 · 20卡</div>
-        <div class="nav-child" data-src="运营能力地图/交付运营总系统.html" data-name="自查总系统" data-group="运营能力"><span class="dot"></span>自查总系统 · 8模块</div>
-      </div>
-    </div>
-
-    <!-- 一级：对帐工具 -->
-    <div class="nav-group">
-      <div class="nav-group-title" onclick="toggleGroup(this)">
-        <span class="icon">🧾</span>对帐工具<span class="arrow">▶</span>
-      </div>
-      <div class="nav-children">
-        <div class="nav-child" data-src="私密模块说明.html#reconcile" data-name="对账对比看板" data-group="对帐工具"><span class="dot"></span>对账对比看板</div>
-      </div>
-    </div>
-
-    <!-- 一级：日报系统 -->
-    <div class="nav-group">
-      <div class="nav-group-title" onclick="toggleGroup(this)">
-        <span class="icon">📰</span>日报系统<span class="arrow">▶</span>
-      </div>
-      <div class="nav-children">
-        <div class="nav-child" data-src="index.html" data-name="每日生存知识系统" data-group="日报系统"><span class="dot"></span>每日生存知识系统</div>
-      </div>
-    </div>
-
-    <!-- 一级：灵感管理 -->
-    <div class="nav-group">
-      <div class="nav-group-title" onclick="toggleGroup(this)">
-        <span class="icon">💡</span>灵感管理<span class="arrow">▶</span>
-      </div>
-      <div class="nav-children">
-        <div class="nav-child" data-src="闪念中心.html" data-name="闪念中心" data-group="灵感管理"><span class="dot"></span>捕捉 · 整理 · 行动</div>
-      </div>
-    </div>
-
-    <!-- 一级：职业发展 -->
-    <div class="nav-group">
-      <div class="nav-group-title" onclick="toggleGroup(this)">
-        <span class="icon">🎯</span>职业发展<span class="arrow">▶</span>
-      </div>
-      <div class="nav-children">
-        <div class="nav-child" data-src="私密模块说明.html#career?view=profile" data-name="职业画像与定位" data-group="职业发展"><span class="dot"></span>职业画像与定位</div>
-        <div class="nav-child" data-src="私密模块说明.html#career?view=overview" data-name="把把必中" data-group="职业发展"><span class="dot"></span>简历 × JD 匹配中心</div>
-      </div>
-    </div>
-
-    <!-- 一级：创业筹备 -->
-    <div class="nav-group">
-      <div class="nav-group-title" onclick="toggleGroup(this)">
-        <span class="icon">🚀</span>创业筹备<span class="arrow">▶</span>
-      </div>
-      <div class="nav-children">
-        <div class="nav-child" data-src="私密模块说明.html#venture" data-name="求职陪跑 · MVP工作台" data-group="创业筹备"><span class="dot"></span>求职陪跑 · MVP工作台</div>
-      </div>
-    </div>
-
-    <!-- 一级：工作管理 -->
-    <div class="nav-group">
-      <div class="nav-group-title" onclick="toggleGroup(this)">
-        <span class="icon">✅</span>工作管理<span class="arrow">▶</span>
-      </div>
-      <div class="nav-children">
-        <div class="nav-child" data-src="工作管理/每日工作待办.html" data-name="每日工作待办" data-group="工作管理"><span class="dot"></span>每日工作待办</div>
-      </div>
-    </div>
-
-    <!-- 一级：生活管理 -->
-    <div class="nav-group">
-      <div class="nav-group-title" onclick="toggleGroup(this)">
-        <span class="icon">🏠</span>生活管理<span class="arrow">▶</span>
-      </div>
-      <div class="nav-children">
-        <div class="nav-child" data-src="生活管理/每日生活待办.html" data-name="每日生活待办" data-group="生活管理"><span class="dot"></span>每日生活待办</div>
-      </div>
-    </div>
-
-    <!-- 一级：财务管理 -->
-    <div class="nav-group">
-      <div class="nav-group-title" onclick="toggleGroup(this)">
-        <span class="icon">💰</span>财务管理<span class="arrow">▶</span>
-      </div>
-      <div class="nav-children">
-        <div class="nav-child" data-src="财务管理/记账本.html" data-name="记账本" data-group="财务管理"><span class="dot"></span>记账本</div>
-      </div>
-    </div>
-
-    <!-- 一级：系统设置 -->
-    <div class="nav-group">
-      <div class="nav-group-title" onclick="toggleGroup(this)">
-        <span class="icon">⚙️</span>系统设置<span class="arrow">▶</span>
-      </div>
-      <div class="nav-children">
-        <div class="nav-child" data-src="系统设置.html" data-name="运行配置" data-group="系统设置"><span class="dot"></span>运行配置与云同步</div>
-      </div>
-    </div>
-
   </div>
   <div class="sidebar-status">
     <span class="status-signal" aria-hidden="true"></span>
@@ -1519,6 +1979,7 @@ body[data-theme="twilight"] .hero-panel{
       <button class="icon-btn search-toggle" type="button" aria-label="搜索全部工具" title="搜索全部工具" onclick="openCommandPalette()">⌕<span class="keycap">⌘K</span></button>
       <button class="icon-btn assistant-launch" type="button" aria-label="打开随身助手" title="Yara 随身助手" onclick="openCompanion()">💬</button>
       <button class="icon-btn focus-toggle" id="sidebarCollapseBtn" type="button" aria-label="收起左侧菜单" aria-expanded="true" title="收起左侧菜单" onclick="toggleSidebarCollapse()">«</button>
+      <button class="icon-btn lock-toggle" type="button" aria-label="锁定系统" title="锁定系统" onclick="yaraLockNow()">🔒</button>
       <button class="icon-btn theme-toggle" id="themeToggle" type="button" aria-label="切换明暗主题" title="切换明暗主题" onclick="toggleTheme()">☼</button>
     </div>
   </div>
@@ -1527,33 +1988,39 @@ body[data-theme="twilight"] .hero-panel{
     <div class="home" id="homePage">
       <div class="dash-greeting hero-panel">
         <div class="hero-copy">
-          <div class="eyebrow">YARA PERSONAL OS · 4.0</div>
-          <h2 id="dashGreeting">你好，Yara</h2>
-          <p class="sub" id="dashDate"></p>
+          <div class="eyebrow">YARA PERSONAL OS · LIVE</div>
+          <h2 class="hero-statement" aria-label="把复杂生活，变成可运行的系统。">
+            <span>把复杂生活，</span><span>变成可运行的系统。</span>
+          </h2>
+          <div class="hero-welcome-row">
+            <p class="hero-welcome" id="dashGreeting">你好，Yara</p>
+            <p class="sub" id="dashDate"></p>
+          </div>
           <div class="hero-chips">
-            <span class="hero-chip"><strong>15</strong> 个核心工具</span>
             <span class="hero-chip" id="dataHubChip"><strong>连接中</strong> 数据中心</span>
             <span class="hero-chip">按 <strong>⌘ K</strong> 快速搜索</span>
           </div>
         </div>
-        <div class="hero-emblem" aria-hidden="true"><span>Y</span></div>
+        <div class="hero-emblem" aria-hidden="true"><span>Y</span><small>PLAN · BUILD · EVOLVE</small></div>
       </div>
       <section class="flash-home-card" aria-labelledby="flashHomeTitle">
         <div class="flash-home-icon" aria-hidden="true">✦</div>
         <div class="flash-home-copy">
           <span class="flash-home-kicker">IDEA INBOX</span>
           <h3 id="flashHomeTitle">有想法，先收下</h3>
-          <p id="flashHomeLatest">突然冒出的念头不必立刻成熟，先记录，再定期把它整理成下一步。</p>
+          <p id="flashHomeLatest">先记下来，之后再整理。</p>
         </div>
         <div class="flash-home-status"><strong id="flashHomeCount">0</strong><span>条待整理</span></div>
         <button class="flash-home-action" type="button" onclick="openTool('闪念中心.html','闪念中心','灵感管理')">记录闪念 →</button>
       </section>
+      <!-- 枢纽发射台：4 业务簇 × 19 模块，由 renderHub() 渲染 -->
+      <section class="hub-launchpad" id="hubLaunchpad" aria-label="模块发射台"></section>
       <div class="command-center-grid">
         <section class="action-center" aria-labelledby="actionCenterTitle">
           <div class="center-heading">
             <div class="center-heading-copy">
               <span class="icon" aria-hidden="true">◎</span>
-              <div><h3 id="actionCenterTitle">今日行动中心</h3><p>课程、任务与能力提升统一排优先级</p></div>
+              <div><h3 id="actionCenterTitle">今日行动中心</h3><p>课程 · 任务 · 成长，统一排优先级</p></div>
             </div>
             <span class="data-health" id="dataHealth" data-count="0/7">0/7 数据源</span>
           </div>
@@ -1563,7 +2030,7 @@ body[data-theme="twilight"] .hero-panel{
           <div class="center-heading">
             <div class="center-heading-copy">
               <span class="icon" aria-hidden="true">△</span>
-              <div><h3 id="riskCenterTitle">风险中心</h3><p>仅提示，不自动修改任何底层数据</p></div>
+              <div><h3 id="riskCenterTitle">风险中心</h3><p>仅提示 · 不改数据</p></div>
             </div>
           </div>
           <div class="risk-list" id="dashRisks"><div class="center-empty">正在扫描风险…</div></div>
@@ -1576,26 +2043,6 @@ body[data-theme="twilight"] .hero-panel{
       <div class="dash-section" id="dashToday"></div>
       <div class="dash-section" id="dashProgress"></div>
       <div class="dash-section" id="dashCap"></div>
-      <div class="dash-section">
-        <div class="dash-section-title"><span class="icon">🔧</span>快捷入口</div>
-        <div class="quick-grid">
-          <div class="quick-btn" onclick="openTool('运营能力地图/academic-system.html?view=dashboard','教务首页概览','教务管理')"><span class="qb-icon">◎</span><span class="qb-name">教务概览</span></div>
-          <div class="quick-btn" onclick="openTool('运营能力地图/master-schedule.html','主课表中心','教务管理')"><span class="qb-icon">🧾</span><span class="qb-name">主课表中心</span></div>
-          <div class="quick-btn" onclick="openTool('运营能力地图/yang-shared-schedule.html','杨老师纠音与语聊','教务管理')"><span class="qb-icon">🎙️</span><span class="qb-name">纠音 / 语聊</span></div>
-          <div class="quick-btn" onclick="openTool('运营能力地图/academic-system.html?view=tools','建课系统','教务管理')"><span class="qb-icon">📚</span><span class="qb-name">建课系统</span></div>
-          <div class="quick-btn" onclick="openTool('运营能力地图/academic-system.html?view=allocation','接量预排','教务管理')"><span class="qb-icon">⇄</span><span class="qb-name">接量预排</span></div>
-          <div class="quick-btn" onclick="openTool('运营能力地图/运营能力地图.html','能力地图','运营能力')"><span class="qb-icon">🗺️</span><span class="qb-name">能力地图</span></div>
-          <div class="quick-btn" onclick="openTool('运营能力地图/交付运营总系统.html','自查总系统','运营能力')"><span class="qb-icon">⚡</span><span class="qb-name">自查总系统</span></div>
-          <div class="quick-btn" onclick="openTool('私密模块说明.html#reconcile','对账对比看板','对帐工具')"><span class="qb-icon">🧾</span><span class="qb-name">对账看板</span></div>
-          <div class="quick-btn" onclick="openTool('index.html','每日生存知识系统','日报系统')"><span class="qb-icon">📰</span><span class="qb-name">日报系统</span></div>
-          <div class="quick-btn" onclick="openTool('私密模块说明.html#career?view=overview','把把必中','职业发展')"><span class="qb-icon">🎯</span><span class="qb-name">把把必中</span></div>
-          <div class="quick-btn" onclick="openTool('私密模块说明.html#venture','求职陪跑 · MVP工作台','创业筹备')"><span class="qb-icon">🚀</span><span class="qb-name">创业筹备</span></div>
-          <div class="quick-btn" onclick="openTool('工作管理/每日工作待办.html','每日工作待办','工作管理')"><span class="qb-icon">✅</span><span class="qb-name">每日待办</span></div>
-          <div class="quick-btn" onclick="openTool('生活管理/每日生活待办.html','每日生活待办','生活管理')"><span class="qb-icon">🏠</span><span class="qb-name">生活待办</span></div>
-          <div class="quick-btn" onclick="openTool('财务管理/记账本.html','记账本','财务管理')"><span class="qb-icon">💰</span><span class="qb-name">记账本</span></div>
-          <div class="quick-btn" onclick="openTool('闪念中心.html','闪念中心','灵感管理')"><span class="qb-icon">💡</span><span class="qb-name">闪念中心</span></div>
-        </div>
-      </div>
     </div>
     <!-- IFRAME (hidden until tool opened) -->
     <div class="frame-loader" id="frameLoader" aria-live="polite">
@@ -1646,7 +2093,7 @@ body[data-theme="twilight"] .hero-panel{
 <script src="yara-pwa.js?v=1.0" defer></script>
 <script>
 // 构建版本号：部署时由「一键部署.command」替换为时间戳，用于强制手机端拉取最新工具（防止缓存导致 web/手机不一致）。本地打开时保持 'DEV'。
-var BUILD_VERSION = '20260827142135';
+var BUILD_VERSION = '20260829175044';
 var shellRouteLevels = {};
 var sidebarFlyoutTimer = null;
 var activeFlyoutTrigger = null;
@@ -1801,18 +2248,88 @@ function updateRouteBackButton(){
   var button = document.getElementById('routeBackBtn');
   if(!button) return;
   var level = window.YaraSystem ? Number(YaraSystem.Router.current.level) || 1 :
-    (document.getElementById('toolFrame').style.display === 'none' ? 1 : 2);
+    (hubActiveFrame() ? 2 : 1);
   var visible = level > 1;
   button.classList.toggle('show', visible);
   button.setAttribute('aria-hidden', String(!visible));
-  var label = level <= 2 ? '返回首页' : '返回上一级';
+  // 文案固定为「返回上一级」：二级时上一级就是首页，回首页另有面包屑「首页」可点，不做重复按钮。
+  var label = '返回上一级';
   button.setAttribute('aria-label', label);
   button.title = label;
   button.querySelector('.route-back-label').textContent = label;
 }
 
-function goBackLevel(){
+// ===== 页面保活池 =====
+// 打开过的模块 iframe 隐藏而不销毁：返回再进入时原样恢复滚动位置与页面状态。
+// LRU 上限 8 个，超出时销毁最久未用的隐藏帧释放内存。
+var hubFrames = {};
+var hubFrameOrder = [];
+var hubActiveKey = null;
+var HUB_FRAME_MAX = 8;
+
+function hubActiveFrame(){
+  return hubActiveKey ? (hubFrames[hubActiveKey] || null) : null;
+}
+function hubTouchLRU(key){
+  var idx = hubFrameOrder.indexOf(key);
+  if(idx >= 0) hubFrameOrder.splice(idx, 1);
+  hubFrameOrder.push(key);
+}
+function hubEvictIfNeeded(){
+  while(hubFrameOrder.length >= HUB_FRAME_MAX){
+    var victim = null;
+    for(var i = 0; i < hubFrameOrder.length; i++){
+      if(hubFrameOrder[i] !== hubActiveKey){ victim = hubFrameOrder[i]; break; }
+    }
+    if(!victim) break;
+    var frame = hubFrames[victim];
+    if(frame && frame.parentNode) frame.parentNode.removeChild(frame);
+    delete hubFrames[victim];
+    hubFrameOrder.splice(hubFrameOrder.indexOf(victim), 1);
+  }
+}
+function hubCreateFrame(key){
+  hubEvictIfNeeded();
+  var wrap = document.querySelector('.frame-wrap');
   var frame = document.getElementById('toolFrame');
+  if(!frame || frame._hubOwned){
+    frame = document.createElement('iframe');
+    frame.title = 'Yara 工具模块';
+    wrap.appendChild(frame);
+  }
+  frame._hubOwned = true;
+  frame._hubKey = key;
+  frame.classList.add('hub-frame');
+  if(!frame._hubLoadBound){
+    frame._hubLoadBound = true;
+    frame.addEventListener('load', function(){
+      if(this.getAttribute('src')){
+        if(!applySystemThemeToFrame(this)) closeFrameLoader(this);
+      }
+    });
+  }
+  hubFrames[key] = frame;
+  hubTouchLRU(key);
+  return frame;
+}
+function hubShowFrame(frame){
+  var current = hubActiveFrame();
+  if(current && current !== frame) current.style.display = 'none';
+  frame.style.display = 'block';
+  hubActiveKey = frame._hubKey;
+  hubTouchLRU(hubActiveKey);
+}
+function hubHideActiveFrame(){
+  var frame = hubActiveFrame();
+  if(frame){
+    frame.classList.remove('is-loading');
+    frame.style.display = 'none';
+  }
+  hubActiveKey = null;
+}
+
+function goBackLevel(){
+  var frame = hubActiveFrame();
   var current = window.YaraSystem ? YaraSystem.Router.current : {level:2};
   var level = Math.max(1, Number(current.level) || 1);
   if(level <= 2){
@@ -1824,6 +2341,10 @@ function goBackLevel(){
     label: targetLevel === 2 ? current.name : current.child || current.name,
     level: targetLevel
   };
+  if(!frame || !frame.contentWindow){
+    goHome();
+    return;
+  }
   try{
     frame.contentWindow.postMessage({
       source:'yara-shell',
@@ -1855,17 +2376,21 @@ function goBackLevel(){
 }
 
 function openTool(src, name, group){
-  var frame = document.getElementById('toolFrame');
   var home = document.getElementById('homePage');
   var loader = document.getElementById('frameLoader');
+  var frame = hubFrames[src] || null;
+  var cached = !!frame;
+  frame = frame || hubCreateFrame(src);
   frame.title = name ? ('Yara · ' + name) : 'Yara 工具模块';
-  // 线上环境追加版本号，强制刷新缓存，保证手机端与 web 端内容一致；本地(DEV)直接加载
-  frame.classList.add('is-loading');
-  loader.classList.add('show');
-  clearTimeout(frameLoaderTimer);
-  frameLoaderTimer = setTimeout(closeFrameLoader, 5000);
-  frame.src = versionedModuleSrc(src);
-  frame.style.display = 'block';
+  if(!cached){
+    // 首次打开：走加载流程；线上环境追加版本号，强制刷新缓存，保证手机端与 web 端内容一致；本地(DEV)直接加载
+    frame.classList.add('is-loading');
+    loader.classList.add('show');
+    clearTimeout(frameLoaderTimer);
+    frameLoaderTimer = setTimeout(function(){ closeFrameLoader(frame); }, 5000);
+    frame.src = versionedModuleSrc(src);
+  }
+  hubShowFrame(frame);
   home.classList.add('hidden');
   setShellScrolled(false);
   shellRouteLevels = {2:{label:name,name:name,group:group,src:src,level:2}};
@@ -1873,15 +2398,13 @@ function openTool(src, name, group){
   else document.getElementById('breadcrumb').innerHTML = group + ' / <strong>' + name + '</strong>';
   updateRouteBackButton();
   document.getElementById('breadcrumbIcon').textContent = '◆';
-  // Update nav active state
-  document.querySelectorAll('.nav-child').forEach(function(c){ c.classList.remove('active'); });
-  document.querySelectorAll('.nav-child').forEach(function(c){
-    if(c.dataset.src === src) c.classList.add('active');
-  });
+  // Update dock active state（按模块所属业务簇高亮）
+  var hubModule = YARA_MODULES.filter(function(m){ return m.src === src; })[0];
+  if(hubModule) markDockActive(hubModule.cluster);
   // Close mobile sidebar
   closeSidebar();
   closeCommandPalette();
-  showToast('已打开 · ' + name);
+  showToast(cached ? '已恢复 · ' + name : '已打开 · ' + name);
 }
 
 function versionedModuleSrc(src){
@@ -1893,25 +2416,206 @@ function versionedModuleSrc(src){
 }
 
 function goHome(){
-  var frame = document.getElementById('toolFrame');
   var home = document.getElementById('homePage');
   document.getElementById('frameLoader').classList.remove('show');
-  frame.classList.remove('is-loading');
-  frame.src = '';
-  frame.style.display = 'none';
+  hubHideActiveFrame();
   home.classList.remove('hidden');
   setShellScrolled(home.scrollTop > 24);
   shellRouteLevels = {};
   if(window.YaraSystem) YaraSystem.Router.home();
   else document.getElementById('breadcrumb').innerHTML = '<strong>首页</strong>';
   document.getElementById('breadcrumbIcon').textContent = '✦';
-  document.querySelectorAll('.nav-child').forEach(function(c){ c.classList.remove('active'); });
+  markDockActive('home');
+  renderHub();
   updateRouteBackButton();
   if(window.YaraSystem && typeof DASH_DATA !== 'undefined'){
     YaraSystem.DataHub.refresh(DASH_DATA);
     renderCommandCenters(YaraSystem.DataHub.state);
   }
   closeSidebar();
+}
+
+// ===== HUB LAUNCHPAD（枢纽发射台：4 业务簇 × 19 模块） =====
+// 单一事实来源：命令面板、发射台、Dock 高亮全部由该注册表驱动。
+// group 保留模块原有分组名，面包屑与模块内路由语义不变。
+var YARA_CLUSTERS = [
+  {id:'daily', name:'每日引擎', icon:'bolt', tagline:'工作 · 生活 · 钱 · 灵感'},
+  {id:'academic', name:'教务作战', icon:'calendar', tagline:'主课表为事实源 · 排课 · 纠音 · 对账'},
+  {id:'growth', name:'成长与事业', icon:'trend', tagline:'闪念 → 知识资产 → 职业证据 → 创业行动'},
+  {id:'system', name:'系统设置', icon:'sliders', tagline:'主题 · 数据 · 云同步'}
+];
+var YARA_MODULES = [
+  {cluster:'daily', src:'工作管理/每日工作待办.html', name:'每日工作待办', group:'工作管理', icon:'checklist', glyph:'✅', desc:'当日任务 · 种子合并 · 完成奖励', badge:'workTodo'},
+  {cluster:'daily', src:'生活管理/每日生活待办.html', name:'每日生活待办', group:'生活管理', icon:'house', glyph:'🏠', desc:'工作之外的一切都在这', badge:'lifeTodo'},
+  {cluster:'daily', src:'财务管理/记账本.html', name:'记账本', group:'财务管理', icon:'coins', glyph:'💰', desc:'收支流水 · 月度汇总', badge:'ledger'},
+  {cluster:'daily', src:'闪念中心.html', name:'闪念中心', group:'灵感管理', icon:'bulb', glyph:'💡', desc:'先捕捉，再整理成行动', badge:'flash'},
+  {cluster:'academic', src:'运营能力地图/academic-system.html?view=dashboard', name:'教务首页概览', group:'教务管理', icon:'dashboard', glyph:'📊', desc:'课程与项目全景看板'},
+  {cluster:'academic', src:'运营能力地图/master-schedule.html', name:'主课表中心', group:'教务管理', icon:'calendar', glyph:'📅', desc:'全部班期的唯一事实源'},
+  {cluster:'academic', src:'运营能力地图/yang-shared-schedule.html', name:'杨老师纠音 / 语聊', group:'教务管理', icon:'mic', glyph:'🎤', desc:'纠音与语聊房联动排期'},
+  {cluster:'academic', src:'运营能力地图/academic-system.html?view=tools', name:'建课系统', group:'教务管理', icon:'layers', glyph:'🧱', desc:'3 个排课工具 · 批量建课'},
+  {cluster:'academic', src:'运营能力地图/academic-system.html?view=allocation', name:'接量预排', group:'教务管理', icon:'shuffle', glyph:'🔀', desc:'学员接量与班期预分配'},
+  {cluster:'academic', src:'私密模块说明.html#reconcile', name:'对账对比看板', group:'对帐工具', icon:'shield', glyph:'🔍', desc:'学员账号异常 · 比对核验'},
+  {cluster:'growth', src:'index.html', name:'每日生存知识系统', group:'日报系统', icon:'news', glyph:'📰', desc:'每日知识沉淀与发布'},
+  {cluster:'growth', src:'知识资产中心.html', name:'知识资产中心', group:'灵感管理', icon:'book', glyph:'📚', desc:'知识 · 判断 · 证据库'},
+  {cluster:'growth', src:'运营能力地图/运营能力地图.html', name:'能力地图', group:'运营能力', icon:'compass', glyph:'🗺️', desc:'20 张能力卡 · 自评成长'},
+  {cluster:'growth', src:'运营能力地图/交付运营总系统.html', name:'自查总系统', group:'运营能力', icon:'clipboard', glyph:'📋', desc:'8 模块交付自查'},
+  {cluster:'growth', src:'私密模块说明.html#career?view=profile', name:'职业画像与定位', group:'职业发展', icon:'user', glyph:'👤', desc:'能力画像 · 定位方向'},
+  {cluster:'growth', src:'私密模块说明.html#career?view=overview', name:'把把必中', group:'职业发展', icon:'target', glyph:'🎯', desc:'简历 × JD 匹配中心'},
+  {cluster:'growth', src:'私密模块说明.html#venture', name:'求职陪跑 · MVP工作台', group:'创业筹备', icon:'rocket', glyph:'🚀', desc:'副业 MVP · 行动验证'},
+  {cluster:'growth', src:'私密模块说明.html#cat-care', name:'猫咪上门 · 接单排期', group:'创业筹备', icon:'paw', glyph:'🐱', desc:'闲鱼接单 · 排期管理'},
+  {cluster:'system', src:'系统设置.html', name:'运行配置与云同步', group:'系统设置', icon:'sliders', glyph:'⚙️', desc:'主题 · 数据 · Supabase 同步'}
+];
+var HUB_ICONS = {
+  bolt:'<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
+  calendar:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  trend:'<path d="M22 7 13.5 15.5 8.5 10.5 2 17"/><path d="M16 7h6v6"/>',
+  sliders:'<path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/>',
+  checklist:'<path d="m3 6 1.5 1.5L7 5"/><path d="m3 12 1.5 1.5L7 11"/><path d="M11 6h10M11 12h10M11 18h10"/><path d="M3 18h4"/>',
+  house:'<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+  coins:'<circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/>',
+  bulb:'<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>',
+  dashboard:'<rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>',
+  mic:'<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/>',
+  layers:'<path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/>',
+  shuffle:'<path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.8-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2 4 4-4 4"/><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14 4 4-4 4"/>',
+  shield:'<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
+  news:'<path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-4 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/>',
+  book:'<path d="M10 2v8l3-3 3 3V2"/><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>',
+  compass:'<circle cx="12" cy="12" r="10"/><path d="m16.24 7.76-2.12 6.36-6.36 2.12 2.12-6.36z"/>',
+  clipboard:'<rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/>',
+  user:'<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+  rocket:'<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>',
+  paw:'<circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="20" cy="16" r="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/>'
+};
+function hubIcon(name){
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (HUB_ICONS[name] || HUB_ICONS.bolt) + '</svg>';
+}
+// 只读读取本地数据计算徽标，任何异常静默降级为 0
+function hubBadges(){
+  var out = {};
+  var now = new Date();
+  var dayKey = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  var monthKey = dayKey.slice(0,7);
+  try{
+    var work = JSON.parse(localStorage.getItem('yara_daily_todo_v1') || 'null');
+    if(work && work.tasks && Array.isArray(work.tasks[dayKey])){
+      out.workTodo = work.tasks[dayKey].filter(function(t){ return !t.done; }).length;
+    }
+  }catch(e){}
+  try{
+    var life = JSON.parse(localStorage.getItem('yara_life_todo_v1') || 'null');
+    var lifeState = life && life.state && typeof life.state === 'object' ? life.state : life;
+    if(lifeState && Array.isArray(lifeState.tasks)){
+      out.lifeTodo = lifeState.tasks.filter(function(t){ return !t.done; }).length;
+    }
+  }catch(e){}
+  try{
+    var ledger = JSON.parse(localStorage.getItem('yara_ledger_v1') || 'null');
+    if(ledger && Array.isArray(ledger.transactions)){
+      out.ledger = ledger.transactions.filter(function(t){ return String(t.date || '').indexOf(monthKey) === 0; }).length;
+    }
+  }catch(e){}
+  try{
+    var flash = JSON.parse(localStorage.getItem('yara_flash_notes_v1') || 'null');
+    if(flash && Array.isArray(flash.notes)){
+      var deleted = {};
+      (Array.isArray(flash.deletedIds) ? flash.deletedIds : []).forEach(function(id){ deleted[id] = 1; });
+      out.flash = flash.notes.filter(function(n){ return !(n && deleted[n.id]); }).length;
+    }
+  }catch(e){}
+  return out;
+}
+function renderHub(){
+  var root = document.getElementById('hubLaunchpad');
+  if(!root) return;
+  var badges = hubBadges();
+  root.textContent = '';
+  YARA_CLUSTERS.forEach(function(cluster){
+    var modules = YARA_MODULES.filter(function(m){ return m.cluster === cluster.id; });
+    var section = document.createElement('section');
+    section.className = 'hub-cluster';
+    section.id = 'hubCluster-' + cluster.id;
+    section.dataset.accent = cluster.id;
+    section.setAttribute('aria-label', cluster.name);
+    var head = document.createElement('div');
+    head.className = 'hub-cluster-head';
+    var ico = document.createElement('span');
+    ico.className = 'hub-cluster-ico';
+    ico.innerHTML = hubIcon(cluster.icon);
+    var copy = document.createElement('div');
+    copy.className = 'hub-cluster-copy';
+    var title = document.createElement('h3');
+    title.textContent = cluster.name;
+    var tag = document.createElement('p');
+    tag.textContent = cluster.tagline;
+    copy.appendChild(title);
+    copy.appendChild(tag);
+    var count = document.createElement('span');
+    count.className = 'hub-cluster-count';
+    count.textContent = modules.length + ' 模块';
+    head.appendChild(ico);
+    head.appendChild(copy);
+    head.appendChild(count);
+    section.appendChild(head);
+    var grid = document.createElement('div');
+    grid.className = 'hub-grid';
+    modules.forEach(function(mod){
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'hub-tile';
+      btn.dataset.src = mod.src;
+      btn.title = mod.name;
+      var tileIco = document.createElement('span');
+      tileIco.className = 'hub-tile-ico' + (mod.glyph ? ' is-glyph' : '');
+      if(mod.glyph){ tileIco.textContent = mod.glyph; tileIco.setAttribute('aria-hidden','true'); }
+      else{ tileIco.innerHTML = hubIcon(mod.icon); }
+      var tileCopy = document.createElement('span');
+      tileCopy.className = 'hub-tile-copy';
+      var name = document.createElement('strong');
+      name.textContent = mod.name;
+      var desc = document.createElement('span');
+      desc.className = 'hub-tile-desc';
+      desc.textContent = mod.desc;
+      tileCopy.appendChild(name);
+      tileCopy.appendChild(desc);
+      btn.appendChild(tileIco);
+      btn.appendChild(tileCopy);
+      var badgeValue = mod.badge ? (badges[mod.badge] || 0) : 0;
+      if(badgeValue > 0){
+        var badge = document.createElement('span');
+        badge.className = 'hub-badge';
+        badge.dataset.badge = mod.badge;
+        badge.textContent = badgeValue > 99 ? '99+' : String(badgeValue);
+        btn.appendChild(badge);
+      }
+      btn.addEventListener('click', function(){ openTool(mod.src, mod.name, mod.group); });
+      grid.appendChild(btn);
+    });
+    section.appendChild(grid);
+    root.appendChild(section);
+  });
+}
+function markDockActive(hubId){
+  document.querySelectorAll('.dock-item').forEach(function(item){
+    var active = item.dataset.hub === hubId;
+    item.classList.toggle('active', active);
+    item.setAttribute('aria-current', String(active));
+  });
+}
+function hubGoHome(){
+  goHome();
+}
+function hubGoCluster(id){
+  goHome();
+  markDockActive(id);
+  closeSidebar();
+  var home = document.getElementById('homePage');
+  var target = document.getElementById('hubCluster-' + id);
+  if(!home || !target) return;
+  var top = target.getBoundingClientRect().top - home.getBoundingClientRect().top + home.scrollTop - 12;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  home.scrollTo({top: Math.max(0, top), behavior: reduced ? 'auto' : 'smooth'});
 }
 
 // Nav child click
@@ -1969,10 +2673,11 @@ var commandItems = [];
 var commandSelection = 0;
 var toastTimer;
 
-function closeFrameLoader(){
+function closeFrameLoader(frameArg){
   clearTimeout(frameLoaderTimer);
   document.getElementById('frameLoader').classList.remove('show');
-  document.getElementById('toolFrame').classList.remove('is-loading');
+  var frame = arguments.length ? frameArg : (hubActiveFrame() || document.getElementById('toolFrame'));
+  if(frame) frame.classList.remove('is-loading');
 }
 
 function detectModuleType(pathname, title){
@@ -1987,39 +2692,81 @@ function detectModuleType(pathname, title){
   if(source.indexOf('每日生存知识系统') >= 0 || source.indexOf('生存知识日报文件/index') >= 0) return 'daily-index';
   if(source.indexOf('把把必中') >= 0 || source.indexOf('简历与JD匹配中心') >= 0) return 'career-match';
   if(source.indexOf('创业筹备中心') >= 0 || source.indexOf('求职陪跑 · MVP工作台') >= 0) return 'venture';
+  if(source.indexOf('猫咪上门服务') >= 0 || source.indexOf('猫咪上门 · 接单排期') >= 0) return 'cat-care';
   if(source.indexOf('每日工作待办') >= 0) return 'todo-work';
   if(source.indexOf('每日生活待办') >= 0) return 'todo-life';
   if(source.indexOf('记账本') >= 0) return 'finance';
   if(source.indexOf('闪念中心') >= 0) return 'flash';
+  if(source.indexOf('知识资产中心') >= 0) return 'knowledge';
   if(source.indexOf('成长花园') >= 0) return 'growth';
   return 'generic';
 }
 
 function syncFrameTheme(){
-  var frame = document.getElementById('toolFrame');
-  try{
-    if(frame.contentDocument && frame.contentDocument.documentElement){
-      frame.contentDocument.documentElement.dataset.yaraTheme = document.body.dataset.theme || 'twilight';
-      frame.contentWindow.postMessage({
-        source:'yara-shell',
-        type:'theme',
-        theme:document.body.dataset.theme || 'twilight'
-      }, location.origin === 'null' ? '*' : location.origin);
-    }
-  }catch(e){}
+  Object.keys(hubFrames).forEach(function(key){
+    var frame = hubFrames[key];
+    try{
+      if(frame.contentDocument && frame.contentDocument.documentElement){
+        frame.contentDocument.documentElement.dataset.yaraTheme = document.body.dataset.theme || 'twilight';
+        frame.contentWindow.postMessage({
+          source:'yara-shell',
+          type:'theme',
+          theme:document.body.dataset.theme || 'twilight'
+        }, location.origin === 'null' ? '*' : location.origin);
+      }
+    }catch(e){}
+  });
 }
 
-function applySystemThemeToFrame(){
-  var frame = document.getElementById('toolFrame');
+// 向每个模块页注入统一悬浮返回钮：外壳内走 goBackLevel 编排，独立打开时走浏览器后退。
+function injectModuleBackButton(doc, frame){
+  if(!doc || !doc.body || doc.getElementById('yaraInjectedBack')) return;
+  var depth = frame && frame._hubKey ? (frame._hubKey.match(/\//g) || []).length : 0;
+  var shellHref = '';
+  for(var i = 0; i < depth; i++) shellHref += '../';
+  shellHref += '管理系统.html';
+  var btn = doc.createElement('button');
+  btn.id = 'yaraInjectedBack';
+  btn.type = 'button';
+  btn.setAttribute('aria-label', '返回上一页');
+  btn.innerHTML = '<span aria-hidden="true">←</span>返回';
+  btn.style.cssText = 'position:fixed;z-index:2147483000;top:calc(10px + env(safe-area-inset-top,0px));left:calc(10px + env(safe-area-inset-left,0px));display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px 0 13px;border:none;border-radius:99px;background:#7C5CFF;color:#FFFFFF;font:700 14px/1 system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;cursor:pointer;box-shadow:0 8px 22px rgba(30,20,70,.28);letter-spacing:.02em;';
+  doc.body.appendChild(btn);
+  // 处理器必须在模块文档自身的域内执行，这样 postMessage 的 event.source
+  // 才是 iframe 窗口，能通过外壳消息监听的来源校验。
+  var handler = doc.createElement('script');
+  handler.textContent = '(function(){'
+    + 'var btn=document.getElementById("yaraInjectedBack");'
+    + 'if(!btn||btn.__yaraBackBound)return;'
+    + 'btn.__yaraBackBound=true;'
+    + 'btn.addEventListener("click",function(){'
+    +   'var inShell=false;'
+    +   'try{inShell=window.parent&&window.parent!==window;}catch(e){}'
+    +   'if(inShell){'
+    +     'try{window.parent.postMessage({source:"yara-module",version:1,type:"back-request"},"*");}catch(e){}'
+    +   '}else if(window.history.length>1){'
+    +     'window.history.back();'
+    +   '}else{'
+    +     'window.location.href=' + JSON.stringify(shellHref) + ';'
+    +   '}'
+    + '});'
+    + '})();';
+  doc.body.appendChild(handler);
+}
+
+function applySystemThemeToFrame(frameArg){
+  var frame = frameArg || hubActiveFrame() || document.getElementById('toolFrame');
   try{
     var doc = frame.contentDocument;
     if(!doc || !doc.head || !doc.body) return false;
     var type = detectModuleType(frame.contentWindow.location.pathname, doc.title);
+    var hubModule = frame._hubKey ? YARA_MODULES.filter(function(m){ return m.src === frame._hubKey; })[0] : null;
     doc.documentElement.dataset.yaraTheme = document.body.dataset.theme || 'twilight';
     doc.body.dataset.yaraModule = type;
-    doc.body.dataset.yaraName = window.YaraSystem ? YaraSystem.Router.current.name : doc.title;
-    doc.body.dataset.yaraGroup = window.YaraSystem ? YaraSystem.Router.current.group : '';
+    doc.body.dataset.yaraName = hubModule ? hubModule.name : (window.YaraSystem ? YaraSystem.Router.current.name : doc.title);
+    doc.body.dataset.yaraGroup = hubModule ? hubModule.group : (window.YaraSystem ? YaraSystem.Router.current.group : '');
     doc.body.classList.add('yara-module-ready');
+    injectModuleBackButton(doc, frame);
     bindFrameScroll(doc);
     var themeHref = new URL('yara-system-theme.css?v=5.0', window.location.href).href;
     var link = doc.getElementById('yaraSystemTheme');
@@ -2028,8 +2775,8 @@ function applySystemThemeToFrame(){
       link.id = 'yaraSystemTheme';
       link.rel = 'stylesheet';
       link.href = themeHref;
-      link.addEventListener('load', closeFrameLoader, {once:true});
-      link.addEventListener('error', closeFrameLoader, {once:true});
+      link.addEventListener('load', function(){ closeFrameLoader(frame); }, {once:true});
+      link.addEventListener('error', function(){ closeFrameLoader(frame); }, {once:true});
       doc.head.appendChild(link);
       document.getElementById('sidebarStatusText').textContent = '当前模块 · ' + (doc.title || '已载入');
     }else if(link.href !== themeHref){
@@ -2038,7 +2785,7 @@ function applySystemThemeToFrame(){
     if(type === 'daily-article' && !doc.getElementById('yaraDailyDetailScript')){
       var dailyScript = doc.createElement('script');
       dailyScript.id = 'yaraDailyDetailScript';
-      dailyScript.src = new URL('yara-daily-detail.js?v=1.1', window.location.href).href;
+      dailyScript.src = new URL('yara-daily-detail.js?v=1.3', window.location.href).href;
       doc.body.appendChild(dailyScript);
     }
     var bridge = doc.getElementById('yaraSystemBridge');
@@ -2046,8 +2793,8 @@ function applySystemThemeToFrame(){
       bridge = doc.createElement('script');
       bridge.id = 'yaraSystemBridge';
       bridge.src = new URL('yara-system-bridge.js?v=1.7', window.location.href).href;
-      bridge.addEventListener('load', closeFrameLoader, {once:true});
-      bridge.addEventListener('error', closeFrameLoader, {once:true});
+      bridge.addEventListener('load', function(){ closeFrameLoader(frame); }, {once:true});
+      bridge.addEventListener('error', function(){ closeFrameLoader(frame); }, {once:true});
       doc.body.appendChild(bridge);
       return true;
     }
@@ -2059,20 +2806,20 @@ function applySystemThemeToFrame(){
   }
 }
 
-document.getElementById('toolFrame').addEventListener('load', function(){
-  if(this.getAttribute('src')){
-    if(!applySystemThemeToFrame()) closeFrameLoader();
-  }
-});
-
 window.addEventListener('message', function(event){
-  var frame = document.getElementById('toolFrame');
-  if(event.source !== frame.contentWindow) return;
+  var frame = null;
+  for(var key in hubFrames){
+    if(hubFrames[key].contentWindow === event.source){ frame = hubFrames[key]; break; }
+  }
+  if(!frame || frame !== hubActiveFrame()) return;
   var message = event.data || {};
   if(message.source !== 'yara-module' || message.version !== 1) return;
   var payload = message.payload || {};
   if(message.type === 'ready'){
     document.getElementById('sidebarStatusText').textContent = '通信已连接 · ' + (payload.title || '当前模块');
+  }
+  if(message.type === 'back-request'){
+    goBackLevel();
   }
   if(message.type === 'route' && window.YaraSystem){
     rememberShellRoute(payload);
@@ -2145,7 +2892,7 @@ function toggleSidebar(){
   toggle.setAttribute('aria-label', isOpen ? '关闭导航菜单' : '打开导航菜单');
   syncMobileDrawerAccessibility();
   if(isOpen){
-    var firstControl = sidebar.querySelector('.nav-group-title');
+    var firstControl = sidebar.querySelector('.dock-item');
     if(firstControl) setTimeout(function(){ firstControl.focus(); }, 30);
   }
 }
@@ -2353,6 +3100,7 @@ function updateClock(){
   document.getElementById('liveClock').textContent = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
 }
 
+var HUB_PALETTE_GLYPHS = {daily:'◆', academic:'◎', growth:'✦', system:'◇'};
 function buildCommandIndex(){
   commandItems = [{
     name:'返回首页',
@@ -2361,15 +3109,13 @@ function buildCommandIndex(){
     action:goHome,
     keywords:'首页 总览 驾驶舱'
   }];
-  document.querySelectorAll('.nav-child').forEach(function(child){
-    var groupTitle = child.closest('.nav-group').querySelector('.nav-group-title');
-    var icon = groupTitle.querySelector('.icon').textContent.trim();
+  YARA_MODULES.forEach(function(mod){
     commandItems.push({
-      name:child.dataset.name,
-      group:child.dataset.group,
-      icon:icon,
-      src:child.dataset.src,
-      keywords:(child.textContent + ' ' + child.dataset.name + ' ' + child.dataset.group).toLowerCase()
+      name:mod.name,
+      group:mod.group,
+      icon:mod.glyph || HUB_PALETTE_GLYPHS[mod.cluster] || '✦',
+      src:mod.src,
+      keywords:(mod.name + ' ' + mod.desc + ' ' + mod.group).toLowerCase()
     });
   });
 }
@@ -2491,7 +3237,7 @@ document.querySelectorAll('.nav-child,.quick-btn').forEach(function(item){
 });
 
 document.addEventListener('click', function(event){
-  var target = event.target.closest('.quick-btn,.stat-card,.nav-child,.icon-btn');
+  var target = event.target.closest('.hub-tile,.dock-item,.stat-card,.icon-btn');
   if(!target) return;
   var rect = target.getBoundingClientRect();
   var size = Math.max(rect.width, rect.height);
@@ -2519,6 +3265,7 @@ if(window.matchMedia('(pointer:fine)').matches && !window.matchMedia('(prefers-r
 
 try{ applyTheme(localStorage.getItem('yara_shell_theme') || 'dawn'); }catch(e){ applyTheme('dawn'); }
 buildCommandIndex();
+renderHub();
 updateClock();
 setInterval(updateClock, 30000);
 renderGameState();

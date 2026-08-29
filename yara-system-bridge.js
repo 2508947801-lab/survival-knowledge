@@ -155,6 +155,7 @@
     if (moduleType === 'opsos') snapshot.capability = safeJson('yara_ops_os_v1', { scores: {} });
     if (moduleType === 'growth') snapshot.growth = safeJson('yara_growth_center_v1', { plans: [], english: [], reviews: [] });
     if (moduleType === 'flash') snapshot.flash = safeJson('yara_flash_notes_v1', { notes: [], summaries: [], deletedIds: [], deletedSummaryIds: [] });
+    if (moduleType === 'cat-care') snapshot.catCare = safeJson('yara_cat_care_v1', { schemaVersion: 1, bookings: [], deletedIds: [] });
     if (moduleType === 'reconcile') snapshot.reconcile = reconcileSnapshot();
     return snapshot;
   }
@@ -175,6 +176,13 @@
       element.value
     );
     if (!text) return null;
+    var explicit = element.getAttribute('data-yara-op');
+    if (explicit === 'delete' || explicit === 'reset') {
+      return { kind: 'delete', text: text, destructive: true };
+    }
+    if (explicit === 'import') return { kind: 'import', text: text };
+    if (explicit === 'export') return { kind: 'export', text: text };
+    if (explicit === 'save') return { kind: 'save', text: text };
     if (/删除|清空|重置/.test(text)) return { kind: 'delete', text: text, destructive: true };
     if (/导入|上传/.test(text)) return { kind: 'import', text: text };
     if (/导出|下载/.test(text)) return { kind: 'export', text: text };
@@ -268,6 +276,7 @@
 
   window.addEventListener('message', function (event) {
     if (event.source !== window.parent) return;
+    if (parentOrigin !== '*' && event.origin !== parentOrigin) return;
     var message = event.data || {};
     if (message.source !== 'yara-shell') return;
     if (message.type === 'confirm-response' && pendingRequests[message.requestId]) {

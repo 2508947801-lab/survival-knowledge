@@ -25,6 +25,25 @@
     '<button class="daily-reader-top" type="button" aria-label="回到文章顶部">↑</button>';
   body.appendChild(readerTools);
 
+  // 外壳内由左上角全局返回胶囊负责逐级返回，页内两个返回入口去重隐藏；
+  // 独立打开（无外壳、无胶囊）时保留，不影响裸页浏览。
+  // 用短轮询代替一次性检查：胶囊由外壳在 frame load 时注入，与本页 load 时序不保证。
+  (function dedupBackControls() {
+    var tries = 0;
+    var timer = setInterval(function () {
+      tries += 1;
+      if (document.getElementById('yaraInjectedBack')) {
+        clearInterval(timer);
+        var inlineBack = document.querySelector('.back-link');
+        if (inlineBack) inlineBack.style.display = 'none';
+        var readerBack = readerTools.querySelector('.daily-reader-back');
+        if (readerBack) readerBack.parentNode.removeChild(readerBack);
+      } else if (tries >= 20) {
+        clearInterval(timer);
+      }
+    }, 250);
+  })();
+
   function moduleTitle(section) {
     if (!section) return '';
     var node = section.querySelector('.module-title,h2,h3');
