@@ -101,7 +101,7 @@
     <header class="hero">
       <div class="kicker"><i>🎓</i>技能学习 · 从 2026 年 9 月开始</div>
       <h1>AIGC 学习地图</h1>
-      <p class="hero-sub">不设日期，只设小任务：每天弄懂一个小知识，日积月累。</p>
+      <p class="hero-sub">不设日期，只设小任务：每天弄懂一个小知识，日积月累。已融合《人工智能内容生成师》职业技能课程专题。</p>
       <div class="hero-stats">
         <div class="big-num"><span id="doneCount">0</span><small> / <span id="totalCount">0</span> 项</small></div>
         <div class="progress-wrap">
@@ -154,14 +154,18 @@
           {id:'s1-05',t:'选定一个 AI 对话工具',n:'任选一个（豆包/DeepSeek/通义等），完成 3 轮完整问答。',tag:'tool'},
           {id:'s1-06',t:'写出第一条自己的提示词模板',n:'用四件套公式描述一个真实需求，保存下来复用。',tag:'practice'},
           {id:'s1-07',t:'理解生成模型的分类',n:'文生文、文生图、文生视频分别是什么，一句话各说清楚。',tag:'read'},
-          {id:'s1-08',t:'扫盲核心名词',n:'模型、参数、推理、微调——每个词用自己的话解释一句。',tag:'read'}
+          {id:'s1-08',t:'扫盲核心名词',n:'模型、参数、推理、微调——每个词用自己的话解释一句。',tag:'read'},
+          {id:'s1-09',t:'AI 智能对话总结',n:'把一段长对话或会议记录交给 AI，让它输出三行摘要 + 待办清单。',tag:'practice'}
         ]},
         {id:2,name:'文本精通',sub:'文本是一切创作的根基，先让写作效率翻倍',items:[
           {id:'s2-01',t:'AI 写短脚本',n:'给一个主题，让 AI 写 300 字短视频脚本，读一遍找问题。',tag:'tool'},
           {id:'s2-02',t:'AI 写社媒文案',n:'同一主题分别生成小红书 / 公众号风格，体会语气差异。',tag:'tool'},
           {id:'s2-03',t:'追问迭代法',n:'对同一篇稿子让 AI 改 3 轮，记录每轮改了什么、为什么更好。',tag:'practice'},
           {id:'s2-04',t:'AI 摘要长文',n:'找一篇 3000 字长文让 AI 总结，和自己的概括对比。',tag:'practice'},
-          {id:'s2-05',t:'建个人提示词库',n:'整理 5 条最常用的写作提示词，存进备忘录或闪念中心。',tag:'practice'}
+          {id:'s2-05',t:'建个人提示词库',n:'整理 5 条最常用的写作提示词，存进备忘录或闪念中心。',tag:'practice'},
+          {id:'s2-06',t:'AI 时代写作技巧',n:'理解人机协作的新节奏：AI 负责初稿，你负责判断、注入灵魂与终审。记 3 条心得。',tag:'read'},
+          {id:'s2-07',t:'AI 内容策划',n:'给一个账号或主题，让 AI 产出 7 天选题清单，体会"先策划再动笔"。',tag:'practice'},
+          {id:'s2-08',t:'AI 办公实操：WPS AI',n:'用 WPS AI 写一份周报或做一个 PPT 大纲，体验办公场景里的 AI。',tag:'tool',res:'WPS AI'}
         ]},
         {id:3,name:'图像实操',sub:'AI 绘画核心逻辑：从出图到控图',items:[
           {id:'s3-01',t:'AI 绘画的基本流程',n:'看懂"提示词 → 模型采样 → 输出图像"这条链路。',tag:'video',res:'Nenly同学'},
@@ -180,16 +184,28 @@
           {id:'s3-14',t:'ComfyUI 初识',n:'理解节点式工作流和整合包的区别，知道它强在哪。',tag:'video',res:'只剩一瓶辣椒酱'},
           {id:'s3-15',t:'跑通第一个工作流',n:'加载 ComfyUI 默认工作流，成功出图一次。',tag:'practice'},
           {id:'s3-16',t:'认识核心节点',n:'加载模型 / 采样器 / 解码输出——说清每个节点在做什么。',tag:'video',res:'只剩一瓶辣椒酱'},
-          {id:'s3-17',t:'角色一致性',n:'让同一个人物在两张图里保持长相一致，掌握一种方法即可。',tag:'practice',res:'图灵的猫'}
+          {id:'s3-17',t:'角色一致性',n:'让同一个人物在两张图里保持长相一致，掌握一种方法即可。',tag:'practice',res:'图灵的猫'},
+          {id:'s3-18',t:'AI 平面设计：海报速成',n:'用通义万相或即梦，输入主题一键生成一张海报，看懂排版与文字区。',tag:'practice',res:'通义万相 / 即梦'}
         ]},
         {id:4,name:'音视频进阶',sub:'从静态图到完整视频成片',items:[
           {id:'s4-01',t:'AI 配音',n:'把一段文字转成配音，挑音色、调语速，导出音频。',tag:'tool'},
           {id:'s4-02',t:'文生视频初体验',n:'选一个视频工具（可灵/即梦等），用一句话生成 5 秒视频。',tag:'tool'},
           {id:'s4-03',t:'图生视频',n:'让自己的一张 AI 图"动起来"，体会首帧控制。',tag:'practice'},
           {id:'s4-04',t:'剪出 30 秒 AI 短片',n:'素材生成 + 剪辑 + 字幕 + 配乐，完成一条完整短片。',tag:'practice',res:'Genji是真想教会你'},
-          {id:'s4-05',t:'复刻一个小作品',n:'跟一个项目式教程，从头到尾复刻出成片。',tag:'video',res:'Genji是真想教会你'}
+          {id:'s4-05',t:'复刻一个小作品',n:'跟一个项目式教程，从头到尾复刻出成片。',tag:'video',res:'Genji是真想教会你'},
+          {id:'s4-06',t:'AI 视频剪辑与成片',n:'把 AI 素材交给剪辑：卡点、字幕、转场各做一次，导出成片。',tag:'practice'}
         ]},
-        {id:5,name:'优化落地',sub:'二次加工、合规意识与变现探索',items:[
+        {id:5,name:'数据与内容运营',sub:'高级专题：让内容被看见、被转化',items:[
+          {id:'d-01',t:'AI 数据分析报告',n:'喂给 AI 一份真实数据（记账/成绩皆可），让它产出结构化分析报告。',tag:'practice'},
+          {id:'d-02',t:'AI 数据分析展示',n:'把报告变成图表或一页演示，让结论一眼可见。',tag:'practice'},
+          {id:'d-03',t:'AI 内容运营策略',n:'让 AI 为一个主题拟 30 天内容日历：选题、频次、平台分工。',tag:'practice'},
+          {id:'d-04',t:'AI 内容转化率优化',n:'同一条内容让 AI 出 5 个标题 + 5 个结尾引导语，对比择优。',tag:'practice'},
+          {id:'d-05',t:'AI 内容效果评估',n:'定 3 个指标（阅读/互动/转化），让 AI 帮你写复盘模板。',tag:'practice'},
+          {id:'d-06',t:'工作流自动化：Coze 初探',n:'在 Coze 搭一个最简智能体或工作流，理解"把流程交给 AI"。',tag:'tool',res:'Coze'},
+          {id:'d-07',t:'企业案例拆解',n:'挑一个行业方案（电商/教育等），看懂它的 AI 工作流怎么搭。',tag:'read'},
+          {id:'d-08',t:'了解职业技能认证',n:'工信部教育考试中心《人工智能内容生成师》初/中/高级——看懂考什么，决定要不要考。',tag:'read'}
+        ]},
+        {id:6,name:'优化落地',sub:'二次加工、合规意识与变现探索',items:[
           {id:'s5-01',t:'AI 内容二次优化',n:'理解"AI 生成≠成品"：剪辑、修图、校对各补一刀。',tag:'practice'},
           {id:'s5-02',t:'版权与合规',n:'AI 作品的商用规则、素材来源边界，记住 3 条底线。',tag:'read'},
           {id:'s5-03',t:'AI 内容标注规范',n:'了解平台对 AI 生成内容的标识要求，发布时照做。',tag:'read'},
@@ -251,7 +267,7 @@
         if(pending){
           nowCard.innerHTML='<span class="now-tag">🎯 当前任务</span><div class="now-title">'+escapeHtml(pending.t)+'</div><div class="now-note">'+escapeHtml(pending.n)+'</div><div class="now-meta">'+chipsHtml(pending)+'</div>';
         }else{
-          nowCard.innerHTML='<span class="now-tag">🏁 地图走完</span><div class="now-title">恭喜！43 项小任务全部完成</div><div class="now-note">回到资源库选一个进阶方向，或把学习收获沉淀进知识资产中心。</div>';
+          nowCard.innerHTML='<span class="now-tag">🏁 地图走完</span><div class="now-title">恭喜！'+total+' 项小任务全部完成</div><div class="now-note">回到资源库选一个进阶方向，或把学习收获沉淀进知识资产中心。</div>';
         }
 
         var nav=document.getElementById('stageNav');
