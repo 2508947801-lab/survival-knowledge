@@ -113,7 +113,7 @@ tr.changed-row td:first-child{border-left:3px solid var(--warning)}
 input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--info)}
 .date-input-inline{padding:4px 8px;border:1px solid var(--border2);border-radius:4px;background:var(--bg);color:var(--text);font-size:13px}
 </style>
-<link id="yaraSystemTheme" rel="stylesheet" href="../yara-system-theme.css?v=3.1">
+<link id="yaraSystemTheme" rel="stylesheet" href="../yara-system-theme.css?v=4.2">
 <link rel="stylesheet" href="../yara-deep-module.css?v=1.7">
 </head>
 <body data-yara-module="schedule-batch">
@@ -127,7 +127,7 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--in
     <div class="module-title">导入课表模板</div>
     <div class="module-badge" id="importBadge">未导入</div>
   </div>
-  <div class="module-desc">导入前一期的总课表Excel。若含行课时间→修改模式；若不含→新建模式。工具保留课节名称、作业ID、视频ID。</div>
+  <div class="module-desc">导入总课表 Excel。只有全部正式课节都有行课时间时才进入修改模式；只要存在未排课节，就自动按新建期班处理，并保留已排好的纠音、语聊与外教时间。章节、亲授课顺序、课节/作业/视频 ID 始终随整行保留。</div>
   <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
     <div class="icon">📄</div>
     <p>点击或拖拽 Excel 文件到此处</p>
@@ -428,8 +428,24 @@ function parseDate(s) {
   }
   return null;
 }
+function parseClock(s) {
+  if (s === null || s === undefined || s === '') return '';
+  if (typeof s === 'number' && isFinite(s)) {
+    const fraction = ((s % 1) + 1) % 1;
+    if (fraction < 1 / 1440) return '';
+    const totalMinutes = Math.round(fraction * 24 * 60) % (24 * 60);
+    return String(Math.floor(totalMinutes / 60)).padStart(2, '0') + ':' + String(totalMinutes % 60).padStart(2, '0');
+  }
+  const match = String(s).match(/(?:^|\s)(\d{1,2}):(\d{2})(?::\d{2})?(?:\s|$)/);
+  return match ? String(Number(match[1])).padStart(2, '0') + ':' + match[2] : '';
+}
 function formatDate(d){return!d?'':d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function formatDateShort(d){return!d?'':String(d.getMonth()+1).padStart(2,'0')+'/'+String(d.getDate()).padStart(2,'0')}
+function isFixedSpecialCourse(c) { return c && (c.type === 'jiaoyin' || c.type === 'yuliao' || c.type === 'waijiao'); }
+function isSchedulableCourse(c) { return c && !c.isZengke && c.type !== 'kaixue'; }
+function getCourseStartTime(c, fallback) { return (c && c.timeStart) || fallback || '19:55'; }
+function getCourseEndTime(c, fallback) { return (c && c.timeEnd) || fallback || '21:30'; }
+function copyDate(d) { return d ? new Date(d.getFullYear(), d.getMonth(), d.getDate()) : null; }
 function isSchoolDay(d){const ds=formatDate(d);if(state.makeupDays.has(ds))return true;if(d.getDay()===0||d.getDay()===6)return false;if(state.holidays.has(ds))return false;return true}
 function nextDay(d){const r=new Date(d);r.setDate(r.getDate()+1);return r}
 function findNextMatchingDay(startDate, weekdays) {
@@ -479,7 +495,6 @@ function parseImportedRows(rows) {
   const courses = [];
   let currentChapter = '';
   let courseIdx = 0;
-  let hasDates = false;
 
   // 列定位：优先按表头识别 课节ID/作业ID/视频ID 所在列，兼容两种格式：
   //   用户行课模板: D课节ID E作业ID F~I视频ID
@@ -514,7 +529,8 @@ function parseImportedRows(rows) {
       courses.push({
         idx: courseIdx, name: String(name).trim(), type, chapter: currentChapter,
         hwId: '', videoIds: [], liveId: '', date: null,
-        isZengke: type==='kaixue', isCancelled: false, dateChanged: false, isNew: true
+        timeStart: '', timeEnd: '', isZengke: type==='kaixue', isCancelled: false,
+        dateChanged: false, isNew: true, _importOrder: courseIdx
       });
     } else {
       if (col1 && String(col1).includes('第') && String(col1).includes('章') && !col2) {
@@ -531,7 +547,7 @@ function parseImportedRows(rows) {
         if (row[c] !== null && row[c] !== undefined && row[c] !== '') videoIds.push(String(row[c]).trim());
       }
       const parsedDate = parseDate(col3);
-      if (parsedDate) hasDates = true;
+      const parsedClock = parseClock(col3);
       const lidVal = row[lidCol];
       const liveId = (lidVal !== null && lidVal !== undefined && lidVal !== '') ? String(lidVal).trim() : '';
       const hwVal = row[hwCol];
@@ -539,13 +555,71 @@ function parseImportedRows(rows) {
       courses.push({
         idx: courseIdx, name: String(name).trim(), type, chapter: currentChapter || getChapterByIndex(courseIdx),
         hwId, videoIds, liveId,
-        date: parsedDate, isZengke: type==='kaixue', isCancelled: false,
-        dateChanged: false, isNew: !parsedDate
+        date: parsedDate, timeStart: parsedClock, timeEnd: '',
+        isZengke: type==='kaixue', isCancelled: false,
+        dateChanged: false, isNew: !parsedDate, _importOrder: courseIdx
       });
     }
   }
-  state._hasDates = hasDates;
   return courses;
+}
+
+function analyzeImportedSchedule() {
+  const courses = state.courses || [];
+  courses.forEach((c, index) => {
+    if (!Number.isFinite(c._importOrder)) c._importOrder = index + 1;
+    c._importedDate = copyDate(c.date);
+    c._importedTimeStart = c.timeStart || '';
+    c._lockedImportedTime = isFixedSpecialCourse(c) && !!c.date;
+  });
+  const schedulable = courses.filter(isSchedulableCourse);
+  const dated = schedulable.filter(c => !!c.date);
+  const missing = schedulable.filter(c => !c.date);
+  const fixed = courses.filter(c => c._lockedImportedTime);
+  const fixedWeekdayCounts = fixed.reduce((counts, c) => {
+    const day = c.date.getDay();
+    counts[day] = (counts[day] || 0) + 1;
+    return counts;
+  }, {});
+  const fixedBusyWeekdays = Object.keys(fixedWeekdayCounts)
+    .map(Number)
+    .filter(day => day >= 1 && day <= 5 && fixedWeekdayCounts[day] >= 2);
+  const suggestedQinshouDays = [1,2,3,4,5].filter(day => !fixedBusyWeekdays.includes(day));
+  const firstParentWithDate = courses.find(c => !isFixedSpecialCourse(c) && isSchedulableCourse(c) && c.date);
+  state._hasDates = dated.length > 0;
+  state._hasIncompleteDates = missing.length > 0;
+  state._preserveSpecialDatesOnNew = state._hasIncompleteDates && fixed.length > 0;
+  state._importDateStats = { total: schedulable.length, dated: dated.length, missing: missing.length, fixed: fixed.length };
+  state._suggestedStartDate = firstParentWithDate ? copyDate(firstParentWithDate.date) : null;
+  state._suggestedStartTime = firstParentWithDate ? (firstParentWithDate.timeStart || '') : '';
+  state._fixedBusyWeekdays = fixedBusyWeekdays;
+  state._suggestedQinshouDays = suggestedQinshouDays;
+}
+
+function applySuggestedWeekdays() {
+  const qinshouDays = state._suggestedQinshouDays || [];
+  if (qinshouDays.length >= 2) {
+    document.querySelectorAll('#qinshouDays .weekday-btn').forEach(btn => {
+      btn.classList.toggle('active', qinshouDays.includes(Number(btn.dataset.day)));
+    });
+  }
+  const fixed = state.courses.filter(c => c._lockedImportedTime && c.date);
+  const dominantDay = type => {
+    const counts = {};
+    fixed.filter(c => type.includes(c.type)).forEach(c => {
+      counts[c.date.getDay()] = (counts[c.date.getDay()] || 0) + 1;
+    });
+    return Object.keys(counts).map(Number).sort((a,b) => counts[b] - counts[a])[0];
+  };
+  const setSingle = (id, day, toneClass) => {
+    if (!Number.isFinite(day)) return;
+    document.querySelectorAll(`#${id} .weekday-btn`).forEach(btn => {
+      btn.classList.remove('active', 'wed', 'thu');
+      if (Number(btn.dataset.day) === day) btn.classList.add('active', toneClass);
+    });
+  };
+  setSingle('jiaoyinDay', dominantDay(['jiaoyin','yuliao']), 'wed');
+  setSingle('waijiaoDay', dominantDay(['waijiao']), 'thu');
 }
 
 function getChapterByIndex(idx) {
@@ -564,14 +638,16 @@ function showImportResult() {
   document.getElementById('mod-schedule').classList.remove('hidden');
   const courses = state.courses;
   if (!courses.length) { showToast('未解析到课程数据', 'danger'); return; }
+  analyzeImportedSchedule();
 
   const tc = {};
   courses.forEach(c => { tc[c.type] = (tc[c.type]||0)+1; });
   const hwCount = courses.filter(c => c.hwId).length;
   const vidCount = courses.filter(c => c.videoIds.length > 0).length;
 
+  const ds = state._importDateStats;
   document.getElementById('importAlert').innerHTML =
-    `✅ 导入 <b>${courses.length}</b> 节课 | 作业ID: ${hwCount}节 | 视频ID: ${vidCount}节`;
+    `✅ 导入 <b>${courses.length}</b> 节课 | 已排 ${ds.dated}/${ds.total} 节 | 未排 ${ds.missing} 节 | 锁定特殊课 ${ds.fixed} 节 | 作业ID: ${hwCount}节 | 视频ID: ${vidCount}节`;
   document.getElementById('importStats').innerHTML = `
     <div class="stat-box"><div class="num">${courses.length}</div><div class="label">总课节</div></div>
     <div class="stat-box"><div class="num">${tc.qinshou||0}</div><div class="label">亲授</div></div>
@@ -585,30 +661,60 @@ function showImportResult() {
   // Mode detection
   const modeConfirm = document.getElementById('modeConfirm');
   const modeAlert = document.getElementById('modeAlert');
-  if (state._hasDates) {
+  let shouldAutoGenerate = false;
+  if (state._hasIncompleteDates) {
+    modeConfirm.classList.add('hidden');
+    setMode('new', { preserveSpecialDates: true, silent: true, deferRender: true });
+    const suggestedDays = (state._suggestedQinshouDays || []).map(day => WEEKDAY_NAMES[day]).join('、');
+    shouldAutoGenerate = !!state._suggestedStartDate;
+    document.getElementById('importAlert').innerHTML += `<br><b>已自动进入新建模式：</b>亲授/指南课将重新排期；已填写的纠音、语聊、外教日期与具体时刻保持不变。${suggestedDays ? `已根据特殊课常规占用日，将亲授安排在${suggestedDays}。` : ''}${shouldAutoGenerate ? '正在自动补齐全部行课时间并规整排序。' : '模板没有首节亲授日期，请填写开课日后生成。'}`;
+  } else if (state._hasDates) {
     modeConfirm.classList.remove('hidden');
-    modeAlert.innerHTML = `检测到已有行课时间，建议使用<b>修改模式</b>。如需新建期班（清空日期和课节ID），选择新建模式。`;
+    modeAlert.innerHTML = `全部正式课节均已有行课时间，建议使用<b>修改模式</b>。如需另建期班，可选择新建模式。`;
   } else {
-    modeConfirm.classList.remove('hidden');
-    modeAlert.innerHTML = `未检测到行课时间，已自动设为<b>新建模式</b>。请设置排课参数后生成课表。`;
-    setMode('new');
+    modeConfirm.classList.add('hidden');
+    setMode('new', { silent: true });
+    document.getElementById('importAlert').innerHTML += `<br><b>已自动进入新建模式：</b>请设置开课日和亲授星期后生成课表。`;
   }
   renderHolidayList();
-  renderScheduleTable();
+  if (shouldAutoGenerate) {
+    const result = generateSchedule({ silent: true });
+    if (result) {
+      document.getElementById('importAlert').innerHTML += `<br><b>自动排课完成：</b>已补齐 ${result.scheduledCount} 节，当前正式课节全部有行课时间，可直接检查并确认。`;
+    }
+  } else {
+    renderScheduleTable();
+  }
 }
 
-function setMode(mode) {
+function setMode(mode, options = {}) {
   state.mode = mode;
   if (mode === 'new') {
-    state.courses.forEach(c => { c.date = null; c.liveId = ''; c.isNew = true; c.dateChanged = false; });
+    const preserveSpecialDates = options.preserveSpecialDates !== undefined
+      ? options.preserveSpecialDates
+      : !!state._preserveSpecialDatesOnNew;
+    state.courses.forEach(c => {
+      const keepImportedTime = preserveSpecialDates && c._lockedImportedTime;
+      c.date = keepImportedTime ? copyDate(c._importedDate) : null;
+      c.timeStart = keepImportedTime ? (c._importedTimeStart || '') : '';
+      c.timeEnd = '';
+      c.liveId = '';
+      c.isNew = true;
+      c.dateChanged = false;
+    });
+    const startInput = document.getElementById('startDate');
+    if (startInput && state._suggestedStartDate) startInput.value = formatDate(state._suggestedStartDate);
+    const startTimeInput = document.getElementById('classStartTime');
+    if (startTimeInput && state._suggestedStartTime) startTimeInput.value = state._suggestedStartTime;
+    if (preserveSpecialDates) applySuggestedWeekdays();
     document.getElementById('paramPanel').style.display = '';
   } else {
     state.courses.forEach(c => { c.isNew = false; c.dateChanged = false; });
     document.getElementById('paramPanel').style.display = 'none';
   }
   document.getElementById('modeConfirm').classList.add('hidden');
-  showToast(`已切换到${mode==='new'?'新建':'修改'}模式`, 'success');
-  renderScheduleTable();
+  if (!options.silent) showToast(`已切换到${mode==='new'?'新建':'修改'}模式`, 'success');
+  if (!options.deferRender) renderScheduleTable();
 }
 
 // ==================== Weekday Pickers ====================
@@ -640,11 +746,54 @@ function removeHoliday(d){state.holidays.delete(d);renderHolidayList();}
 function removeMakeup(d){state.makeupDays.delete(d);renderHolidayList();}
 
 // ==================== Schedule Generation ====================
-function generateSchedule() {
+function courseTimestamp(c) {
+  if (!c || !c.date) return Number.POSITIVE_INFINITY;
+  const clock = getCourseStartTime(c, '00:00').split(':').map(Number);
+  return new Date(c.date.getFullYear(), c.date.getMonth(), c.date.getDate(), clock[0] || 0, clock[1] || 0).getTime();
+}
+
+function sortCoursesWithinChapter() {
+  const chapterOrder = [];
+  const groups = new Map();
+  state.courses.forEach(c => {
+    const chapter = c.chapter || '';
+    if (!groups.has(chapter)) {
+      chapterOrder.push(chapter);
+      groups.set(chapter, []);
+    }
+    groups.get(chapter).push(c);
+  });
+
+  const sorted = [];
+  chapterOrder.forEach(chapter => {
+    const group = groups.get(chapter);
+    group.sort((a, b) => {
+      if (a.isZengke !== b.isZengke) return a.isZengke ? -1 : 1;
+      const at = courseTimestamp(a);
+      const bt = courseTimestamp(b);
+      if (at !== bt) return at - bt;
+      return (a._importOrder || a.idx) - (b._importOrder || b.idx);
+    });
+    sorted.push(...group);
+  });
+
+  const oldLessonIds = state.lessonIds || {};
+  const remappedLessonIds = {};
+  sorted.forEach((c, index) => {
+    const previousIdx = c.idx;
+    c.idx = index + 1;
+    if (oldLessonIds[previousIdx]) remappedLessonIds[c.idx] = oldLessonIds[previousIdx];
+  });
+  state.courses = sorted;
+  state.lessonIds = remappedLessonIds;
+  state.selectedRows.clear();
+}
+
+function generateSchedule(options = {}) {
   const courses = state.courses;
-  if (!courses.length) { showToast('请先导入模板', 'warning'); return; }
+  if (!courses.length) { if (!options.silent) showToast('请先导入模板', 'warning'); return null; }
   const startDate = parseDate(document.getElementById('startDate').value);
-  if (!startDate) { showToast('请设置开课日', 'warning'); return; }
+  if (!startDate) { if (!options.silent) showToast('请设置开课日', 'warning'); return null; }
   const qinshouDays = getSelectedWeekdays('qinshouDays');
   const jiaoyinWeekday = getSelectedSingleWeekday('jiaoyinDay');
   const waijiaoWeekday = getSelectedSingleWeekday('waijiaoDay');
@@ -652,7 +801,9 @@ function generateSchedule() {
   const jiaoyinStartInput = document.getElementById('jiaoyinStartDate').value;
   const classStart = document.getElementById('classStartTime').value || '19:55';
   const classEnd = document.getElementById('classEndTime').value || '21:30';
-  if (!qinshouDays.length) { showToast('请选择亲授课星期', 'warning'); return; }
+  if (!qinshouDays.length) { if (!options.silent) showToast('请选择亲授课星期', 'warning'); return null; }
+
+  const scheduledCount = courses.filter(c => isSchedulableCourse(c) && !c.date).length;
 
   const qinshouCourses = courses.filter(c => c.type==='qinshou'||c.type==='guide'||c.type==='kaixue');
   const jiaoyinYuliao = [];
@@ -663,7 +814,10 @@ function generateSchedule() {
   let qCursor = new Date(startDate);
   for (const c of qinshouCourses) {
     if (c.type==='kaixue') { c.date=null; c.isZengke=true; }
-    else { const d=findNextMatchingDay(qCursor,qinshouDays); c.date=d; qCursor=nextDay(d); }
+    else {
+      const d=findNextMatchingDay(qCursor,qinshouDays);
+      c.date=d; c.timeStart=classStart; c.timeEnd=classEnd; qCursor=nextDay(d);
+    }
   }
 
   // 2. 纠音/语聊
@@ -672,15 +826,25 @@ function generateSchedule() {
   else { jyCursor = new Date(startDate); jyCursor.setDate(jyCursor.getDate()+2); }
   for (const c of jiaoyinYuliao) {
     if (isMonthly(c)) continue; // 月度课单独处理，不终止循环
+    if (c._lockedImportedTime && c.date) {
+      jyCursor = new Date(c.date); jyCursor.setDate(jyCursor.getDate()+7);
+      continue;
+    }
     const d = findNextWeekday(jyCursor, jiaoyinWeekday);
-    c.date = d; jyCursor = new Date(d); jyCursor.setDate(jyCursor.getDate()+7);
+    c.date = d; c.timeStart = c.timeStart || classStart; c.timeEnd = c.timeEnd || classEnd;
+    jyCursor = new Date(d); jyCursor.setDate(jyCursor.getDate()+7);
   }
 
   // 3. 外教
   let wCursor = new Date(startDate); wCursor.setDate(wCursor.getDate()+3);
   for (const c of waijiaoCourses) {
+    if (c._lockedImportedTime && c.date) {
+      wCursor = new Date(c.date); wCursor.setDate(wCursor.getDate()+7);
+      continue;
+    }
     const d = findNextWeekday(wCursor, waijiaoWeekday);
-    c.date = d; wCursor = new Date(d); wCursor.setDate(wCursor.getDate()+7);
+    c.date = d; c.timeStart = c.timeStart || classStart; c.timeEnd = c.timeEnd || classEnd;
+    wCursor = new Date(d); wCursor.setDate(wCursor.getDate()+7);
   }
 
   // 4. 月度纠音/语聊课 (every 2 weeks)
@@ -691,14 +855,22 @@ function generateSchedule() {
     if (regularJy.length) { mCursor = new Date(regularJy[regularJy.length-1].date); mCursor.setDate(mCursor.getDate()+14); }
     else { mCursor = new Date(startDate); mCursor.setDate(mCursor.getDate()+14*20); }
     for (const c of monthly) {
+      if (c._lockedImportedTime && c.date) {
+        mCursor = new Date(c.date); mCursor.setDate(mCursor.getDate()+14);
+        continue;
+      }
       const d = findNextWeekday(mCursor, jiaoyinWeekday);
-      c.date = d; mCursor = new Date(d); mCursor.setDate(mCursor.getDate()+14);
+      c.date = d; c.timeStart = c.timeStart || classStart; c.timeEnd = c.timeEnd || classEnd;
+      mCursor = new Date(d); mCursor.setDate(mCursor.getDate()+14);
     }
   }
 
+  sortCoursesWithinChapter();
   state.module1Confirmed = false;
   renderScheduleTable();
-  showToast('课表已生成，请检查后确认', 'success');
+  const locked = state.courses.filter(c => c._lockedImportedTime).length;
+  if (!options.silent) showToast(`课表已生成并规整排序，保留 ${locked} 节特殊课既定时间`, 'success');
+  return { scheduledCount, lockedCount: locked };
 }
 
 // ==================== Schedule Table Rendering ====================
@@ -728,7 +900,10 @@ function renderScheduleTable() {
     let dateStr, weekdayStr, statusStr = '';
     if (c.isZengke) { dateStr = '<span style="color:var(--warning);font-weight:600">赠课</span>'; weekdayStr=''; }
     else if (c.isCancelled) { dateStr = '<span style="color:var(--danger)">已取消</span>'; weekdayStr=''; }
-    else if (c.date) { dateStr = formatDateShort(c.date); weekdayStr = WEEKDAY_NAMES[c.date.getDay()]; }
+    else if (c.date) {
+      dateStr = `${formatDateShort(c.date)} ${getCourseStartTime(c, document.getElementById('classStartTime').value || '19:55')}`;
+      weekdayStr = WEEKDAY_NAMES[c.date.getDay()];
+    }
     else { dateStr = '<span style="color:var(--danger)">未排</span>'; weekdayStr=''; }
     if (c.dateChanged) statusStr = '<span class="tag" style="background:var(--warningBg);color:var(--warning)">变更</span>';
     if (c.isCancelled) statusStr = '<span class="tag" style="background:var(--dangerBg);color:var(--danger)">取消</span>';
@@ -756,8 +931,9 @@ function updateStats() {
   const active = c.filter(x => x.date && !x.isCancelled);
   const cancelled = c.filter(x => x.isCancelled).length;
   const changed = c.filter(x => x.dateChanged).length;
-  const firstDate = active.length ? formatDate(active[0].date) : '—';
-  const lastDate = active.length ? formatDate(active[active.length-1].date) : '—';
+  const chronological = active.slice().sort((a,b) => courseTimestamp(a) - courseTimestamp(b));
+  const firstDate = chronological.length ? formatDate(chronological[0].date) : '—';
+  const lastDate = chronological.length ? formatDate(chronological[chronological.length-1].date) : '—';
   const tc = {};
   active.forEach(x => { tc[x.type] = (tc[x.type]||0)+1; });
   document.getElementById('scheduleStats').innerHTML = `
@@ -786,6 +962,13 @@ function validateSchedule() {
   // Undated
   const noDate = state.courses.filter(c => !c.date && !c.isZengke && !c.isCancelled);
   if (noDate.length) alerts.push({type:'warning', msg:`⚠️ ${noDate.length}节课未排日期`});
+  const plannedStart = parseDate(document.getElementById('startDate').value);
+  const fixedBeforeStart = plannedStart
+    ? active.filter(c => c._lockedImportedTime && c.date < plannedStart)
+    : [];
+  if (fixedBeforeStart.length) {
+    alerts.push({type:'warning', msg:`⚠️ ${fixedBeforeStart.length}节已锁定特殊课早于开课日，请核对源表日期；系统未擅自修改`});
+  }
   // Holiday check
   const onHoliday = active.filter(c => state.holidays.has(formatDate(c.date)));
   if (onHoliday.length) alerts.push({type:'warning', msg:`⚠️ ${onHoliday.length}节课排在节假日: ${onHoliday.slice(0,3).map(c=>`课${c.idx}(${formatDateShort(c.date)})`).join(', ')}`});
@@ -970,8 +1153,8 @@ function renderLessonTable() {
       opType = isModify && !c.isNew ? '修改' : '新增';
       lessonId = c.liveId || state.lessonIds[c.idx] || '';
       const ds = formatDate(c.date);
-      startTime = `${ds} ${classStart}:00`;
-      endTime = `${ds} ${classEnd}:00`;
+      startTime = `${ds} ${getCourseStartTime(c, classStart)}:00`;
+      endTime = `${ds} ${getCourseEndTime(c, classEnd)}:00`;
     }
     count++;
     html += `<tr>
@@ -1009,7 +1192,8 @@ function exportLessonManagement() {
       opType = isModify && !c.isNew ? '修改' : '新增';
       lessonId = c.liveId || state.lessonIds[c.idx] || '';
       const ds = formatDate(c.date);
-      startTime = `${ds} ${classStart}:00`; endTime = `${ds} ${classEnd}:00`;
+      startTime = `${ds} ${getCourseStartTime(c, classStart)}:00`;
+      endTime = `${ds} ${getCourseEndTime(c, classEnd)}:00`;
     }
     data.push([opType, lessonId, c.name, '直播课节', startTime, endTime, '杨老师', '英语口语', '小鹅通']);
   }
@@ -1038,7 +1222,7 @@ function exportThreeProducts() {
       if (c.isZengke) { rows.push([isModify&&!c.isNew?'修改':'新增','',c.name,'直播课节','赠课','','杨老师','英语口语','小鹅通']); continue; }
       if (!c.date) continue;
       const ds = formatDate(c.date);
-      rows.push([isModify&&!c.isNew?'修改':'新增', c.liveId||state.lessonIds[c.idx]||'', c.name,'直播课节',`${ds} ${cs}:00`,`${ds} ${ce}:00`,'杨老师','英语口语','小鹅通']);
+      rows.push([isModify&&!c.isNew?'修改':'新增', c.liveId||state.lessonIds[c.idx]||'', c.name,'直播课节',`${ds} ${getCourseStartTime(c, cs)}:00`,`${ds} ${getCourseEndTime(c, ce)}:00`,'杨老师','英语口语','小鹅通']);
     }
     return rows;
   }
@@ -1274,11 +1458,11 @@ document.getElementById('startDate').addEventListener('change', function() {
 });
 </script>
 <script src="../yara-runtime-config.js?v=1.0"></script>
-<script src="../yara-master-schedule-seed.js?v=1.0"></script>
-<script src="../yara-master-schedule.js?v=1.0"></script>
-  <script src="../../yara-module-ui.js?v=1.1"></script>
-  <script id="yaraSystemBridge" src="../yara-system-bridge.js?v=1.5"></script>
-<script src="../yara-deep-module.js?v=1.6"></script>
-<script src="../yara-schedule-tool-sync.js?v=1.0"></script>
+<script src="../yara-master-schedule-seed.js?v=1.1"></script>
+<script src="../yara-master-schedule.js?v=1.1"></script>
+  <script src="../yara-module-ui.js?v=1.1"></script>
+  <script id="yaraSystemBridge" src="../yara-system-bridge.js?v=1.9"></script>
+<script src="../yara-deep-module.js?v=1.7"></script>
+<script src="../yara-schedule-tool-sync.js?v=1.1"></script>
 </body>
 </html>

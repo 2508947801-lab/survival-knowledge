@@ -73,6 +73,9 @@
     if (project === '杨家成3980') {
       course.hwId = row.homeworkId || '';
       course.videoIds = splitIds(row.videoId);
+      var yjcSlot = defaultTimes(course);
+      course.timeStart = getClock(row.time, yjcSlot.start);
+      course.timeEnd = yjcSlot.end;
     } else {
       course.homeworkId = row.homeworkId || '';
       var defaultSlot = defaultTimes(course);
@@ -105,7 +108,9 @@
       videoId: project === '杨家成3980'
         ? (course.videoIds || []).join('、')
         : (old.videoId || ''),
-      sequence: Number(old.sequence || course._masterSequence || index + 1)
+      sequence: project === '杨家成3980' && state.mode === 'new'
+        ? index + 1
+        : Number(old.sequence || course._masterSequence || index + 1)
     };
   }
 
@@ -151,7 +156,7 @@
     loadedRevision = store.read().revision || 0;
     dirtyNotice = false;
     showImportResult();
-    if (typeof setMode === 'function' && state._hasDates && state.mode !== 'modify') setMode('modify');
+    if (typeof setMode === 'function' && state._hasDates && !state._hasIncompleteDates && state.mode !== 'modify') setMode('modify');
     setStatus('已载入 ' + rows.length + ' 节 · 修改后可保存回主课表', 'success');
   }
 
