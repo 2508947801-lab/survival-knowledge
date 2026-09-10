@@ -3,7 +3,11 @@
   if (window.top === window || window.YaraBridge) return;
 
   var moduleType = document.body.dataset.yaraModule || 'generic';
-  var parentOrigin = location.origin === 'null' ? '*' : location.origin;
+  // Chrome 的 file:// 页面 location.origin 为 "file://"，但 message 事件的
+  // event.origin 为 "null"。本地文件模式只能使用通配目标；接收端仍严格校验
+  // event.source === window.parent，公开 HTTP(S) 环境继续执行同源校验。
+  var isLocalFile = location.protocol === 'file:' || location.origin === 'null';
+  var parentOrigin = isLocalFile ? '*' : location.origin;
   var lastRoute = '';
   var routeTimer;
   var snapshotTimer;
@@ -66,7 +70,11 @@
   function reportRoute(preferredLabel) {
     clearTimeout(routeTimer);
     routeTimer = setTimeout(function () {
-      var label = cleanLabel(preferredLabel) || activeLabel();
+      // 模块初次载入时没有明确子路由，应保持在二级。
+      // 不能用页面里第一个 h1/h2 猜测三级路由，否则返回键的第一次点击
+      // 只会清除这个“假层级”，用户看起来就像按钮失效。
+      var label = cleanLabel(preferredLabel);
+      if (!label && location.hash) label = activeLabel();
       var level = label ? 3 : 2;
       if (moduleType === 'academic') {
         var rootView = new URLSearchParams(location.search).get('view');
@@ -75,7 +83,7 @@
           level = 2;
         }
       }
-      if (moduleType.indexOf('schedule-') === 0 && new URLSearchParams(location.search).get('from') === 'academic-build') {
+      if (new URLSearchParams(location.search).get('from') === 'academic-build') {
         label = cleanLabel(new URLSearchParams(location.search).get('name')) || label;
         level = 3;
       }
@@ -231,15 +239,10 @@
       if (!document.dispatchEvent(navigationEvent)) return;
     } catch (error) {}
 
-    var openDetails = Array.prototype.slice.call(document.querySelectorAll('details[open]')).pop();
-    if (openDetails) {
-      openDetails.open = false;
-      reportRoute();
-      return;
-    }
-
+    // 优先关闭"最顶层"覆盖物：dialog[open] > modal/drawer/sheet/aria-modal。
+    // 一次只关一个，避免把抽屉内的 details 也连带关掉造成状态错乱。
     var openLayer = Array.prototype.slice.call(document.querySelectorAll(
-      'dialog[open],.modal.open,.modal.show,.modal-backdrop.open,.drawer.open,.board-detail-backdrop.open,[data-yara-layer].open,[aria-modal="true"].open'
+      'dialog[open],.modal.open,.modal.show,.modal-backdrop.open,.modal-backdrop.show,.drawer.open,.board-detail-backdrop.open,[data-yara-layer].open,[aria-modal="true"].open'
     )).pop();
     if (openLayer) {
       var closeControl = openLayer.querySelector(
@@ -250,6 +253,22 @@
         reportRoute();
         return;
       }
+    }
+
+    // 建课工具内的默认展开配置不是导航层级；返回二级时优先恢复工具列表。
+    var routeParams = new URLSearchParams(location.search);
+    if (detail.targetLevel <= 2 && routeParams.get('from') === 'academic-build') {
+      var buildToolsParent = new URL('../运营能力地图/academic-system.html?view=tools', location.href);
+      location.replace(buildToolsParent.href);
+      return;
+    }
+
+    // 没有顶层覆盖物时，再考虑裸露的 <details> 折叠块。
+    var openDetails = Array.prototype.slice.call(document.querySelectorAll('details[open]')).pop();
+    if (openDetails) {
+      openDetails.open = false;
+      reportRoute();
+      return;
     }
 
     if (detail.targetLevel <= 2) {
@@ -356,7 +375,7 @@
     reportSnapshot(260);
   }, true);
 
-  window.addEventListener('hashchange', function () { reportRoute(); });
+  window.addEventListener('hashchange', function () { reportRoute(activeLabel()); });
   window.addEventListener('storage', function () { reportSnapshot(80); });
 
   var observer = new MutationObserver(function (mutations) {
@@ -364,7 +383,9 @@
       return mutation.type === 'attributes' &&
         (mutation.attributeName === 'class' || mutation.attributeName === 'aria-selected');
     });
-    if (routeChanged) reportRoute();
+    // 无 hash 的模块首页只是普通内容更新，不得因为 active 样式变化就升级路由。
+    // 真实子页由显式 YaraBridge.route、导航点击或 hashchange 上报。
+    if (routeChanged && location.hash) reportRoute(activeLabel());
   });
   observer.observe(document.body, {
     subtree: true,

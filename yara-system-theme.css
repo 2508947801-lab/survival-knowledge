@@ -1340,3 +1340,43 @@ html[data-yara-theme] body[data-yara-module="generic"] :is(.card,.panel,.section
   html[data-yara-theme] body[data-yara-module="career-match"] .app-header{background:color-mix(in srgb,var(--ys-surface) 94%,transparent)!important}
   html[data-yara-theme] body[data-yara-module] :is(.modal,.modal-card,.modal-content,.dialog,.dialog-card,.drawer,.drawer-panel,.sheet){border-radius:18px 18px 0 0!important}
 }
+/* The shell injects this control into every module; keep all states token-based. */
+#yaraInjectedBack.yara-module-back {
+  position: fixed;
+  z-index: 10000;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 80px;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid var(--ys-line-strong, #d3dae8);
+  border-radius: var(--ys-radius, 14px);
+  background: var(--ys-surface, #fff);
+  color: var(--ys-ink, #1b2330);
+  box-shadow: var(--ys-shadow, 0 10px 30px rgba(27,35,48,.06));
+  cursor: pointer;
+  font: inherit;
+  transition: background .15s, border-color .15s;
+}
+#yaraInjectedBack.yara-module-back:hover { background: var(--ys-primary-soft, #f0ebff); border-color: var(--ys-primary, #7c5cff); }
+#yaraInjectedBack.yara-module-back:active { background: var(--ys-surface-2, #f0f3fa); }
+#yaraInjectedBack.yara-module-back:focus-visible { outline: 2px solid var(--ys-primary, #7c5cff); outline-offset: 3px; }
+/* shell 内 iframe 已有顶部 #routeBackBtn 作为返回入口，注入按钮在此场景下隐藏避免双钮冗余；
+   独立打开时由 yara-module-ui.js 注入并带 [data-standalone]，下面规则不会命中。 */
+#yaraInjectedBack.yara-module-back[data-shell="true"] { display: none !important; }
+/* mobile：注入按钮缩成 44×44 圆形 icon-only，与外壳顶部 .route-back 移动端尺寸保持一致 */
+@media (max-width: 600px) {
+  #yaraInjectedBack.yara-module-back {
+    min-width: 44px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 50%;
+    gap: 0;
+  }
+  #yaraInjectedBack.yara-module-back .yara-back-label { display: none; }
+}

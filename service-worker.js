@@ -1,5 +1,5 @@
-/* Yara PWA service worker. 20260829183843 is replaced by the release script. */
-const YARA_BUILD = '20260829183843';
+/* Yara PWA service worker. 20260910145750 is replaced by the release script. */
+const YARA_BUILD = '20260910145750';
 const CACHE_PREFIX = 'yara-pwa-';
 const CACHE_NAME = CACHE_PREFIX + YARA_BUILD;
 const OFFLINE_URL = './离线.html';
@@ -10,6 +10,7 @@ const CORE_ASSETS = [
   './manifest.webmanifest',
   './yara-pwa.css',
   './yara-pwa.js',
+  './yara-shell.css',
   './yara-system-theme.css',
   './yara-system-core.js',
   './yara-system-bridge.js',
@@ -17,6 +18,18 @@ const CORE_ASSETS = [
   './yara-growth-game.js',
   './yara-master-schedule.js',
   './yara-master-schedule-seed.js',
+  './js/yara-config.js',
+  './js/yara-timers.js',
+  './js/yara-error-monitor.js',
+  './js/yara-storage-guard.js',
+  './js/yara-data-migration.js',
+  './js/yara-module-sdk.js',
+  './js/yara-data-export.js',
+  './js/yara-hub-incremental.js',
+  './js/yara-dashboard-helpers.js',
+  './js/yara-keyboard-nav.js',
+  './js/yara-skeleton.css',
+  './js/yara-companion-improved.js',
   './icons/yara-192.png',
   './icons/yara-512.png',
   './icons/yara-maskable-512.png',

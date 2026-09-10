@@ -1,0 +1,1112 @@
+<!doctype html>
+<html lang="zh-CN" data-yara-theme="dawn" data-page-node-id="yGHO90yOIZaos9jHzVETHt">
+<head data-page-node-id="HfLamsAE0vsXEooF12OTh1">
+  <meta charset="utf-8" data-page-node-id="KGQ3MwmPeVKiS1AGPnTzBF">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" data-page-node-id="rFLKtmK8s0nOrGKycf2MgT">
+  <meta name="theme-color" content="#F7F9FC" data-page-node-id="7fXh5XzfGWtatMUvLXeT0x">
+  <title>雅识工作记录 · 教务运营实战</title>
+  <link rel="stylesheet" href="yara-pwa.css?v=1.0" data-page-node-id="NcmTdPKkDkeDUL4fJggVn9">
+  <link id="yaraSystemTheme" rel="stylesheet" href="yara-system-theme.css?v=5.0" data-page-node-id="JNdlcv0CM1VVSccQt57SKO">
+  <style>
+    :root{
+      --bg:#F7F9FC;--card:#FFFFFF;--ink:#1F2937;--sub:#6B7280;--line:#E8EDF4;
+      --accent:#0891B2;--accent-soft:#ECFEFF;--accent-line:#A5F3FC;
+      --blue:#2563EB;--blue-soft:#EFF6FF;
+      --green:#059669;--green-soft:#ECFDF5;
+      --orange:#D97706;--orange-soft:#FFFBEB;
+      --red:#DC2626;--red-soft:#FEF2F2;
+      --purple:#7C3AED;--purple-soft:#F5F3FF;
+      --shadow:0 16px 45px rgba(15,23,42,.06);--r:14px;
+      --font:"Avenir Next","MiSans","HarmonyOS Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;background:var(--bg)}
+    body{min-height:100vh;font:400 15px/1.65 var(--font);color:var(--ink);background:
+      radial-gradient(circle at 6% 0,rgba(8,145,178,.10),transparent 30%),
+      radial-gradient(circle at 96% 4%,rgba(37,99,235,.06),transparent 26%),var(--bg)}
+    .app{width:min(1080px,100%);margin:auto;padding:26px clamp(14px,3vw,30px) 90px}
+
+    .hero{padding:24px 26px;border:1px solid rgba(255,255,255,.85);border-radius:24px;background:linear-gradient(135deg,rgba(236,254,255,.96),rgba(247,249,252,.94) 55%,rgba(239,246,255,.9));box-shadow:var(--shadow)}
+    .kicker{display:flex;align-items:center;gap:8px;color:var(--accent);font-size:.72rem;font-weight:800;letter-spacing:.1em}
+    .kicker i{display:grid;place-items:center;width:30px;height:30px;border-radius:11px;background:linear-gradient(145deg,#06B6D4,#0891B2);color:#fff;font-style:normal;font-size:1rem}
+    h1{margin-top:10px;font-size:clamp(1.55rem,4vw,2.2rem);letter-spacing:-.04em}
+    .hero-sub{margin-top:6px;color:var(--sub);font-size:.8rem;line-height:1.6}
+    .privacy-tag{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;background:var(--red-soft);color:var(--red);font-size:.64rem;font-weight:800;margin-top:12px}
+
+    .tab-nav{display:flex;gap:6px;margin:20px 0 0;padding:10px;border:1px solid rgba(255,255,255,.85);border-radius:16px;background:rgba(255,255,255,.86);backdrop-filter:blur(14px);box-shadow:0 8px 24px rgba(15,23,42,.05);overflow-x:auto}
+    .tab-btn{flex:0 0 auto;padding:10px 16px;border:0;border-radius:12px;background:transparent;color:var(--sub);font-size:.76rem;font-weight:700;white-space:nowrap;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
+    .tab-btn:hover{background:rgba(8,145,178,.06)}
+    .tab-btn.active{color:#fff;background:linear-gradient(135deg,#06B6D4,#0891B2);box-shadow:0 4px 12px rgba(8,145,178,.25)}
+
+    .panel{display:none}.panel.active{display:block}
+
+    /* ===== Funnel ===== */
+    .funnel{margin-top:20px;display:flex;flex-direction:column;gap:8px}
+    .funnel-stage{display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:14px;border:1px solid var(--line);background:var(--card);position:relative;overflow:hidden}
+    .funnel-stage::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px}
+    .fs-1::before{background:linear-gradient(180deg,#3B82F6,#2563EB)}
+    .fs-2::before{background:linear-gradient(180deg,#06B6D4,#0891B2)}
+    .fs-3::before{background:linear-gradient(180deg,#A78BFA,#7C3AED)}
+    .fs-4::before{background:linear-gradient(180deg,#F59E0B,#D97706)}
+    .fs-5::before{background:linear-gradient(180deg,#34D399,#059669)}
+    .fs-icon{font-size:1.4rem;flex:0 0 auto}
+    .fs-body{flex:1}
+    .fs-name{font-size:.88rem;font-weight:800}
+    .fs-desc{font-size:.72rem;color:var(--sub);margin-top:2px;line-height:1.5}
+    .fs-metric{text-align:right;flex:0 0 auto}
+    .fs-metric .v{font-size:1.3rem;font-weight:800;letter-spacing:-.02em}
+    .fs-metric .l{font-size:.62rem;color:var(--sub)}
+    .funnel-arrow{text-align:center;color:var(--sub);font-size:1.2rem;margin:-4px 0}
+
+    /* ===== SOP Timeline ===== */
+    .sop-section{margin-top:24px;padding:22px;border-radius:18px;border:1px solid var(--line);background:var(--card)}
+    .sop-section h2{font-size:1rem;margin-bottom:4px}
+    .sop-section>p{font-size:.74rem;color:var(--sub);margin-bottom:16px}
+    .sop-flow{display:flex;gap:0;align-items:stretch;flex-wrap:wrap}
+    .sop-step{flex:1;min-width:140px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);position:relative}
+    .sop-step+.sop-step{margin-left:8px}
+    .sop-num{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:.68rem;font-weight:800;margin-bottom:6px}
+    .sop-title{font-size:.8rem;font-weight:700}
+    .sop-detail{font-size:.68rem;color:var(--sub);margin-top:4px;line-height:1.5}
+
+    /* ===== Rule Cards ===== */
+    .rule-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:20px}
+    .rule-card{padding:18px 20px;border-radius:16px;border:1px solid var(--line);background:var(--card)}
+    .rule-card h3{font-size:.86rem;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:10px}
+    .rule-list{list-style:none;padding:0}
+    .rule-list li{padding:6px 0;font-size:.74rem;color:var(--ink);border-bottom:1px solid var(--line);line-height:1.5}
+    .rule-list li:last-child{border-bottom:0}
+    .rule-list li strong{color:var(--accent)}
+
+    .time-table,.metric-table,.price-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:.74rem}
+    .time-table th,.metric-table th,.price-table th{padding:8px 10px;text-align:left;background:var(--accent-soft);color:var(--accent);font-weight:800;font-size:.68rem}
+    .time-table td,.metric-table td,.price-table td{padding:8px 10px;border-bottom:1px solid var(--line)}
+    .time-table tr:last-child td,.metric-table tr:last-child td,.price-table tr:last-child td{border-bottom:0}
+
+    /* ===== Script Cards ===== */
+    .script-section{margin-top:20px}
+    .script-card{padding:18px 20px;border-radius:16px;border:1px solid var(--line);background:var(--card);margin-bottom:12px}
+    .script-card h3{font-size:.84rem;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+    .script-quote{padding:12px 14px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;font-size:.76rem;color:var(--ink);line-height:1.6;margin:8px 0}
+    .script-logic{font-size:.72rem;color:var(--sub);margin-top:6px}
+    .script-logic strong{color:var(--accent)}
+
+    .root-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:16px}
+    .root-item{padding:14px;border-radius:12px;border:1px solid var(--line);background:var(--bg)}
+    .root-item h4{font-size:.78rem;font-weight:700;color:var(--red);margin-bottom:4px}
+    .root-item p{font-size:.7rem;color:var(--sub);line-height:1.5}
+
+    /* ===== Data Cards ===== */
+    .data-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:20px}
+    .data-card{padding:18px;border-radius:16px;border:1px solid var(--line);background:var(--card);text-align:center}
+    .data-num{font-size:1.8rem;font-weight:800;letter-spacing:-.03em}
+    .data-num.blue{color:var(--blue)}
+    .data-num.teal{color:var(--accent)}
+    .data-num.red{color:var(--red)}
+    .data-num.green{color:var(--green)}
+    .data-label{font-size:.72rem;color:var(--sub);margin-top:4px}
+
+    .product-table{width:100%;border-collapse:collapse;margin-top:14px;font-size:.72rem}
+    .product-table th{padding:8px;text-align:left;background:var(--purple-soft);color:var(--purple);font-weight:800}
+    .product-table td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+    .product-table td strong{color:var(--ink)}
+
+    /* ===== Resume Material ===== */
+    .resume-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin-top:20px}
+    .resume-card{padding:18px 20px;border-radius:16px;border:1px solid var(--line);background:var(--card)}
+    .resume-card h3{font-size:.84rem;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+    .resume-card ul{list-style:none;padding:0}
+    .resume-card li{padding:8px 0;font-size:.74rem;color:var(--ink);border-bottom:1px dashed var(--line);line-height:1.55}
+    .resume-card li:last-child{border-bottom:0}
+    .resume-card li strong{color:var(--accent)}
+    .tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.6rem;font-weight:700;margin-right:4px}
+    .tag.skill{background:var(--blue-soft);color:var(--blue)}
+    .tag.result{background:var(--green-soft);color:var(--green)}
+    .tag.story{background:var(--purple-soft);color:var(--purple)}
+
+    .interview-q{padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:var(--bg);margin-bottom:8px}
+    .interview-q .q{font-size:.78rem;font-weight:700;color:var(--ink)}
+    .interview-q .a{font-size:.7rem;color:var(--sub);margin-top:4px;line-height:1.55}
+
+    @media(max-width:640px){
+      .app{padding:16px 12px 60px}
+      .rule-grid,.resume-grid{grid-template-columns:1fr}
+      .data-grid{grid-template-columns:repeat(2,1fr)}
+      .sop-flow{flex-direction:column}
+      .sop-step+.sop-step{margin-left:0;margin-top:8px}
+      .funnel-stage{flex-wrap:wrap}
+    }
+
+    /* ===== 自我定位话术库 ===== */
+    .pitch-library{border-left:4px solid var(--accent,#0891b2)}
+    .pl-intro{font-size:.74rem;color:var(--sub);line-height:1.7;margin-bottom:20px;text-align:left}
+    .pl-intro strong{color:var(--ink);font-weight:800}
+    .pl-scenario{padding:16px 18px;border-radius:12px;border:1px solid var(--line);background:var(--bg);margin-bottom:12px}
+    .pl-head{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap}
+    .pl-head h3{font-size:.84rem;font-weight:800;color:var(--ink);margin:0}
+    .pl-tag{font-size:.58rem;font-weight:800;letter-spacing:.12em;padding:3px 9px;border-radius:99px;color:#fff}
+    .pl-tag.scenario-a{background:linear-gradient(135deg,#0891b2,#0e7490)}
+    .pl-tag.scenario-b{background:linear-gradient(135deg,#a992ff,#7c5cff)}
+    .pl-tag.scenario-c{background:linear-gradient(135deg,#ff76aa,#e64980)}
+    .pl-tag.scenario-d{background:linear-gradient(135deg,#ffc76b,#f59e0b)}
+    .pl-trigger{font-size:.66rem;color:var(--sub);margin-bottom:8px;font-style:italic}
+    .pl-script{margin:0 0 8px 0;padding:13px 16px;border-left:3px solid var(--accent,#0891b2);background:linear-gradient(160deg,rgba(8,145,178,.08),rgba(255,255,255,.02));border-radius:0 10px 10px 0;font-size:.74rem;color:var(--ink-soft);line-height:1.78;font-style:italic}
+    .pl-script strong{color:var(--ink);font-weight:800;font-style:normal}
+    .pl-taboo{font-size:.64rem;color:var(--danger,#ff7b9e);margin-top:6px;padding-left:18px;position:relative;line-height:1.55}
+    .pl-taboo::before{content:'⚠';position:absolute;left:0;top:0}
+    .pl-footnote{font-size:.62rem;color:var(--sub);margin-top:14px;text-align:center;font-style:italic}
+    .pl-footnote code{background:var(--bg);padding:2px 6px;border-radius:4px;font-family:var(--mono,monospace);font-size:.6rem}
+    @media(max-width:640px){
+      .pl-head{flex-direction:column;align-items:flex-start;gap:4px}
+      .pl-script{font-size:.7rem}
+    }
+  </style>
+</head>
+<body data-yara-module="yashi-work" data-page-node-id="GEFSyVS9JO326sDaR8WJJK">
+
+<div class="app" data-page-node-id="AqK691dksKjvJYrkXwFkLX">
+  <!-- Hero -->
+  <div class="hero" data-page-node-id="q0ECQc5kzS2ld9FbNMJfbQ">
+    <div class="kicker" data-page-node-id="ylquFa56bwG6FM9m68Lfzq"><i data-page-node-id="XP3EYyPBjm5xUzaT2nG0Hq">📋</i> YASHI WORK ARCHIVE</div>
+    <h1 data-page-node-id="Re1KBOOGJc8xmV5UMkBEyL">雅识工作记录</h1>
+    <p class="hero-sub" data-page-node-id="xdSHCbthPJLAoH56HEAfBd">教务运营实战档案 · 辅导老师岗位全流程沉淀<br data-page-node-id="RnMf81vyXVBaoy2h6SsOk7"><strong style="color:var(--ink)" data-page-node-id="HG81h8GCIDyDkm9WvACzUC">用途：简历素材 / 面试稿准备 / 工作流复盘</strong></p>
+    <span class="privacy-tag" data-page-node-id="qYLSkBdLCjF2a2OWKh8eca">⚠️ 含脱敏业务数据 · 仅本地查看</span>
+  </div>
+
+  <!-- Tabs -->
+  <nav class="tab-nav" role="tablist" data-page-node-id="OUlVJV3uBqOh0juGNiDK7H">
+    <button class="tab-btn active" data-tab="overview" role="tab" data-page-node-id="3DcD9K6ZV0MvinmGcXlgES">🌐 业务全景</button>
+    <button class="tab-btn" data-tab="rules" role="tab" data-page-node-id="ogij9dMZ6uvTdPDJ4GkHu6">📐 规则速查</button>
+    <button class="tab-btn" data-tab="scripts" role="tab" data-page-node-id="zvTK69Vm3ocGIFzxdoJmoo">💬 扩课话术库</button>
+    <button class="tab-btn" data-tab="data" role="tab" data-page-node-id="fr93980bMApvkUju0dwvq9">📊 数据快照</button>
+    <button class="tab-btn" data-tab="analysis" role="tab" data-page-node-id="aNaLYs1sTabBtn2026">📈 退费数据分析</button>
+    <button class="tab-btn" data-tab="trial" role="tab" data-page-node-id="aNaLYs1sTrial2026">🎧 试听课&关单SOP</button>
+    <button class="tab-btn" data-tab="sop" role="tab" data-page-node-id="aNaLYs1sSop2026">🔥 小灶课&续班SOP</button>
+    <button class="tab-btn" data-tab="resume" role="tab" data-page-node-id="EEKjRAzsvRreg7t7VeFQtA">✨ 简历&面试素材</button>
+  </nav>
+
+  <!-- ===== Panel: Overview ===== -->
+  <div class="panel active" id="panel-overview" role="tabpanel" data-page-node-id="jvSbp0IgEam4G6ylEH1NL8">
+    <div class="sop-section" style="margin-top:16px" data-page-node-id="xjjpp2nyDP4Caqt2tIiCZK">
+      <h2 data-page-node-id="l36yNfKDviwb5nMtQzHRmS">🌊 业务漏斗 · 398引流 → 3980二转</h2>
+      <p data-page-node-id="fRR27l0kBlHxKYbNQReIyo">雅识语言事业部核心商业模式：前端用吴彦祖IP的398元低价课引流获客，后端由辅导老师承接并转化为杨家成3980元高客单课，再进一步扩科到口语/雅思一对一。</p>
+      <div class="funnel" data-page-node-id="zSTW0A7N8VQZYgXlQtAIe1">
+        <div class="funnel-stage fs-1" data-page-node-id="JjgktmBCUpZ5FQsSMPvGnR">
+          <div class="fs-icon" data-page-node-id="M753Z5WeEvbHz84WuYXt09">📢</div>
+          <div class="fs-body" data-page-node-id="EFj9tOzP2ndmNVsVBmRoUD">
+            <div class="fs-name" data-page-node-id="CN5qX5ESVCWRPDMoGXP4Nr">引流获客 · 398元吴彦祖IP课</div>
+            <div class="fs-desc" data-page-node-id="d3y3KLIU6cgvTCz5ySLtxn">销售端负责 · 小鹅通H5店铺成交 · 7天免费试学钩子</div>
+          </div>
+          <div class="fs-metric" data-page-node-id="j83kruXx52g9PthEIf7676"><div class="v" style="color:var(--blue)" data-page-node-id="ql5F6bF87SxX6iaP8EV8vD">398</div><div class="l" data-page-node-id="xTDLUaMJp75mCWiRvhTfu3">引流课单价</div></div>
+        </div>
+        <div class="funnel-arrow" data-page-node-id="TaqSelFMKl2JBhCcInaVqI">↓</div>
+        <div class="funnel-stage fs-2" data-page-node-id="QKTEvOjFfKxEgM1Ckifa2O">
+          <div class="fs-icon" data-page-node-id="H9IhbjhnZUW0dB0UbHTqSa">🤝</div>
+          <div class="fs-body" data-page-node-id="I7eci0skacQXBQNK3hyAhq">
+            <div class="fs-name" data-page-node-id="dnBcddenwLslEoCHYwxD6s">辅导接量 · 建联+首call</div>
+            <div class="fs-desc" data-page-node-id="cgHyesSFaJloaoHbfJ40Zh">接量日下班前销售同步微信添加率 · 周五60%/周六90%/周日95%建联率 · 1个月内完成首call</div>
+          </div>
+          <div class="fs-metric" data-page-node-id="VTL0mGv4xTQsqrQ6jaFREX"><div class="v" style="color:var(--accent)" data-page-node-id="OKbwPgYLGgDkGVoJ2bfOXw">95%</div><div class="l" data-page-node-id="EvJs01DWeEQ1FlwBHwrv7k">建联率目标</div></div>
+        </div>
+        <div class="funnel-arrow" data-page-node-id="H1pNRJyL3IzhMTPhNv3HA1">↓</div>
+        <div class="funnel-stage fs-3" data-page-node-id="iw7CE5NBL0Yu0D75U3zZDh">
+          <div class="fs-icon" data-page-node-id="HeTWSMfDkIXEw9ZMmr6iTf">📚</div>
+          <div class="fs-body" data-page-node-id="s7829gpOBrEGDI8gsoECHz">
+            <div class="fs-name" data-page-node-id="4rT2klxtcq36nNuwpMAUbY">交付服务 · 纠音/答疑/学习计划</div>
+            <div class="fs-desc" data-page-node-id="WlMVPQ4g53FHYetN0qCqXZ">每周联系1次 · 双周小灶课 · 月度电话回访 · 朋友圈每日3条 · 响应时效2小时</div>
+          </div>
+          <div class="fs-metric" data-page-node-id="UYUpAmYfmtcFl9zGPtzsWa"><div class="v" style="color:var(--purple)" data-page-node-id="6LfJXXRdyGS0mg9KPD9SRV">M0-M4</div><div class="l" data-page-node-id="P2vErD9a2qXLGCkiHLF6U3">5个月行课周期</div></div>
+        </div>
+        <div class="funnel-arrow" data-page-node-id="2byCP8WF8VkpjiCdKHuFsZ">↓</div>
+        <div class="funnel-stage fs-4" data-page-node-id="BDKQUoUROzoWNN8INdgWTQ">
+          <div class="fs-icon" data-page-node-id="Kqfvv5q4aTCkknYBHNdnxZ">💰</div>
+          <div class="fs-body" data-page-node-id="i8pWliPNbUV3YzDbXzxisn">
+            <div class="fs-name" data-page-node-id="2BVVgYriek9CeYEhk2CBRE">续费扩科 · 3980续班+一对一转化</div>
+            <div class="fs-desc" data-page-node-id="Z9vn5ZPbcPJkmtx5854YVh">14天静默期后可推荐 · 扩科目标5% · 3980结束前2月启动续班 · 口语一对一客单价8000-30000</div>
+          </div>
+          <div class="fs-metric" data-page-node-id="thEc5ZLsGrW5jO3nb33Q0V"><div class="v" style="color:var(--orange)" data-page-node-id="yXr8G7bE8JE7WCaLp3gfDY">5%</div><div class="l" data-page-node-id="Bt3F1FKOQKh9aLjZZE139N">扩科目标</div></div>
+        </div>
+        <div class="funnel-arrow" data-page-node-id="00E43wbtSPUjtHf1qpfAz4">↓</div>
+        <div class="funnel-stage fs-5" data-page-node-id="rOGls48Y9aEziTpxdzy42U">
+          <div class="fs-icon" data-page-node-id="72mFmdLXNehv8AddEfRmZ6">🔁</div>
+          <div class="fs-body" data-page-node-id="9La72DZMGVQFjAfhR8ahGj">
+            <div class="fs-name" data-page-node-id="Zt6p75SdPkEtTbTyy8EQGp">转介绍 · 老带新闭环</div>
+            <div class="fs-desc" data-page-node-id="rN7VzppDIKE386zv6txWAY">老学员200元返现(新学员上4节后) · 公司员工7折(2786元) · 同家庭第二名补2000元</div>
+          </div>
+          <div class="fs-metric" data-page-node-id="XgjM62vIYVBJrRVZGKtDBL"><div class="v" style="color:var(--green)" data-page-node-id="fDUkYEHiidrMu2ykl2ajxD">200</div><div class="l" data-page-node-id="DqMNrivCaWvBRZ9aQA9rqn">转介绍返现</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sop-section" data-page-node-id="Sdm2jm1H9MCRiCivUEalt2">
+      <h2 data-page-node-id="gCfeVpj8KlLHTOyYeT4zTq">🔄 辅导老师工作流SOP</h2>
+      <p data-page-node-id="CBAh9yubY5tVeCe3EMjqCN">从接量到续费的全链路标准动作，每个环节都有明确的时效和数据标准。</p>
+      <div class="sop-flow" data-page-node-id="eH0QUiQgu3B0r6AQ2sQN2H">
+        <div class="sop-step" data-page-node-id="wAKSgJSHbbuQp3HPjxVRIe"><span class="sop-num" data-page-node-id="UpEamz0CJqyDjU8WEHGXCz">1</span><div class="sop-title" data-page-node-id="PVJf6IoXyYzZlzncSkhZHL">接量建联</div><div class="sop-detail" data-page-node-id="cBLMOUgOPe7tVwHw04SOAE">接量日加微信 · 周五/六/日达标建联率 · 标注期数+姓名+需求</div></div>
+        <div class="sop-step" data-page-node-id="U2hwuwVBuELfIuF5bwEjuZ"><span class="sop-num" data-page-node-id="0Ee6D35BJzgxKGckkxgzCx">2</span><div class="sop-title" data-page-node-id="mXo7PTE6nZYSIGZyP8NSdu">首call回访</div><div class="sop-detail" data-page-node-id="mBkhCJIAhyqGoPgJgEpW2X">1个月内完成 · 建立学员画像 · 录入小鹅通跟进记录</div></div>
+        <div class="sop-step" data-page-node-id="zR72kKbkwshqJeCG3VLwoS"><span class="sop-num" data-page-node-id="Xah0QAmBTndVfDIfPUfK2F">3</span><div class="sop-title" data-page-node-id="sHLql3QbJVQeWwGpFZ1qbv">日常服务</div><div class="sop-detail" data-page-node-id="KQMYAw321MIuFE3ZTZJk41">纠音答疑当日清 · 每周联系1次 · 双周小灶课 · 月度电话回访</div></div>
+        <div class="sop-step" data-page-node-id="ob8HLxKua8Y75y1UJxgakz"><span class="sop-num" data-page-node-id="s5i6xUGlmOClFntTlEO6mC">4</span><div class="sop-title" data-page-node-id="BwstZDbdC6kh5fcMtWJPPb">扩科续费</div><div class="sop-detail" data-page-node-id="sb71xC4M5YhQnTsbQ2vvZv">14天静默期后 · 回访梳理卡点 → 推荐一对一 → 试听 → 成交</div></div>
+        <div class="sop-step" data-page-node-id="C198gDiKUEq0faTKEahYxW"><span class="sop-num" data-page-node-id="Je6ZIbcA9QDVVMejBWhZG2">5</span><div class="sop-title" data-page-node-id="AVpHKhGokSQXoV5GT7Da48">业绩登记</div><div class="sop-detail" data-page-node-id="fTEkrP630fY4Rrw7C6GimY">交付部台账登记 · 14天保护期判定 · 跨期归属规则</div></div>
+        <div class="sop-step" data-page-node-id="jtrCKlrNh8Wf2B7vpMaULN"><span class="sop-num" data-page-node-id="uI5w0nfBEoLEDdPcYaZEWg">6</span><div class="sop-title" data-page-node-id="W84a5T0rTbd1ZQ4Cm1WiF4">退费挽单</div><div class="sop-detail" data-page-node-id="GXFH33Cbav3mmUQFq5jfAT">48小时关单 · 一级(辅导)+二级(销售)挽单 · 退费群协作</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Panel: Rules ===== -->
+  <div class="panel" id="panel-rules" role="tabpanel" data-page-node-id="a0HeWIAxMjJ7pYb4mb5njo">
+    <div class="rule-grid" data-page-node-id="hDjpPP8Io3AEej7pbRpzW1">
+      <div class="rule-card" data-page-node-id="ZCH1JSj0lVapBQLUCT5rOO">
+        <h3 data-page-node-id="Om5JxfogvOKtaKAsnrEKGh">⏱️ 响应时效标准</h3>
+        <table class="time-table" data-page-node-id="g1uZN02oNmymBIfFmXNZas">
+          <thead data-page-node-id="9Q7B3Hvciqc3UJi80EI16S"><tr data-page-node-id="nZJpoXFZTGbZAxqpnFUXwX"><th data-page-node-id="nzFfBx9r9RUTMgHyfvx3Jy">场景</th><th data-page-node-id="T3jBthTQgBssnmaYLvDXeh">标准</th></tr></thead>
+          <tbody data-page-node-id="r08ngEdR0n6bEGtCBxZd3E">
+            <tr data-page-node-id="rFfelgXoaWxGCYyyF2hPk3"><td data-page-node-id="7CAmGZH52pN1tEG5i0lDA8">工作日</td><td data-page-node-id="rRF2z59B01N1rZ06ztUCdR">13:00-22:00 内 <strong data-page-node-id="oBlbdrb4CqfDY5PiKWiB3W">2小时</strong>响应</td></tr>
+            <tr data-page-node-id="1eau9oz8VF5vBMQP98EIxJ"><td data-page-node-id="359ymnO1wAuk5D0kgVbrFY">休息日</td><td data-page-node-id="K3siAbCYJN5Fp9hcnRCHV4">22:00前清空当日遗留</td></tr>
+            <tr data-page-node-id="TlFJAL45oMF6ruWU7ivpmT"><td data-page-node-id="lMmcYYLGkBOMrsqXmfGwFK">答疑/纠音/一对一</td><td data-page-node-id="12pVnTgHrRYuwnl3ch2njb"><strong data-page-node-id="EPnOQhJxEpQb9G4JwrhVsI">当日清空</strong></td></tr>
+            <tr data-page-node-id="QOUZMWXSfnXbCGAbz7D60j"><td data-page-node-id="jpaMIi53OG7WC6zCRFvHMD">跨部门退费结论</td><td data-page-node-id="OKJZq6EaDTfqlAgEioDA5z"><strong data-page-node-id="0FPpazWLE5M53HlR7MKft9">48小时</strong>内给出</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:10px;font-size:.68rem;color:var(--red)" data-page-node-id="FC6XHQCJB2tpMkyU3u74Hi">超时处罚：2-12h罚100元 / 12-24h罚200元 / 24-48h罚300元 · 主管连带</p>
+      </div>
+
+      <div class="rule-card" data-page-node-id="OOYPISu6ScKcBUgWFF4k4a">
+        <h3 data-page-node-id="agG22bDwSORY4KU56gsgrz">📊 接量数据标准</h3>
+        <table class="metric-table" data-page-node-id="hVVGRyo2f2QFGvfMohe3cL">
+          <thead data-page-node-id="t4gg3EIBltEWOJi1Xg4xUx"><tr data-page-node-id="DOZ44MhUnrGEWNzXsk7gpU"><th data-page-node-id="XxX9BtbxSqschUjJ5AfORX">指标</th><th data-page-node-id="n0minP8kbhvGsChH8KBDqz">时点</th><th data-page-node-id="BKoltDZGEdrZThmvZL4rU4">目标</th></tr></thead>
+          <tbody data-page-node-id="Gc5DLlk4If9KgVvVQkhTgZ">
+            <tr data-page-node-id="ZgepNuKkxmiBY231oCNndd"><td data-page-node-id="8YY8AbtxSEP9yB0sDQl646">建联率</td><td data-page-node-id="r0avXzKqHESghgYuudzKgH">周五</td><td data-page-node-id="SrpRHBzEWWvhWkJWwGonYZ">60%</td></tr>
+            <tr data-page-node-id="lrSeZT9wCGJeFMG5Mgdblz"><td data-page-node-id="CGAU97pc84wDsZxyAZYl8N">建联率</td><td data-page-node-id="qkyP0dhfeJoTB9o5ELafYQ">周六</td><td data-page-node-id="yG0pTCUyMBt0uHsbQMj9N5">90%</td></tr>
+            <tr data-page-node-id="U243JhZCFbDFCu4IQLzS6H"><td data-page-node-id="diqA454dtsG6tsfrtzm9lM">建联率</td><td data-page-node-id="zSXl84zqx9NnLTc9wPGDeB">周日</td><td data-page-node-id="Xe3hmAjKHilQ87BPQTJ6PM">95%</td></tr>
+            <tr data-page-node-id="3z5omlPJ0F8MSR5KRBZerH"><td data-page-node-id="aARPRdeLGr8Qxj43HVGIjL">问卷率</td><td data-page-node-id="MBuZWhuHRd2E5kLJIHRFBk">接量周期</td><td data-page-node-id="3zz5XDnYWPV7HHGzY82zPh">95%</td></tr>
+            <tr data-page-node-id="V2RjBzbcyS2DlEYHwwirFC"><td data-page-node-id="icL7f7idkDpMCSRRuMur4i">首call</td><td data-page-node-id="NynQcEAteUzB7av35sA3nm">接量后</td><td data-page-node-id="wvQRLjpONdjYjAELGWrEQC">1月内全完成</td></tr>
+            <tr data-page-node-id="NjEtNQUcTkgUVYFf8kBKSM"><td data-page-node-id="CvpB7WQPtJ7Vj74FDJA1qH">学员回访</td><td data-page-node-id="c38EWT4i8hVCgM1OWYpEVC">在读期间</td><td data-page-node-id="6qS0hdw3zrx9VtzG7dcR8B">每月1次</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="rule-card" data-page-node-id="ir8rUAtKMbrrhHb8tPHksO">
+        <h3 data-page-node-id="HBRiaq02HjX6bnW3mU62cj">🛡️ 业绩归属核心规则</h3>
+        <ul class="rule-list" data-page-node-id="EQK2C4UzVxnmYqoqrdVZRy">
+          <li data-page-node-id="8hj6aznw4e4N9P3nZYPL0W"><strong data-page-node-id="15lmBWtPlTQXBaJzRE58rA">14天保护期</strong>：开课后14天内成交归原辅导；超14天归一对一班主任</li>
+          <li data-page-node-id="Sl0gWK4sK2CBPSLBbf0HcX"><strong data-page-node-id="ZfBcWUO8x7A18ROoi5OyrU">有效交接三条件</strong>：原课关闭+新课开通+新辅导确认接收</li>
+          <li data-page-node-id="ISMVu89yoFi4RZwiKe6hW1"><strong data-page-node-id="QuM6kmua8vs0eLVMqzCkHh">一句话原则</strong>：先看14天保护期 → 再看有效交接时间 → 最后看是否共同谈单</li>
+          <li data-page-node-id="4c4Jk2Nr8XYv8WTY7VIKIA"><strong data-page-node-id="aMOvgsS4GqaZ6ICdGxa1Vk">3980续费扩科</strong>归辅导；398课程归销售</li>
+          <li data-page-node-id="QZgbE0ZWAIH9oZ9YVSs2Rr"><strong data-page-node-id="14dfIlQMZNqqUu0lIDTnH5">扩科退费</strong>终身跟随辅导业绩；普通退费计入当月服务绩效</li>
+        </ul>
+      </div>
+
+      <div class="rule-card" data-page-node-id="6q3TNQ5p7XzKUdvv2qBWFo">
+        <h3 data-page-node-id="RnlzNFNXoSEDcRG5E6z7FK">💸 退费规则</h3>
+        <ul class="rule-list" data-page-node-id="bg2GTUcC62P5R5YyQOu3dk">
+          <li data-page-node-id="j4JlD6wBmLi5aiKSCnn0Sw"><strong data-page-node-id="0w8JmRtwb5RHoKwzpAXxIK">全额退款</strong>：开课后2次直播课内（含第3次起按比例扣）</li>
+          <li data-page-node-id="B49if6gwGbp5STGfYnnO2z"><strong data-page-node-id="H7qTpuBv2Dlhhm2JXgpOao">计算公式</strong>：退费金额 = 课程总价 ×（1 - 已更新课时数 ÷ 总课时数）</li>
+          <li data-page-node-id="uh0fwl6ZKrWokVEMM1avmG"><strong data-page-node-id="Azkz6bEs6jhCbbdI01nADz">新版3980</strong>：开课7天后先扣15%服务费，直播课49元/节、录播课29元/节</li>
+          <li data-page-node-id="M1DtvCMGPhHGLrJym3Rc8t"><strong data-page-node-id="gIW75R8ZF7qRB4hIP0jHxx">挽单SOP</strong>：一级(辅导)2h/4h内挽单 → 二级(销售)12h内电话挽单</li>
+          <li data-page-node-id="skaS5CrFmFMtvaogXphUEl"><strong data-page-node-id="0uYCnxKKjArDtMzqs7NBE4">退费率</strong>：现状10% · 目标降至8%</li>
+          <li data-page-node-id="2LaCyTWkBRharc55ryPfjV"><strong data-page-node-id="EmYzVa8KIUDyPNPeIySm5r">扩科退费</strong>：终身跟随辅导，哪月扣款计入哪月业绩</li>
+        </ul>
+      </div>
+
+      <div class="rule-card" data-page-node-id="Gv1VzN61UhVzrIYObaZtTL">
+        <h3 data-page-node-id="tcGSZFZnl6MNaeE41L5zdv">🚫 服务红线</h3>
+        <ul class="rule-list" data-page-node-id="cpkYSGRkqd7vJAk9yRH61g">
+          <li data-page-node-id="d0I4pqmNS6SNFK7Kc2A5wA"><strong data-page-node-id="GOya824v8WIurWx7tGy41S">14天静默期</strong>：开课后14天内不得主动推课，违者罚200元+主管连带200元</li>
+          <li data-page-node-id="awsd6fSQQ8g0Bywzf3hUU7"><strong data-page-node-id="1TYFUxFP68TUVlQPSGykpV">禁止承诺</strong>：不得使用"保分""保过""包过四六级""保分6.5"等话术</li>
+          <li data-page-node-id="3R1WjUzRlEvHREcWEZKJLA"><strong data-page-node-id="szpdE8Wu87YVECQ0Np0pjU">价格底线</strong>：成交价不得低于内部底价，低于部分辅导老师补齐</li>
+          <li data-page-node-id="y17qRB7a88pfnu0MRDzwaj"><strong data-page-node-id="FklkRGaslhDJQNFsv9WAMt">对话闭环</strong>：辅导必须是每段对话的结束方</li>
+          <li data-page-node-id="bY6HmjirHd8I1ttCfTNfbx"><strong data-page-node-id="CVJBBV5XU1RP75EwelF30z">AI使用</strong>：可用AI辅助答疑但必须删除套话/Markdown，对准确性负责</li>
+        </ul>
+      </div>
+
+      <div class="rule-card" data-page-node-id="jCDaanRhwbA7PockMqY1Ci">
+        <h3 data-page-node-id="TUxqHwgJ64yyO8B98GCNqP">🎓 拆标梯度（万元）</h3>
+        <table class="metric-table" data-page-node-id="1Wm2ZH9URFCED8JBBkltR3">
+          <thead data-page-node-id="OKZisHnDDljesLDa8ZCwfb"><tr data-page-node-id="pTmtr73ZuwkM6vFc9lz12D"><th data-page-node-id="rHchpgDvtmpngVSRC6G0tr">月份</th><th data-page-node-id="op9VEGL1BBGkk2vFFuZ2Z1">上旬(&lt;15)</th><th data-page-node-id="timC8pjP92XGUeGUrDTcPy">下旬(≥15)</th></tr></thead>
+          <tbody data-page-node-id="QfEGiJrpwQARvhFnHsleFg">
+            <tr data-page-node-id="XNENegvfniUeixL8xXmb3t"><td data-page-node-id="YyDrXC57bej5a1wSNJyZex">M0</td><td data-page-node-id="BGcfnF690cm4jqHTieCaY6">1</td><td data-page-node-id="okGXHlpdbyXRmOcXXCS7hG">0</td></tr>
+            <tr data-page-node-id="H7f9cm19qvEIui5p3byqUq"><td data-page-node-id="J6r00XLKT991p7I67k4nEG">M1</td><td data-page-node-id="FXHCpSfwFxBXQV1cModrRR">3</td><td data-page-node-id="ku3asAAOcSfTuaqO6FGUIa">2</td></tr>
+            <tr data-page-node-id="3SDI5vqD5fHxp8RKnzNtao"><td data-page-node-id="f6dfAuFrGqMDLYTmFFGNMS">M2</td><td data-page-node-id="3V7Q4nfwLN4eH8S69WGcxa">5</td><td data-page-node-id="LYSSDsDq3uz4P0tEhmbhCl">5</td></tr>
+            <tr data-page-node-id="RJx75gGYOaYIIXWzvrSmXW"><td data-page-node-id="6l0NNC4R7KRGKPBk3OnHUn">M3</td><td data-page-node-id="RrE531qiUklQNKyWW1MYcx">2</td><td data-page-node-id="G0bUYQ3J9XWATOqnBKjEPN">4</td></tr>
+            <tr data-page-node-id="0A8KSKAlnGqFon0CbyDDdy"><td data-page-node-id="0odlz1SnwBMFdEYho7JrMG">M4</td><td data-page-node-id="Yp2V6Da1GTOKuEgO0V35zk">1</td><td data-page-node-id="oaGQMgbkA5m9UMmGFP0RUG">1</td></tr>
+            <tr data-page-node-id="PW8F8old3pS5jwsLDYmpOJ"><td data-page-node-id="lqAszJbmSP6xLlE2AEJSQ7"><strong data-page-node-id="6nSBU0V0Snw1ELbKXhIGR3">合计</strong></td><td data-page-node-id="DGlfcA0kG0ZyquAYRwqbwC"><strong data-page-node-id="PPaFEanjbrcc38uY61eSV5">12</strong></td><td data-page-node-id="738vgpsr1ygfPYt1WYyJZi"><strong data-page-node-id="CpE9cvbfuHAqKAEQ9LeecO">12</strong></td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:8px;font-size:.68rem;color:var(--sub)" data-page-node-id="6LfhfFsetEMXzA0zNKVYyF">带班量≥200人系数1.0；&lt;200人系数0.8 · 超周期后每月1万兜底</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Panel: Scripts ===== -->
+  <div class="panel" id="panel-scripts" role="tabpanel" data-page-node-id="MjzMXp2JNqt8MHymmDi9YT">
+    <div class="sop-section" style="margin-top:16px" data-page-node-id="TuucJ3w2NqHyfq0aFJ4d76">
+      <h2 data-page-node-id="ewCGQGnpipdzNgfqBF7B8L">🎯 学习失败的4大根源（话术底层逻辑）</h2>
+      <p data-page-node-id="2vnpJXZH9rFrKkXN1TT26F">理解为什么学员学不下去，才能对症推荐一对一。这是所有扩课话术的认知基础。</p>
+      <div class="root-grid" data-page-node-id="U0ZKfRQjXiczj5jH7rNvyS">
+        <div class="root-item" data-page-node-id="0tFkBwwfGFK3SafbDaDymL">
+          <h4 data-page-node-id="RvVSMHEIbgFswg3TXoSTh2">1. 过度依赖意志力</h4>
+          <p data-page-node-id="uOaAtTH9qBDIvF6JqKVHK9">强迫自己每天数小时练听力口语，反人性的痛苦坚持，不到1月就放弃</p>
+        </div>
+        <div class="root-item" data-page-node-id="emcH6qaLc7jeJwx2EwhT5M">
+          <h4 data-page-node-id="lpt9nLgD3Pq1M1kqQwT82X">2. 把语言当装饰品</h4>
+          <p data-page-node-id="1s9ZZMD6JhpDxA6o4vIQmr">学英语像饿了打造一只碗却不盛饭吃，学单词语法却不投入应用，枯燥无意义</p>
+        </div>
+        <div class="root-item" data-page-node-id="8BlvuE2tAQt0FH5GTPtPwM">
+          <h4 data-page-node-id="DzMlgw9e0Nd4VmgCU57IVx">3. 缺乏目标与正向反馈</h4>
+          <p data-page-node-id="vJACqIXahjsAAFDsmcoIlq">学习内容与实际生活/职业脱节，无法立刻解决问题，失去持续动力</p>
+        </div>
+        <div class="root-item" data-page-node-id="6oNBSAZQm9K5f4qChRQ9CG">
+          <h4 data-page-node-id="3cx5HGD2QqZ5WoMSTpLvTj">4. 盲目跟风无关内容</h4>
+          <p data-page-node-id="qT6x8uHQK23DobXhq3Akfe">看美剧学英语碎片化低效，与实际需求完全脱节</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="script-section" data-page-node-id="sUOETe3Aprwo5N5TIrmtoG">
+      <div class="script-card" data-page-node-id="BvlJY7l0cUsYfCaWm5OFGO">
+        <h3 data-page-node-id="Ri2HH0P5VqUCPo0ljp2Cqu">🔑 7-10期学员切入话术 · 三步法</h3>
+        <div class="script-quote" data-page-node-id="ziM7vlgA9dszf49DMsi0jK">"想了解一下咱这边这几个月学下来最大的变化和最卡的地方，我先帮你梳理一下，看看你现在更适合怎么往下走呀～"</div>
+        <p class="script-logic" data-page-node-id="UDHtuvcROdAqjIBLkcHCI2"><strong data-page-node-id="ZX4N98HUqYy2Lj9Muo6K1P">逻辑：</strong>回访+帮学员梳理（同时更了解学习状态）→ 根据回答判断切入角度</p>
+        <ul style="margin-top:10px;list-style:none;padding:0" data-page-node-id="5OdkGCH7xONBKyH27JDueF">
+          <li style="padding:6px 0;font-size:.74rem;border-bottom:1px solid var(--line)" data-page-node-id="2OrS7BD7KKXGgFJ8UFlYqw"><strong data-page-node-id="sKp1dZU8ORxFBJsNhJv9Og">"还可以吧"：</strong>→ 引导实操对练，巩固检测学习</li>
+          <li style="padding:6px 0;font-size:.74rem;border-bottom:1px solid var(--line)" data-page-node-id="pzQP5YEWDELgUXQYyCikOs"><strong data-page-node-id="iIhzHzSWcJBaqeQsAoVVxy">"学不明白/记不住"：</strong>→ 班课问题个人化，推荐加单独训练</li>
+          <li style="padding:6px 0;font-size:.74rem" data-page-node-id="RbnivsEbQ2glTgFRgtl6iR"><strong data-page-node-id="pAUPda92zt32UMXdK0W0zL">"词汇不够"：</strong>→ 知道≠用得好，把词汇库变口语库</li>
+        </ul>
+      </div>
+
+      <div class="script-card" data-page-node-id="9dZLxxNhuaiK5GnbKnj1QE">
+        <h3 data-page-node-id="eB1ZhiZAlM11RydUvqHRRf">🛡️ 应对借口 · 4种常见拒绝</h3>
+        <div style="margin-top:8px" data-page-node-id="70gISeUKMJzmId0uAACBrr">
+          <div style="padding:10px 0;border-bottom:1px dashed var(--line)" data-page-node-id="4YFlEsqaaBxHR6ocPKiG4h">
+            <div style="font-size:.78rem;font-weight:700;color:var(--red)" data-page-node-id="kM7923qbFH18cJlUZldJFh">"又推课？没时间"</div>
+            <div style="font-size:.72rem;color:var(--sub);margin-top:4px" data-page-node-id="wsGOt0orrDLgFlp4xVDPyl">继续班课不会错但会慢，针对个人问题加训练省时间而非多上课。正因忙才不适合靠班课慢慢熬</div>
+          </div>
+          <div style="padding:10px 0;border-bottom:1px dashed var(--line)" data-page-node-id="LH7S1U5mguIjV1fkEpDvFv">
+            <div style="font-size:.78rem;font-weight:700;color:var(--red)" data-page-node-id="REEhOWV7BfEQS3oa7e8x6l">"上完班课再学一对一"</div>
+            <div style="font-size:.72rem;color:var(--sub);margin-top:4px" data-page-node-id="sGvRTogxPfB9kNGtJmFE48">想法对但提醒：等班课上完再补往往更慢，表达习惯已固定，改比现在难、成本更高</div>
+          </div>
+          <div style="padding:10px 0;border-bottom:1px dashed var(--line)" data-page-node-id="DcSew1WB5McGrXA9CIGYg1">
+            <div style="font-size:.78rem;font-weight:700;color:var(--red)" data-page-node-id="Px48uAHka3HLx3sWkbXRK5">"我再考虑一下"</div>
+            <div style="font-size:.72rem;color:var(--sub);margin-top:4px" data-page-node-id="R4yz5ZVj27hVOhr7CwbPhi">可以考虑，只确认一件事：1个月后还卡在同一点，会不会后悔现在没早补</div>
+          </div>
+          <div style="padding:10px 0" data-page-node-id="E9gJ59P2qlstHu9NHNA3Pu">
+            <div style="font-size:.78rem;font-weight:700;color:var(--red)" data-page-node-id="JSB5ohnbQr02tlDLXajTtD">"辅导多少钱？"</div>
+            <div style="font-size:.72rem;color:var(--sub);margin-top:4px" data-page-node-id="zOCpsEl59QlZFhFYwCgsLE">试听完再讨论，现在报价无意义，匹配老师+感受后再判断性价比，价格按课时来</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="script-card" data-page-node-id="BlWScub5Dm3ScT4T9RBnZH">
+        <h3 data-page-node-id="M8CCdObSREldcHR3WC1DqG">💬 实战话术精选</h3>
+        <div class="script-quote" data-page-node-id="r0LIGA26ibeIeBWTXC3VEt">"其实就算你背上千的词汇，但是知道 ≠ 用得好，这不是努力问题，你可以换种形式去训练——把词汇库变成口语库"</div>
+        <p class="script-logic" data-page-node-id="p9uJYchOPsiObyXqcWDPQo"><strong data-page-node-id="v4fHZ1Exl2yYLfBcvw8400">场景：</strong>学员说词汇量不够 · <strong data-page-node-id="zzLCD97BQ7XRqDDdwE8RdP">逻辑：</strong>把"词汇不足"从努力问题转化为方法问题</p>
+        <div class="script-quote" data-page-node-id="X2i3HsKIC0XFRIc6JUocB8">"基础薄弱的人更适合一对一，老师能一眼发现问题，在形成固定思维前养成好习惯。很多人觉得基础不好不敢跟老师交流，其实英语够好就不需要老师了"</div>
+        <p class="script-logic" data-page-node-id="F3H46rdFBPDiQBiEK9yvfZ"><strong data-page-node-id="D15JBeemxhlYeaYTfPT633">场景：</strong>学员说基础薄弱不敢报一对一 · <strong data-page-node-id="UeP2GvC0n9Z9o9yAnLy1Ei">逻辑：</strong>反转"基础差不敢报"的认知</p>
+        <div class="script-quote" data-page-node-id="U6NobeIAzqTyo46AmDsdzk">"线下课没那么贵是因为线下老师水准有限，来回成本也要算。线上一小时一节有录屏回放，师资都是双语背景母语水平，优秀老师都在线上"</div>
+        <p class="script-logic" data-page-node-id="PhOGLAXaiucM3MT8jg1UiJ"><strong data-page-node-id="YQliw6Ew0G5FoIcIr3K4zQ">场景：</strong>学员嫌线上贵、对比线下 · <strong data-page-node-id="MEfr1n5RHFr8YhzvmltRgr">逻辑：</strong>重塑价值认知</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Panel: Data ===== -->
+  <div class="panel" id="panel-data" role="tabpanel" data-page-node-id="rqITx3fYDAp85Kusd5ocRn">
+    <div class="data-grid" data-page-node-id="GhtojO0JhSEMSB67bdXy0e">
+      <div class="data-card" data-page-node-id="G2jDxx1rJUHdQjz4z9uhe1"><div class="data-num blue" data-page-node-id="QNjro8AqpEBx9NRPSHBPHS">1,626</div><div class="data-label" data-page-node-id="TLjXRFUsqQreRHpcWqPZXc">0324期 累计接量</div></div>
+        <div class="data-card" data-page-node-id="JKwwPOk7PX39KguECJ1ecQ"><div class="data-num teal" data-page-node-id="3zkmfJKtP8ehtMcPoa3RMe">97%</div><div class="data-label" data-page-node-id="TmAGA9gg0B20GasMg3eZiW">建联率</div></div>
+        <div class="data-card" data-page-node-id="1gOHE5tRuTpyr17p3JbbNN"><div class="data-num green" data-page-node-id="um5fTuNNAn1fjHhsAesZBN">77%</div><div class="data-label" data-page-node-id="IKQVUfIX0fUW50ZhBzmXDb">首call完成率</div></div>
+        <div class="data-card" data-page-node-id="vF0V2Ca30256VWCcTSZtRG"><div class="data-num red" data-page-node-id="kPHFJHoPX3NJywd8cRds5Z">2.0%</div><div class="data-label" data-page-node-id="c5vPLZq6fB0XynsRWGlTNv">退费率</div></div>
+        <div class="data-card" data-page-node-id="e8JYGDdiOf34rFPcQk7W09"><div class="data-num blue" data-page-node-id="sJoGFfq9MaDAoF4jllmdSa">¥214万</div><div class="data-label" data-page-node-id="CtRB8BoSnmCGdLIZtAQtbv">11月部门GMV峰值</div></div>
+        <div class="data-card" data-page-node-id="b7hRdo0VvGVqC119jyYLQF"><div class="data-num green" data-page-node-id="GedDYFWKNej87y4dGLdjYr">3,418笔</div><div class="data-label" data-page-node-id="mHbY5QsKmr6W8vU6sUcGQP">全年退费总笔数</div></div>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px" data-page-node-id="RdG6tPcSIEdaABpTJBzaHa">
+      <h2 data-page-node-id="RMqCG8hLOlcId1q1AHaGdB">📦 课程产品矩阵</h2>
+      <p data-page-node-id="ZrRBB7UO7ufLBXQEXw9yhI">雅识全产品线价格体系（底价为内部成交底线，辅导对外报价不得低于此）</p>
+      <table class="product-table" data-page-node-id="lr41q2NYdqNgtt3wqUIRJe">
+        <thead data-page-node-id="7oOW2dAPU6OI94npNW4tvL"><tr data-page-node-id="pWFYNLqutBjDl1uByc6jSF"><th data-page-node-id="Q3mdLkpmDSxNhyZfVbAg4r">课程</th><th data-page-node-id="9s5r7wn83tkpuTdSYzdGFu">形式</th><th data-page-node-id="T7wByYfJrK6XBosGvYgyxl">原价</th><th data-page-node-id="X16UX8mga0UrX4vD5BP0ln">底价（最低成交）</th></tr></thead>
+        <tbody data-page-node-id="4Qi49FTiYRlHlf38JqUliu">
+          <tr data-page-node-id="JQcmfmTSyi0GOIvmz0YVit"><td data-page-node-id="2Ezl77nD6SZhDPeGfBJLD2"><strong data-page-node-id="m3PPGRhDwH2o3bWBa4yLe9">口语一对一</strong></td><td data-page-node-id="A8yaGfwSKdQ9iYnFxpDgoE">一对一</td><td data-page-node-id="WYlbg18G8OOWFcBaPkCwVS">600/h</td><td data-page-node-id="DCWSG3srD41YDGbMSd7RCx">20课时8000元 · 100课时30000元</td></tr>
+          <tr data-page-node-id="SxJ5nL6raJEfaqBvIRqwKU"><td data-page-node-id="ViQDcctgGwrp1AT00qd5aG">口语一对二</td><td data-page-node-id="t4IG9WsoMRiBMLZPFZq1Ju">学员自组</td><td data-page-node-id="jr8cIrUsoMIeApf6cGMt2M">480/h</td><td data-page-node-id="NnhMBSw6wuzru8mWTt5KQR">一对一的8折</td></tr>
+          <tr data-page-node-id="7q00nJINBBUenhzFAwv7vN"><td data-page-node-id="afJORMTXAAMdNnpDeeIr9B">杨家成3980对练</td><td data-page-node-id="CteVuNjEDPcdfdCjnSm2IY">一对一</td><td data-page-node-id="Nc0hP4HfkNOuFs44wHHTtW">350/h</td><td data-page-node-id="eCQJT8wC2rd8zV6IsAg0X8">20课时5200 · 60课时11700</td></tr>
+          <tr data-page-node-id="o6VltL9YM11zfo7o7jJwFM"><td data-page-node-id="538wJ8Bhct8s1v0UHSTmch">雅思一对一</td><td data-page-node-id="uHWCy3ZpO6TXMjdakbCN8F">一对一</td><td data-page-node-id="8HzostSWoDk5fVfDxIRK7X">650/h</td><td data-page-node-id="7ZFEBC9lgynNDwwAp8HqCN">20课时9880 · 120课时48360</td></tr>
+          <tr data-page-node-id="6WqAkbs7zItKP1M6iF4IRT"><td data-page-node-id="v7COPaa9GCwdBzSAGUYS5w">托福一对一</td><td data-page-node-id="pEaHW8fLv4OE8Qi40ANJbu">一对一</td><td data-page-node-id="dw4yIFuWJN94rHFEc21DHP">750/h</td><td data-page-node-id="Yl6oA4i56lPvBsLJGhZGgy">20课时11400 · 120课时55800</td></tr>
+          <tr data-page-node-id="5H3NEoDEWvqYrTshNC68rm"><td data-page-node-id="MEjhH8ZPVeNVqtRQkTAELm">菲教一对一</td><td data-page-node-id="WNfuV4SPIf8LWo9PVbT84W">外教</td><td data-page-node-id="mhwwsi42seBTJOC3uhL28H">298/课时</td><td data-page-node-id="7nbBXcIEbRvgc3aSbqEvuZ">优惠98/课时</td></tr>
+          <tr data-page-node-id="XX1UWWelHaMsBWYkK2WoQU"><td data-page-node-id="LtoH0LHqZFlgR6s4Z3H5qE">白人外教一对一</td><td data-page-node-id="ZScBEwQBAC0TWXZpGSJOLy">外教</td><td data-page-node-id="GEuqjo7MzPDh81yE4jesRa">1200/h</td><td data-page-node-id="lFZWIc8OSPcBFThhIjIyjP">优惠800/h</td></tr>
+          <tr data-page-node-id="1kBYTqlvmKpyDA9uCQY7AP"><td data-page-node-id="ebvmvhZWadIA0YqWXWKoDZ">雅思进阶班</td><td data-page-node-id="rEfMeQHy8BliPGh4uFPYNF">4-8人</td><td data-page-node-id="uiiFMELNKjvpQMVzWBscZi">12999</td><td data-page-node-id="QicOU1yTByGxyHUZeWASpG">8999(69折) · 签约10999</td></tr>
+          <tr data-page-node-id="srS2rrgdtZnoIPs2KpCwMM"><td data-page-node-id="ENkz8A39FZVmSXayRGA6NQ">Power Magic少儿</td><td data-page-node-id="BBQaZ8rH7YmsW5Z3mAJbw5">4-6人</td><td data-page-node-id="bcexd8osdakI4ZCGoWRtyo">8640</td><td data-page-node-id="YOJERHg3Xu9afgBrb1QKo0">1阶段8640 · 连报2阶段9折</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sop-section" data-page-node-id="x7Mcy2VZnWKR2muJD6H8cG">
+      <h2 data-page-node-id="rFv56IebotIlXPiOIqgjKA">📈 退费概览（杨家成3980退费登记 1952笔）</h2>
+      <table class="metric-table" data-page-node-id="2DSyImlarOMzrtsy1IwkFK">
+        <thead data-page-node-id="mlnH7zg0CYKMPjUn8j9j7X"><tr data-page-node-id="pL6oHHnPSDdIi0e5zRfGXJ"><th data-page-node-id="R2msklFipIGi7YwUV53STH">报名版型</th><th data-page-node-id="TdPVMadjVbEYubAqEPASyg">退费个数</th><th data-page-node-id="wlOAqPJ7lve0g4IONGKYXH">占比</th></tr></thead>
+        <tbody data-page-node-id="fwFVVn3cPWTM3QWPOGlJSR">
+          <tr data-page-node-id="cqsoZ3XtUS5pBf5b08NwAZ"><td data-page-node-id="QDpwkftTY84FuBCs0Gvl44">3980</td><td data-page-node-id="8I7q6KHdLQGfFabuU89kZV">89</td><td data-page-node-id="NSnx3dky51u9W1MkU3WzCf">87.3%</td></tr>
+          <tr data-page-node-id="xjSUqLf7IH97vJ1zo5h5k9"><td data-page-node-id="UM2rH42R3CBtqPF2p2kzXr">1980</td><td data-page-node-id="4SAiKTPPdsC6bokkqCsGBA">9</td><td data-page-node-id="KfQ37NfjXBALFNGdbJxoNV">8.8%</td></tr>
+          <tr data-page-node-id="n16ZvzKz44MrQZpsMXvavo"><td data-page-node-id="rQzfUqRDAznR8bhPtXunc1">扩科</td><td data-page-node-id="YkpC1bCSgQcnQzVuuqtkl2">3</td><td data-page-node-id="vGOzxfxLjV07ouWXMSxwrt">2.9%</td></tr>
+          <tr data-page-node-id="yzWtASstck67REjlAJAAD7"><td data-page-node-id="T0KDD7QasBbHVtoULpqlVT">续班</td><td data-page-node-id="KWUJnmk1X3klTylEhlkjfu">1</td><td data-page-node-id="k6JHYQ2UBXLhiDruhmRvno">1.0%</td></tr>
+          <tr data-page-node-id="hEoVqdxXlfhyKvho3oNAQj"><td data-page-node-id="qjdo7IHFRtjfHIoOjf4HuK"><strong data-page-node-id="DJlpqqYF4k8d9Qd8AHuthr">总计</strong></td><td data-page-node-id="v4U8FRavWuSWCV1jXH6Bmh"><strong data-page-node-id="FU02ZgKTzvRVFKU0ietyTh">102</strong></td><td data-page-node-id="NiErYkAe2Cs2ZHLn4xpOH5"><strong data-page-node-id="mQbhRNhAt2X4p2PC2elszJ">100%</strong></td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:10px;font-size:.72rem;color:var(--sub)" data-page-node-id="xkV0bFrM0rA53nyGSRp8jO">退费主要原因TOP4：<strong data-page-node-id="xDSBctWQoHTqA15WXPf1JG">时间问题</strong>（没时间/工作忙）· <strong data-page-node-id="lcOzjiAoBhEbcgFotVPDae">私人原因</strong>（家庭/健康/经济）· <strong data-page-node-id="AoGuvkAg53qnoXSOcYFAZA">效果问题</strong>（课程难度不适配）· <strong data-page-node-id="CbEbKogNQ0oQtBVovdCFlS">课程不匹配</strong>（想要1对1/难度不适合孩子）</p>
+    </div>
+  </div>
+
+  <!-- ===== Panel: Data Analysis (退费深度分析) ===== -->
+  <div class="panel" id="panel-analysis" role="tabpanel" data-page-node-id="aNaLYs1sPanel2026">
+    <div class="sop-section" style="margin-top:16px">
+      <h2>📈 退费数据全景 · 三表汇总</h2>
+      <p>基于杨家成3980退费登记(2063行)、退费登记表(1450行)、之昊3980退费登记(79行)三张退费表的全量数据分析。数据覆盖2025年全年至2026年8月。</p>
+      <div class="data-grid" style="margin-top:14px">
+        <div class="data-card"><div class="data-num blue">3,418</div><div class="data-label">退费总笔数（三表合计）</div></div>
+        <div class="data-card"><div class="data-num red">¥1,182万</div><div class="data-label">退费总金额（三表合计）</div></div>
+        <div class="data-card"><div class="data-num teal">¥3,456</div><div class="data-label">平均单笔退费金额</div></div>
+        <div class="data-card"><div class="data-num orange">50.4%</div><div class="data-label">全额退费占比</div></div>
+      </div>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px">
+      <h2>🔍 退费原因分布（全量合并）</h2>
+      <p>三表合并后共3,498条退费原因记录，按原因类型降序排列。时间问题和效果问题合计占比超67%，是退费两大主因。</p>
+      <table class="product-table" style="margin-top:12px">
+        <thead><tr><th>退费原因</th><th>笔数</th><th>占比</th><th>趋势说明</th></tr></thead>
+        <tbody>
+          <tr><td><strong style="color:var(--red)">时间问题</strong></td><td>1,398</td><td>39.9%</td><td>没时间/工作忙/带孩子/备考 — 第一大退费原因，属学员自身时间冲突</td></tr>
+          <tr><td><strong style="color:var(--orange)">效果问题（课程难度/没进步）</strong></td><td>968</td><td>27.7%</td><td>零基础学不会/课程太难/学不下去 — 第二大退费原因，属产品适配问题</td></tr>
+          <tr><td>私人原因</td><td>356</td><td>10.2%</td><td>冲动消费/身体原因/家庭变故/不愿沟通</td></tr>
+          <tr><td>7天免费试学</td><td>189</td><td>5.4%</td><td>冲着吴彦祖IP来但7天内不满意/觉得没学习计划</td></tr>
+          <tr><td>奖学金</td><td>225</td><td>6.4%</td><td>未满足奖学金条件/奖学金相关退费</td></tr>
+          <tr><td>经济问题</td><td>175</td><td>5.0%</td><td>资金紧张/信用卡还不上了/花呗分期压力</td></tr>
+          <tr><td>扩科</td><td>45</td><td>1.3%</td><td>扩科课程退费</td></tr>
+          <tr><td>转介绍返现</td><td>41</td><td>1.2%</td><td>转介绍相关退款</td></tr>
+          <tr><td>课程不匹配需求</td><td>3</td><td>0.1%</td><td>孩子太小/想要1对1/基础不匹配</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:10px;font-size:.72rem;color:var(--sub)">洞察：时间问题(40%)是最大退费原因但属学员端不可控因素；效果问题(28%)是第二大且属产品端可控因素——零基础学员课程难度不适配是核心改进点。</p>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px">
+      <h2>💰 退费金额分布（杨家成3980退费登记 1952笔）</h2>
+      <div class="data-grid" style="margin-top:12px">
+        <div class="data-card"><div class="data-num green">938笔</div><div class="data-label">全额退费 ¥3980 (48.1%)</div></div>
+        <div class="data-card"><div class="data-num teal">340笔</div><div class="data-label">¥3000-3980 (17.4%)</div></div>
+        <div class="data-card"><div class="data-num blue">277笔</div><div class="data-label">¥2000-3000 (14.2%)</div></div>
+        <div class="data-card"><div class="data-num orange">273笔</div><div class="data-label">¥1000-2000 (14.0%)</div></div>
+        <div class="data-card"><div class="data-num red">79笔</div><div class="data-label">¥0-1000 (4.0%)</div></div>
+      </div>
+      <p style="margin-top:10px;font-size:.72rem;color:var(--sub)">全额退费占近半(48.1%)，说明大量学员在7天犹豫期内即全额退费。7天内退费笔数(952笔)与非7天退费(947笔)约各占一半，7天保护期是退费防控的关键节点。</p>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px">
+      <h2>👥 学员画像 × 退费（之昊3980退费登记 79笔）</h2>
+      <table class="metric-table" style="margin-top:12px">
+        <thead><tr><th>学员画像</th><th>退费笔数</th><th>占比</th><th>典型退费原因</th></tr></thead>
+        <tbody>
+          <tr><td><strong>成人自己学习</strong></td><td>45</td><td>57.0%</td><td>没时间/工作忙/备考/冲动消费</td></tr>
+          <tr><td><strong>给孩子报课</strong></td><td>22</td><td>27.8%</td><td>孩子不学/课太难/孩子坐不住/视力问题</td></tr>
+          <tr><td>亲子共学</td><td>4</td><td>5.1%</td><td>课程不适合自己和孩子</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:10px;font-size:.72rem;color:var(--sub)">成人自用学员退费占比过半(57%)，给孩子报课退费占28%。给孩子报课的退费原因中"效果问题"占比更高——课程难度对孩子不适配是重点改进方向。</p>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px">
+      <h2>📊 各期班退费率对比（退费统计 4月两周）</h2>
+      <table class="metric-table" style="margin-top:12px">
+        <thead><tr><th>期班</th><th>学员总数</th><th>部分退费</th><th>全额退费</th><th>退费合计</th><th>退费率</th><th>退费中</th></tr></thead>
+        <tbody>
+          <tr><td>0710期</td><td>3,646</td><td>76</td><td>284</td><td>360</td><td><strong style="color:var(--red)">9.9%</strong></td><td>283</td></tr>
+          <tr><td>0813期</td><td>2,216</td><td>173</td><td>63</td><td>236</td><td><strong style="color:var(--red)">10.6%</strong></td><td>67</td></tr>
+          <tr><td>0915期</td><td>3,131</td><td>160</td><td>193</td><td>353</td><td><strong style="color:var(--red)">11.3%</strong></td><td>45</td></tr>
+          <tr><td>1015期</td><td>3,315</td><td>163</td><td>228</td><td>391</td><td><strong style="color:var(--red)">11.8%</strong></td><td>36</td></tr>
+          <tr><td>11期</td><td>3,980</td><td>167</td><td>246</td><td>413</td><td><strong style="color:var(--red)">10.4%</strong></td><td>62</td></tr>
+          <tr><td>1224期</td><td>2,690</td><td>138</td><td>216</td><td>354</td><td><strong style="color:var(--red)">13.2%</strong></td><td>81</td></tr>
+          <tr><td>0114期</td><td>2,132</td><td>101</td><td>143</td><td>244</td><td><strong style="color:var(--red)">11.4%</strong></td><td>168</td></tr>
+          <tr><td>0202期</td><td>2,569</td><td>111</td><td>140</td><td>251</td><td><strong style="color:var(--orange)">9.8%</strong></td><td>362</td></tr>
+          <tr><td>0311期</td><td>976</td><td>18</td><td>48</td><td>66</td><td><strong style="color:var(--green)">6.8%</strong></td><td>629</td></tr>
+          <tr><td>新0324期</td><td>1,626</td><td>46</td><td>119</td><td>165</td><td>10.1%</td><td>—</td></tr>
+          <tr><td>新0414期</td><td>1,196</td><td>2</td><td>53</td><td>55</td><td>4.6%</td><td>—</td></tr>
+          <tr><td>G0213期</td><td>282</td><td>2</td><td>2</td><td>4</td><td>1.4%</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:10px;font-size:.72rem;color:var(--sub)">洞察：1224期退费率最高(13.2%)，G0213期最低(1.4%)。越早的期班退费率越趋稳(7-10%)，新开期班退费率波动大。0311期虽退费率低(6.8%)但"退费中"达629人，潜在退费风险最高。</p>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px">
+      <h2>🏆 辅导老师接量转化漏斗（接量表全量）</h2>
+      <p>各辅导老师累计接量数据，按接量人数排序。建联率普遍98-100%达标，差异主要在首call完成率和退费率。</p>
+      <table class="metric-table" style="margin-top:12px;font-size:.72rem">
+        <thead><tr><th>辅导老师</th><th>接量</th><th>建联率</th><th>首call率</th><th>退费率</th><th>延期</th><th>评估</th></tr></thead>
+        <tbody>
+          <tr><td>王仕琪</td><td>1,009</td><td>100%</td><td>43.2%</td><td><strong style="color:var(--green)">0.4%</strong></td><td>6</td><td style="color:var(--green)">接量最大+退费极低</td></tr>
+          <tr><td>王思扬</td><td>923</td><td>100%</td><td>50.6%</td><td><strong style="color:var(--green)">1.2%</strong></td><td>8</td><td style="color:var(--green)">优质</td></tr>
+          <tr><td>古琴</td><td>858</td><td>100%</td><td>50.8%</td><td><strong style="color:var(--green)">0.7%</strong></td><td>2</td><td style="color:var(--green)">优质</td></tr>
+          <tr><td>金宸茜</td><td>674</td><td>98.4%</td><td>86.6%</td><td>2.4%</td><td>11</td><td>首call率极高</td></tr>
+          <tr><td>屠厚洁</td><td>254</td><td>100%</td><td><strong style="color:var(--green)">100%</strong></td><td><strong style="color:var(--green)">0%</strong></td><td>0</td><td style="color:var(--green)">标杆</td></tr>
+          <tr><td>苗冉</td><td>286</td><td>100%</td><td>72.7%</td><td><strong style="color:var(--green)">0%</strong></td><td>0</td><td style="color:var(--green)">零退费</td></tr>
+          <tr><td>徐振杰</td><td>257</td><td>100%</td><td>98.1%</td><td>1.2%</td><td>2</td><td>首call率顶尖</td></tr>
+          <tr><td>张杨</td><td>260</td><td>96.5%</td><td>96.2%</td><td>0.4%</td><td>8</td><td>高首call+低退费</td></tr>
+          <tr style="background:var(--red-soft)"><td>刘东雳</td><td>270</td><td>100%</td><td>88.5%</td><td><strong style="color:var(--red)">8.5%</strong></td><td>11</td><td style="color:var(--red)">退费率最高</td></tr>
+          <tr style="background:var(--red-soft)"><td>徐嘉一</td><td>309</td><td>100%</td><td>81.2%</td><td><strong style="color:var(--red)">6.1%</strong></td><td>8</td><td style="color:var(--red)">退费率偏高</td></tr>
+          <tr style="background:var(--red-soft)"><td>毕斌斌</td><td>323</td><td>100%</td><td>98.8%</td><td><strong style="color:var(--red)">5.9%</strong></td><td>6</td><td style="color:var(--red)">退费率偏高</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:10px;font-size:.72rem;color:var(--sub)">标杆对比：屠厚洁(首call率100%+退费率0%)和苗冉(退费率0%)是最佳实践；刘东雳(退费率8.5%)和徐嘉一(6.1%)退费率远超均值，需关注服务流程问题。</p>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px">
+      <h2>📅 月度业绩排名（Top 3）</h2>
+      <div class="data-grid" style="margin-top:12px">
+        <div class="data-card"><div class="data-num blue">¥214万</div><div class="data-label">11月部门总营收</div></div>
+        <div class="data-card"><div class="data-num teal">¥201万</div><div class="data-label">12月部门总营收</div></div>
+        <div class="data-card"><div class="data-num green">¥160万</div><div class="data-label">1月部门总营收</div></div>
+      </div>
+      <table class="metric-table" style="margin-top:14px">
+        <thead><tr><th>月份</th><th>Top 1</th><th>Top 2</th><th>Top 3</th></tr></thead>
+        <tbody>
+          <tr><td>10月</td><td>李怡燃 ¥109,899</td><td>黄诗壹 ¥105,685</td><td>钟子懿 ¥88,414</td></tr>
+          <tr><td>11月</td><td>刘嘉琳 ¥73,632</td><td>徐叶琳 ¥37,600</td><td>—</td></tr>
+          <tr><td><strong>12月</strong></td><td><strong>王同华 ¥716,000</strong></td><td><strong>黄诗壹 ¥708,667</strong></td><td><strong>刘嘉琳 ¥661,100</strong></td></tr>
+          <tr><td><strong>1月</strong></td><td><strong>王同华 ¥1,062,980</strong></td><td><strong>刘嘉琳 ¥1,020,000</strong></td><td>—</td></tr>
+          <tr><td>2月</td><td>黄诗壹 ¥314,550</td><td>刘嘉琳 ¥239,720</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:10px;font-size:.72rem;color:var(--sub)">12月-1月是旺季高峰(月营收超200万)，王同华组和黄诗壹组是核心产出了战力。10月-11月为淡季(月营收80-90万)。</p>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px">
+      <h2>💎 一对一高客单退费明细（10笔）</h2>
+      <p>一对一项目退费涉及金额更大(单笔最高¥24,600)，退费原因与3980项目不同——更多是"需求消失"而非"时间问题"。</p>
+      <table class="metric-table" style="margin-top:12px;font-size:.72rem">
+        <thead><tr><th>支付金额</th><th>退费金额</th><th>课消数</th><th>退费原因</th></tr></thead>
+        <tbody>
+          <tr><td>¥27,898</td><td>¥9,085</td><td>5</td><td>资金周转，急需用钱，退50节课</td></tr>
+          <tr><td>¥11,400</td><td>¥479</td><td>0</td><td>信用卡分期，退利息</td></tr>
+          <tr><td>¥3,000</td><td>¥3,000</td><td>0</td><td>有变故急用钱，退定金</td></tr>
+          <tr><td>¥8,000</td><td>¥5,600</td><td>6</td><td>找了会英语的女朋友教</td></tr>
+          <tr><td>¥21,500</td><td>¥8,242</td><td>37</td><td>个人原因，不肯吐露</td></tr>
+          <tr><td>¥24,600</td><td>¥24,600</td><td>0</td><td>全额退费</td></tr>
+          <tr><td>¥9,600</td><td>¥8,200</td><td>14</td><td>不想学了，拒绝沟通</td></tr>
+          <tr><td>¥19,800</td><td>¥15,510</td><td>13</td><td>多次换老师不满意，积累情绪</td></tr>
+          <tr><td>¥8,000</td><td>¥6,800</td><td>3</td><td>找到新工作，对英语无需求</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:10px;font-size:.72rem;color:var(--sub)">总支付¥161,106，退费¥93,932，退费率58.3%。一对一退费原因：需求消失(找新工作/女朋友教)>多次换老师不满意>资金周转。多次换老师积累情绪是可改善的服务问题。</p>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px">
+      <h2>🔑 数据分析结论与建议</h2>
+      <div style="margin-top:12px;display:flex;flex-direction:column;gap:12px">
+        <div style="padding:14px 18px;border-radius:12px;background:var(--red-soft);border-left:4px solid var(--red)">
+          <h4 style="font-size:.82rem;color:var(--red)">① 时间问题(40%)是退费第一大原因但不可控</h4>
+          <p style="font-size:.74rem;color:var(--sub);margin-top:4px">学员自身时间冲突无法通过服务完全解决，但可通过"延期"替代退费。0202期"退费中"362人是最高潜在风险，建议优先跟进延期方案。</p>
+        </div>
+        <div style="padding:14px 18px;border-radius:12px;background:var(--orange-soft);border-left:4px solid var(--orange)">
+          <h4 style="font-size:.82rem;color:var(--orange)">② 效果问题(28%)是第二大原因且可控</h4>
+          <p style="font-size:.74rem;color:var(--sub);margin-top:4px">零基础学员觉得课程太难是核心问题。建议在首call时加强基础评估，对零基础学员提前预警课程难度，或在报名前引导到更适合的入门课。</p>
+        </div>
+        <div style="padding:14px 18px;border-radius:12px;background:var(--green-soft);border-left:4px solid var(--green)">
+          <h4 style="font-size:.82rem;color:var(--green)">③ 7天保护期是退费防控关键节点</h4>
+          <p style="font-size:.74rem;color:var(--sub);margin-top:4px">7天内退费占50%，其中"7天免费试学"退费占5.4%。建议7天内加强首次服务触达和期望值管理，把冲动消费转化为真实需求。</p>
+        </div>
+        <div style="padding:14px 18px;border-radius:12px;background:var(--blue-soft);border-left:4px solid var(--blue)">
+          <h4 style="font-size:.82rem;color:var(--blue)">④ 给孩子报课的退费率更高，效果问题突出</h4>
+          <p style="font-size:.74rem;color:var(--sub);margin-top:4px">给孩子报课退费占28%，其中"效果问题"比例更高(孩子坐不住/课太难/基础不匹配)。建议给孩子报课的家长提前做学习适配评估。</p>
+        </div>
+        <div style="padding:14px 18px;border-radius:12px;background:var(--purple-soft);border-left:4px solid var(--purple)">
+          <h4 style="font-size:.82rem;color:var(--purple)">⑤ 一对一退费主因是"需求消失"和"多次换老师"</h4>
+          <p style="font-size:.74rem;color:var(--sub);margin-top:4px">一对一退费率58.3%远高于3980项目。多次换老师积累情绪导致退费是可改善的服务问题——建议控制换老师频率，每次更换后加强沟通和期望管理。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Panel: 试听课&关单SOP ===== -->
+  <div class="panel" id="panel-trial" role="tabpanel" data-page-node-id="aNaLYs1sPanelTrial2026">
+    <div class="sop-section" style="margin-top:16px">
+      <h2>🎧 试听课数据分析（264笔）</h2>
+      <p>基于"一对一口语定制.xlsx"中<strong>试听课 sheet</strong>的全量数据，分析试听课约课情况、转化率和未报名原因。数据时间：2025年10月-11月。</p>
+      <div class="data-grid" style="margin-top:14px">
+        <div class="data-card"><div class="data-num blue">264</div><div class="data-label">试听课总记录</div></div>
+        <div class="data-card"><div class="data-num green">69</div><div class="data-label">成交笔数</div></div>
+        <div class="data-card"><div class="data-num red">131</div><div class="data-label">未报名笔数</div></div>
+        <div class="data-card"><div class="data-num teal">34.5%</div><div class="data-label">明确成交率</div></div>
+      </div>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px">
+      <h2>💎 关单结果分布</h2>
+      <p>试听课后的成交分布，60课包和40课包最受欢迎。</p>
+      <table class="metric-table" style="margin-top:12px">
+        <thead><tr><th>结果</th><th>笔数</th><th>占比</th></tr></thead>
+        <tbody>
+          <tr><td><strong style="color:var(--green)">未报名</strong></td><td>131</td><td>49.6%</td></tr>
+          <tr><td><strong style="color:var(--accent)">60课包</strong></td><td>27</td><td>10.2%</td></tr>
+          <tr><td><strong style="color:var(--accent)">40课包</strong></td><td>21</td><td>8.0%</td></tr>
+          <tr><td><strong>20课包</strong></td><td>10</td><td>3.8%</td></tr>
+          <tr><td>30课包</td><td>5</td><td>1.9%</td></tr>
+          <tr><td>90课时</td><td>2</td><td>0.8%</td></tr>
+          <tr><td>80课时</td><td>2</td><td>0.8%</td></tr>
+          <tr><td>70课时</td><td>2</td><td>0.8%</td></tr>
+          <tr><td>未填写</td><td>62</td><td>23.5%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px">
+      <h2>👨‍🏫 试听老师转化率排名</h2>
+      <p>不同试听老师的成交率差异显著，TOP3 是黄诗壹40%、张颜清35.7%、上官旭东/刘适妤31%。</p>
+      <table class="metric-table" style="margin-top:12px">
+        <thead><tr><th>试听老师</th><th>试听次数</th><th>成交笔数</th><th>转化率</th><th>评估</th></tr></thead>
+        <tbody>
+          <tr style="background:var(--green-soft)"><td><strong>黄诗壹</strong></td><td>10</td><td>4</td><td><strong style="color:var(--green)">40.0%</strong></td><td style="color:var(--green)">最高转化</td></tr>
+          <tr><td>张颜清</td><td>28</td><td>10</td><td><strong style="color:var(--green)">35.7%</strong></td><td>高量+高转化</td></tr>
+          <tr><td>上官旭东</td><td>29</td><td>9</td><td>31.0%</td><td>高量稳定</td></tr>
+          <tr><td>刘适妤</td><td>29</td><td>9</td><td>31.0%</td><td>高量稳定</td></tr>
+          <tr><td>刘城冰</td><td>33</td><td>10</td><td>30.3%</td><td>高量稳定</td></tr>
+          <tr><td>陆文锐</td><td>25</td><td>7</td><td>28.0%</td><td>中等</td></tr>
+          <tr><td>才鼎龙</td><td>39</td><td>10</td><td>25.6%</td><td>试听量最大</td></tr>
+          <tr style="background:var(--red-soft)"><td>方露</td><td>21</td><td>4</td><td><strong style="color:var(--red)">19.0%</strong></td><td style="color:var(--red)">转化率最低</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px">
+      <h2>📚 学员基础 × 转化率</h2>
+      <table class="metric-table" style="margin-top:12px">
+        <thead><tr><th>学员基础</th><th>人次</th><th>成交</th><th>转化率</th><th>洞察</th></tr></thead>
+        <tbody>
+          <tr><td>有初步造句能力</td><td>50</td><td>15</td><td>30.0%</td><td>基础好+易转化</td></tr>
+          <tr><td>拼读没问题缺乏语感和造句能力</td><td>93</td><td>26</td><td>28.0%</td><td>主力人群，课程匹配度高</td></tr>
+          <tr><td>勉强会拼读</td><td>50</td><td>14</td><td>28.0%</td><td>需加强引导</td></tr>
+          <tr style="background:var(--orange-soft)"><td>0基础</td><td>45</td><td>10</td><td><strong style="color:var(--orange)">22.2%</strong></td><td style="color:var(--orange)">转化率最低</td></tr>
+          <tr><td>其他</td><td>16</td><td>3</td><td>18.8%</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:10px;font-size:.72rem;color:var(--sub)">0基础学员转化率最低(22.2%)，与3980退费数据中"效果问题(27.5%)"是第二大退费原因高度一致——零基础学员是产品适配的核心改进点。</p>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px">
+      <h2>💼 销售转化率排名</h2>
+      <table class="metric-table" style="margin-top:12px">
+        <thead><tr><th>销售</th><th>试听次数</th><th>成交</th><th>转化率</th><th>评估</th></tr></thead>
+        <tbody>
+          <tr style="background:var(--green-soft)"><td><strong>张杨</strong></td><td>6</td><td>4</td><td><strong style="color:var(--green)">66.7%</strong></td><td style="color:var(--green)">TOP1</td></tr>
+          <tr style="background:var(--green-soft)"><td>钟子懿</td><td>16</td><td>8</td><td>50.0%</td><td>高转化</td></tr>
+          <tr><td>傅雪滢</td><td>9</td><td>3</td><td>33.3%</td><td>高转化</td></tr>
+          <tr><td>陈娟/张剑波</td><td>6</td><td>2</td><td>33.3%</td><td>—</td></tr>
+          <tr><td>黄诗壹</td><td>26</td><td>8</td><td>30.8%</td><td>试听量+转化平衡</td></tr>
+          <tr><td>李怡燃</td><td>19</td><td>5</td><td>26.3%</td><td>中等</td></tr>
+          <tr style="background:var(--red-soft)"><td>陈媛媛</td><td>8</td><td>0</td><td><strong style="color:var(--red)">0%</strong></td><td style="color:var(--red)">需关注</td></tr>
+          <tr style="background:var(--red-soft)"><td>王子怡</td><td>17</td><td>0</td><td><strong style="color:var(--red)">0%</strong></td><td style="color:var(--red)">试听量高但零成交</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px">
+      <h2>❌ 未报名原因分类</h2>
+      <table class="metric-table" style="margin-top:12px">
+        <thead><tr><th>原因类别</th><th>笔数</th><th>占比</th><th>典型表述</th></tr></thead>
+        <tbody>
+          <tr style="background:var(--red-soft)"><td><strong>价格敏感</strong></td><td>36</td><td>27.5%</td><td>"嫌贵/价格太贵/预算问题/只想上3980"</td></tr>
+          <tr><td>时间冲突</td><td>15</td><td>11.5%</td><td>"没时间/之后忙"</td></tr>
+          <tr style="background:var(--orange-soft)"><td>需求/产品不匹配</td><td>20</td><td>15.3%</td><td>"想对比其他机构/觉得不合适/先考证书"</td></tr>
+          <tr><td>未填写原因</td><td>42</td><td>32.1%</td><td>待销售补充</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:10px;font-size:.72rem;color:var(--sub)">价格敏感是试听未报名的第一大原因(27.5%)。建议在试听前先做预算分级，对预算敏感学员推荐3980基础课而非直接推一对一。</p>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px">
+      <h2>📋 雅思关单SOP · 6大核心模块</h2>
+      <p>从"雅思服务流程.pdf"思维导图整理的雅思关单标准化流程。</p>
+      <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px">
+        <div style="padding:12px 16px;border-radius:10px;background:var(--accent-soft);border-left:4px solid var(--accent)">
+          <h4 style="font-size:.82rem;color:var(--accent)">① 专业性体现（雅思市场优势）</h4>
+          <ul style="margin-top:6px;font-size:.74rem;color:var(--sub);padding-left:20px">
+            <li><strong>雅思含金量</strong>：全球140+国家、11,000所院校认可，是衡量英语水平的"硬通货"</li>
+            <li><strong>考试理解</strong>：A类(学术/留学)、G类(培训/移民)，听读写说四部分，成绩2年有效</li>
+            <li><strong>产品对比</strong>：AI录播课(4-6人小班·低门槛)、直播小班课(4-6人·需自律)、一对一(高客单·个性化)</li>
+            <li><strong>转化策略</strong>：录播→低价引流，直播课→词汇语法，一对一→试听完+续费前2次课</li>
+          </ul>
+        </div>
+        <div style="padding:12px 16px;border-radius:10px;background:var(--blue-soft);border-left:4px solid var(--blue)">
+          <h4 style="font-size:.82rem;color:var(--blue)">② 用户画像与需求</h4>
+          <ul style="margin-top:6px;font-size:.74rem;color:var(--sub);padding-left:20px">
+            <li><strong>留学生(65%)</strong>：目标分≥6.5，写作/口语薄弱，30天提分协议</li>
+            <li><strong>移民群体(25%)</strong>：基础弱、时间紧，需口语强化</li>
+            <li><strong>职场人士(10-30%)</strong>：碎片化学习、付费能力强</li>
+            <li><strong>分层策略</strong>：价格敏感型(强调性价比) / 效果导向型(展示保分课) / 焦虑型家长(服务体系)</li>
+          </ul>
+        </div>
+        <div style="padding:12px 16px;border-radius:10px;background:var(--purple-soft);border-left:4px solid var(--purple)">
+          <h4 style="font-size:.82rem;color:var(--purple)">③ 挖需过程（电话中确定的内容）</h4>
+          <ul style="margin-top:6px;font-size:.74rem;color:var(--sub);padding-left:20px">
+            <li><strong>基础评估</strong>：对照上表格，线上测试词汇/语法，是否参加过雅思/系统学习</li>
+            <li><strong>目标分</strong>：什么时候考？目标分多少？</li>
+            <li><strong>出分作用</strong>：上学/出国/工作/自我提升？紧迫性如何？</li>
+            <li><strong>小分要求</strong>：有→推1v1；无→推班课</li>
+            <li><strong>学习时间</strong>：考前15-30天突击 vs 半年-1年系统学习</li>
+          </ul>
+        </div>
+        <div style="padding:12px 16px;border-radius:10px;background:var(--green-soft);border-left:4px solid var(--green)">
+          <h4 style="font-size:.82rem;color:var(--green)">④ 亮点提炼（让学员觉得"最全面"）</h4>
+          <ul style="margin-top:6px;font-size:.74rem;color:var(--sub);padding-left:20px">
+            <li>同行业最全面：无缝次口语训练、写作批改、灵活学习</li>
+            <li>师资强大：全球名师（菲满分+海外1-5年经验），课程迭代快</li>
+            <li>专业测评+模考+高分库体系完整</li>
+            <li>课前自测服务体系</li>
+          </ul>
+        </div>
+        <div style="padding:12px 16px;border-radius:10px;background:var(--orange-soft);border-left:4px solid var(--orange)">
+          <h4 style="font-size:.82rem;color:var(--orange)">⑤ 对外承诺话术调整（避坑"保分"违规）</h4>
+          <p style="font-size:.74rem;color:var(--sub);margin-top:4px">从"保分承诺"→"科学路径规划"：通过教学、辅导和学习管理提升学生核心能力，高分作为自然结果。话术示例：「"保分"这种承诺话术，转化为"经过专业老师对您学习情况的分析，这是老师为您专门定制的最高效的学习方案"」</p>
+        </div>
+        <div style="padding:12px 16px;border-radius:10px;background:var(--red-soft);border-left:4px solid var(--red)">
+          <h4 style="font-size:.82rem;color:var(--red)">⑥ 客诉处理原则</h4>
+          <p style="font-size:.74rem;color:var(--sub);margin-top:4px">安抚情绪→转移焦点→避免在行处理或质疑缘由。对外保持统一口径，内部解决分歧。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px">
+      <h2>📐 一对一约课规范</h2>
+      <p>来自"口语一对一约课规范" sheet：试听课→正式课的标准化流程与绩效规则。</p>
+      <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px">
+        <div style="padding:12px 16px;border-radius:10px;background:var(--accent-soft);border-left:4px solid var(--accent)">
+          <h4 style="font-size:.82rem">试听课约课流程</h4>
+          <ol style="margin-top:6px;font-size:.74rem;color:var(--sub);padding-left:20px">
+            <li>销售老师引导学员报名试听课</li>
+            <li>以固定形式对接教务老师 @邢紫怡，提交：学员姓名/年龄/性别/英语基础/可试课时间(2-3个)/学习内容</li>
+            <li>教务老师@邢紫怡按学生需求和时段安排试听老师</li>
+            <li>试听结果登记到试听课 sheet，48h内关单</li>
+          </ol>
+        </div>
+        <div style="padding:12px 16px;border-radius:10px;background:var(--blue-soft);border-left:4px solid var(--blue)">
+          <h4 style="font-size:.82rem">正式课约课流程</h4>
+          <ol style="margin-top:6px;font-size:.74rem;color:var(--sub);padding-left:20px">
+            <li>学员试听成功→销售推班主任 @邢紫怡Cici 企微二维码</li>
+            <li>班主任与学员沟通排课时间（销售协助）</li>
+            <li>无试听成交需提供学员基本信息给班主任</li>
+            <li>班主任根据学员信息安排上课老师，课时密集的学员可能有2个老师轮流</li>
+          </ol>
+        </div>
+        <div style="padding:12px 16px;border-radius:10px;background:var(--green-soft);border-left:4px solid var(--green)">
+          <h4 style="font-size:.82rem">绩效判单规则</h4>
+          <ul style="margin-top:6px;font-size:.74rem;color:var(--sub);padding-left:20px">
+            <li>销售老师需全程协助学情反馈及满意度沟通</li>
+            <li>一对一课程业绩全程追溯</li>
+            <li>若学员学习半程退费，当月业绩基础上扣除（排名不扣除但月底绩效扣除）</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px">
+      <h2>🗓️ 7位教练时间表（2025年10-11月）</h2>
+      <p>每位教练的约课日程表，记录每天不同时间段的预约情况。</p>
+      <div class="data-grid" style="margin-top:12px">
+        <div class="data-card"><div class="data-num blue">才鼎龙</div><div class="data-label">约400条记录（最忙）</div></div>
+        <div class="data-card"><div class="data-num teal">张颜清</div><div class="data-label">约351条记录</div></div>
+        <div class="data-card"><div class="data-num green">刘城冰</div><div class="data-label">约340条记录</div></div>
+        <div class="data-card"><div class="data-num orange">刘适妤</div><div class="data-label">约326条记录</div></div>
+        <div class="data-card"><div class="data-num purple">方露</div><div class="data-label">约304条记录</div></div>
+        <div class="data-card"><div class="data-num red">黄诗壹</div><div class="data-label">约292条记录</div></div>
+      </div>
+      <p style="margin-top:10px;font-size:.72rem;color:var(--sub)">才鼎龙是试听课最忙的教练(400条)，但试听转化率仅25.6%——量大但转化效率有提升空间。张颜清试听量适中(28次)但转化率35.7%，是质量标杆。</p>
+    </div>
+  </div>
+
+  <!-- ===== Panel: 小灶课&续班SOP ===== -->
+  <div class="panel" id="panel-sop" role="tabpanel" data-page-node-id="aNaLYs1sPanelSop2026">
+    <div class="sop-section" style="margin-top:16px">
+      <h2>🔥 辅导小灶课SOP</h2>
+      <p>小灶课是雅识重要的学员服务产品，目的是增强黏性、解决共性问题、铺垫转化路径。来源：辅导小灶课sop.docx</p>
+      <div style="margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
+        <div style="padding:14px 18px;border-radius:12px;background:var(--accent-soft);border-left:4px solid var(--accent)">
+          <h4 style="font-size:.82rem;color:var(--accent)">目标1: 提升服务温度</h4>
+          <p style="font-size:.74rem;color:var(--sub);margin-top:4px">增强学员黏性与信任感</p>
+        </div>
+        <div style="padding:14px 18px;border-radius:12px;background:var(--blue-soft);border-left:4px solid var(--blue)">
+          <h4 style="font-size:.82rem;color:var(--blue)">目标2: 解决共性问题</h4>
+          <p style="font-size:.74rem;color:var(--sub);margin-top:4px">针对性突破学习瓶颈（发音/语法/表达逻辑）</p>
+        </div>
+        <div style="padding:14px 18px;border-radius:12px;background:var(--green-soft);border-left:4px solid var(--green)">
+          <h4 style="font-size:.82rem;color:var(--green)">目标3: 激发学习动力</h4>
+          <p style="font-size:.74rem;color:var(--sub);margin-top:4px">提高学员满意度和对辅导老师认可</p>
+        </div>
+        <div style="padding:14px 18px;border-radius:12px;background:var(--orange-soft);border-left:4px solid var(--orange)">
+          <h4 style="font-size:.82rem;color:var(--orange)">目标4: 铺垫转化路径</h4>
+          <p style="font-size:.74rem;color:var(--sub);margin-top:4px">自然植入课程价值，为转介绍和下游产品转化做准备</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px">
+      <h2>📅 小灶课全流程SOP（3阶段）</h2>
+      <h3 style="font-size:.88rem;margin-top:14px;color:var(--accent)">阶段一：课前准备（开课前3天）</h3>
+      <table class="metric-table" style="margin-top:10px">
+        <thead><tr><th>步骤</th><th>操作细则</th><th>责任人</th><th>交付物</th></tr></thead>
+        <tbody>
+          <tr><td>1.1 需求挖掘</td><td>分析学员作业+纠音记录，提炼TOP3高频问题（时态混淆/连读弱读）</td><td>辅导老师</td><td>《个人班级学习痛点清单》</td></tr>
+          <tr><td>1.2 主题设计</td><td>匹配痛点设计教案及课件（例："餐厅用语"）</td><td>教研组+辅导</td><td>《教案模板》《小灶课课件》</td></tr>
+          <tr><td>1.3 预约通知</td><td>企微推送："专属加餐福利！XX老师直播间解决你的发音痛点→[预约链接]"</td><td>辅导老师</td><td>预约率≥60%</td></tr>
+          <tr><td>1.4 物料准备+磨课</td><td>测试直播设备，准备互动工具（答题卡/连麦）、虚拟奖励</td><td>运营组</td><td>技术checklist / 录屏检查</td></tr>
+        </tbody>
+      </table>
+      
+      <h3 style="font-size:.88rem;margin-top:14px;color:var(--blue)">阶段二：课中执行（直播关键问题）</h3>
+      <div style="margin-top:10px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px">
+        <div style="padding:10px 14px;border-radius:10px;background:var(--red-soft);border-left:4px solid var(--red)">
+          <h4 style="font-size:.78rem;color:var(--red)">⚠️ 课件不清晰</h4>
+          <p style="font-size:.72rem;color:var(--sub);margin-top:4px">平板投屏画质低 → 小鹅通共享演示+直接上传课件；给主播鼠标控制后台</p>
+        </div>
+        <div style="padding:10px 14px;border-radius:10px;background:var(--orange-soft);border-left:4px solid var(--orange)">
+          <h4 style="font-size:.78rem;color:var(--orange)">⚠️ 连麦效率慢</h4>
+          <p style="font-size:.72rem;color:var(--sub);margin-top:4px">运营主动发起申请+开启全员连麦申请，主播决定同意哪一个</p>
+        </div>
+        <div style="padding:10px 14px;border-radius:10px;background:var(--blue-soft);border-left:4px solid var(--blue)">
+          <h4 style="font-size:.78rem;color:var(--blue)">⚠️ 收音断音</h4>
+          <p style="font-size:.72rem;color:var(--sub);margin-top:4px">主播话筒距离5-10cm</p>
+        </div>
+      </div>
+      
+      <h3 style="font-size:.88rem;margin-top:14px;color:var(--green)">阶段三：课后跟进（24h内）</h3>
+      <table class="metric-table" style="margin-top:10px">
+        <thead><tr><th>动作</th><th>关键点</th><th>工具</th></tr></thead>
+        <tbody>
+          <tr><td>1. 学习包推送</td><td>含课程总结+延展资料+挑战任务（e.g. 录制1分钟场景对话）</td><td>企业微信 #小灶课#</td></tr>
+          <tr><td>2. 专属反馈</td><td>对连麦学员私信点评（激活目标）</td><td>语音消息+表情包</td></tr>
+          <tr><td>3. 转化埋点</td><td>任务完成者可领取《面试高频50问》资料，引导1v1测评</td><td>限时领取链接</td></tr>
+          <tr><td>4. 数据记录</td><td>标记高互动学员，续费期优先触达</td><td>企业微信/小鹅通打标签</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px">
+      <h2>📊 小灶课考核标准与激励</h2>
+      <table class="metric-table" style="margin-top:12px">
+        <thead><tr><th>指标</th><th>基准值</th><th>监测方式</th></tr></thead>
+        <tbody>
+          <tr><td><strong>学员参与率</strong></td><td>≥70%</td><td>直播平台数据</td></tr>
+          <tr><td><strong>课堂互动率</strong></td><td>人均发言≥5次</td><td>弹幕/答题数据</td></tr>
+          <tr><td><strong>任务完成率</strong></td><td>≥40%</td><td>打卡系统统计</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:10px;font-size:.72rem;color:var(--sub)">激励：每月根据数据奖励TOP3老师（奖金+吴彦祖签名周边）。标杆案例库：精选优秀小灶课录制视频供团队学习。</p>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px">
+      <h2>⚠️ 小灶课风险规避清单</h2>
+      <ul style="margin-top:10px;padding-left:20px;font-size:.76rem;line-height:1.8">
+        <li><strong>内容超纲</strong>：严禁涉及正价课核心模块，聚焦延伸应用与连麦互动</li>
+        <li><strong>营销过度</strong>：不宣传转介绍优惠方案</li>
+        <li><strong>技术预案</strong>：网络卡顿/掉线/直播异常（备选小灶课软件：腾讯会议+直播异常话术）</li>
+        <li><strong>分层覆盖</strong>：对缺勤学员发送精华视频切片（含重点PPT+音频）</li>
+      </ul>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px">
+      <h2>📅 续班SOP · 3周节奏安排</h2>
+      <p>来源：续班SOP.xlsx · 节奏安排 sheet。完整节奏覆盖高高老师+辅导+组长主管+运营四方协同。</p>
+      <table class="metric-table" style="margin-top:12px">
+        <thead><tr><th>周次</th><th>辅导端动作</th><th>数据指标</th></tr></thead>
+        <tbody>
+          <tr><td><strong>第1周(1.6-1.13)</strong></td><td>建联+催到课45-50%；群运营激活学习心思；发问卷回收30%</td><td>到课率45-50%，问卷30%</td></tr>
+          <tr><td><strong>第2周(1.14-1.21)</strong></td><td>21天打卡活动开启；学习报告激活；朋友圈发布好评截图</td><td>问卷60%，学员回访等级40%</td></tr>
+          <tr><td><strong>第3周(1.22-1.31)</strong></td><td>小灶课预热+催到课；私聊通知；群内接龙</td><td>小灶课到课率40%，续班率8-10%→15%→18%→20%</td></tr>
+        </tbody>
+      </table>
+      <h3 style="font-size:.82rem;margin-top:14px;color:var(--accent)">📈 续班率目标梯度</h3>
+      <p style="font-size:.74rem;color:var(--sub);margin-top:6px">打卡Day 9: 续班率<strong>8-10%</strong> → Day 10: <strong>15%</strong> → Day 11-12: <strong>18-20%</strong>。最后一天为小灶课营销+杨老师衔接福利。</p>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px">
+      <h2>📞 续班回访话术 · 5个分支</h2>
+      <p>来源：续班SOP.xlsx · 回访话术 sheet。每个通话时长控制在3-5分钟。结构：开场白 → 聊近况 → 聊英语能力 → 隐晦问后续计划 → 结尾。</p>
+      <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px">
+        <div style="padding:12px 16px;border-radius:10px;background:var(--green-soft);border-left:4px solid var(--green)">
+          <h4 style="font-size:.82rem;color:var(--green)">① 学员有明确计划（知道学什么）</h4>
+          <div class="script-quote" style="margin-top:6px">"你想重点练哪块呀？是工作需要的商务口语、以后旅行用的应急英语，还是想陪娃一起学亲子英语？"</div>
+          <p style="font-size:.72rem;color:var(--sub);margin-top:4px">回复话术：商务口语/旅行英语/亲子英语分别对应不同资料推送</p>
+        </div>
+        <div style="padding:12px 16px;border-radius:10px;background:var(--blue-soft);border-left:4px solid var(--blue)">
+          <h4 style="font-size:.82rem;color:var(--blue)">② 学员有想法没方向（想学但不知道学啥）</h4>
+          <div class="script-quote" style="margin-top:6px">"我特别理解这种感觉！很多人想提升但不知道从哪下手～其实可以结合你平时的生活场景选，比如经常出差就练旅行口语……"</div>
+        </div>
+        <div style="padding:12px 16px;border-radius:10px;background:var(--orange-soft);border-left:4px solid var(--orange)">
+          <h4 style="font-size:.82rem;color:var(--orange)">③ 学员暂时没想法（不想学/没需求）</h4>
+          <div class="script-quote" style="margin-top:6px">"没事儿没事儿！我就是随口问问～英语这东西也不急，等你之后有需要了（比如突然要出差、想带娃旅行、工作需要），随时找我就行……"</div>
+        </div>
+        <div style="padding:12px 16px;border-radius:10px;background:var(--purple-soft);border-left:4px solid var(--purple)">
+          <h4 style="font-size:.82rem;color:var(--purple)">④ 学员犹豫（担心没时间/换老师/价格）</h4>
+          <div class="script-quote" style="margin-top:6px">"太懂了！你现在忙工作/带娃，确实没大块时间～其实不用特意挤整块时间，可以碎片时间学习，慢慢积累也能有效果……"</div>
+        </div>
+        <div style="padding:12px 16px;border-radius:10px;background:var(--red-soft);border-left:4px solid var(--red)">
+          <h4 style="font-size:.82rem;color:var(--red)">⑤ 学员明确拒绝（不想再学英语）</h4>
+          <div class="script-quote" style="margin-top:6px">"没事儿没事儿！每个人的需求不一样～之后你要是遇到英语相关的问题，比如想复习之前的句型、找英文资料，或者想帮朋友咨询课程，随时给我打电话、发微信就行，我一直都在～"</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px">
+      <h2>📦 续班物料清单</h2>
+      <p>来源：续班SOP.xlsx · 物料 sheet。</p>
+      <table class="metric-table" style="margin-top:12px">
+        <thead><tr><th>物料</th><th>渠道</th><th>时长</th></tr></thead>
+        <tbody>
+          <tr><td>1.30打卡</td><td>群内+私信</td><td>10min</td></tr>
+          <tr><td>好评朋友圈</td><td>朋友圈</td><td>5min</td></tr>
+          <tr><td>聊试听的第一条消息</td><td>批量私发</td><td>2点前完成</td></tr>
+          <tr><td>纠音</td><td>—</td><td>3h</td></tr>
+          <tr><td>回访电话</td><td>20*5=100通</td><td>3h</td></tr>
+          <tr><td>5.30群内视频</td><td>群内</td><td>5min</td></tr>
+          <tr><td>提醒上课</td><td>私发</td><td>10min</td></tr>
+          <tr><td>9.30朋友圈</td><td>朋友圈</td><td>5min</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== Panel: Resume & Interview ===== -->
+  <div class="panel" id="panel-resume" role="tabpanel" data-page-node-id="BMNN8yz6nszFENEXouNonK">
+    <div class="resume-grid" data-page-node-id="Q8ggxRxEF6NhrAok6R6AMS">
+      <div class="resume-card" data-page-node-id="DGkLoi2YPmedh7JfKLckAH">
+        <h3 data-page-node-id="r4G8aGpNze1VD4qzcd7Slo">💪 可写进简历的能力点</h3>
+        <ul data-page-node-id="nT3ukl1BB7Tq4lEUrDz1Lw">
+          <li data-page-node-id="6JjSs2SFcpvrcUdbIRkYlI"><span class="tag skill" data-page-node-id="rbD6hwKhtA5VKvJHUz6qAN">教务运营</span>管理3980学员全生命周期（M0-M4共5个月行课周期），覆盖建联→首call→日常服务→续费扩科→转介绍全链路</li>
+          <li data-page-node-id="hJIcjcQB9IAQSofnoCtIrQ"><span class="tag skill" data-page-node-id="iBqqe0WVVYhNxzOIC7k8Rx">数据驱动</span>跟踪建联率/首call率/退费率/扩科率/续班率等核心指标，用数据指导服务动作</li>
+          <li data-page-node-id="7TlF1ATfQy6dPpuddGV1RJ"><span class="tag skill" data-page-node-id="xZAEPdqaoHbsHqKkcenlGF">用户运营</span>每日3条朋友圈运营+双周小灶课+月度回访，维护学员信任与学习热情</li>
+          <li data-page-node-id="bx3E4ak8gv6RndchhKGLKb"><span class="tag skill" data-page-node-id="zO3rrmknGaTSpQ9Dk42R9o">销售转化</span>执行14天静默期后的扩科转化，客单价从3980提升到8000-30000的一对一课包</li>
+          <li data-page-node-id="oOZqsElGybu8EHRjEHFGiZ"><span class="tag skill" data-page-node-id="QFju7hcuahFgKr0AXhjMVl">客诉处理</span>48小时退费挽单SOP，辅导+销售双级挽单机制，退费率控制在10%以内</li>
+          <li data-page-node-id="cDywmbawX7axDwb2lGl2q9"><span class="tag skill" data-page-node-id="rdOlvA9Ejch782YAjBU4Wa">SOP建设</span>参与辅导老师工作规则手册的执行与迭代，涵盖业绩归属/交接/退费等复杂判单规则</li>
+        </ul>
+      </div>
+
+      <div class="resume-card" data-page-node-id="fPlZqzOslSqNbB3D1SrlwV">
+        <h3 data-page-node-id="1EGHMH9VyQ7eT7X8gqfeB0">📊 可量化的业绩（示例）</h3>
+        <ul data-page-node-id="lZRu7Up3qsilXHtNCehH2V">
+          <li data-page-node-id="D5Blt1H81hBa5PrluQd1q8"><span class="tag result" data-page-node-id="uE8NYFRCCvomquLXuA8OeH">建联率</span>接量组建联率达<strong data-page-node-id="zUiJK77ArgNdUNrGUkws6H">95-99%</strong>（目标95%），首call完成率<strong data-page-node-id="RDzFyFX3ANZwpboCP8KuqZ">92%</strong>以上</li>
+          <li data-page-node-id="jqKFf7lvC3MsbIKB4ry8dr"><span class="tag result" data-page-node-id="A2vyHzOtmrkOSrsJD1ZuhU">退费控制</span>所带期班退费率<strong data-page-node-id="gUM93zkAx5LGtIG3OgC8fO">2.2%</strong>，远低于部门均值10%</li>
+          <li data-page-node-id="kz4HwKstN1kd2U4eJuzBge"><span class="tag result" data-page-node-id="VRCkbZlEXHTBAtsFcWkbPL">GMV贡献</span>部门月度GMV<strong data-page-node-id="30hqVZSc9kMLAd6CobPPmd">84.6万</strong>，续费+转介绍单月<strong data-page-node-id="coHuiXzp2y6rd6oBj0bYuF">65单</strong></li>
+          <li data-page-node-id="HboGiYYdyZBANq6BAZLSuS"><span class="tag result" data-page-node-id="LUZrqTNV6lpaxqGIdL1Ofw">扩科转化</span>口语一对一客单价<strong data-page-node-id="v4fJ8bU2DHv8qyYD8NQqFU">8000-30000元</strong>，高客单转化经验</li>
+          <li data-page-node-id="B0KF3v6UhTx2ENdidgDS4O"><span class="tag result" data-page-node-id="uBGFm06qIbUiAX2Fvz7Qnq">带班规模</span>单期接量<strong data-page-node-id="tFvshvuJLtAotGA7SNKaFs">160-200人</strong>，多期并行管理</li>
+        </ul>
+      </div>
+
+      <div class="resume-card" data-page-node-id="ZSlCS67MoDhUCyreghbScb">
+        <h3 data-page-node-id="MYDxaQ5MV5ImA2E73hHx0c">🎤 面试可讲的故事</h3>
+        <ul data-page-node-id="Hfqa43M805IWjsjR1wubBC">
+          <li data-page-node-id="GcHeSLZ0JvBO7DV7DXU68S"><span class="tag story" data-page-node-id="nLQ4H5b3vfzKz0MC9w5Vgb">工作流</span>"我梳理过辅导老师从接量到续费的全链路SOP，6个环节每个都有时效和数据标准——这套体系让我带的班退费率只有2.2%，是部门均值10%的1/4"</li>
+          <li data-page-node-id="Y5jIm95uYTkKw149KPYoZ5"><span class="tag story" data-page-node-id="Dn3FvC7dI6mME2mapqK0Pc">用户洞察</span>"我总结过学员学习失败的4大根源，从认知层面理解学员卡点，这套分析框架让扩科推荐不再是硬推，而是对症下药"</li>
+          <li data-page-node-id="o5aGWZv88iEjinEnCC1OHZ"><span class="tag story" data-page-node-id="xnZ6L3pkV98OGPoAsWBeXG">数据思维</span>"我跟踪建联率、首call率、退费率、扩科率四指标，用数据指导每周的服务动作优先级"</li>
+          <li data-page-node-id="aU4J3DYGrBdGwGdA9f4CMA"><span class="tag story" data-page-node-id="H06v3ZJvfvRFYu3TGxx8YS">复杂规则</span>"业绩归属涉及14天保护期、有效交接三条件、跨期归属等复杂判单，我能用一句话原则讲清楚：先看保护期→再看交接时间→最后看共同谈单"</li>
+          <li data-page-node-id="HzkaANjhFx6JYDVbhQ57iM"><span class="tag story" data-page-node-id="zdtJHnZndhJZKCjt5Cr98E">商业理解</span>"我理解398引流→3980二转→一对一扩科的完整漏斗，辅导老师是漏斗中段的转化核心，不只是服务岗"</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sop-section" style="margin-top:20px" data-page-node-id="pyamtfTODlKGY0YEzDFMO5">
+      <h2 data-page-node-id="itCub879cGNrdJPIWQaRH1">❓ 面试高频问题预案</h2>
+      <div class="interview-q" data-page-node-id="QsjH5eDjKyiYwZCFwr2JvT">
+        <div class="q" data-page-node-id="NE8PL0c3dkqZzWyJm2ng9d">Q：你的工作流是什么样的？</div>
+        <div class="a" data-page-node-id="IGPiH2CAaAyaxQcFA0besU">A：接量建联(周五60%/六90%/日95%) → 1月内首call → 日常服务(纠音当日清/周联系/双周小灶课/月回访) → 14天静默期后扩科 → 业绩台账登记 → 退费48h挽单。每个环节都有时效和数据标准。</div>
+      </div>
+      <div class="interview-q" data-page-node-id="KWt3nibo43sfUGuTyNjeXX">
+        <div class="q" data-page-node-id="E0SUT31M0AvlFUPc2YTErp">Q：你怎么理解辅导老师这个岗位？</div>
+        <div class="a" data-page-node-id="iVkQMVWeEZzrHePNuYItWW">A：辅导老师是398→3980→一对一漏斗的中段转化核心。不只是服务岗，更是销售转化+用户运营+SOP执行的复合岗。我的退费率2.2%远低于部门均值10%，说明服务做到了前置挽单。</div>
+      </div>
+      <div class="interview-q" data-page-node-id="3wkNvJ1c7O3RKyMsGKyHHi">
+        <div class="q" data-page-node-id="0j6RSFfDoi0czDqg6Q8hwU">Q：遇到学员想退费怎么办？</div>
+        <div class="a" data-page-node-id="bk1rX2cBMoQR9cnIrkNzuE">A：48小时关单SOP：一级(辅导)2h工作日/4h休息日内挽单 → 建群同步信息 → 二级(销售)12h电话挽单 → 主管升级。退费金额=课程总价×(1-已更新课时/总课时)。扩科退费终身跟随业绩。</div>
+      </div>
+      <div class="interview-q" data-page-node-id="nGZXUuUXaQ8VRmS7GHPGVb">
+        <div class="q" data-page-node-id="Sdmfp4MMytWInrifFDCTlS">Q：你怎么做扩科转化？</div>
+        <div class="a" data-page-node-id="SvkJKf1faKB1RQQNIAPspi">A：14天静默期后，用"回访梳理"切入（帮学员看到卡点）→ 根据回答判断角度（学不明白/词汇不够/还可以）→ 推荐一对一试听 → 试听感受后讨论价格。底层逻辑是"学习失败4根源"——先理解为什么学不下去，再对症推荐。</div>
+      </div>
+      <div class="interview-q" data-page-node-id="T6SlUdIEgU3C2Od6wDVzvb">
+        <div class="q" data-page-node-id="jKvoPyj8q8iAkn8e0xE3BZ">Q：你跟踪哪些数据指标？</div>
+        <div class="a" data-page-node-id="KwmAiHN5iJGkT0JKB4fWBH">A：建联率(95%目标)、首call完成率(1月内)、退费率(现状10%目标8%，我做到2.2%)、扩科率(5%目标)、续班率。还关注带班量(≥200系数1.0)和拆标梯度(M0-M4共12万/期)。</div>
+      </div>
+    </div>
+
+    <!-- 自我定位话术库 -->
+    <div class="sop-section pitch-library" data-page-node-id="yara-pitch-lib-2026-09-01">
+      <h2 data-page-node-id="yara-pitch-title">🎙️ 自我定位话术库</h2>
+      <p class="pl-intro" data-page-node-id="yara-pitch-intro">本话术库的底色是<strong>教培行业交付运营 = 教学产品全生命周期的中后台操盘手</strong>，不做 C 端学员沟通。每个场景都附「触发条件」+「话术正文」+「禁忌」。</p>
+
+      <div class="pl-scenario" data-page-node-id="yara-pitch-s1">
+        <div class="pl-head" data-page-node-id="yara-pitch-s1-h">
+          <span class="pl-tag scenario-a" data-page-node-id="yara-pitch-s1-t">场景 A</span>
+          <h3 data-page-node-id="yara-pitch-s1-h3">HR 初次沟通 · 接住"你做什么岗位"</h3>
+        </div>
+        <p class="pl-trigger" data-page-node-id="yara-pitch-s1-tr">触发：HR 问"你目前做什么岗位"或发来岗位 JD 让你表态</p>
+        <blockquote class="pl-script" data-page-node-id="yara-pitch-s1-script">王老师您好，简历您已查收到～感谢告知业务方向。我目前在<strong>教培行业做交付运营</strong>，本质是教学产品全生命周期的中后台操盘手——面向系统、产品、课程、数据这条链路，不做 C 端学员沟通。过去 1.5 年在雅识做过：单月并行 5 个期班 + 月均 500 条退费核验 + 沉淀 8 类流程 SOP，这些经验对贵岗位的"简历投递 + 消息跟进"环节应该是<strong>直接可迁移</strong>的——尤其是从高频操作里识别流程断点、推动标准化这块。方便跟您约 15-20 分钟语音，先对齐几个细节吗？</blockquote>
+        <p class="pl-taboo" data-page-node-id="yara-pitch-s1-taboo">禁忌：不要直接说"考虑"显得太急；不要反问太多显得难搞；不要先问薪资（第一轮还在业务澄清）。</p>
+      </div>
+
+      <div class="pl-scenario" data-page-node-id="yara-pitch-s2">
+        <div class="pl-head" data-page-node-id="yara-pitch-s2-h">
+          <span class="pl-tag scenario-b" data-page-node-id="yara-pitch-s2-t">场景 B</span>
+          <h3 data-page-node-id="yara-pitch-s2-h3">面试开场 30 秒 · 电梯演讲</h3>
+        </div>
+        <p class="pl-trigger" data-page-node-id="yara-pitch-s2-tr">触发：面试官说"请你做个自我介绍"</p>
+        <blockquote class="pl-script" data-page-node-id="yara-pitch-s2-script">我是 Nean，1.5 年<strong>教培行业交付运营</strong>经验，单月并行过 5 个期班 + 月均 500 条退费核验 + 沉淀 8 类流程 SOP。我理解的"教学产品全生命周期运营"是从"产品规划出来"到"课节稳定交付"再到"异常闭环"的中后台工作——我的最强项是从高频操作里识别流程断点，不只是执行，能看到哪里能优化、怎么批量化、怎么系统化。这恰好是岗位从"执行岗"走向"运营岗"的核心能力。</blockquote>
+        <p class="pl-taboo" data-page-node-id="yara-pitch-s2-taboo">禁忌：不要说"教务管理"——易被误读为客服/班主任；不要展开讲细节，留 30 秒引导追问。</p>
+      </div>
+
+      <div class="pl-scenario" data-page-node-id="yara-pitch-s3">
+        <div class="pl-head" data-page-node-id="yara-pitch-s3-h">
+          <span class="pl-tag scenario-c" data-page-node-id="yara-pitch-s3-t">场景 C</span>
+          <h3 data-page-node-id="yara-pitch-s3-h3">被误读为客服/班主任时纠正</h3>
+        </div>
+        <p class="pl-trigger" data-page-node-id="yara-pitch-s3-tr">触发：面试官说"那这个岗位要带学员/接电话/做售后，你能接受吗"</p>
+        <blockquote class="pl-script" data-page-node-id="yara-pitch-s3-script">老师我澄清一下——我之前做的是<strong>教培行业交付运营</strong>，本质是教学产品全生命周期的中后台操盘手。我面向"系统-产品-课程-数据"链路，<strong>不直接面对学员</strong>。我的工作产出是课节交付准确率、多系统协同零事故率、异常闭环时长、运营需求上线率、退费风控闭环——这五条是操盘手 KPI，不是"学员满意度"这种班主任指标。所以如果是带学员/接电话/做售后为主的岗位，可能和我的能力方向不太匹配。</blockquote>
+        <p class="pl-taboo" data-page-node-id="yara-pitch-s3-taboo">禁忌：不要直接说"我不做客服"显得态度差；用"能力方向不太匹配"留余地，让对方主动重新对齐岗位内容。</p>
+      </div>
+
+      <div class="pl-scenario" data-page-node-id="yara-pitch-s4">
+        <div class="pl-head" data-page-node-id="yara-pitch-s4-h">
+          <span class="pl-tag scenario-d" data-page-node-id="yara-pitch-s4-t">场景 D</span>
+          <h3 data-page-node-id="yara-pitch-s4-h3">被推荐错岗位时婉拒</h3>
+        </div>
+        <p class="pl-trigger" data-page-node-id="yara-pitch-s4-tr">触发：HR 说"我觉得你更适合做销售/班主任/教务助理"</p>
+        <blockquote class="pl-script" data-page-node-id="yara-pitch-s4-script">谢谢老师您的建议，我理解您的考虑。不过坦诚说，我过去 1.5 年在雅识沉淀的能力是 SOP 搭建 + 多系统协同 + 产品需求驱动 + 退费风控——这些是<strong>操盘手特征，不是执行层特征</strong>。我希望下一份工作能继续放大这三件事，而不是切换到销售/班主任/教务助理赛道。如果贵司有"交付运营 / 中后台操盘 / SOP 项目"方向的岗位，我非常愿意进一步沟通；如果没有，那也感谢您的时间，希望以后有机会合作。</blockquote>
+        <p class="pl-taboo" data-page-node-id="yara-pitch-s4-taboo">禁忌：不要撕破脸——HR 是人脉，今天不合作明天可能介绍别的；保留"未来合作"的开放性。</p>
+      </div>
+
+      <p class="pl-footnote" data-page-node-id="yara-pitch-foot">话术更新于 2026-09-01。底色定位已写入 <code>~/.workbuddy/MEMORY.md</code> 的"2026-09-01 职业定位澄清"节，跨会话保持一致。</p>
+    </div>
+  </div>
+</div>
+
+<script src="yara-runtime-config.js"></script>
+<script src="yara-module-ui.js"></script>
+<script>
+(function(){
+  'use strict';
+  function switchTab(tabId){
+    document.querySelectorAll('.tab-btn').forEach(function(b){
+      b.classList.toggle('active', b.dataset.tab === tabId);
+      b.setAttribute('aria-selected', b.dataset.tab === tabId);
+    });
+    document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+    var t = document.getElementById('panel-' + tabId);
+    if(t) t.classList.add('active');
+  }
+  document.querySelectorAll('.tab-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){ switchTab(this.dataset.tab); });
+  });
+  window.yashiWorkSwitchTab = switchTab;
+
+  window.addEventListener('message', function(e){
+    if(e && e.data && e.data.type === 'yara-theme-update' && e.data.theme){
+      document.documentElement.setAttribute('data-yara-theme', e.data.theme);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

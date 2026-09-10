@@ -119,19 +119,14 @@
       return true;
     }
 
-    var openDetails = Array.prototype.slice.call(document.querySelectorAll('details[open]')).pop();
-    if (openDetails) {
-      openDetails.open = false;
-      returnToParent();
-      return true;
-    }
-
+    // 优先关闭"最顶层"覆盖物（dialog/modal/drawer/sheet/aria-modal）；
+    // 一次只关一个，避免把抽屉内的 details 也连带关掉造成状态错乱（与 yara-system-bridge.js 同步）。
     var openLayer = Array.prototype.slice.call(document.querySelectorAll(
-      '.modal.open,.modal.show,.modal-backdrop.open,.modal-backdrop.show,.board-detail-backdrop.open,[data-yara-layer].open,[aria-modal="true"].open'
+      '.modal.open,.modal.show,.modal-backdrop.open,.modal-backdrop.show,.drawer.open,.board-detail-backdrop.open,[data-yara-layer].open,[aria-modal="true"].open'
     )).pop();
     if (openLayer) {
       var closeControl = openLayer.querySelector(
-        '[data-action="close-jd-modal"],[data-action*="close"],[data-close],.modal-close,[aria-label*="关闭"]'
+        '[data-action="close-jd-modal"],[data-action*="close"],[data-close],.modal-close,.drawer-close,[aria-label*="关闭"]'
       );
       if (closeControl) {
         closeControl.click();
@@ -140,10 +135,19 @@
       }
     }
 
-    if (moduleType.indexOf('schedule-') === 0 &&
-        new URLSearchParams(location.search).get('from') === 'academic-build' &&
+    // 建课工具内存在默认展开的配置 <details>，它们不是导航层级。
+    // 从三级工具页返回二级时必须先恢复工具列表，不能被普通折叠区截获。
+    if (new URLSearchParams(location.search).get('from') === 'academic-build' &&
         Number(detail.targetLevel) <= 2) {
-      location.href = new URL('../运营能力地图/academic-system.html?view=tools', location.href).href;
+      location.replace(new URL('../运营能力地图/academic-system.html?view=tools', location.href).href);
+      return true;
+    }
+
+    // 没有顶层覆盖物时，再考虑裸露的 <details> 折叠块。
+    var openDetails = Array.prototype.slice.call(document.querySelectorAll('details[open]')).pop();
+    if (openDetails) {
+      openDetails.open = false;
+      returnToParent();
       return true;
     }
 

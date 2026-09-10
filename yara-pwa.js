@@ -21,7 +21,7 @@
     button.type = 'button';
     button.className = 'icon-btn pwa-install-button';
     button.hidden = true;
-    button.setAttribute('aria-label', '安装 Yara 到桌面');
+    button.setAttribute('aria-label', '安装 Lysie 到桌面');
     button.setAttribute('title', '安装到桌面');
     button.innerHTML = '<span aria-hidden="true">⇩</span><span class="pwa-install-label">安装</span>';
     var firstAction = actions.querySelector('.search-toggle');
@@ -33,7 +33,7 @@
     backdrop.setAttribute('aria-hidden', 'true');
     backdrop.innerHTML = '<section class="pwa-dialog" role="dialog" aria-modal="true" aria-labelledby="pwaDialogTitle">' +
       '<div class="pwa-dialog-head"><span class="pwa-dialog-icon" aria-hidden="true">🌱</span>' +
-      '<div class="pwa-dialog-copy"><h2 id="pwaDialogTitle">把 Yara 装到桌面</h2><p id="pwaDialogIntro">像 App 一样独立打开，Web 与手机仍共用同一套数据。</p></div>' +
+      '<div class="pwa-dialog-copy"><h2 id="pwaDialogTitle">把 Lysie 装到桌面</h2><p id="pwaDialogIntro">像 App 一样独立打开，Web 与手机仍共用同一套数据。</p></div>' +
       '<button class="pwa-dialog-close" type="button" aria-label="关闭">×</button></div>' +
       '<div class="pwa-install-steps" id="pwaInstallSteps"></div>' +
       '<div class="pwa-dialog-actions"><button type="button" data-pwa-cancel>稍后</button><button type="button" class="pwa-primary" data-pwa-confirm>安装到桌面</button></div>' +
@@ -95,7 +95,7 @@
     toast.id = 'pwaUpdateToast';
     toast.className = 'pwa-update-toast';
     toast.setAttribute('role', 'status');
-    toast.innerHTML = '<span>Yara 有新版本，更新不会修改你的数据。</span><button type="button">立即更新</button>';
+    toast.innerHTML = '<span>Lysie 有新版本，更新不会修改你的数据。</span><button type="button">立即更新</button>';
     document.body.appendChild(toast);
     requestAnimationFrame(function () { toast.classList.add('show'); });
     toast.querySelector('button').addEventListener('click', function () {

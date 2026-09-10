@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="zh-CN" data-yara-theme="dawn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#F7F9FC">
+  <title>职业方向与公司筛选指南 · Lysie</title>
+  <link rel="stylesheet" href="yara-pwa.css?v=1.0">
+  <link id="yaraSystemTheme" rel="stylesheet" href="yara-system-theme.css?v=5.0">
+  <style>
+    :root{
+      --bg:#F7F9FC;--card:#FFFFFF;--ink:#1F2937;--sub:#6B7280;--line:#E8EDF4;
+      --accent:#059669;--accent-soft:#ECFDF5;--accent-line:#A7F3D0;
+      --green:#059669;--green-soft:#ECFDF5;
+      --red:#DC2626;--red-soft:#FEF2F2;
+      --orange:#D97706;--orange-soft:#FFFBEB;
+      --shadow:0 16px 45px rgba(15,23,42,.06);--r:14px;
+      --font:"Avenir Next","MiSans","HarmonyOS Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;background:var(--bg)}
+    body{min-height:100vh;font:400 15px/1.65 var(--font);color:var(--ink);background:
+      radial-gradient(circle at 6% 0,rgba(5,150,105,.10),transparent 30%),
+      radial-gradient(circle at 96% 4%,rgba(217,119,6,.08),transparent 26%),var(--bg)}
+    .app{width:min(1080px,100%);margin:auto;padding:26px clamp(14px,3vw,30px) 90px}
+
+    .hero{padding:24px 26px;border:1px solid rgba(255,255,255,.85);border-radius:24px;background:linear-gradient(135deg,rgba(236,253,245,.96),rgba(247,249,252,.94) 55%,rgba(255,251,235,.9));box-shadow:var(--shadow)}
+    .kicker{display:flex;align-items:center;gap:8px;color:var(--accent);font-size:.72rem;font-weight:800;letter-spacing:.1em}
+    .kicker i{display:grid;place-items:center;width:30px;height:30px;border-radius:11px;background:linear-gradient(145deg,#10B981,#059669);color:#fff;font-style:normal;font-size:1rem}
+    h1{margin-top:10px;font-size:clamp(1.55rem,4vw,2.2rem);letter-spacing:-.04em}
+    .hero-sub{margin-top:6px;color:var(--sub);font-size:.8rem;line-height:1.6}
+
+    .toc{margin-top:20px;padding:18px 20px;border-radius:16px;border:1px solid var(--line);background:var(--card)}
+    .toc h2{font-size:.95rem;margin-bottom:10px;color:var(--accent)}
+    .toc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px}
+    .toc a{display:block;padding:8px 12px;border-radius:10px;font-size:.78rem;color:var(--ink);text-decoration:none;background:#FAFBFD;border:1px solid var(--line);transition:all .2s}
+    .toc a:hover{border-color:var(--accent-line);background:var(--accent-soft)}
+
+    .section{margin-top:28px}
+    .section-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+    .section-num{flex:0 0 auto;width:36px;height:36px;border-radius:12px;background:linear-gradient(145deg,#10B981,#059669);color:#fff;font-weight:800;font-size:.85rem;display:grid;place-items:center}
+    .section-head h2{font-size:1.05rem;letter-spacing:-.01em}
+    .section-head p{color:var(--sub);font-size:.72rem}
+
+    .card{padding:18px 20px;border-radius:var(--r);border:1px solid var(--line);background:var(--card);margin-bottom:12px}
+    .card h3{font-size:.92rem;margin-bottom:8px;color:var(--accent)}
+    .card p,.card li{color:var(--sub);font-size:.8rem;line-height:1.7}
+    .card ul,.card ol{padding-left:18px;margin-top:8px}
+    .card li{margin-bottom:4px}
+
+    table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.78rem}
+    th{background:var(--accent-soft);color:var(--accent);padding:10px 12px;text-align:left;font-weight:700;border:1px solid var(--accent-line)}
+    td{padding:10px 12px;border:1px solid var(--line);color:var(--ink)}
+    tr:nth-child(even) td{background:#FAFBFD}
+
+    .highlight{padding:16px 18px;border-radius:12px;background:linear-gradient(135deg,#ECFDF5,#FFFBEB);border:1px dashed var(--accent-line);margin:16px 0;font-size:.82rem;line-height:1.8;color:#065F46}
+    .highlight b{color:var(--accent)}
+
+    .warning{padding:16px 18px;border-radius:12px;background:var(--red-soft);border:1px solid #FECACA;margin:16px 0;font-size:.82rem;line-height:1.8;color:#991B1B}
+
+    .tag{display:inline-block;padding:3px 10px;border-radius:999px;font-size:.68rem;font-weight:750;margin:2px}
+    .tag.green{background:var(--green-soft);color:var(--green)}
+    .tag.orange{background:var(--orange-soft);color:var(--orange)}
+    .tag.red{background:var(--red-soft);color:var(--red)}
+
+    .stars{color:#FBBF24;font-size:.9rem;letter-spacing:2px}
+
+    .score-card{margin-top:20px;padding:20px;border-radius:16px;background:linear-gradient(135deg,#ECFDF5,#F5F3FF);border:1px solid var(--accent-line)}
+    .score-card h2{font-size:1rem;margin-bottom:14px}
+    .score-table{width:100%;font-size:.76rem}
+    .score-table th{background:var(--accent);color:#fff}
+    .score-table td:nth-child(2){text-align:center;font-weight:700;color:var(--accent)}
+
+    .veto-list{margin-top:16px;padding:16px 18px;border-radius:12px;background:var(--red-soft);border:1px solid #FECACA}
+    .veto-list h3{color:#991B1B;margin-bottom:10px}
+
+    @media (max-width:768px){
+      .app{padding:18px 12px 80px}
+      .hero{padding:18px 16px;border-radius:20px}
+      .toc-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <div class="kicker"><i>💼</i>职业发展 · 杭州求职</div>
+      <h1>职业方向与公司筛选指南</h1>
+      <p class="hero-sub">不是找"福利照片看起来最温馨"的公司，而是找一个在制度上允许普通员工保持尊严、边界和成长性的团队。</p>
+    </header>
+
+    <nav class="toc" aria-label="目录导航">
+      <h2>📋 指南导航</h2>
+      <div class="toc-grid">
+        <a href="#s1">一、职业需求画像</a>
+        <a href="#s2">二、最适合的岗位方向</a>
+        <a href="#s3">三、适合优先考虑的公司</a>
+        <a href="#s4">四、招聘平台搜索关键词</a>
+        <a href="#s5">五、面试反向尽调</a>
+        <a href="#s6">六、Offer评分表</a>
+        <a href="#s7">七、判断薪资是否合理</a>
+        <a href="#s8">八、外部核实渠道</a>
+        <a href="#s9">九、推荐求职顺序</a>
+      </div>
+    </nav>
+
+    <section class="section" id="s1">
+      <div class="section-head">
+        <div class="section-num">1</div>
+        <div><h2>职业需求画像</h2><p>我想要什么样的工作</p></div>
+      </div>
+      <div class="card">
+        <ul>
+          <li>工作时间内有明确任务，可以认真配合和承担责任</li>
+          <li>能够独立推进事情，不被领导全天候盯着</li>
+          <li>周末和休息时间有边界，不默认随时待命</li>
+          <li>初期可以接受适量高频、重复性工作</li>
+          <li>后期能够看到专业成长、晋升或涨薪路线</li>
+          <li>工资不能明显低于市场和个人生活需要</li>
+          <li>公司具备基本人文关怀，有节日福利、正常休假和员工尊重</li>
+        </ul>
+      </div>
+      <div class="highlight">
+        <b>最适合的职业环境：</b>在管理相对规范的成熟公司里，做有明确目标、可以独立推进、通过数据或流程创造价值的内部支持型岗位。<br><br>
+        需要的是<b>"有事做、有权限、有反馈，但不需要全天候待命"</b>的工作。
+      </div>
+    </section>
+
+    <section class="section" id="s2">
+      <div class="section-head">
+        <div class="section-num">2</div>
+        <div><h2>最适合的岗位方向</h2><p>优先匹配数据分析相关</p></div>
+      </div>
+      <div class="card">
+        <table>
+          <tr><th>推荐度</th><th>岗位方向</th><th>适配原因</th><th>主要风险</th></tr>
+          <tr><td><span class="stars">★★★★★</span></td><td><b>经营分析/业务数据分析</b></td><td>有固定报表，也有发现问题、提出建议的空间；成长路线清楚</td><td>月末、季度末可能较忙</td></tr>
+          <tr><td><span class="stars">★★★★★</span></td><td><b>BI分析/数据运营</b></td><td>前期可做重复报表，后期升级到自动化、看板和指标体系</td><td>有些公司会做成纯"取数工具人"</td></tr>
+          <tr><td><span class="stars">★★★★☆</span></td><td><b>销售运营/Revenue Operations</b></td><td>分析销售漏斗、客户、目标和流程，主观能动性较强</td><td>月末冲业绩时压力较大</td></tr>
+          <tr><td><span class="stars">★★★★☆</span></td><td><b>供应链计划/库存分析</b></td><td>任务具体、有数据、有流程，能够逐步升级为计划和经营决策</td><td>大促或缺货时可能加班</td></tr>
+          <tr><td><span class="stars">★★★★☆</span></td><td><b>流程运营/运营效能</b></td><td>找问题、改流程、推动系统化，能够发挥主动性</td><td>跨部门协调较多</td></tr>
+          <tr><td><span class="stars">★★★☆☆</span></td><td>商业分析助理</td><td>分析空间和成长上限较高</td><td>入门竞争较强</td></tr>
+          <tr><td><span class="stars">★★★☆☆</span></td><td>CRM/会员运营分析</td><td>可以做用户分层、复购和活动效果分析</td><td>零售活动可能占周末</td></tr>
+        </table>
+      </div>
+      <div class="highlight">
+        <b>推荐定位：</b>业务数据分析/经营分析方向，优先从数据运营、BI报表、销售运营、供应链分析切入。<br>
+        不要只搜索"数据分析师"，否则会遗漏大量实际匹配的岗位。
+      </div>
+    </section>
+
+    <section class="section" id="s3">
+      <div class="section-head">
+        <div class="section-num">3</div>
+        <div><h2>适合优先考虑的公司</h2><p>理想公司画像 + 谨慎/不建议</p></div>
+      </div>
+      <div class="card">
+        <h3>✅ 理想公司画像</h3>
+        <ul>
+          <li>经营五年以上，收入来源比较稳定</li>
+          <li>规模约300–5000人，或者属于大公司中的成熟业务部门</li>
+          <li>甲方内部岗位，而不是外包、驻场和代运营</li>
+          <li>B2B软件、医疗器械、工业制造、消费品、供应链、企业服务等行业</li>
+          <li>有独立HR、明确汇报线、绩效制度和职级体系</li>
+          <li>团队不只有一个人，员工休假时有人可以接替</li>
+          <li>直属领导有相关专业经历，而不是老板亲戚或纯靠关系上位</li>
+          <li>工作结果以报表、项目、流程和分析报告衡量，而不是以"随叫随到"衡量</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>⚠️ 可以谨慎考虑</h3>
+        <ul>
+          <li><b>外企：</b>工作边界和制度通常更容易核实，但英语要求可能较高，晋升速度可能偏慢</li>
+          <li><b>国企或大型集团：</b>福利和稳定性可能较好，但部门差异很大</li>
+          <li><b>大厂成熟后台部门：</b>薪资和成长不错，但不能默认一定有工作边界</li>
+          <li><b>银行、保险内部数据岗：</b>制度相对明确，但要注意考核和季度压力</li>
+        </ul>
+      </div>
+      <div class="warning">
+        <h3>❌ 不建议优先进入</h3>
+        <ul style="color:#991B1B">
+          <li>20人以下、创始人直接管理的早期创业公司</li>
+          <li>直播、电商代运营、广告投放、MCN、本地生活即时运营</li>
+          <li>游戏活动运营、社群运营、客服主管等需要随时响应的岗位</li>
+          <li>总经理助理、老板助理、综合运营</li>
+          <li>纯销售、高提成低底薪岗位</li>
+          <li>"行政+人事+运营+采购+老板交代的其他事务"式岗位</li>
+          <li>家族企业中权责和晋升完全不透明的部门</li>
+        </ul>
+      </div>
+      <div class="highlight">
+        下午茶和节日礼物只能加分，不能当作人文关怀的核心证据。真正重要的是：<b>加班规则、休假能否使用、领导如何处理错误、工资是否准时、绩效是否透明、下班消息是否默认必须回复</b>。
+      </div>
+    </section>
+
+    <section class="section" id="s4">
+      <div class="section-head">
+        <div class="section-num">4</div>
+        <div><h2>招聘平台搜索关键词</h2><p>第一梯队 + 搭配筛选词 + 警惕表述</p></div>
+      </div>
+      <div class="card">
+        <h3>第一梯队关键词（直接搜）</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">
+          <span class="tag green">经营分析专员</span>
+          <span class="tag green">业务数据分析</span>
+          <span class="tag green">BI数据分析师</span>
+          <span class="tag green">数据运营专员</span>
+          <span class="tag green">销售运营 数据分析</span>
+          <span class="tag green">商业运营分析</span>
+          <span class="tag green">供应链计划分析</span>
+          <span class="tag green">库存分析</span>
+          <span class="tag green">运营效能</span>
+          <span class="tag green">流程运营</span>
+          <span class="tag green">报表分析</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>搭配筛选词</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">
+          <span class="tag orange">杭州</span>
+          <span class="tag orange">甲方</span>
+          <span class="tag orange">双休</span>
+          <span class="tag orange">SQL</span>
+          <span class="tag orange">Excel</span>
+          <span class="tag orange">Power BI/FineBI</span>
+          <span class="tag orange">年终奖</span>
+          <span class="tag orange">调薪</span>
+          <span class="tag orange">五险一金</span>
+        </div>
+      </div>
+      <div class="warning">
+        <h3>⚠️ 需要提高警惕的表述（每出现一个都应在面试中追问）</h3>
+        <ul style="color:#991B1B">
+          <li>"弹性工作" → 可能是上班不弹、下班弹</li>
+          <li>"抗压能力强""接受高强度工作"</li>
+          <li>"结果导向，不计较个人得失"</li>
+          <li>"创业心态""狼性文化"</li>
+          <li>"能适应快速变化和临时任务"</li>
+          <li>"手机保持畅通"</li>
+          <li>"扁平管理，直接向老板汇报"</li>
+          <li>"不养闲人""只要你想赚钱"</li>
+          <li>一个岗位同时包含数据、直播、客服、文案、销售和行政</li>
+          <li>职位长期重复招聘，或同一团队同时招聘很多相同岗位</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="s5">
+      <div class="section-head">
+        <div class="section-num">5</div>
+        <div><h2>面试反向尽调</h2><p>不要只问"加班多不多"</p></div>
+      </div>
+      <div class="card">
+        <h3>1. 判断工作节奏与边界</h3>
+        <ul>
+          <li>"这个岗位正常一周的工作是怎么分布的？"</li>
+          <li>"固定报表、临时需求和专项分析大约各占多少？"</li>
+          <li>"过去三个月，团队最近一次周末处理工作是什么情况？"</li>
+          <li>"如果晚上出现业务需求，通常什么程度才需要立即响应？"</li>
+          <li>"团队有没有轮值或备份机制？"</li>
+          <li>"前任离职或休假时，工作由谁接替？"</li>
+        </ul>
+        <p style="margin-top:10px;color:var(--orange)"><b>危险回答：</b>"我们不打卡，但是事情要做完"、"年轻人多付出一点很正常"、"看业务需要，大家都比较有责任心"</p>
+      </div>
+      <div class="card">
+        <h3>2. 判断领导的管理方式</h3>
+        <ul>
+          <li>"您通常怎么确定任务目标，中间会多久同步一次？"</li>
+          <li>"如果执行过程中我发现原方案有问题，团队一般怎么调整？"</li>
+          <li>"能否举一个下属提出不同意见，最后改变方案的例子？"</li>
+          <li>"这个岗位哪些事情可以自己决定，哪些必须向您确认？"</li>
+          <li>"最近一次项目结果不理想时，团队是怎么复盘的？"</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>3. 判断成长和涨薪机制</h3>
+        <ul>
+          <li>"这个岗位从初级到下一级，具体能力差别是什么？"</li>
+          <li>"团队最近一年有没有真实晋升或调薪的例子？"</li>
+          <li>"绩效多久评估一次，由谁决定？"</li>
+          <li>"如果职级暂时没有空缺，专业能力提升后，薪酬如何调整？"</li>
+          <li>"入职三个月、半年、一年分别希望我做到什么程度？"</li>
+        </ul>
+        <p style="margin-top:10px;color:var(--orange)">如果对方只说"看表现""公司发展好了大家都会好"，通常代表没有明确机制。</p>
+      </div>
+      <div class="card">
+        <h3>4. 判断团队伦理和责任文化</h3>
+        <ul>
+          <li>面试官是否迟到后不解释</li>
+          <li>是否贬低前任和其他部门</li>
+          <li>是否随意泄露员工隐私</li>
+          <li>是否询问婚育、感情等与工作无关的问题</li>
+          <li>是否开低俗、性别或婚外关系玩笑</li>
+          <li>是否把所有失败归咎于下属</li>
+          <li>是否暗示报销、供应商或采购存在不透明操作</li>
+          <li>是否只强调"听话"，不谈事实和责任</li>
+          <li>面试过程中多人给出的岗位描述是否互相矛盾</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="s6">
+      <div class="section-head">
+        <div class="section-num">6</div>
+        <div><h2>Offer评分表</h2><p>100分制 + 一票否决项</p></div>
+      </div>
+      <div class="score-card">
+        <h2>📊 Offer 评分表（100分制）</h2>
+        <table class="score-table">
+          <tr><th>维度</th><th>分值</th><th>判断内容</th></tr>
+          <tr><td>下班及周末边界</td><td>25</td><td>下班回复规则、周末需求、加班频率、轮值机制</td></tr>
+          <tr><td>直属领导专业性与责任感</td><td>20</td><td>管理方式、专业经历、复盘方式、是否尊重下属</td></tr>
+          <tr><td>工作自主性与任务清晰度</td><td>15</td><td>权责范围、目标、决策空间、临时任务比例</td></tr>
+          <tr><td>薪资、年终奖和调薪机制</td><td>15</td><td>固定薪资、奖金真实性、调薪时间和规则</td></tr>
+          <tr><td>学习价值与晋升路线</td><td>10</td><td>职级标准、项目机会、最近的晋升案例</td></tr>
+          <tr><td>团队稳定性和人员流动</td><td>5</td><td>平均任职时间、前任离职原因、空缺频率</td></tr>
+          <tr><td>公司经营稳定性</td><td>5</td><td>收入来源、业务阶段、裁员和现金流风险</td></tr>
+          <tr><td>通勤、福利和人文关怀</td><td>5</td><td>通勤、休假、节日福利、餐补、员工活动</td></tr>
+        </table>
+      </div>
+      <div class="veto-list">
+        <h3>🚫 一票否决项（出现任一即强烈建议拒绝）</h3>
+        <ul style="color:#991B1B">
+          <li>默认下班随时回复</li>
+          <li>大小周或长期无偿加班</li>
+          <li>绩效规则拒绝说明</li>
+          <li>面试中出现低俗、歧视或羞辱</li>
+          <li>直属领导明显推责、贬低前任</li>
+          <li>工资结构、社保、试用期说法含糊</li>
+          <li>岗位内容与招聘描述严重不一致</li>
+          <li>团队离职率异常，但所有人回避原因</li>
+          <li>暗示需要做账、报销、供应商或数据造假</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="s7">
+      <div class="section-head">
+        <div class="section-num">7</div>
+        <div><h2>判断薪资是否合理</h2><p>实际时薪 > 表面月薪</p></div>
+      </div>
+      <div class="highlight">
+        <b>实际时薪 = 年度现金收入 ÷ 全年真实工作小时</b><br><br>
+        比较Offer时加入：13薪或14薪是否确定 → 绩效奖金实际发放比例 → 五险一金缴纳基数 → 加班频率 → 通勤时间 → 餐补交通补贴商业保险 → 调薪周期 → 试用期薪资 → 隐性待命时间<br><br>
+        <b>一个月薪10K、正常双休、基本不在下班找人的岗位，实际可能比月薪12K、长期加班和周末响应的岗位更有价值。</b>
+      </div>
+      <div class="card">
+        <h3>建立自己的薪资底线</h3>
+        <p>收集至少30个杭州同类岗位，将薪资整理为：市场偏低值 / 市场中位值 / 有经验后的目标值。</p>
+        <p style="margin-top:8px">个人底线应同时满足：</p>
+        <ol>
+          <li>能覆盖固定生活成本</li>
+          <li>能保持一定储蓄</li>
+          <li>与岗位实际工作时间匹配</li>
+          <li>如果起薪偏低，必须有能够核实的成长或调薪机制</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="s8">
+      <div class="section-head">
+        <div class="section-num">8</div>
+        <div><h2>外部核实渠道</h2><p>交叉验证，不只听一面之词</p></div>
+      </div>
+      <div class="card">
+        <ul>
+          <li>招聘平台观察岗位是否长期重复发布</li>
+          <li>脉脉、小红书等平台搜索公司和部门（不轻信单个极端评价）</li>
+          <li>查询企业成立时间、参保人数变化、司法和经营风险</li>
+          <li>联系曾经或正在该部门工作的人，询问具体工作节奏</li>
+          <li>面试时争取与未来同事或直属领导沟通</li>
+          <li>查看员工平均任职时间和团队最近的人员变化</li>
+          <li>核对Offer、员工手册和劳动合同中的书面内容</li>
+        </ul>
+      </div>
+      <div class="highlight">
+        <b>比起问"公司好不好"，更有效的问题是：</b><br>
+        · "这个部门晚上九点以后通常还有多少人在工作？"<br>
+        · "你上一次周末因为工作回复消息是什么时候？"<br>
+        · "团队最近一年离开了几个人，通常是什么原因？"<br>
+        · "你在这里工作最不适应的是什么？"<br>
+        · "领导发现自己判断错了，一般会怎么处理？"
+      </div>
+    </section>
+
+    <section class="section" id="s9">
+      <div class="section-head">
+        <div class="section-num">9</div>
+        <div><h2>推荐求职顺序</h2><p>结合个人性格和学习路线</p></div>
+      </div>
+      <div class="card">
+        <ol>
+          <li><b>成熟甲方的业务数据分析/BI分析</b></li>
+          <li><b>B2B企业的销售运营/经营运营分析</b></li>
+          <li><b>制造业、消费品、医疗器械的供应链或运营分析</b></li>
+          <li><b>流程运营/运营效能岗位</b></li>
+          <li><b>先从报表或数据专员进入，再升级为分析岗位</b></li>
+        </ol>
+        <p style="margin-top:12px;color:var(--orange)">暂时不要优先选择：纯内容运营、直播运营、电商活动运营、创始人助理和早期创业公司综合岗。它们也能发挥主动性，但与工作边界、领导伦理和长期机制的要求发生冲突的概率较高。</p>
+      </div>
+      <div class="highlight" style="margin-top:24px">
+        <b>最终判断：</b>真正需要寻找的不是"福利照片看起来最温馨"的公司，而是一个在制度上允许普通员工保持尊严、边界和成长性的团队。<br><br>
+        直属领导的行为、工作备份机制、真实调薪案例、休息时间是否被尊重，才是判断一家公司是否值得长期工作的核心证据。
+      </div>
+    </section>
+  </main>
+
+  <script src="yara-runtime-config.js?v=1.0"></script>
+  <script src="yara-module-ui.js?v=1.1"></script>
+  <script>
+    // 监听系统主题切换
+    window.addEventListener('message',function(e){
+      if(e&&e.data&&e.data.source==='yara-shell'&&e.data.type==='theme'){
+        document.documentElement.dataset.yaraTheme=e.data.theme||'twilight';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>每日生活待办 · Yara</title>
+<title>每日生活待办 · Lysie</title>
 <style>
 :root{
   --primary:#7C5CFF; --primary-l:#F0EBFF; --ink:#1F2937; --sub:#4B5563;
@@ -84,7 +84,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
   <header class="hd">
     <div class="module-kicker"><span class="module-icon">⌂</span><span>生活管理</span></div>
     <h1>每日生活待办</h1>
-    <p class="sub">DAILY LIFE TODO · YARA</p>
+    <p class="sub">DAILY LIFE TODO · LYSIE</p>
     <p class="sync-tip"><span class="dot"></span>本机数据已就绪 · 配置后可跨设备同步</p>
   </header>
 
@@ -108,14 +108,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
   <div class="sec-label" id="doneLabel" style="display:none;">已完成 <span class="cnt" id="doneCnt"></span></div>
   <ul class="tasks" id="doneList"></ul>
 
-  <div class="foot">Yara · 雅识教育 · 2026</div>
+  <div class="foot">Lysie · LIFE · 2026</div>
 </div>
 
 <script>
 // ===== 每日生活待办 =====
 const LS_KEY = 'yara_life_todo_v1';
 
-// 首次使用预置（后续想到新待办可直接在页面添加，或让 Yara 找我新增）
+// 首次使用预置（后续想到新待办可直接在页面添加）
 const SEED = [
   {id:'seed1', title:'驾驶证期满换证（异地续期）',
    notes:'驾驶证 3401**********4609 将于 2026-10-22 到期。需先完成驾驶人体检（体检医院 / 警邮网点），再通过"交管12123"APP 或支付宝"网上车管所"视频办，线上申请期满换证。本人在杭州，需办理异地续期。逾期未换证不得驾驶机动车。',

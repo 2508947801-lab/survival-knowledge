@@ -164,6 +164,11 @@
   }
 
   var DataHub = {
+    // Fresh, detached reads; callers cannot mutate persisted business data.
+    getSource: function (name, fallback) {
+      return Object.prototype.hasOwnProperty.call(SOURCE_KEYS, name)
+        ? readSource(SOURCE_KEYS[name], fallback) : fallback;
+    },
     state: {
       version: 1,
       updatedAt: '',
@@ -183,12 +188,12 @@
     refresh: function (courseData) {
       var now = new Date();
       var today = isoDate(now);
-      var work = readSource(SOURCE_KEYS.work, { tasks: {} });
-      var life = readSource(SOURCE_KEYS.life, { tasks: [] });
-      var finance = readSource(SOURCE_KEYS.finance, { transactions: [], budgets: {} });
-      var capability = readSource(SOURCE_KEYS.capability, { scores: {} });
-      var growth = readSource(SOURCE_KEYS.growth, { plans: [], english: [], reviews: [] });
-      var flash = readSource(SOURCE_KEYS.flash, { notes: [], summaries: [] });
+      var work = this.getSource('work', { tasks: {} });
+      var life = this.getSource('life', { tasks: [] });
+      var finance = this.getSource('finance', { transactions: [], budgets: {} });
+      var capability = this.getSource('capability', { scores: {} });
+      var growth = this.getSource('growth', { plans: [], english: [], reviews: [] });
+      var flash = this.getSource('flash', { notes: [], summaries: [] });
       var courses = buildCourseSummary(courseData || {}, today);
       var workSummary = buildWorkSummary(work, today);
       var lifeTasks = Array.isArray(life.tasks) ? life.tasks : [];

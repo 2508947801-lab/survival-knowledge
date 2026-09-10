@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#eef4ed">
-  <title>系统设置 · Yara</title>
+  <title>系统设置 · Lysie</title>
   <style>
     :root{--bg:#F7F9FC;--card:#FFFFFF;--ink:#1F2937;--sub:#6B7280;--line:#E8EDF4;--mint:#4F7CFF;--danger:#E85D67;--shadow:0 16px 45px rgba(15,23,42,.06);--font:"Avenir Next","MiSans","HarmonyOS Sans SC","PingFang SC",sans-serif}
     *{box-sizing:border-box;margin:0;padding:0}body{min-height:100vh;padding:30px 16px 70px;color:var(--ink);font:400 14px/1.7 var(--font);background:radial-gradient(circle at 6% 0,rgba(247,189,148,.2),transparent 28%),radial-gradient(circle at 96% 2%,rgba(168,217,197,.26),transparent 30%),var(--bg)}
@@ -20,14 +20,30 @@
   <link id="yaraSystemTheme" rel="stylesheet" href="yara-system-theme.css?v=4.2">
   <script src="yara-runtime-config.js?v=1.0"></script>
   <script src="yara-module-ui.js?v=1.1"></script>
+  <script src="js/yara-config.js?v=1.0"></script>
+  <script src="js/yara-storage-guard.js?v=1.0"></script>
+  <script src="js/yara-data-export.js?v=1.0"></script>
 </head>
 <body data-yara-module="settings">
   <main class="wrap">
     <header class="hero">
-      <div class="kicker">YARA PRIVATE RUNTIME</div>
+      <div class="kicker">LYSIE PRIVATE RUNTIME</div>
       <h1>系统设置</h1>
       <p>连接信息只保存在当前浏览器，不写入公开源码，也不会出现在 GitHub Pages 文件中。</p>
     </header>
+    <section class="card" aria-labelledby="backupTitle">
+      <h2 id="backupTitle">本机数据备份</h2>
+      <p>导出工作、生活、财务、成长、职业、闪念与副业等业务数据；不会导出解锁凭据、云同步配置、错误日志或缓存。</p>
+      <div class="status" id="storageStatus"><i></i><span>正在读取本机存储状态…</span></div>
+      <div class="actions">
+        <button class="btn primary" id="exportLocal" data-yara-op="export">导出完整备份</button>
+        <button class="btn" id="exportLedger" data-yara-op="export">导出记账 CSV</button>
+        <button class="btn" id="restoreMissing" data-yara-op="import">补充到空白模块</button>
+        <button class="btn danger" id="restoreReplace" data-yara-op="import">替换本机业务数据</button>
+      </div>
+      <input id="backupFile" type="file" accept="application/json,.json" hidden>
+      <div class="notice">完整备份可能包含财务、职业或客户信息。请保存在加密磁盘或可信设备，不要上传公开仓库或公开网盘。“补充”只写入当前没有数据的模块；“替换”会先明确确认，再整包覆盖备份中包含的业务模块。</div>
+    </section>
     <section class="card">
       <h2>Supabase 云同步</h2>
       <p>换电脑或浏览器后需要配置一次。只允许使用 anon/public key，严禁填写 service_role key。</p>
@@ -61,7 +77,51 @@
       document.getElementById('clearConfig').addEventListener('click',function(){
         YaraModuleUI.confirm({title:'清除当前浏览器的云同步配置？',message:'不会删除云端数据，但本机将暂停同步。',confirmText:'确认清除'}).then(function(ok){if(ok){YaraRuntimeConfig.clear();render();YaraModuleUI.notify('本机配置已清除');}});
       });
+      var backupFile=document.getElementById('backupFile');
+      var importMode='missing-only';
+      function renderStorage(){
+        var report=DataManager.getUsageReport();
+        var storageStatus=document.getElementById('storageStatus');
+        storageStatus.classList.toggle('ready',report.level==='ok');
+        storageStatus.querySelector('span').textContent='本机已使用约 '+report.usageKB+' KB'+(report.pct?' · 约 '+report.pct+'%':'');
+      }
+      function chooseBackup(mode){
+        importMode=mode;
+        backupFile.value='';
+        backupFile.click();
+      }
+      document.getElementById('exportLocal').addEventListener('click',function(){
+        var count=DataManager.exportAll();
+        YaraModuleUI.notify('已导出 '+count+' 个业务数据模块');
+      });
+      document.getElementById('exportLedger').addEventListener('click',function(){
+        var count=DataManager.exportLedgerCSV();
+        YaraModuleUI.notify(count?'已导出 '+count+' 条记账流水':'当前没有可导出的记账流水',count?'success':'warning');
+      });
+      document.getElementById('restoreMissing').addEventListener('click',function(){chooseBackup('missing-only');});
+      document.getElementById('restoreReplace').addEventListener('click',function(){chooseBackup('replace');});
+      backupFile.addEventListener('change',function(){
+        var file=backupFile.files&&backupFile.files[0];
+        if(!file)return;
+        DataManager.inspectImport(file).then(function(prepared){
+          var replacing=importMode==='replace';
+          return YaraModuleUI.confirm({
+            title:replacing?'替换本机业务数据？':'补充空白模块？',
+            message:'识别到 '+prepared.count+' 个业务模块。'+(replacing?'备份中包含的模块将覆盖本机对应数据；门禁和云配置不受影响。':'已有数据的模块会跳过，只恢复空白模块。'),
+            confirmText:replacing?'确认替换':'确认补充'
+          }).then(function(ok){
+            return ok?DataManager.applyImport(prepared,importMode):null;
+          });
+        }).then(function(result){
+          if(!result)return;
+          renderStorage();
+          YaraModuleUI.notify('已恢复 '+result.imported+' 个模块，跳过 '+result.skipped+' 个；返回首页后会重新汇总');
+        }).catch(function(error){
+          YaraModuleUI.notify(error.message||'备份恢复失败','error');
+        }).finally(function(){backupFile.value='';});
+      });
       render();
+      renderStorage();
       // 支持 URL hash 快速配置：打开 系统设置.html#url=...&key=... 自动填入并保存，
       // 配完立刻清掉地址栏里的 key，不留痕迹。用于手机端免手输一次性配置。
       (function(){

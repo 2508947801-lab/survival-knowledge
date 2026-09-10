@@ -1,0 +1,16 @@
+/* Lysie 加载骨架：只使用全局设计令牌，不创建独立颜色系统。 */
+.skeleton-block{
+  display:block;
+  border-radius:8px;
+  background:linear-gradient(90deg,var(--surface-soft) 24%,var(--surface) 46%,var(--primary-soft) 52%,var(--surface) 58%,var(--surface-soft) 76%);
+  background-size:240% 100%;
+  animation:yara-skeleton-shimmer 1.35s ease-in-out infinite;
+}
+.stat-card.skeleton{min-height:112px;pointer-events:none;user-select:none;}
+.stat-card.skeleton::before{background:var(--border);}
+.stat-card.skeleton .skeleton-number{width:42%;height:28px;margin-top:12px;}
+.stat-card.skeleton .skeleton-label{width:58%;height:12px;margin-top:14px;}
+.stat-card.skeleton .skeleton-sub{width:72%;height:10px;margin-top:9px;}
+.hub-badge.is-error{background:var(--danger);color:#fff;font-weight:800;}
+@keyframes yara-skeleton-shimmer{from{background-position:180% 0;}to{background-position:-80% 0;}}
+@media(prefers-reduced-motion:reduce){.skeleton-block{animation:none;background:var(--surface-soft);}}

@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="zh-CN" data-yara-theme="dawn" data-page-node-id="bDcukbiQpizMEaz6t5bDJM">
+<head data-page-node-id="7icZuDFHPjAFas70TQTwhW">
+  <meta charset="utf-8" data-page-node-id="BRyYwdujgkGpZsmXKsNacN">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" data-page-node-id="ZItWP9fYYxM1GiioJUhVBW">
+  <meta name="theme-color" content="#F7F9FC" data-page-node-id="ZX5YIrqF9ThC7XHnMJGsIF">
+  <title>能力地图 · 我就是系统</title>
+  <link rel="stylesheet" href="yara-pwa.css?v=1.0" data-page-node-id="e8e71U38t8yTPDEXATEIpD">
+  <link id="yaraSystemTheme" rel="stylesheet" href="yara-system-theme.css?v=5.0" data-page-node-id="XtYMmNwogBWMRjXCvNSibd">
+  <style>
+    :root{
+      --bg:#F7F9FC;--card:#FFFFFF;--ink:#1F2937;--sub:#6B7280;--line:#E8EDF4;
+      --accent:#7C3AED;--accent-soft:#F5F3FF;--accent-line:#DDD6FE;
+      --blue:#2563EB;--blue-soft:#EFF6FF;
+      --green:#059669;--green-soft:#ECFDF5;
+      --orange:#D97706;--orange-soft:#FFFBEB;
+      --pink:#DB2777;--pink-soft:#FDF2F8;
+      --cyan:#0891B2;--cyan-soft:#ECFEFF;
+      --shadow:0 16px 45px rgba(15,23,42,.06);--r:14px;
+      --font:"Avenir Next","MiSans","HarmonyOS Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth;background:var(--bg)}
+    body{min-height:100vh;font:400 15px/1.65 var(--font);color:var(--ink);background:
+      radial-gradient(circle at 50% 0,rgba(124,58,237,.10),transparent 40%),
+      radial-gradient(circle at 96% 90%,rgba(219,39,119,.06),transparent 26%),var(--bg)}
+    .app{width:min(1080px,100%);margin:auto;padding:26px clamp(14px,3vw,30px) 90px}
+
+    .hero{padding:26px;border:1px solid rgba(255,255,255,.85);border-radius:24px;background:linear-gradient(135deg,rgba(245,243,255,.96),rgba(247,249,252,.94) 55%,rgba(253,242,248,.9));box-shadow:var(--shadow);text-align:center}
+    .kicker{display:inline-flex;align-items:center;gap:8px;color:var(--accent);font-size:.72rem;font-weight:800;letter-spacing:.1em}
+    .kicker i{display:grid;place-items:center;width:30px;height:30px;border-radius:11px;background:linear-gradient(145deg,#A78BFA,#7C3AED);color:#fff;font-style:normal;font-size:1rem}
+    h1{margin-top:10px;font-size:clamp(1.55rem,4vw,2.2rem);letter-spacing:-.04em}
+    .hero-sub{margin-top:8px;color:var(--sub);font-size:.82rem;line-height:1.7;max-width:640px;margin-left:auto;margin-right:auto}
+    .hero-sub strong{color:var(--ink)}
+
+    /* ===== Tab Navigation ===== */
+    .tab-nav{display:flex;gap:6px;margin:20px 0 0;padding:10px;border:1px solid rgba(255,255,255,.85);border-radius:16px;background:rgba(255,255,255,.86);backdrop-filter:blur(14px);box-shadow:0 8px 24px rgba(15,23,42,.05);overflow-x:auto}
+    .tab-btn{flex:0 0 auto;padding:10px 18px;border:0;border-radius:12px;background:transparent;color:var(--sub);font-size:.78rem;font-weight:700;white-space:nowrap;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px}
+    .tab-btn:hover{background:rgba(124,58,237,.06)}
+    .tab-btn.active{color:#fff;background:linear-gradient(135deg,#A78BFA,#7C3AED);box-shadow:0 4px 12px rgba(124,58,237,.25)}
+
+    .panel{display:none}.panel.active{display:block}
+
+    /* ===== Convergence Visual: 输入 → 我 → 能力 ===== */
+    .converge{margin-top:24px;padding:26px;border-radius:20px;border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow)}
+    .converge h2{font-size:1rem;text-align:center;margin-bottom:4px}
+    .converge>p{text-align:center;font-size:.74rem;color:var(--sub);margin-bottom:24px}
+    .converge-flow{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:center}
+    .flow-col{display:flex;flex-direction:column;gap:10px}
+    .flow-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);font-size:.76rem;transition:all .2s;cursor:pointer}
+    .flow-item:hover{border-color:var(--accent-line);background:var(--accent-soft)}
+    .flow-item .fi-icon{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;font-size:.95rem;flex:0 0 auto}
+    .flow-item .fi-body{flex:1;min-width:0}
+    .flow-item .fi-name{font-weight:700;color:var(--ink)}
+    .flow-item .fi-stat{font-size:.64rem;color:var(--sub)}
+    .flow-item .fi-arrow{color:var(--sub);font-size:.9rem}
+
+    .flow-center{text-align:center;padding:10px}
+    .center-avatar{width:110px;height:110px;border-radius:50%;margin:0 auto;display:grid;place-items:center;background:conic-gradient(from 180deg,#A78BFA,#DB2777,#F59E0B,#10B981,#3B82F6,#A78BFA);padding:5px;box-shadow:0 12px 32px rgba(124,58,237,.3)}
+    .center-inner{width:100%;height:100%;border-radius:50%;background:var(--card);display:grid;place-items:center}
+    .center-inner span{font-size:2.2rem}
+    .center-name{margin-top:12px;font-size:1rem;font-weight:800}
+    .center-tag{margin-top:3px;font-size:.68rem;color:var(--sub)}
+
+    .cap-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;font-size:.76rem;border:1px solid;background:var(--card)}
+    .cap-item .ci-bar{flex:1;height:6px;border-radius:999px;background:var(--line);overflow:hidden}
+    .cap-item .ci-fill{height:100%;border-radius:999px;transition:width .6s ease}
+    .cap-item .ci-name{font-weight:700;color:var(--ink);white-space:nowrap;min-width:64px}
+    .cap-item .ci-pct{font-size:.68rem;font-weight:800;min-width:34px;text-align:right}
+
+    /* ===== Stats Grid ===== */
+    .input-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:24px}
+    .input-card{padding:18px 20px;border-radius:16px;border:1px solid var(--line);background:var(--card);cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+    .input-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+    .input-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(15,23,42,.08)}
+    .ic-flash::before{background:linear-gradient(90deg,#FDE047,#F59E0B)}
+    .ic-book::before{background:linear-gradient(90deg,#34D399,#059669)}
+    .ic-skill::before{background:linear-gradient(90deg,#60A5FA,#2563EB)}
+    .ic-venture::before{background:linear-gradient(90deg,#FB923C,#D97706)}
+    .ic-career::before{background:linear-gradient(90deg,#F472B6,#DB2777)}
+    .ic-check::before{background:linear-gradient(90deg,#22D3EE,#0891B2)}
+    .ic-daily::before{background:linear-gradient(90deg,#A78BFA,#7C3AED)}
+    .ic-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+    .ic-icon{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:1.1rem}
+    .ic-title{font-size:.84rem;font-weight:800}
+    .ic-value{font-size:1.5rem;font-weight:800;letter-spacing:-.02em}
+    .ic-note{font-size:.68rem;color:var(--sub);margin-top:2px}
+    .ic-link{margin-top:10px;font-size:.7rem;font-weight:700;color:var(--accent)}
+
+    /* ===== Synthesis Table ===== */
+    .synthesis{margin-top:24px;padding:22px;border-radius:18px;border:1px solid var(--line);background:var(--card)}
+    .synthesis h2{font-size:1rem;margin-bottom:4px}
+    .synthesis>p{font-size:.74rem;color:var(--sub);margin-bottom:16px}
+    .syn-table{width:100%;border-collapse:collapse;font-size:.8rem}
+    .syn-table th{padding:10px 12px;text-align:left;font-weight:800;color:var(--accent);background:var(--accent-soft);font-size:.74rem}
+    .syn-table th:first-child{border-radius:10px 0 0 0}
+    .syn-table th:last-child{border-radius:0 10px 0 0}
+    .syn-table td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+    .syn-table tr:last-child td{border-bottom:0}
+    .syn-src{font-weight:700;white-space:nowrap}
+    .syn-cap{color:var(--ink);font-weight:600}
+    .syn-evi{color:var(--sub);font-size:.72rem;line-height:1.5}
+
+    /* ===== Iframe ===== */
+    .iframe-wrap{margin-top:16px;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow)}
+    .iframe-wrap iframe{width:100%;min-height:75vh;border:0;display:block}
+
+    /* ===== Philosophy ===== */
+    .philo{margin-top:24px;padding:22px;border-radius:18px;border:1px dashed var(--accent-line);background:linear-gradient(135deg,var(--accent-soft),#FAF5FF)}
+    .philo h2{font-size:.95rem;color:var(--accent);margin-bottom:8px}
+    .philo p{font-size:.78rem;color:var(--ink);line-height:1.8}
+    .philo p+p{margin-top:8px}
+
+    @media(max-width:720px){
+      .app{padding:16px 12px 60px}
+      .converge-flow{grid-template-columns:1fr}
+      .flow-center{order:-1;padding:20px 0}
+      .input-grid{grid-template-columns:repeat(2,1fr)}
+      .syn-table{font-size:.72rem}
+      .syn-table th,.syn-table td{padding:8px 8px}
+    }
+
+    /* ===== 职业身份卡 ===== */
+    .identity-card{margin-top:24px;padding:26px;border-radius:20px;border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow);border-left:4px solid var(--accent,#a992ff)}
+    .identity-card h2{font-size:1.05rem;text-align:left;margin-bottom:8px;color:var(--ink)}
+    .identity-card .ic-intro{font-size:.74rem;color:var(--sub);line-height:1.7;margin-bottom:20px;text-align:left}
+    .identity-card .ic-intro strong{color:var(--accent,#a992ff)}
+    .identity-card h3{font-size:.88rem;font-weight:800;color:var(--ink);margin:22px 0 10px 0;letter-spacing:.02em;padding-left:10px;border-left:3px solid var(--accent,#a992ff)}
+    .identity-card h3::before{content:''}
+    .ic-positioning{padding:14px 16px;border-radius:12px;background:var(--surface-soft,rgba(255,255,255,.04));margin-bottom:8px}
+    .ic-label{display:inline-block;font-size:.6rem;font-weight:800;letter-spacing:.16em;color:var(--accent,#a992ff);padding:3px 9px;border:1px solid var(--accent,#a992ff);border-radius:99px;margin-bottom:8px}
+    .ic-statement{font-size:.78rem;color:var(--ink-soft,#d5d8e8);line-height:1.78}
+    .ic-statement strong{color:var(--ink,#f5f6ff);font-weight:800}
+    .ic-table{width:100%;border-collapse:collapse;font-size:.74rem;margin-top:8px;border-radius:10px;overflow:hidden}
+    .ic-table th{background:var(--surface-soft,rgba(255,255,255,.06));color:var(--ink,#f5f6ff);font-weight:800;padding:9px 11px;text-align:left;font-size:.68rem;letter-spacing:.04em}
+    .ic-table td{padding:9px 11px;border-top:1px solid var(--line,rgba(255,255,255,.08));color:var(--ink-soft,#d5d8e8);font-size:.72rem;line-height:1.55}
+    .ic-row-highlight td{background:linear-gradient(160deg,rgba(169,146,255,.12),rgba(255,255,255,.03));color:var(--ink,#f5f6ff)}
+    .ic-footnote{font-size:.66rem;color:var(--sub,#8f97b4);margin-top:8px;line-height:1.55;font-style:italic}
+    .ic-footnote strong{color:var(--ink-soft,#d5d8e8);font-style:normal}
+    .ic-list{list-style:none;counter-reset:ic;counter-reset:iclist;padding:0;margin:0}
+    .ic-list li{counter-increment:iclist;padding:10px 14px 10px 38px;border-radius:10px;background:var(--surface-soft,rgba(255,255,255,.04));margin-bottom:7px;position:relative;font-size:.74rem;color:var(--ink-soft,#d5d8e8);line-height:1.65}
+    .ic-list li::before{content:counter(iclist);position:absolute;left:11px;top:9px;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#a992ff,#55e5cb);color:#11162a;font-size:.6rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+    .ic-list li strong{color:var(--ink,#f5f6ff);font-weight:800}
+    .ic-evidence{display:block;margin-top:4px;font-size:.66rem;color:var(--mint,#55e5cb);font-style:italic}
+    .ic-kpi-list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}
+    .ic-kpi-list li{padding:9px 12px;border:1px solid var(--line,rgba(255,255,255,.08));border-radius:9px;background:var(--surface-soft,rgba(255,255,255,.04));font-size:.72rem;color:var(--ink-soft,#d5d8e8);position:relative;padding-left:24px}
+    .ic-kpi-list li::before{content:'✓';position:absolute;left:9px;top:8px;color:var(--mint,#55e5cb);font-weight:800}
+    .ic-pitch{margin-top:18px}
+    .ic-pitch-text{margin:8px 0;padding:14px 18px;border-left:3px solid var(--pink,#ff76aa);background:linear-gradient(160deg,rgba(255,118,170,.08),rgba(255,255,255,.02));border-radius:0 12px 12px 0;font-size:.76rem;color:var(--ink-soft,#d5d8e8);line-height:1.78;font-style:italic}
+    .ic-pitch-text strong{color:var(--ink,#f5f6ff);font-style:normal;font-weight:800}
+    .ic-pitch-usage{font-size:.62rem;color:var(--sub,#8f97b4);margin-top:6px;letter-spacing:.04em}
+    @media(max-width:760px){
+      .identity-card{padding:18px}
+      .ic-table{font-size:.66rem}
+      .ic-table th,.ic-table td{padding:7px 8px}
+      .ic-kpi-list{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body data-yara-module="capability-hub" data-page-node-id="RuoljIXWJQVk9giTqJ4rTK">
+
+<div class="app" data-page-node-id="8kUBTKu3BIylK7Y4WD1BY7">
+  <!-- Hero -->
+  <div class="hero" data-page-node-id="CINsmwzphvZjZnx5IRqox9">
+    <div class="kicker" data-page-node-id="IsOASJNVsprT5svOQjq0nf"><i data-page-node-id="fYV5GVDBnVDXM2piKrTU97">🧭</i> CAPABILITY MAP = ME</div>
+    <h1 data-page-node-id="zlMEki8ql16kkQJAEFlB5d">能力地图 · 我就是系统</h1>
+    <p class="hero-sub" data-page-node-id="L3bKKATMF2wp8wT5u58YBR">这个系统里的每一个模块都不是目的——它们是<strong data-page-node-id="xTFeIP5lYdcBYZaK1iCKwY">输入</strong>。<br data-page-node-id="EKEpyzOsij21CFtDt6hzp5">闪念、知识、技能、创业、职业……所有细枝末节最终都汇入同一个人：<strong data-page-node-id="LmqZuGBeJzWLBDBBJviz42">我</strong>。<br data-page-node-id="kYKE9waKDH28s45qoZ0Lyx">能力地图不是工具，是所有输入沉淀之后的<strong data-page-node-id="nYyTJt8CZ3MP8kzAAEgJEl">输出层</strong>。</p>
+  </div>
+
+  <!-- Tabs -->
+  <nav class="tab-nav" role="tablist" data-page-node-id="pKeuXVGDvvkuA2zUwylAaC">
+    <button class="tab-btn active" data-tab="overview" role="tab" aria-selected="true" data-page-node-id="KBBy0ZQBYemzAbOGBQYWhO">🧭 输入 → 我 · 总览</button>
+    <button class="tab-btn" data-tab="cards" role="tab" aria-selected="false" data-page-node-id="DKFO8CHT0GYuW8A00vuk3e">🗺️ 能力卡详情（20卡）</button>
+    <button class="tab-btn" data-tab="inputs" role="tab" aria-selected="false" data-page-node-id="8Q3QZEYZwkPqEUdiwHOReT">📥 输入源明细</button>
+  </nav>
+
+  <!-- Panel: Overview -->
+  <div class="panel active" id="panel-overview" role="tabpanel" data-page-node-id="Ah9Rwf5s08IUhIBDOlXeal">
+
+    <!-- 职业身份卡 -->
+    <div class="converge identity-card" data-page-node-id="yara-identity-card-2026-09-01">
+      <h2 data-page-node-id="yara-ic-title">🪪 我的职业身份卡</h2>
+      <p class="ic-intro" data-page-node-id="yara-ic-intro">所有能力维度的<strong>前提</strong>是身份定位——这是 Lysie 回答“我是谁”的锚点。任何跨模块访问、任何求职决策、任何被误读为客服/班主任的瞬间，先回到这里看一眼。</p>
+
+      <div class="ic-positioning" data-page-node-id="yara-ic-pos">
+        <span class="ic-label" data-page-node-id="yara-ic-label-1">核心定位</span>
+        <p class="ic-statement" data-page-node-id="yara-ic-statement">教培行业交付运营 = <strong>教学产品全生命周期的中后台操盘手</strong>。面向"系统-产品-课程-数据"链路，<strong>不做C端学员沟通</strong>——做的是从"产品规划出来"到"课节稳定交付"再到"异常闭环"的中后台工作。</p>
+      </div>
+
+      <div class="ic-compare" data-page-node-id="yara-ic-compare">
+        <h3 data-page-node-id="yara-ic-compare-title">行业对比 · 同一岗位在不同行业的差异</h3>
+        <table class="ic-table" data-page-node-id="yara-ic-table">
+          <thead>
+            <tr>
+              <th>行业</th>
+              <th>交付运营面向谁</th>
+              <th>关键交付物</th>
+              <th>位置</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>IT / SaaS</td><td>客户 / 技术</td><td>系统部署 + 用户培训 + 解决方案</td><td>偏外部</td></tr>
+            <tr><td>家居</td><td>门店 / 客户</td><td>商城内容 + 活动 + 服务</td><td>全能操盘</td></tr>
+            <tr><td>招聘</td><td>销售订单</td><td>项目协调 + 文档维护</td><td>流程管理</td></tr>
+            <tr class="ic-row-highlight"><td><strong>教培（Lysie）</strong></td><td><strong>教学产品 + 教学周期 + 教学系统</strong></td><td><strong>课节配置 + SOP + 权限核验 + 多系统协同 + 风控对账</strong></td><td><strong>中后台操盘</strong></td></tr>
+          </tbody>
+        </table>
+        <p class="ic-footnote" data-page-node-id="yara-ic-footnote-1">教培特殊性：交付物不是"一套部署好的系统"，而是"一个完整跑通的教学周期"——时间维度上的全周期管理。</p>
+      </div>
+
+      <div class="ic-responsibilities" data-page-node-id="yara-ic-resp">
+        <h3 data-page-node-id="yara-ic-resp-title">5 项核心职责（按简历实证）</h3>
+        <ol class="ic-list" data-page-node-id="yara-ic-resp-list">
+          <li data-page-node-id="yara-ic-resp-1"><strong>教学产品全生命周期运营</strong> — 接量预排 → 班期创建 → 课表维护 → 后台建课 → 直播/录播配置 → 批量开课 → 营期维护 → 结营复盘。<span class="ic-evidence">实证：5 产品线 × 2 项目线 × 单月 5 并行期班 × 350 课节</span></li>
+          <li data-page-node-id="yara-ic-resp-2"><strong>多系统协同操作</strong> — 小鹅通 + 雅识管理后台 + 云蝠智能 + 青果/金智教务系统 + E签宝，5+ 套系统同时调度完成一次交付。</li>
+          <li data-page-node-id="yara-ic-resp-3"><strong>风控与对账</strong> — 多表交叉核验（订单/账号/支付主体/业务类型/课程权益/退款路径），财务级精度，不是服务级沟通。<span class="ic-evidence">实证：月均 500 条退费核验 × 5 渠道 × 零重大事故</span></li>
+          <li data-page-node-id="yara-ic-resp-4"><strong>SOP 与规则沉淀</strong> — 让交付可批量、可交接、可系统化。<span class="ic-evidence">实证：8 类流程 SOP + 10 余条业务规则</span></li>
+          <li data-page-node-id="yara-ic-resp-5"><strong>产品需求驱动</strong> — 识别流程断点 → 需求提报 → 测试 → 上线跟踪。<span class="ic-evidence">实证：16 项运营需求全部上线</span></li>
+        </ol>
+      </div>
+
+      <div class="ic-kpi" data-page-node-id="yara-ic-kpi">
+        <h3 data-page-node-id="yara-ic-kpi-title">应被评估的 5 条 KPI</h3>
+        <ul class="ic-kpi-list" data-page-node-id="yara-ic-kpi-list">
+          <li data-page-node-id="yara-ic-kpi-1">课节交付准确率</li>
+          <li data-page-node-id="yara-ic-kpi-2">多系统协同零事故率</li>
+          <li data-page-node-id="yara-ic-kpi-3">异常闭环时长</li>
+          <li data-page-node-id="yara-ic-kpi-4">运营需求上线率</li>
+          <li data-page-node-id="yara-ic-kpi-5">退费风控闭环</li>
+        </ul>
+        <p class="ic-footnote" data-page-node-id="yara-ic-footnote-2">不是"学员满意度"这种<strong>班主任指标</strong>——如果面试官用学员满意度问，直接用定位话术纠正。</p>
+      </div>
+
+      <div class="ic-pitch" data-page-node-id="yara-ic-pitch">
+        <h3 data-page-node-id="yara-ic-pitch-title">30 秒自我定位话术</h3>
+        <blockquote class="ic-pitch-text" data-page-node-id="yara-ic-pitch-text">我是教培行业的交付运营，本质是<strong>教学产品全生命周期的中后台操盘手</strong>。我面向的是"系统-产品-课程-数据"——不做 C 端学员沟通，做的是从"产品规划出来"到"课节稳定交付"再到"异常闭环"的中后台工作。</blockquote>
+        <p class="ic-pitch-usage" data-page-node-id="yara-ic-pitch-usage">使用场景：HR 初次沟通 / 面试开场 / 被误读为客服/班主任时纠正 / 被推荐错岗位时婉拒</p>
+      </div>
+    </div>
+
+    <!-- Convergence Flow -->
+    <div class="converge" data-page-node-id="4wlL5gBwf5vrPo67xh0sXK">
+      <h2 data-page-node-id="F4CIsMmi8IUVkJU3k0oEmK">🌊 万物汇入</h2>
+      <p data-page-node-id="o4yVKneJSzptDCVp03pKGL">左边是输入源（实时读取各模块数据），右边是它们在我身上沉淀出的能力维度</p>
+      <div class="converge-flow" data-page-node-id="JRtnGcxhyRPk9mH5mRlAPM">
+        <!-- Inputs -->
+        <div class="flow-col" id="flowInputs" data-page-node-id="tCAPI6vA8juo9o454cJ0jD"></div>
+        <!-- Center: Me -->
+        <div class="flow-center" data-page-node-id="3DyxuTIjLRxZwD9Lx7aNBo">
+          <div class="center-avatar" data-page-node-id="cDqkM486nREiTpbxTtQgqc"><div class="center-inner" data-page-node-id="30EvDTLRfQtjteVRfU5gkl"><span data-page-node-id="HzCQJ0DpgOtyseLP4OlFPa">🐱</span></div></div>
+          <div class="center-name" data-page-node-id="VP2BpdGNYK69WhDvl8tjXs">Lysie</div>
+          <div class="center-tag" data-page-node-id="FdLlEnjGQns4tTSZntI328">运营操盘手 · 养成中</div>
+        </div>
+        <!-- Capabilities -->
+        <div class="flow-col" id="flowCaps" data-page-node-id="I4zGAYZHUpqqkpruRlWqMC"></div>
+      </div>
+    </div>
+
+    <!-- Live Input Stats -->
+    <div class="input-grid" id="inputGrid" data-page-node-id="QwAp8zigtyOukgV6o2HGcj"></div>
+
+    <!-- Synthesis Table -->
+    <div class="synthesis" data-page-node-id="PCrtfO4DVFruDnIb4iHqPJ">
+      <h2 data-page-node-id="tsN15DKIHYulcPik4Otmef">🔗 输入 → 能力 · 转化对照表</h2>
+      <p data-page-node-id="MsHWjEzSW7T3VdnCP74zrt">每个输入源都不是孤立存在的——它们各自喂养着我身上的某几种能力。</p>
+      <table class="syn-table" data-page-node-id="Fyz9g28PiqdEmpgzX4BGJv">
+        <thead data-page-node-id="9AeLPVhASGcH4kLYEdRHxd">
+          <tr data-page-node-id="HQbZK2xCqmhDRpRECuKcRc"><th data-page-node-id="a21FHwyxcESdGimUrzEQ1Z">输入源</th><th data-page-node-id="j08RU0Dn3uxbXeA70xJJlV">喂养的能力</th><th data-page-node-id="wdzitOB0BW0Z9fPk26kSQH">当前证据</th></tr>
+        </thead>
+        <tbody data-page-node-id="ERKHIDvVJiDE45jrimOPXC">
+          <tr data-page-node-id="P0bKEIQawGZxH0AvkLfRmR">
+            <td class="syn-src" data-page-node-id="FmvYsRE66rvTjl3roQlO2V">💡 闪念中心</td>
+            <td class="syn-cap" data-page-node-id="B4FZxlHMJsheNdTTwHUALI">洞察力 · 创意力 · 商业嗅觉</td>
+            <td class="syn-evi" data-page-node-id="HrKaWfXFvkpdeqLyl4ONfw">捕捉的每条灵感都是潜在的机会点；定期整理成行动，完成"想法→验证"的第一公里</td>
+          </tr>
+          <tr data-page-node-id="6EXkOdNHelhW6zT7OGBtyS">
+            <td class="syn-src" data-page-node-id="VBIsqrlatr19Y05ATwYjW1">📚 知识资产中心</td>
+            <td class="syn-cap" data-page-node-id="UdUaErAtDblHkOBeFPHbE8">知识储备 · 判断力 · 方法论沉淀</td>
+            <td class="syn-evi" data-page-node-id="op49hhucYLUtMBVzVI8jCe">知识 → 我的判断 → 行动验证，三层过滤后的资产才是真正属于我的东西</td>
+          </tr>
+          <tr data-page-node-id="8TtehCrtDnjfq8tSkbsS3y">
+            <td class="syn-src" data-page-node-id="ilCyKHh2dLbSIThd7ZwdNl">📖 技能学习中心</td>
+            <td class="syn-cap" data-page-node-id="0ePGNrXKjGISHllGOqeB0a">AIGC 应用力 · 数据分析力 · 硬技能底座</td>
+            <td class="syn-evi" data-page-node-id="t9rDP11NjFrq3evx5OXWGF">AIGC 六阶段 + 数据分析 8 模块 40+ 任务的完成度，直接决定硬技能水位</td>
+          </tr>
+          <tr data-page-node-id="1gDZLcBEv0GWJb4v51sTCT">
+            <td class="syn-src" data-page-node-id="nGDr06CRYzB9ejzEQdmGuc">🚀 创业副业中心</td>
+            <td class="syn-cap" data-page-node-id="MWflsDZnJeF12jjxrtO1lK">商业实践力 · 从0到1 · 风险管理</td>
+            <td class="syn-evi" data-page-node-id="stxMYfkqepEnD5uUEeB7Nn">猫咪上门（运营中）是真金白银的验证；每个归档项目都是思维路径上的坐标</td>
+          </tr>
+          <tr data-page-node-id="RT7c73ANjDNKIjhsL9tAfi">
+            <td class="syn-src" data-page-node-id="OX44Gk3Rwcs8ll4ZB4TRli">💼 职业发展中心</td>
+            <td class="syn-cap" data-page-node-id="KRtUBYdNqPNV07027P7fIZ">职业竞争力 · 自我营销 · 决策力</td>
+            <td class="syn-evi" data-page-node-id="REH61Ytq6u1n9waR0M84iL">画像完整度 + JD 匹配数 = 我在劳动力市场上的标价能力</td>
+          </tr>
+          <tr data-page-node-id="lXB866qCO0z1jooji4BzoE">
+            <td class="syn-src" data-page-node-id="MNenMCno9P4Y3XAp4eO18n">📋 自查总系统</td>
+            <td class="syn-cap" data-page-node-id="xtfR4KvWMfeFfEnH9cK1Yt">交付运营力 · SOP 思维 · 质量意识</td>
+            <td class="syn-evi" data-page-node-id="FkJmQ1VZaiJWUYvD23QLnx">8 模块交付自查的得分变化，反映运营基本功的扎实程度</td>
+          </tr>
+          <tr data-page-node-id="RnLPCYL2FQW8NYF2toaskD">
+            <td class="syn-src" data-page-node-id="qCg4OiN6xcKChX3xPqTYkz">📰 生存知识日报</td>
+            <td class="syn-cap" data-page-node-id="RUR9zm6FwIeLx0ZvBmiKzG">持续学习力 · 表达力 · 信息筛选</td>
+            <td class="syn-evi" data-page-node-id="U1AhXUTTkHekNFotY2NDhf">每日一报的坚持本身就是"长期主义"的肌肉训练</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Philosophy -->
+    <div class="philo" data-page-node-id="HmtIhAzBExoivI3d4OGKpO">
+      <h2 data-page-node-id="1IVnVQEvFUe9i53QmYo5NS">💭 为什么这样设计</h2>
+      <p data-page-node-id="IvWOYZTY7xbLclABp9fALl">系统里的模块会越来越多，但"我"只有一个。如果每个模块各自为战，数据就只是一堆散落的点；只有当它们都指向同一个人时，系统才有意义。</p>
+      <p data-page-node-id="sDVHmt01XAIuIjrv7CMiCT">所以能力地图放在"成长与事业"的中心位置——它不负责生产内容，它负责<strong data-page-node-id="HdgC2B6pFjHAKduBzPohrB">回答一个问题：所有这些事情，让我变成了一个什么样的人？</strong></p>
+    </div>
+  </div>
+
+  <!-- Panel: Capability Cards (iframe) -->
+  <div class="panel" id="panel-cards" role="tabpanel" data-page-node-id="0zdxIgWUpGYijjip6kOJGo">
+    <div class="iframe-wrap" data-page-node-id="lELlW4QWvAue3BsqZBDWFu">
+      <iframe id="iframe-cards" src="运营能力地图/运营能力地图.html" loading="lazy" data-page-node-id="wzeT0mjCTAq07JwJ9mHdqR"></iframe>
+    </div>
+  </div>
+
+  <!-- Panel: Input Sources Detail -->
+  <div class="panel" id="panel-inputs" role="tabpanel" data-page-node-id="AY5TN8BWgUIW855NpM9WaE">
+    <div class="input-grid" id="inputGridDetail" style="margin-top:16px" data-page-node-id="ZylnyDnjVcurYIcBY7vmYC"></div>
+    <div class="synthesis" data-page-node-id="Kt2xjbmqOZVOOgVgP07wVr">
+      <h2 data-page-node-id="RQGSgHHviLX2NsCL1E7FIb">📥 输入源使用建议</h2>
+      <p data-page-node-id="8RMlkCW9QJuh3GBVyHFzHK">输入的质量决定能力的上限。以下是每个输入源的"正确打开方式"：</p>
+      <table class="syn-table" data-page-node-id="C1jaKSX3Fh6MMiZPkgwcU0">
+        <thead data-page-node-id="hcZORlDQuAQipRD2KzTwWw"><tr data-page-node-id="ZFl8mGRQNDz5FEsAABQqdu"><th data-page-node-id="WkNDJ7tvvuDbToW4pMAAsq">输入源</th><th data-page-node-id="qVtGKT8O8NwfITbC1o6AcB">频率建议</th><th data-page-node-id="fvXrOvWeYPFcZJHyAG5ni5">质量标准</th></tr></thead>
+        <tbody data-page-node-id="cQqjmhOeUqeYSE19anTUfP">
+          <tr data-page-node-id="0Zj6A2nLiUqovVTco67JJP"><td class="syn-src" data-page-node-id="9xzRDLqw1Dz44mIVNqeLQ7">💡 闪念中心</td><td data-page-node-id="C54t1BuHKUzyTOAFTttBOq">随时捕捉</td><td data-page-node-id="tV93zkC7m71uSZuErQrtSR">先记再说，不评判；每周整理一次，把 20% 转成行动</td></tr>
+          <tr data-page-node-id="PFbgBluvqkQKOYXCNylExy"><td class="syn-src" data-page-node-id="bb3WKQ04AMjCjEOYBe0cQX">📚 知识资产中心</td><td data-page-node-id="gRFj1DdEwZTiMQXiA7FR2i">学到即录</td><td data-page-node-id="1VGmE9HfZPortHkmI4GoZT">必须过"我的判断"关——不复述别人的话，只存自己消化后的结论</td></tr>
+          <tr data-page-node-id="ksmJGNcLIkvJZQX7iQYTAm"><td class="syn-src" data-page-node-id="QsFNGcePDvFzfIsqAP7YQl">📖 技能学习中心</td><td data-page-node-id="BD49SThF8z1kGp7WzwdLen">每天 30-60 分钟</td><td data-page-node-id="x7N8Ag3yHcNEvHlMJBcmrG">完成 > 完美；每个任务要有产出物（笔记/作品/代码）</td></tr>
+          <tr data-page-node-id="3BEQjfAckBDACFDG0cR1AR"><td class="syn-src" data-page-node-id="6yFrJYRDn3sCWz0vAVHoHH">🚀 创业副业中心</td><td data-page-node-id="stYAukLZrXpXYjcC8CQGbC">项目制推进</td><td data-page-node-id="sVJ9jl9FWgLDIGdsGeXqmq">每个项目有明确的验证假设和退出条件；失败必归档、必复盘</td></tr>
+          <tr data-page-node-id="zO8jZDwS8u62GqMfmBjVjX"><td class="syn-src" data-page-node-id="m7kTbgafxMtEIXkNhUlwUd">💼 职业发展中心</td><td data-page-node-id="TfBKulJlQ1dxUGKPr5TNqJ">求职期密集用</td><td data-page-node-id="yC1PKEKbX9umdfCcAGuW9X">画像先填完整再投简历；每个 JD 都过一遍匹配分析</td></tr>
+          <tr data-page-node-id="Z35UwkFPoCbwcdMtHcTVkq"><td class="syn-src" data-page-node-id="QfuXf7G3BpqPUTY4JiHrW6">📋 自查总系统</td><td data-page-node-id="mUo3uh0HEksMBK6aaFQxuS">每周自查</td><td data-page-node-id="wivprVrHb45xmbMJpK8wlL">诚实打分——自查是为了发现问题，不是为了自我感觉良好</td></tr>
+          <tr data-page-node-id="NEGHOBVlLQy7S9eKsnUkdd"><td class="syn-src" data-page-node-id="tIJAnaCmygtki7Ia9QEeKM">📰 生存知识日报</td><td data-page-node-id="CxhSzaCQQaY7xcXIvBA0Oi">每日一更</td><td data-page-node-id="j3UCIPo4Yt4CYqBk4HJ0Ep">持续 > 深度；断更比写得浅更伤</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="yara-runtime-config.js"></script>
+<script src="yara-module-ui.js"></script>
+<script>
+(function(){
+  'use strict';
+
+  /* ---------- Tab switching ---------- */
+  function switchTab(tabId){
+    document.querySelectorAll('.tab-btn').forEach(function(b){
+      b.classList.toggle('active', b.dataset.tab === tabId);
+      b.setAttribute('aria-selected', b.dataset.tab === tabId);
+    });
+    document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+    var t = document.getElementById('panel-' + tabId);
+    if(t) t.classList.add('active');
+  }
+  document.querySelectorAll('.tab-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){ switchTab(this.dataset.tab); });
+  });
+  window.capabilityHubSwitchTab = switchTab;
+
+  /* ---------- localStorage helpers ---------- */
+  function tryKeys(keys){
+    for(var i=0;i<keys.length;i++){
+      try{
+        var raw = localStorage.getItem(keys[i]);
+        if(raw){ var d = JSON.parse(raw); if(d) return d; }
+      }catch(e){}
+    }
+    return null;
+  }
+  function studyProgress(key){
+    var d = tryKeys([key]);
+    if(!d || !Array.isArray(d.stages)) return {done:0,total:0,pct:0};
+    var done=0,total=0;
+    d.stages.forEach(function(s){
+      if(Array.isArray(s.items)) s.items.forEach(function(it){ total++; if(it.done) done++; });
+    });
+    return {done:done,total:total,pct:total?Math.round(done/total*100):0};
+  }
+
+  /* ---------- Gather live input stats ---------- */
+  function gatherInputs(){
+    var inputs = [];
+
+    // 闪念
+    var flash = tryKeys(['yara_flash_v1','yara_flash_notes_v1','flash_notes']);
+    var flashCount = flash && Array.isArray(flash.notes) ? flash.notes.length : (flash && typeof flash.count==='number' ? flash.count : null);
+    inputs.push({icon:'💡',bg:'linear-gradient(145deg,#FEF9C3,#FDE047)',name:'闪念中心',value:flashCount!==null?flashCount:'--',unit:'条灵感',note:'洞察力 · 创意力',cls:'ic-flash',tab:null,href:'闪念中心.html'});
+
+    // 知识资产
+    var know = tryKeys(['yara_knowledge_v1','yara_knowledge_assets_v1','knowledge_assets']);
+    var knowCount = know && Array.isArray(know.assets) ? know.assets.length : (know && Array.isArray(know.items) ? know.items.length : null);
+    inputs.push({icon:'📚',bg:'linear-gradient(145deg,#D1FAE5,#34D399)',name:'知识资产中心',value:knowCount!==null?knowCount:'--',unit:'条资产',note:'知识储备 · 判断力',cls:'ic-book',tab:null,href:'知识资产中心.html'});
+
+    // 技能学习
+    var aigc = studyProgress('yara_aigc_study_v1');
+    var data = studyProgress('yara_data_study_v1');
+    var skillPct = (aigc.total||data.total) ? Math.round((aigc.done+data.done)/(aigc.total+data.total)*100) : null;
+    inputs.push({icon:'📖',bg:'linear-gradient(145deg,#DBEAFE,#60A5FA)',name:'技能学习中心',value:skillPct!==null?skillPct+'%':'--',unit:'AIGC '+aigc.done+'/'+aigc.total+' · 数据 '+data.done+'/'+data.total,note:'硬技能底座',cls:'ic-skill',tab:null,href:'技能学习中心.html'});
+
+    // 创业副业
+    inputs.push({icon:'🚀',bg:'linear-gradient(145deg,#FFEDD5,#FB923C)',name:'创业副业中心',value:'3',unit:'个项目 · 1个运营中',note:'商业实践力',cls:'ic-venture',tab:null,href:'创业副业中心.html'});
+
+    // 职业发展
+    var profile = tryKeys(['yara_career_profile_v1','career_profile']);
+    var profPct = profile && typeof profile.completeness==='number' ? profile.completeness : null;
+    inputs.push({icon:'💼',bg:'linear-gradient(145deg,#FCE7F3,#F472B6)',name:'职业发展中心',value:profPct!==null?profPct+'%':'--',unit:'画像完整度',note:'职业竞争力',cls:'ic-career',tab:null,href:'职业发展中心.html'});
+
+    // 自查总系统
+    var check = tryKeys(['yara_delivery_check_v1','yara_selfcheck_v1']);
+    var checkScore = check && typeof check.score==='number' ? check.score : null;
+    inputs.push({icon:'📋',bg:'linear-gradient(145deg,#CFFAFE,#22D3EE)',name:'自查总系统',value:checkScore!==null?checkScore:'--',unit:'交付自查',note:'交付运营力',cls:'ic-check',tab:null,href:'运营能力地图/交付运营总系统.html'});
+
+    // 生存知识日报
+    inputs.push({icon:'📰',bg:'linear-gradient(145deg,#EDE9FE,#A78BFA)',name:'生存知识日报',value:'每日',unit:'持续更新中',note:'持续学习力 · 表达力',cls:'ic-daily',tab:null,href:'生存知识日报文件/index.html'});
+
+    return inputs;
+  }
+
+  /* ---------- Capability dimensions (output side) ---------- */
+  function gatherCaps(aigcPct, dataPct, profPct){
+    return [
+      {name:'运营操盘', pct:45, color:'#7C3AED', note:'来自教务实战 + 自查系统'},
+      {name:'AIGC 应用', pct:aigcPct, color:'#2563EB', note:'技能学习中心'},
+      {name:'数据分析', pct:dataPct, color:'#0891B2', note:'技能学习中心'},
+      {name:'商业实践', pct:30, color:'#D97706', note:'创业副业中心'},
+      {name:'职业竞争', pct:profPct, color:'#DB2777', note:'职业发展中心'},
+      {name:'知识沉淀', pct:35, color:'#059669', note:'知识资产 + 日报'}
+    ];
+  }
+
+  /* ---------- Render ---------- */
+  var inputs = gatherInputs();
+  var aigc = studyProgress('yara_aigc_study_v1');
+  var data = studyProgress('yara_data_study_v1');
+  var profile = tryKeys(['yara_career_profile_v1','career_profile']);
+  var profPct = profile && typeof profile.completeness==='number' ? profile.completeness : 0;
+  var caps = gatherCaps(aigc.pct, data.pct, profPct);
+
+  // Left column: inputs (compact)
+  var fi = document.getElementById('flowInputs');
+  inputs.forEach(function(inp){
+    var el = document.createElement('div');
+    el.className = 'flow-item';
+    el.innerHTML = '<div class="fi-icon" style="background:'+inp.bg+'">'+inp.icon+'</div>'+
+      '<div class="fi-body"><div class="fi-name">'+inp.name+'</div><div class="fi-stat">'+inp.value+' '+inp.unit+'</div></div>'+
+      '<div class="fi-arrow">→</div>';
+    el.addEventListener('click', function(){ if(inp.href) window.open(inp.href,'_blank'); });
+    fi.appendChild(el);
+  });
+
+  // Right column: capabilities
+  var fc = document.getElementById('flowCaps');
+  caps.forEach(function(cap){
+    var el = document.createElement('div');
+    el.className = 'cap-item';
+    el.style.borderColor = cap.color + '33';
+    el.innerHTML = '<span class="ci-name" style="color:'+cap.color+'">'+cap.name+'</span>'+
+      '<div class="ci-bar"><div class="ci-fill" style="width:0%;background:'+cap.color+'"></div></div>'+
+      '<span class="ci-pct" style="color:'+cap.color+'">'+cap.pct+'%</span>';
+    fc.appendChild(el);
+    setTimeout(function(){ el.querySelector('.ci-fill').style.width = cap.pct + '%'; }, 300);
+  });
+
+  // Stat cards (both overview + detail panels)
+  function renderCards(containerId, showLink){
+    var grid = document.getElementById(containerId);
+    if(!grid) return;
+    inputs.forEach(function(inp){
+      var card = document.createElement('div');
+      card.className = 'input-card ' + inp.cls;
+      card.innerHTML = '<div class="ic-head"><div class="ic-icon" style="background:'+inp.bg+'">'+inp.icon+'</div>'+
+        '<span class="ic-title">'+inp.name+'</span></div>'+
+        '<div class="ic-value">'+inp.value+'</div>'+
+        '<div class="ic-note">'+inp.unit+' · 喂养 '+inp.note+'</div>'+
+        (showLink ? '<div class="ic-link">打开模块 →</div>' : '');
+      card.addEventListener('click', function(){ if(inp.href) window.open(inp.href,'_blank'); });
+      grid.appendChild(card);
+    });
+  }
+  renderCards('inputGrid', false);
+  renderCards('inputGridDetail', true);
+
+  /* ---------- Theme sync ---------- */
+  window.addEventListener('message', function(e){
+    if(e && e.data && e.data.type === 'yara-theme-update' && e.data.theme){
+      document.documentElement.setAttribute('data-yara-theme', e.data.theme);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

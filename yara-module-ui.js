@@ -91,4 +91,37 @@
     confirm: confirmAction,
     requestDelete: requestDelete
   };
+
+  // 独立打开（非外壳 iframe）时自注入悬浮返回钮：
+  // click → 优先 history.back；history 不足时按当前路径深度回退到外壳首页。
+  // shell 内由外壳 injectModuleBackButton 注入同名按钮并隐藏本路径，避免双钮冗余。
+  function injectStandaloneBackButton() {
+    if (window.top !== window) return; // 仅独立打开
+    if (document.getElementById('yaraInjectedBack')) return;
+    var depth = (location.pathname.replace(/^[^/]*\//, '').match(/\//g) || []).length;
+    var shellHref = '';
+    for (var i = 0; i < depth; i++) shellHref += '../';
+    shellHref += '管理系统.html';
+    var btn = document.createElement('button');
+    btn.id = 'yaraInjectedBack';
+    btn.type = 'button';
+    btn.className = 'yara-module-back';
+    btn.setAttribute('data-standalone', 'true');
+    btn.setAttribute('aria-label', '返回上一页');
+    btn.innerHTML = '<span aria-hidden="true">←</span><span class="yara-back-label">返回</span>';
+    btn.addEventListener('click', function () {
+      if (window.history && window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = shellHref;
+      }
+    });
+    document.body.appendChild(btn);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', injectStandaloneBackButton);
+  } else {
+    injectStandaloneBackButton();
+  }
 })();

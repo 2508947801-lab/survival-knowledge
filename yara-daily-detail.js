@@ -25,9 +25,13 @@
     '<button class="daily-reader-top" type="button" aria-label="回到文章顶部">↑</button>';
   body.appendChild(readerTools);
 
-  // 外壳内由左上角全局返回胶囊负责逐级返回，页内两个返回入口去重隐藏；
-  // 独立打开（无外壳、无胶囊）时保留，不影响裸页浏览。
-  // 用短轮询代替一次性检查：胶囊由外壳在 frame load 时注入，与本页 load 时序不保证。
+  // 返回入口去重策略（2026-09-01 调整后）：
+  // - shell 内：外壳向 iframe 注入 #yaraInjectedBack（带 data-shell="true"），CSS 强制 display:none，
+  //   顶部 #routeBackBtn 是唯一返回入口；注入按钮虽不可见但元素存在，页内返回入口仍会被去重隐藏。
+  // - 独立打开：yara-module-ui.js 注入 #yaraInjectedBack（带 data-standalone="true"），CSS 显示，
+  //   页内返回入口被去重隐藏，用户看到右下角悬浮按钮。
+  // - file:// 直开无外壳也无 yara-module-ui.js：5 秒轮询未发现注入胶囊 → 保留页内返回入口作兜底。
+  // 失败不清空页内返回，确保用户始终有返回入口。
   (function dedupBackControls() {
     var tries = 0;
     var timer = setInterval(function () {
@@ -40,6 +44,7 @@
         if (readerBack) readerBack.parentNode.removeChild(readerBack);
       } else if (tries >= 20) {
         clearInterval(timer);
+        // file:// 直开或无 yara-module-ui.js：注入胶囊不存在，保留页内返回入口作为兜底，避免用户无路可退。
       }
     }, 250);
   })();

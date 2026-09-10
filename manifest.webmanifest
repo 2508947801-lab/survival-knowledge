@@ -1,8 +1,8 @@
 {
   "id": "./管理系统.html",
-  "name": "Yara 超级大脑",
-  "short_name": "Yara大脑",
-  "description": "Yara 的个人教务、运营、行动、知识与灵感管理系统。",
+  "name": "Lysie 超级大脑",
+  "short_name": "Lysie大脑",
+  "description": "Lysie 的个人行动、职业、知识、生活与财务系统。",
   "lang": "zh-CN",
   "dir": "ltr",
   "start_url": "./管理系统.html?entry=pwa",

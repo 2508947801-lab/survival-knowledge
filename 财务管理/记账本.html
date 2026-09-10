@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>记账本 · Yara</title>
+<title>记账本 · Lysie</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <style>
 :root{
@@ -155,7 +155,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
   <header class="hd">
     <div class="module-kicker"><span class="module-icon">¥</span><span>财务管理</span></div>
     <h1>记账本</h1>
-    <p class="sub">DAILY LEDGER · YARA</p>
+    <p class="sub">DAILY LEDGER · LYSIE</p>
     <p class="sync-tip"><span class="dot"></span>本机数据已就绪 · 配置后可跨设备同步</p>
   </header>
 
@@ -262,7 +262,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
     <div class="import-row">
       <div class="import-copy">
         <strong>批量导入流水</strong>
-        <span>Yara 账本 JSON · 稳定 ID 去重 · 来源只读留档</span>
+        <span>Lysie 账本 JSON · 稳定 ID 去重 · 来源只读留档</span>
       </div>
       <button class="import-btn" id="importLedgerBtn" type="button">选择文件</button>
       <input id="ledgerImportFile" type="file" accept=".json,application/json" hidden>
@@ -276,7 +276,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
     <div class="set-body" id="setBody"></div>
   </div>
 
-  <div class="foot">Yara · 雅识教育 · 2026</div>
+  <div class="foot">Lysie · FINANCE · 2026</div>
 </div>
 
 <script>
@@ -538,7 +538,7 @@ function validateSourceImport(raw){
 }
 function prepareLedgerImport(payload){
   if(!payload || payload.kind!=='yara-ledger-import' || !Array.isArray(payload.transactions)){
-    throw new Error('这不是有效的 Yara 账本导入文件');
+    throw new Error('这不是有效的 Lysie 账本导入文件');
   }
   const seen=new Set();
   const valid=[];
