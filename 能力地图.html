@@ -280,8 +280,8 @@
           </tr>
           <tr data-page-node-id="8TtehCrtDnjfq8tSkbsS3y">
             <td class="syn-src" data-page-node-id="ilCyKHh2dLbSIThd7ZwdNl">📖 技能学习中心</td>
-            <td class="syn-cap" data-page-node-id="0ePGNrXKjGISHllGOqeB0a">AIGC 应用力 · 数据分析力 · 硬技能底座</td>
-            <td class="syn-evi" data-page-node-id="t9rDP11NjFrq3evx5OXWGF">AIGC 六阶段 + 数据分析 8 模块 40+ 任务的完成度，直接决定硬技能水位</td>
+            <td class="syn-cap" data-page-node-id="0ePGNrXKjGISHllGOqeB0a">数据分析力 · 硬技能底座</td>
+            <td class="syn-evi" data-page-node-id="t9rDP11NjFrq3evx5OXWGF">数据分析 8 模块 40+ 任务的完成度，直接决定硬技能水位</td>
           </tr>
           <tr data-page-node-id="1gDZLcBEv0GWJb4v51sTCT">
             <td class="syn-src" data-page-node-id="nGDr06CRYzB9ejzEQdmGuc">🚀 创业副业中心</td>
@@ -400,13 +400,12 @@
     inputs.push({icon:'📚',bg:'linear-gradient(145deg,#D1FAE5,#34D399)',name:'知识资产中心',value:knowCount!==null?knowCount:'--',unit:'条资产',note:'知识储备 · 判断力',cls:'ic-book',tab:null,href:'知识资产中心.html'});
 
     // 技能学习
-    var aigc = studyProgress('yara_aigc_study_v1');
     var data = studyProgress('yara_data_study_v1');
-    var skillPct = (aigc.total||data.total) ? Math.round((aigc.done+data.done)/(aigc.total+data.total)*100) : null;
-    inputs.push({icon:'📖',bg:'linear-gradient(145deg,#DBEAFE,#60A5FA)',name:'技能学习中心',value:skillPct!==null?skillPct+'%':'--',unit:'AIGC '+aigc.done+'/'+aigc.total+' · 数据 '+data.done+'/'+data.total,note:'硬技能底座',cls:'ic-skill',tab:null,href:'技能学习中心.html'});
+    var skillPct = data.total ? data.pct : null;
+    inputs.push({icon:'📖',bg:'linear-gradient(145deg,#DBEAFE,#60A5FA)',name:'数据分析地图',value:skillPct!==null?skillPct+'%':'--',unit:data.done+'/'+data.total+' 已完成',note:'硬技能底座',cls:'ic-skill',tab:null,href:'数据分析学习地图.html'});
 
     // 创业副业
-    inputs.push({icon:'🚀',bg:'linear-gradient(145deg,#FFEDD5,#FB923C)',name:'创业副业中心',value:'3',unit:'个项目 · 1个运营中',note:'商业实践力',cls:'ic-venture',tab:null,href:'创业副业中心.html'});
+    inputs.push({icon:'🐱',bg:'linear-gradient(145deg,#FFEDD5,#FB923C)',name:'猫咪上门',value:'1',unit:'个运营中项目',note:'商业实践力',cls:'ic-venture',tab:null,href:'猫咪上门服务.html'});
 
     // 职业发展
     var profile = tryKeys(['yara_career_profile_v1','career_profile']);
@@ -425,11 +424,10 @@
   }
 
   /* ---------- Capability dimensions (output side) ---------- */
-  function gatherCaps(aigcPct, dataPct, profPct){
+  function gatherCaps(dataPct, profPct){
     return [
       {name:'运营操盘', pct:45, color:'#7C3AED', note:'来自教务实战 + 自查系统'},
-      {name:'AIGC 应用', pct:aigcPct, color:'#2563EB', note:'技能学习中心'},
-      {name:'数据分析', pct:dataPct, color:'#0891B2', note:'技能学习中心'},
+      {name:'数据分析', pct:dataPct, color:'#0891B2', note:'数据分析地图'},
       {name:'商业实践', pct:30, color:'#D97706', note:'创业副业中心'},
       {name:'职业竞争', pct:profPct, color:'#DB2777', note:'职业发展中心'},
       {name:'知识沉淀', pct:35, color:'#059669', note:'知识资产 + 日报'}
@@ -438,11 +436,10 @@
 
   /* ---------- Render ---------- */
   var inputs = gatherInputs();
-  var aigc = studyProgress('yara_aigc_study_v1');
   var data = studyProgress('yara_data_study_v1');
   var profile = tryKeys(['yara_career_profile_v1','career_profile']);
   var profPct = profile && typeof profile.completeness==='number' ? profile.completeness : 0;
-  var caps = gatherCaps(aigc.pct, data.pct, profPct);
+  var caps = gatherCaps(data.pct, profPct);
 
   // Left column: inputs (compact)
   var fi = document.getElementById('flowInputs');
