@@ -1,6 +1,48 @@
-<!DOCTYPE html><html lang="zh-CN" data-yara-theme="dawn"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="description" content="Yara 生存知识日报：运营、AI、财务、职场与个人成长知识库"><title>生存知识日报 · 首页</title><link rel="stylesheet" href="daily-report.css"></head><body>
-<header class="hero"><div class="hero-badge">Yara Knowledge Briefing</div><h1>生存知识日报</h1><div class="hero-sub">把信息整理成判断，把判断变成下一步行动</div><div class="hero-meta">已有正文与月度复盘保留 · 补录专题标注实际核验日 · 未来日期只作计划</div></header>
-<main class="container"><div class="section-heading-row">
+<!DOCTYPE html><html lang="zh-CN" data-yara-theme="dawn"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="description" content="Lysie 每日生存知识系统：把碎片信息转化为自己的判断、行动与复盘"><title>每日生存知识系统 · Lysie</title><link rel="stylesheet" href="daily-report.css"></head><body>
+<header class="hero daily-home-hero"><div class="hero-badge">LYSIE · DAILY KNOWLEDGE LOOP</div><h1>每日生存知识系统</h1><div class="hero-sub">每天最多收下 3 条，把其中 1 条真正用起来</div><div class="hero-meta">输入 → 加工 → 输出 → 实践 · 旧日报与月度复盘完整保留</div></header>
+<main class="container">
+<!-- DAILY-KNOWLEDGE-LOOP START -->
+<section class="knowledge-loop" id="knowledgeLoop" aria-labelledby="knowledgeLoopTitle">
+  <div class="loop-heading">
+    <div><span class="loop-kicker">今天的学习仪式</span><h2 id="knowledgeLoopTitle">把一条信息变成自己的东西</h2><p>不求看得多，只记录与你当前目标有关、并愿意采取行动的内容。</p></div>
+    <div class="loop-limit" id="dailyLimitStatus" aria-live="polite">今日 0 / 3</div>
+  </div>
+  <ol class="loop-steps" aria-label="知识闭环四步">
+    <li data-loop-step="input"><span>01</span><strong>输入</strong><small>只收强相关</small></li>
+    <li data-loop-step="process"><span>02</span><strong>加工</strong><small>用自己的话</small></li>
+    <li data-loop-step="output"><span>03</span><strong>输出</strong><small>拆成 5 分钟行动</small></li>
+    <li data-loop-step="practice"><span>04</span><strong>实践</strong><small>记录真实结果</small></li>
+  </ol>
+  <form class="loop-form" id="knowledgeLoopForm" novalidate>
+    <fieldset class="loop-fieldset" data-form-step="input">
+      <legend><span>1</span>聚焦输入</legend>
+      <div class="loop-fields two-columns">
+        <label>服务哪个目标？<select id="loopFocus" required><option value="">请选择</option><option>教务与工作</option><option>职业发展</option><option>数据分析学习</option><option>生活与财务</option><option>猫咪上门副业</option><option>个人成长</option></select></label>
+        <label>今天收下什么？<input id="loopTitle" maxlength="80" required placeholder="一句话写清知识点"></label>
+      </div>
+      <label>来源（可选）<input id="loopSource" maxlength="240" placeholder="链接、书名、文章或对话"></label>
+    </fieldset>
+    <fieldset class="loop-fieldset" data-form-step="process">
+      <legend><span>2</span>强制加工</legend>
+      <label>用自己的话复述<textarea id="loopSummary" maxlength="260" required placeholder="不复制原文：这件事本质上在说什么？"></textarea></label>
+      <label>它和我已有的什么相关？<textarea id="loopRelation" maxlength="200" required placeholder="它能解决哪个问题、补充哪个判断，或推翻什么旧认知？"></textarea></label>
+    </fieldset>
+    <fieldset class="loop-fieldset" data-form-step="output">
+      <legend><span>3</span>变成输出</legend>
+      <label>5 分钟内可以做什么？<textarea id="loopAction" maxlength="180" required placeholder="用动词开头，例如：给今天的教务交付清单补一个验收字段"></textarea></label>
+      <p class="loop-rule">存入后会进入实践区；14 天内至少调用一次，否则进入待复查。</p>
+    </fieldset>
+    <div class="loop-form-actions"><button class="loop-primary" type="submit">存入今日闭环</button><span id="loopFormHint">需要完成“复述、关联、行动”才能保存</span></div>
+  </form>
+  <div class="loop-feedback" id="loopFeedback" role="status" aria-live="polite"></div>
+  <div class="loop-workspace">
+    <section class="loop-panel" aria-labelledby="todayKnowledgeTitle"><div class="loop-panel-head"><div><span class="loop-kicker">TODAY</span><h3 id="todayKnowledgeTitle">今天的闭环</h3></div><span id="todayLoopCount">0 条</span></div><div class="loop-entry-list" id="todayLoopList"></div></section>
+    <section class="loop-panel" aria-labelledby="reviewQueueTitle"><div class="loop-panel-head"><div><span class="loop-kicker">REVISIT</span><h3 id="reviewQueueTitle">14 天调用检查</h3></div><span id="reviewQueueCount">0 待复查</span></div><div class="loop-entry-list" id="reviewQueueList"></div></section>
+  </div>
+  <section class="daily-review" aria-labelledby="dailyReviewTitle"><div><span class="loop-kicker">3–10 MIN REVIEW</span><h3 id="dailyReviewTitle">今天哪条知识真的改变了行动？</h3><p id="reviewPrompt">写一句结果、阻碍或下一次调整。</p></div><label class="sr-only" for="dailyReviewNote">每日复盘</label><textarea id="dailyReviewNote" maxlength="500" placeholder="例如：做完后发现真正缺的是验收标准，下次先定义结果再收集资料。"></textarea><button class="loop-secondary" id="saveDailyReview" type="button">保存今日复盘</button></section>
+</section>
+<!-- DAILY-KNOWLEDGE-LOOP END -->
+<div class="section-heading-row knowledge-calendar-heading">
 <div class="section-title">月度复盘报告</div>
 <div class="section-note">案例与新闻复核 · 模块优化审计 · 次月行动实验</div>
 </div>
@@ -65,4 +107,4 @@
 <a href="生存知识日报_2026-07-03.html" class="date-card"><div class="card-header"><span class="card-date">2026-07-03</span><span class="card-weekday">星期五</span></div><div class="card-body"><div class="card-label">七月知识归档 · 历史日报</div><div class="card-arrow">阅读归档 →</div></div></a>
 <a href="生存知识日报_2026-07-02.html" class="date-card"><div class="card-header"><span class="card-date">2026-07-02</span><span class="card-weekday">星期四</span></div><div class="card-body"><div class="card-label">七月知识归档 · 历史日报</div><div class="card-arrow">阅读归档 →</div></div></a>
 <a href="生存知识日报_2026-07-01.html" class="date-card"><div class="card-header"><span class="card-date">2026-07-01</span><span class="card-weekday">星期三</span></div><div class="card-body"><div class="card-label">七月知识归档 · 历史日报</div><div class="card-arrow">阅读归档 →</div></div></a></div></details></main>
-<footer class="footer"><p>生存知识日报 · 七月至九月知识日历</p><p>Bright Blue × 淡紫阅读主题 · 共享一套视觉样式</p></footer></body></html>
+<footer class="footer"><p>每日生存知识系统 · 历史知识日历</p><p>输入 · 加工 · 输出 · 实践 · 复盘</p></footer><script src="daily-knowledge-loop.js?v=1.0"></script></body></html>

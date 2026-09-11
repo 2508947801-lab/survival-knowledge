@@ -12,7 +12,8 @@ var DataManager = (function(){
     'yara_daily_todo_v1','yara_life_todo_v1','yara_ledger_v1','yara_ops_os_v1',
     'yara_growth_center_v1','yara_growth_game_v1','yara_career_center_v1',
     'yara_master_schedule_v1','yara_companion_chat_v1','yara_flash_notes_v1',
-    'yara_knowledge_assets_v1','yara_venture_center_v1','yara_cat_care_v1'
+    'yara_knowledge_assets_v1','yara_venture_center_v1','yara_cat_care_v1',
+    'lysie_daily_knowledge_loop_v1'
   ];
   var allowed = {};
   DATA_KEYS.forEach(function(key){ allowed[key] = true; });

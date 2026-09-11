@@ -669,7 +669,7 @@ try{
 <script src="yara-pwa.js?v=1.0" defer></script>
 <script>
 // 构建版本号：部署时由「一键部署.command」替换为时间戳，用于强制手机端拉取最新工具（防止缓存导致 web/手机不一致）。本地打开时保持 'DEV'。
-var BUILD_VERSION = '20260911150601';
+var BUILD_VERSION = '20260911233805';
 var shellRouteLevels = {};
 // 分类页是外壳自己的导航上下文；模块内部仍严格沿用 level 2 / 3 协议。
 var activeHubClusterId = '';
@@ -982,7 +982,7 @@ var YARA_MODULES = [
   {cluster:'academic', src:'运营能力地图/academic-system.html?view=tools', name:'建课系统', group:'教务管理', icon:'layers', glyph:'🧱', desc:'3 个排课工具 · 批量建课'},
   {cluster:'academic', src:'运营能力地图/academic-system.html?view=allocation', name:'接量预排', group:'教务管理', icon:'shuffle', glyph:'🔀', desc:'学员接量与班期预分配'},
   {cluster:'academic', src:'私密模块说明.html#reconcile', name:'对账对比看板', group:'对帐工具', icon:'shield', glyph:'🔍', desc:'学员账号异常 · 比对核验'},
-  {cluster:'growth', src:'index.html', name:'每日生存知识系统', group:'日报系统', icon:'news', glyph:'📰', desc:'每日知识沉淀与发布'},
+  {cluster:'growth', src:'index.html', name:'每日生存知识系统', group:'日报系统', icon:'news', glyph:'📰', desc:'输入 · 加工 · 5 分钟行动 · 实践复盘'},
   {cluster:'growth', src:'知识资产中心.html', name:'知识资产中心', group:'灵感管理', icon:'book', glyph:'📚', desc:'知识 · 判断 · 证据库'},
   {cluster:'growth', src:'能力地图.html', name:'能力地图', group:'运营能力', icon:'compass', glyph:'🗺️', desc:'我就是系统 · 一切输入汇聚成能力'},
   {cluster:'growth', src:'私密模块说明.html#career', name:'把把必中', group:'职业发展', icon:'target', glyph:'🎯', desc:'JD 匹配 · 简历实验室 · 求职作战包'},
