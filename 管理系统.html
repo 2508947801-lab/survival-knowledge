@@ -17,7 +17,7 @@
 <link id="yaraSystemTheme" rel="stylesheet" href="yara-system-theme.css?v=5.0" data-page-node-id="EAlMp1DozoHaKihpAChEOi">
 <link rel="alternate" media="only screen and (max-width: 768px)" href="手机端.html" data-page-node-id="4YPxLD6h1pycnPSRswFmF4">
 <title>Lysie超级大脑</title>
-<link rel="stylesheet" href="yara-shell.css?v=1.4" data-page-node-id="KYVSH7Z1aPqtxDSBqTb1ct">
+<link rel="stylesheet" href="yara-shell.css?v=1.5" data-page-node-id="KYVSH7Z1aPqtxDSBqTb1ct">
 <link rel="stylesheet" href="js/yara-skeleton.css?v=1.0">
 
 <script src="js/yara-config.js?v=1.0"></script>
@@ -495,7 +495,7 @@ try{
         <span class="dock-ico" aria-hidden="true" data-page-node-id="F9ImwhMNKUAAhSVPdGjOHZ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="SB3E4VEfjb31Vu7NUJq09f"><rect x="3" y="4" width="18" height="18" rx="2" data-page-node-id="jR01nwyseOZNoFEmMhVJfC"/><path d="M16 2v4M8 2v4M3 10h18" data-page-node-id="LyscShTAB5MIMwACRSy4ZI"/></svg></span>
         <span class="dock-label" data-page-node-id="R0Jk3rYdVEHmw6Rw6nyk8g">教务</span>
       </button>
-      <button class="dock-item" type="button" data-hub="growth" aria-current="false" onclick="hubGoCluster('growth')" title="知识资产 · 职业 · 创业筹备" data-page-node-id="KUr3MFDS2Cvr0Avp90d0uo">
+      <button class="dock-item" type="button" data-hub="growth" aria-current="false" onclick="hubGoCluster('growth')" title="知识资产 · 职业发展 · 独立项目" data-page-node-id="KUr3MFDS2Cvr0Avp90d0uo">
         <span class="dock-ico" aria-hidden="true" data-page-node-id="bha8H4bGwD7f0UiwskVXB4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="nXgCBWufQlcQUlzajvFMtc"><path d="M22 7 13.5 15.5 8.5 10.5 2 17" data-page-node-id="oibcKAOOeJQ05Mj2jKwcZW"/><path d="M16 7h6v6" data-page-node-id="sI1LST56E4mzbgUdAefoOK"/></svg></span>
         <span class="dock-label" data-page-node-id="cyZfLFiqVKepW5Ej24IdyJ">成长与事业</span>
       </button>
@@ -559,7 +559,7 @@ try{
               <span class="icon" aria-hidden="true" data-page-node-id="C4K2Vuy5EQjnc0Wt6KHXYM">◎</span>
               <div data-page-node-id="WxojZCseyEdjiTmGHklcVR"><h3 id="actionCenterTitle" data-page-node-id="8kaclpE66TFgma8MfIPccN">今天</h3><p data-page-node-id="s4m14UUMfmNg0AsEn5S2wR">课程 · 任务 · 成长，统一排优先级</p></div>
             </div>
-            <span class="data-health" id="dataHealth" data-count="0/7" data-page-node-id="GeAEHZnc92wRrLrIJBR2Qd">0/7 数据源</span>
+            <span class="data-health" id="dataHealth" data-count="0/6" data-page-node-id="GeAEHZnc92wRrLrIJBR2Qd">0/6 数据源</span>
           </div>
           <div class="action-list" id="dashActions" data-page-node-id="9FwKsfj4yUoD9BjRQK3EHc"><div class="center-empty" data-page-node-id="fa0F3dYmZc0JXrhJgbN6PA">正在汇总今日行动…</div></div>
         </section>
@@ -585,6 +585,15 @@ try{
         <button class="flash-home-action" type="button" onclick="openTool('闪念中心.html','闪念中心','灵感管理')" data-page-node-id="JVJETBOvsc4SFirtpRtdiz">记录闪念 →</button>
       </section>
       <section class="home-tools-panel" id="homeToolsPanel" aria-labelledby="homeToolsTitle">
+        <div class="hub-category-page" id="hubCategoryPage" hidden>
+          <div class="hub-category-icon" id="hubCategoryIcon" aria-hidden="true"></div>
+          <div class="hub-category-copy">
+            <span class="hub-category-kicker">关联式导航</span>
+            <h2 id="hubCategoryTitle"></h2>
+            <p id="hubCategoryStory"></p>
+          </div>
+          <span class="hub-category-count" id="hubCategoryCount"></span>
+        </div>
         <div class="home-tools-heading">
           <div>
             <span class="home-tools-kicker">QUICK ACCESS</span>
@@ -660,8 +669,11 @@ try{
 <script src="yara-pwa.js?v=1.0" defer></script>
 <script>
 // 构建版本号：部署时由「一键部署.command」替换为时间戳，用于强制手机端拉取最新工具（防止缓存导致 web/手机不一致）。本地打开时保持 'DEV'。
-var BUILD_VERSION = '20260911100133';
+var BUILD_VERSION = '20260911150601';
 var shellRouteLevels = {};
+// 分类页是外壳自己的导航上下文；模块内部仍严格沿用 level 2 / 3 协议。
+var activeHubClusterId = '';
+var hubReturnClusterId = '';
 
 function setShellScrolled(scrolled){
   document.body.classList.toggle('shell-scrolled', Boolean(scrolled));
@@ -836,6 +848,11 @@ function goBackLevel(){
   var current = window.YaraSystem ? YaraSystem.Router.current : {level:2};
   var level = Math.max(1, Number(current.level) || 1);
   if(level <= 2){
+    // 从模块首页返回它的业务分类；从分类页再返回总首页。
+    if(frame && hubReturnClusterId){
+      showHubCluster(hubReturnClusterId);
+      return;
+    }
     goHome();
     return;
   }
@@ -893,13 +910,16 @@ function openTool(src, name, group){
   hubShowFrame(frame);
   home.classList.add('hidden');
   setShellScrolled(false);
-  shellRouteLevels = {2:{label:name,name:name,group:group,src:src,level:2}};
-  if(window.YaraSystem) YaraSystem.Router.open({src:src,name:name,group:group,level:2});
-  else document.getElementById('breadcrumb').innerHTML = esc(group) + ' / <strong>' + esc(name) + '</strong>';
+  var hubModule = YARA_MODULES.filter(function(m){ return m.src === src; })[0];
+  if(activeHubClusterId) hubReturnClusterId = activeHubClusterId;
+  var parentCluster = hubReturnClusterId ? hubClusterById(hubReturnClusterId) : null;
+  var routeGroup = parentCluster ? parentCluster.name : group;
+  shellRouteLevels = {2:{label:name,name:name,group:routeGroup,src:src,level:2}};
+  if(window.YaraSystem) YaraSystem.Router.open({src:src,name:name,group:routeGroup,level:2});
+  else document.getElementById('breadcrumb').innerHTML = esc(routeGroup) + ' / <strong>' + esc(name) + '</strong>';
   updateRouteBackButton();
   document.getElementById('breadcrumbIcon').textContent = '◆';
   // Update dock active state（按模块所属业务簇高亮）
-  var hubModule = YARA_MODULES.filter(function(m){ return m.src === src; })[0];
   if(hubModule) markDockActive(hubModule.cluster);
   // Close mobile sidebar
   closeSidebar();
@@ -921,6 +941,11 @@ function goHome(){
   document.getElementById('frameLoader').classList.remove('show');
   hubHideActiveFrame();
   home.classList.remove('hidden');
+  activeHubClusterId = '';
+  hubReturnClusterId = '';
+  delete home.dataset.clusterView;
+  var categoryPage = document.getElementById('hubCategoryPage');
+  if(categoryPage) categoryPage.hidden = true;
   if(allTools) allTools.open = false;
   setShellScrolled(home.scrollTop > 24);
   shellRouteLevels = {};
@@ -941,10 +966,10 @@ function goHome(){
 // 单一事实来源：命令面板、模块导航、Dock 高亮全部由该注册表驱动。
 // group 保留模块原有分组名，面包屑与模块内路由语义不变。
 var YARA_CLUSTERS = [
-  {id:'daily', name:'日常', icon:'bolt', tagline:'工作 · 生活 · 钱 · 灵感'},
-  {id:'academic', name:'教务', icon:'calendar', tagline:'主课表为事实源 · 排课 · 纠音 · 对账'},
-  {id:'growth', name:'成长与事业', icon:'trend', tagline:'闪念 → 知识资产 → 职业证据 → 创业行动'},
-  {id:'system', name:'系统设置', icon:'sliders', tagline:'主题 · 数据 · 云同步'}
+  {id:'daily', name:'日常', icon:'bolt', tagline:'执行 · 生活 · 金钱 · 灵感', story:'执行当天，对齐生活与金钱，把闪念送进个人成长。'},
+  {id:'academic', name:'教务', icon:'calendar', tagline:'事实源 · 排课 · 交付 · 对账', story:'主课表是唯一事实源，教务交付最终落进每日工作待办。'},
+  {id:'growth', name:'成长与事业', icon:'trend', tagline:'个人成长 · 职业证据 · 独立项目', story:'想法沉淀为资产，真实经历形成职业证据，独立项目各自推进。'},
+  {id:'system', name:'系统设置', icon:'sliders', tagline:'主题 · 数据 · 云同步', story:'集中管理系统外观、数据状态与跨设备同步。'}
 ];
 var YARA_MODULES = [
   {cluster:'daily', src:'工作管理/每日工作待办.html', name:'每日工作待办', group:'工作管理', icon:'checklist', glyph:'✅', desc:'当日任务 · 种子合并 · 完成奖励', badge:'workTodo'},
@@ -960,7 +985,6 @@ var YARA_MODULES = [
   {cluster:'growth', src:'index.html', name:'每日生存知识系统', group:'日报系统', icon:'news', glyph:'📰', desc:'每日知识沉淀与发布'},
   {cluster:'growth', src:'知识资产中心.html', name:'知识资产中心', group:'灵感管理', icon:'book', glyph:'📚', desc:'知识 · 判断 · 证据库'},
   {cluster:'growth', src:'能力地图.html', name:'能力地图', group:'运营能力', icon:'compass', glyph:'🗺️', desc:'我就是系统 · 一切输入汇聚成能力'},
-  {cluster:'growth', src:'运营能力地图/交付运营总系统.html', name:'自查总系统', group:'运营能力', icon:'clipboard', glyph:'📋', desc:'8 模块交付自查'},
   {cluster:'growth', src:'私密模块说明.html#career', name:'把把必中', group:'职业发展', icon:'target', glyph:'🎯', desc:'JD 匹配 · 简历实验室 · 求职作战包'},
   {cluster:'growth', src:'职业方向指南.html', name:'职业方向指南', group:'职业发展', icon:'briefcase', glyph:'🧭', desc:'11 章筛选指南 · Offer 评分表 · 反向尽调'},
   {cluster:'growth', src:'数据分析学习地图.html', name:'数据分析地图', group:'技能学习', icon:'chart-bar', glyph:'📊', desc:'Excel 高阶 · SQL · Python · 指标体系'},
@@ -979,6 +1003,38 @@ var YARA_HOME_QUICK_SRCS = [
   '私密模块说明.html#career',
   '雅识工作记录.html'
 ];
+// 分类内按“做事链路”而非文件夹平铺；每个模块只出现一次。
+var YARA_CLUSTER_LANES = {
+  daily:[
+    {name:'执行与生活', desc:'今天要做什么，以及钱花到了哪里', srcs:['工作管理/每日工作待办.html','生活管理/每日生活待办.html','财务管理/记账本.html']},
+    {name:'成长入口', desc:'捕捉关于自己的想法', srcs:['闪念中心.html']}
+  ],
+  academic:[
+    {name:'总览与事实源', desc:'先看全景，再以主课表为准', srcs:['运营能力地图/academic-system.html?view=dashboard','运营能力地图/master-schedule.html']},
+    {name:'排课与交付', desc:'从排期到建课、接量与核验', srcs:['运营能力地图/yang-shared-schedule.html','运营能力地图/academic-system.html?view=tools','运营能力地图/academic-system.html?view=allocation','私密模块说明.html#reconcile']}
+  ],
+  growth:[
+    {name:'个人成长主线', desc:'把想法沉淀成知识与能力', srcs:['知识资产中心.html','能力地图.html']},
+    {name:'职业发展链', desc:'工作事实 → 方向判断 → 求职表达', srcs:['雅识工作记录.html','职业方向指南.html','私密模块说明.html#career']},
+    {name:'独立项目', desc:'阅读、自学与小副业各自推进', srcs:['index.html','数据分析学习地图.html','私密模块说明.html#cat-care']}
+  ],
+  system:[
+    {name:'运行与数据', desc:'系统级配置集中管理', srcs:['系统设置.html']}
+  ]
+};
+var YARA_CLUSTER_RELATIONS = {
+  daily:[
+    {from:'每日生活待办', to:'记账本', note:'生活计划与实际支出互相校准', target:'财务管理/记账本.html'},
+    {from:'闪念中心', to:'知识资产中心', note:'想法整理后进入个人成长', target:'知识资产中心.html'}
+  ],
+  academic:[
+    {from:'教务交付', to:'每日工作待办', note:'课程事项最终落到每天执行', target:'工作管理/每日工作待办.html'}
+  ],
+  growth:[
+    {from:'闪念中心', to:'知识资产中心', note:'个人成长的输入起点', target:'闪念中心.html'},
+    {from:'雅识工作记录', to:'把把必中', note:'真实工作证据进入职业表达', target:'私密模块说明.html#career'}
+  ]
+};
 var HUB_ICONS = {
   bolt:'<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
   calendar:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
@@ -1091,6 +1147,33 @@ function createHubTile(mod, badges, variant){
   btn.addEventListener('click', function(){ openTool(mod.src, mod.name, mod.group); });
   return btn;
 }
+function hubClusterById(id){
+  return YARA_CLUSTERS.filter(function(cluster){ return cluster.id === id; })[0] || null;
+}
+function hubModuleBySrc(src){
+  return YARA_MODULES.filter(function(mod){ return mod.src === src; })[0] || null;
+}
+function createHubRelation(relation){
+  var target = hubModuleBySrc(relation.target);
+  var button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'hub-relation-link';
+  button.innerHTML = '<span class="hub-relation-path"><strong>' + esc(relation.from) + '</strong><span aria-hidden="true">→</span><strong>' + esc(relation.to) + '</strong></span>' +
+    '<span class="hub-relation-note">' + esc(relation.note) + '</span>';
+  if(target){
+    button.addEventListener('click', function(){ openTool(target.src, target.name, target.group); });
+  }else{
+    button.disabled = true;
+  }
+  return button;
+}
+function renderHubCategoryBreadcrumb(cluster){
+  var el = document.getElementById('breadcrumb');
+  if(!el || !cluster) return;
+  el.innerHTML = '<button class="breadcrumb-home" type="button" data-breadcrumb-home="true">首页</button>' +
+    ' <span class="route-separator">/</span> <strong aria-current="page">' + esc(cluster.name) + '</strong>';
+  el.title = '首页 / ' + cluster.name;
+}
 function renderHub(){
   var root = document.getElementById('hubLaunchpad');
   var quickRoot = document.getElementById('homeQuickTools');
@@ -1111,6 +1194,7 @@ function renderHub(){
     var modules = YARA_MODULES.filter(function(m){ return m.cluster === cluster.id; });
     var section = document.createElement('section');
     section.className = 'hub-cluster';
+    section.hidden = Boolean(activeHubClusterId && activeHubClusterId !== cluster.id);
     section.id = 'hubCluster-' + cluster.id;
     section.dataset.accent = cluster.id;
     section.setAttribute('aria-label', cluster.name);
@@ -1134,12 +1218,51 @@ function renderHub(){
     head.appendChild(copy);
     head.appendChild(count);
     section.appendChild(head);
-    var grid = document.createElement('div');
-    grid.className = 'hub-grid';
-    modules.forEach(function(mod){
-      grid.appendChild(createHubTile(mod, badges, 'directory'));
+    var relations = YARA_CLUSTER_RELATIONS[cluster.id] || [];
+    if(relations.length){
+      var relationWrap = document.createElement('div');
+      relationWrap.className = 'hub-relations';
+      var relationLabel = document.createElement('span');
+      relationLabel.className = 'hub-relations-label';
+      relationLabel.textContent = '跨模块联动';
+      relationWrap.appendChild(relationLabel);
+      relations.forEach(function(relation){ relationWrap.appendChild(createHubRelation(relation)); });
+      section.appendChild(relationWrap);
+    }
+    var rendered = {};
+    var lanes = YARA_CLUSTER_LANES[cluster.id] || [];
+    lanes.forEach(function(lane){
+      var laneEl = document.createElement('div');
+      laneEl.className = 'hub-lane';
+      var laneHead = document.createElement('div');
+      laneHead.className = 'hub-lane-head';
+      laneHead.innerHTML = '<h4>' + esc(lane.name) + '</h4><p>' + esc(lane.desc) + '</p>';
+      laneEl.appendChild(laneHead);
+      var grid = document.createElement('div');
+      grid.className = 'hub-grid';
+      lane.srcs.forEach(function(src){
+        var mod = hubModuleBySrc(src);
+        if(mod && mod.cluster === cluster.id && !rendered[src]){
+          rendered[src] = true;
+          grid.appendChild(createHubTile(mod, badges, 'directory'));
+        }
+      });
+      if(grid.children.length){
+        laneEl.appendChild(grid);
+        section.appendChild(laneEl);
+      }
     });
-    section.appendChild(grid);
+    var remainder = modules.filter(function(mod){ return !rendered[mod.src]; });
+    if(remainder.length){
+      var otherLane = document.createElement('div');
+      otherLane.className = 'hub-lane';
+      otherLane.innerHTML = '<div class="hub-lane-head"><h4>其他工具</h4><p>尚未归入固定链路</p></div>';
+      var otherGrid = document.createElement('div');
+      otherGrid.className = 'hub-grid';
+      remainder.forEach(function(mod){ otherGrid.appendChild(createHubTile(mod, badges, 'directory')); });
+      otherLane.appendChild(otherGrid);
+      section.appendChild(otherLane);
+    }
     root.appendChild(section);
   });
 }
@@ -1153,18 +1276,45 @@ function markDockActive(hubId){
 function hubGoHome(){
   goHome();
 }
+function showHubCluster(id){
+  var cluster = hubClusterById(id);
+  if(!cluster) return;
+  var home = document.getElementById('homePage');
+  var categoryPage = document.getElementById('hubCategoryPage');
+  var disclosure = document.getElementById('allToolsDisclosure');
+  document.getElementById('frameLoader').classList.remove('show');
+  hubHideActiveFrame();
+  home.classList.remove('hidden');
+  activeHubClusterId = id;
+  hubReturnClusterId = id;
+  home.dataset.clusterView = id;
+  if(disclosure) disclosure.open = true;
+  if(categoryPage){
+    categoryPage.hidden = false;
+    document.getElementById('hubCategoryIcon').innerHTML = hubIcon(cluster.icon);
+    document.getElementById('hubCategoryTitle').textContent = cluster.name;
+    document.getElementById('hubCategoryStory').textContent = cluster.story;
+    document.getElementById('hubCategoryCount').textContent = YARA_MODULES.filter(function(mod){ return mod.cluster === id; }).length + ' 个模块';
+  }
+  shellRouteLevels = {2:{label:cluster.name,name:cluster.name,group:'分类',src:'',level:2}};
+  if(window.YaraSystem){
+    YaraSystem.Router.open({src:'',name:cluster.name,group:'分类',level:2});
+    renderHubCategoryBreadcrumb(cluster);
+  }else{
+    renderHubCategoryBreadcrumb(cluster);
+  }
+  document.getElementById('breadcrumbIcon').textContent = '◆';
+  renderHub();
+  markDockActive(id);
+  updateRouteBackButton();
+  home.scrollTop = 0;
+  setShellScrolled(false);
+  closeSidebar();
+  closeCommandPalette();
+}
 function hubGoCluster(id){
   goHome();
-  markDockActive(id);
-  closeSidebar();
-  var disclosure = document.getElementById('allToolsDisclosure');
-  if(disclosure) disclosure.open = true;
-  var home = document.getElementById('homePage');
-  var target = document.getElementById('hubCluster-' + id);
-  if(!home || !target) return;
-  var top = target.getBoundingClientRect().top - home.getBoundingClientRect().top + home.scrollTop - 12;
-  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  home.scrollTo({top: Math.max(0, top), behavior: reduced ? 'auto' : 'smooth'});
+  showHubCluster(id);
 }
 
 // 旧 nav-group/nav-child 导航体系已被 dock 取代（W1 清理：相关绑定与 flyout 已移除）
@@ -1937,7 +2087,7 @@ function renderDashStats(todayCount){
   document.getElementById('dashStats').innerHTML =
     statCardHTML(todayColor,todayCount+' 节','今日课程',todayCount>0?'今天有课':'休息日 🎉','今日课程 '+todayCount+' 节')+
     statCardHTML(pctColor,pct+'%','课表完成度',totalDone+'/'+totalLessons+' 节已完成'+(futureLessons>0?' · '+futureLessons+' 节未到':''),'课表完成度 '+pct+'%')+
-    statCardHTML(capColor,cap?cap.avg.toFixed(1):'—','能力自评',cap?cap.count+'项 · /5分':'未评估','能力自评 '+(cap?cap.avg.toFixed(1)+' 分':'未评估'));
+    statCardHTML(capColor,cap?cap.avg.toFixed(1):'—','能力记录',cap?cap.count+'项历史评分 · /5分':'待积累','能力记录 '+(cap?cap.avg.toFixed(1)+' 分':'待积累'));
 }
 
 function renderTodayClasses(){
@@ -1990,7 +2140,7 @@ function renderCapability(){
   var cap = getCapAvg();
   var html = '<div class="dash-section-title"><span class="icon">⚡</span>运营能力</div>';
   if(!cap){
-    html += '<div class="cap-empty">还没有自评数据。<a onclick="openTool(\'运营能力地图/交付运营总系统.html\',\'自查总系统\',\'运营能力\')">去评一下 →</a></div>';
+    html += '<div class="cap-empty">能力数据还在积累中。<a onclick="openTool(\'能力地图.html\',\'能力地图\',\'成长与事业\')">查看成长输入 →</a></div>';
   } else {
     html += '<div class="cap-summary"><span class="cap-score">'+cap.avg.toFixed(1)+' / 5</span><div class="cap-note">已评估 '+cap.count+' 项 · 平均分'+(cap.avg>=3.5?' · 状态不错 👍':cap.avg>=2.5?' · 稳步成长中':' · 加油，空间很大')+'</div></div>';
   }
@@ -2011,7 +2161,7 @@ function renderCommandCenters(state){
   var risks = (Array.isArray(state.risks) ? state.risks : []).slice(0, riskLimit);
   // 成长花园已从现役产品中退场，但历史 growth 状态仍保留以兼容旧数据；
   // 首页的数据健康度只统计当前仍在使用的业务源。
-  var activeSourceKeys = Object.keys(state.sources || {}).filter(function(key){ return key !== 'growth'; });
+  var activeSourceKeys = Object.keys(state.sources || {}).filter(function(key){ return key !== 'growth' && key !== 'capability'; });
   var connected = activeSourceKeys.filter(function(key){ return state.sources[key]; }).length;
   var sourceTotal = activeSourceKeys.length || ((window.YARA_CONFIG && Number(YARA_CONFIG.knownSourceTotal)) || 6);
   var health = document.getElementById('dataHealth');
@@ -2089,7 +2239,7 @@ if(window.YaraMasterSchedule){
 }
 if(new URLSearchParams(location.search).get('test') === '1'){
   var testScript = document.createElement('script');
-  testScript.src = 'js/yara-tests.js?v=1.1';
+  testScript.src = 'js/yara-tests.js?v=1.2';
   document.body.appendChild(testScript);
 }
 </script>

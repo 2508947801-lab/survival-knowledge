@@ -233,15 +233,6 @@
           { src: '运营能力地图/academic-system.html', name: '建课系统', group: '教务管理' }
         ));
       });
-      if (!capabilitySummary.count) {
-        actions.push(createAction(
-          'capability-empty',
-          'low',
-          '完成一次运营能力自评',
-          '建立本周能力基线',
-          { src: '运营能力地图/交付运营总系统.html', name: '自查总系统', group: '运营能力' }
-        ));
-      }
       if (flashSummary.unsummarized.length >= 3) {
         actions.push(createAction(
           'flash-review-' + today,
