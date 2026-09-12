@@ -38,7 +38,8 @@ var YARA_CONFIG = (function(){
       'yara_ledger_v1',
       'yara_flash_notes_v1',
       'yara_ops_os_v1',
-      'yara_master_schedule_v1'
+      'yara_master_schedule_v1',
+      'lysie_daily_knowledge_loop_v1'
     ]
   };
 

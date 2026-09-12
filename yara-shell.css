@@ -1015,6 +1015,20 @@ body[data-theme="dawn"] .stat-card:hover{
 body[data-theme="twilight"] .flash-home-card{background:var(--surface);color:var(--ink);}
 body[data-theme="twilight"] .flash-home-action{background:var(--primary);}
 
+/* ---------- 首页知识雷达：从入口就展示一条有来源的内容 ---------- */
+.knowledge-radar-home{
+  min-width:0;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:16px;
+  padding:20px;border:1px solid var(--primary-bd);border-radius:var(--r-lg);
+  background:linear-gradient(135deg,var(--surface),var(--primary-soft));box-shadow:var(--glow);overflow:hidden;
+}
+.knowledge-radar-home-mark{display:grid;place-items:center;width:46px;height:46px;border-radius:15px;color:#fff;background:var(--grad);box-shadow:0 9px 22px rgba(124,92,255,.22);font-size:18px}
+.knowledge-radar-home-copy{min-width:0}.knowledge-radar-home-kicker{display:block;margin-bottom:3px;color:var(--primary-strong);font-size:11px;font-weight:820;letter-spacing:.1em}.knowledge-radar-home-copy h3{color:var(--ink);font-size:17px;line-height:1.35;overflow-wrap:anywhere}.knowledge-radar-home-copy p{margin-top:5px;color:var(--sub);font-size:13px;line-height:1.55;overflow-wrap:anywhere}.knowledge-radar-home-copy small{display:block;margin-top:7px;color:var(--muted);font-size:11px;line-height:1.5;overflow-wrap:anywhere}
+.knowledge-radar-home-status{justify-self:end;padding:6px 10px;border:1px solid var(--glass-bd);border-radius:999px;color:var(--success-ink);background:var(--success-soft);font-size:11px;font-weight:720;white-space:nowrap}.knowledge-radar-home-action{grid-column:2/-1;justify-self:start;min-height:44px;padding:0 16px;border:1px solid var(--primary-bd);border-radius:12px;color:#fff;background:var(--primary);font:inherit;font-size:12px;font-weight:750;line-height:1;cursor:pointer;transition:transform .2s,border-color .2s,background .2s}.knowledge-radar-home-action:hover{transform:translateY(-2px);background:var(--primary-strong)}.knowledge-radar-home-action:focus-visible{outline:2px solid var(--primary);outline-offset:3px}
+.command-center-grid>.flash-home-card{margin:0;grid-template-columns:auto minmax(0,1fr);gap:12px;padding:20px}.command-center-grid>.flash-home-card .flash-home-status{grid-column:1/2;border-left:0;padding:0;text-align:center}.command-center-grid>.flash-home-card .flash-home-action{grid-column:2/3;width:100%;min-height:44px}
+@media(max-width:1040px){.knowledge-radar-home{grid-template-columns:auto minmax(0,1fr) auto}.knowledge-radar-home-action{grid-column:2/-1}.command-center-grid>.flash-home-card{grid-template-columns:auto minmax(0,1fr) auto auto}.command-center-grid>.flash-home-card .flash-home-status{grid-column:auto;border-left:1px solid var(--border);padding:0 17px}.command-center-grid>.flash-home-card .flash-home-action{grid-column:auto;width:auto}}
+@media(max-width:760px){.knowledge-radar-home{grid-template-columns:auto minmax(0,1fr);padding:17px 16px;gap:12px}.knowledge-radar-home-status{grid-column:2;justify-self:start}.knowledge-radar-home-action{grid-column:1/-1;width:100%}.command-center-grid>.flash-home-card{grid-template-columns:auto 1fr;padding:17px 16px}.command-center-grid>.flash-home-card .flash-home-status{grid-column:2;border-left:0;padding:0;text-align:left}.command-center-grid>.flash-home-card .flash-home-action{grid-column:1/-1;width:100%}}
+@media(max-width:390px){.knowledge-radar-home-mark{width:42px;height:42px}.knowledge-radar-home-copy h3{font-size:16px}.knowledge-radar-home-copy p{font-size:12px}.knowledge-radar-home-status{white-space:normal;overflow-wrap:anywhere}}
+
 /* ---------- 九、弹窗 / Toast / 命令面板（统一白底卡片） ---------- */
 .sidebar-overlay{background:rgba(15,23,42,.35);}
 .toast{

@@ -17,10 +17,11 @@
 <link id="yaraSystemTheme" rel="stylesheet" href="yara-system-theme.css?v=5.0" data-page-node-id="EAlMp1DozoHaKihpAChEOi">
 <link rel="alternate" media="only screen and (max-width: 768px)" href="手机端.html" data-page-node-id="4YPxLD6h1pycnPSRswFmF4">
 <title>Lysie超级大脑</title>
-<link rel="stylesheet" href="yara-shell.css?v=1.5" data-page-node-id="KYVSH7Z1aPqtxDSBqTb1ct">
+<link rel="stylesheet" href="yara-shell.css?v=1.6" data-page-node-id="KYVSH7Z1aPqtxDSBqTb1ct">
 <link rel="stylesheet" href="js/yara-skeleton.css?v=1.0">
 
 <script src="js/yara-config.js?v=1.0"></script>
+<script src="daily-radar-content.js?v=1.0"></script>
 <script src="js/yara-timers.js?v=1.0"></script>
 <script src="js/yara-error-monitor.js?v=1.0"></script>
 <script src="js/yara-storage-guard.js?v=1.0"></script>
@@ -573,7 +574,17 @@ try{
           <div class="risk-list" id="dashRisks" data-page-node-id="f36dzwnoZqh6zsMAXbC8oq"><div class="center-empty" data-page-node-id="383FGXlx1zH7VqrydQMd7v">正在扫描风险…</div></div>
           <div class="operation-legend" data-page-node-id="fFlBAfF6X4RefDhoIi8XA7"><span data-page-node-id="iU4xY91VECZPjI2whCZZi0">保存有反馈</span><span data-page-node-id="wQ246mcJGE9f2DEJQPBTwk">删除先确认</span><span data-page-node-id="IFEAIDv07MFr4qiUAgCiKk">导入有状态</span><span data-page-node-id="Eek8X3YY4wyb7EGuO79V4Y">安全操作可撤销</span></div>
         </section>
-      </div>
+        <section class="knowledge-radar-home" aria-labelledby="knowledgeRadarHomeTitle">
+          <div class="knowledge-radar-home-mark" aria-hidden="true">◉</div>
+          <div class="knowledge-radar-home-copy">
+            <span class="knowledge-radar-home-kicker">KNOWLEDGE RADAR · 已核验</span>
+            <h3 id="knowledgeRadarHomeTitle">今日知识雷达</h3>
+            <p id="knowledgeRadarHomeReason">正在从已核验知识中选择一条…</p>
+            <small id="knowledgeRadarHomeMeta">3–5 分钟 · 原始来源可追溯</small>
+          </div>
+          <div class="knowledge-radar-home-status" id="knowledgeRadarHomeStatus">只读统计</div>
+          <button class="knowledge-radar-home-action" id="knowledgeRadarHomeAction" type="button" onclick="openTool('index.html','Lysie 知识雷达','知识系统')">读这一条 →</button>
+        </section>
       <section class="flash-home-card" aria-labelledby="flashHomeTitle" data-page-node-id="l0GOJiF6TwNOobitPrF4dq">
         <div class="flash-home-icon" aria-hidden="true" data-page-node-id="7KfPLjrRq1dkQmo0HFMu05">✦</div>
         <div class="flash-home-copy" data-page-node-id="th2DNXHLgrUDGABQAuaso4">
@@ -584,6 +595,7 @@ try{
         <div class="flash-home-status" data-page-node-id="quiH27YSOL4afnbSIkWfGx"><strong id="flashHomeCount" data-page-node-id="iY6idP7dJUujTETHIx5Wsx">0</strong><span data-page-node-id="Klmq3OtZhF3Ah6AlUsrIAx">条待整理</span></div>
         <button class="flash-home-action" type="button" onclick="openTool('闪念中心.html','闪念中心','灵感管理')" data-page-node-id="JVJETBOvsc4SFirtpRtdiz">记录闪念 →</button>
       </section>
+      </div>
       <section class="home-tools-panel" id="homeToolsPanel" aria-labelledby="homeToolsTitle">
         <div class="hub-category-page" id="hubCategoryPage" hidden>
           <div class="hub-category-icon" id="hubCategoryIcon" aria-hidden="true"></div>
@@ -669,7 +681,7 @@ try{
 <script src="yara-pwa.js?v=1.0" defer></script>
 <script>
 // 构建版本号：部署时由「一键部署.command」替换为时间戳，用于强制手机端拉取最新工具（防止缓存导致 web/手机不一致）。本地打开时保持 'DEV'。
-var BUILD_VERSION = '20260912121109';
+var BUILD_VERSION = '20260912173441';
 var shellRouteLevels = {};
 // 分类页是外壳自己的导航上下文；模块内部仍严格沿用 level 2 / 3 协议。
 var activeHubClusterId = '';
@@ -968,6 +980,7 @@ function goHome(){
     YaraSystem.DataHub.refresh(DASH_DATA);
     renderCommandCenters(YaraSystem.DataHub.state);
   }
+  renderKnowledgeRadarHome();
   closeSidebar();
 }
 
@@ -991,7 +1004,7 @@ var YARA_MODULES = [
   {cluster:'academic', src:'运营能力地图/academic-system.html?view=tools', name:'建课系统', group:'教务管理', icon:'layers', glyph:'🧱', desc:'3 个排课工具 · 批量建课'},
   {cluster:'academic', src:'运营能力地图/academic-system.html?view=allocation', name:'接量预排', group:'教务管理', icon:'shuffle', glyph:'🔀', desc:'学员接量与班期预分配'},
   {cluster:'academic', src:'私密模块说明.html#reconcile', name:'对账对比看板', group:'对帐工具', icon:'shield', glyph:'🔍', desc:'学员账号异常 · 比对核验'},
-  {cluster:'growth', src:'index.html', name:'每日生存知识系统', group:'日报系统', icon:'news', glyph:'📰', desc:'输入 · 加工 · 5 分钟行动 · 实践复盘'},
+  {cluster:'growth', src:'index.html', name:'Lysie 知识雷达', group:'知识系统', icon:'news', glyph:'📰', desc:'已核验知识 · 每次一条 · 行动与复查'},
   {cluster:'growth', src:'知识资产中心.html', name:'知识资产中心', group:'灵感管理', icon:'book', glyph:'📚', desc:'知识 · 判断 · 证据库'},
   {cluster:'growth', src:'能力地图.html', name:'能力地图', group:'运营能力', icon:'compass', glyph:'🗺️', desc:'我就是系统 · 一切输入汇聚成能力'},
   {cluster:'growth', src:'私密模块说明.html#career', name:'把把必中', group:'职业发展', icon:'target', glyph:'🎯', desc:'JD 匹配 · 简历实验室 · 求职作战包'},
@@ -1025,7 +1038,7 @@ var YARA_CLUSTER_LANES = {
   growth:[
     {name:'个人成长主线', desc:'把想法沉淀成知识与能力', srcs:['知识资产中心.html','能力地图.html']},
     {name:'职业发展链', desc:'工作事实 → 方向判断 → 求职表达', srcs:['雅识工作记录.html','职业方向指南.html','私密模块说明.html#career']},
-    {name:'独立项目', desc:'阅读、自学与小副业各自推进', srcs:['index.html','数据分析学习地图.html','私密模块说明.html#cat-care']}
+    {name:'独立项目', desc:'知识雷达、自学与小副业各自推进', srcs:['index.html','数据分析学习地图.html','私密模块说明.html#cat-care']}
   ],
   system:[
     {name:'运行与数据', desc:'系统级配置集中管理', srcs:['系统设置.html']}
@@ -1388,7 +1401,7 @@ function detectModuleType(pathname, title){
   if(source.indexOf('运营能力地图.html') >= 0 || source.indexOf('运营能力地图 —') >= 0) return 'capability';
   if(source.indexOf('对账对比看板') >= 0) return 'reconcile';
   if(source.indexOf('生存知识日报_') >= 0 || source.indexOf('生存知识日报.html') >= 0) return 'daily-article';
-  if(source.indexOf('每日生存知识系统') >= 0 || source.indexOf('生存知识日报文件/index') >= 0) return 'daily-index';
+  if(source.indexOf('每日生存知识系统') >= 0 || source.indexOf('Lysie 知识雷达') >= 0 || source.indexOf('生存知识日报文件/index') >= 0) return 'daily-index';
   if(source.indexOf('把把必中') >= 0 || source.indexOf('简历与JD匹配中心') >= 0) return 'career-match';
   if(source.indexOf('猫咪上门服务') >= 0 || source.indexOf('猫咪上门 · 接单排期') >= 0) return 'cat-care';
   if(source.indexOf('每日工作待办') >= 0) return 'todo-work';
@@ -1652,7 +1665,7 @@ window.addEventListener('message', function(event){
 /* 跨标签页刷新：只监听 DataHub 与主课表的真实业务键。 */
 var DASHBOARD_RELATED_KEYS=(window.YARA_CONFIG && Array.isArray(YARA_CONFIG.dashboardRelatedKeys))
   ? YARA_CONFIG.dashboardRelatedKeys.slice()
-  : ['yara_daily_todo_v1','yara_life_todo_v1','yara_ledger_v1','yara_flash_notes_v1','yara_ops_os_v1','yara_master_schedule_v1'];
+  : ['yara_daily_todo_v1','yara_life_todo_v1','yara_ledger_v1','yara_flash_notes_v1','yara_ops_os_v1','yara_master_schedule_v1','lysie_daily_knowledge_loop_v1'];
 window.addEventListener('storage', function(event){
   if(!window.YaraSystem || event.key === 'yara_data_hub_cache_v1') return;
   if(DASHBOARD_RELATED_KEYS.indexOf(event.key)===-1)return;
@@ -1662,6 +1675,7 @@ window.addEventListener('storage', function(event){
     renderCommandCenters(state);
     if(typeof updateHubBadges === 'function') updateHubBadges();
     renderFlashHome();
+    renderKnowledgeRadarHome();
   }catch(error){
     if(window.ErrorMonitor) ErrorMonitor.log(error, 'storage-refresh:' + event.key);
   }
@@ -1842,6 +1856,51 @@ function renderFlashHome(){
   if(latest){
     latest.textContent=pending.length?('最近一条：'+String(pending[0].content||'').replace(/\s+/g,' ').slice(0,54)+(String(pending[0].content||'').length>54?'…':'')):'突然冒出的念头不必立刻成熟，先记录，再定期把它整理成下一步。';
   }
+}
+
+function renderKnowledgeRadarHome(){
+  var cards=Array.isArray(window.LYSIE_RADAR_CARDS)?window.LYSIE_RADAR_CARDS.filter(function(card){
+    return card&&typeof card==='object'&&/^2026-09-0[1-7]$/.test(String(card.id||''))&&/^https:\/\//i.test(String(card.sourceUrl||''));
+  }):[];
+  var title=document.getElementById('knowledgeRadarHomeTitle');
+  var reason=document.getElementById('knowledgeRadarHomeReason');
+  var meta=document.getElementById('knowledgeRadarHomeMeta');
+  var status=document.getElementById('knowledgeRadarHomeStatus');
+  if(!title||!reason||!meta||!status)return;
+  var now=new Date();
+  var today=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  var card=cards.length?cards[(Number(today.replace(/-/g,''))||0)%cards.length]:null;
+  var state={entries:[]};
+  try{
+    var raw=localStorage.getItem('lysie_daily_knowledge_loop_v1');
+    var parsed=raw?JSON.parse(raw):null;
+    if(parsed&&Array.isArray(parsed.entries))state=parsed;
+  }catch(error){
+    if(window.ErrorMonitor)ErrorMonitor.log(error,'knowledge-radar-home:read');
+  }
+  var weekStartDate=new Date(now.getFullYear(),now.getMonth(),now.getDate()-6);
+  var weekStart=weekStartDate.getFullYear()+'-'+String(weekStartDate.getMonth()+1).padStart(2,'0')+'-'+String(weekStartDate.getDate()).padStart(2,'0');
+  var due=0;
+  var applied=0;
+  state.entries.forEach(function(entry){
+    if(!entry||typeof entry!=='object')return;
+    var revisit=String(entry.revisitOn||'');
+    if(entry.status!=='applied'&&entry.status!=='archived'&&revisit&&revisit<=today)due+=1;
+    if(entry.status==='applied'){
+      var used=String(entry.lastUsedAt||entry.practicedAt||entry.updatedAt||'').slice(0,10);
+      if(used>=weekStart&&used<=today)applied+=1;
+    }
+  });
+  if(card){
+    title.textContent=String(card.title||'今日知识雷达').slice(0,100);
+    reason.textContent=String(card.why||'').replace(/^应用建议[:：]?\s*/,'').slice(0,118);
+    meta.textContent='约 '+Math.max(3,Math.min(5,Number(card.readMinutes)||4))+' 分钟 · '+String(card.sourceLabel||'原始来源')+' · 核验于 '+String(card.verifiedOn||'');
+  }else{
+    title.textContent='今日知识雷达';
+    reason.textContent='推荐卡暂时无法读取；已保存的知识闭环不受影响。';
+    meta.textContent='只展示已核验、可追溯的内容';
+  }
+  status.textContent=due?due+' 条待复查':'本周已用 '+applied+' 条';
 }
 
 function applyTheme(theme){
@@ -2036,6 +2095,7 @@ function scheduleClockUpdate(){
 scheduleClockUpdate();
 initCompanion();
 renderFlashHome();
+renderKnowledgeRadarHome();
 
 // ===== DASHBOARD =====
 var DASH_DATA = {};
@@ -2211,6 +2271,7 @@ function loadDashboard(){
   var stats = document.getElementById('dashStats');
   if(stats) stats.setAttribute('aria-busy','true');
   setGreeting();
+  renderKnowledgeRadarHome();
   try{
     if(window.YaraMasterSchedule){
       DASH_DATA = window.YaraMasterSchedule.getCourseData({});
@@ -2259,7 +2320,7 @@ if(window.YaraMasterSchedule){
 }
 if(new URLSearchParams(location.search).get('test') === '1'){
   var testScript = document.createElement('script');
-  testScript.src = 'js/yara-tests.js?v=1.3';
+  testScript.src = 'js/yara-tests.js?v=1.4';
   document.body.appendChild(testScript);
 }
 </script>

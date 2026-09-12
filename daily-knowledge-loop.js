@@ -20,6 +20,11 @@
   var reviewList = document.getElementById('reviewQueueList');
   var reviewNote = document.getElementById('dailyReviewNote');
   var submitButton = form.querySelector('button[type="submit"]');
+  var knowledgeCapture = document.getElementById('knowledgeCapture');
+  var radarCard = document.getElementById('radarCard');
+  var radarSkipped = document.getElementById('radarSkipped');
+  var radarCards = Array.isArray(window.LYSIE_RADAR_CARDS) ? window.LYSIE_RADAR_CARDS.filter(validRadarCard) : [];
+  var radarIndex = radarCards.length ? dailyRadarIndex(radarCards.length) : 0;
   var state = loadState();
 
   function dateKey(date) {
@@ -92,6 +97,92 @@
     if (className) node.className = className;
     if (text != null) node.textContent = text;
     return node;
+  }
+
+  function validRadarCard(card) {
+    return Boolean(card && typeof card === 'object' && /^2026-09-0[1-7]$/.test(String(card.id || '')) &&
+      /^https:\/\//i.test(String(card.sourceUrl || '')) &&
+      /^生存知识日报_\d{4}-\d{2}-\d{2}\.html$/.test(String(card.report || '')) &&
+      /^\d{4}-\d{2}-\d{2}$/.test(String(card.verifiedOn || '')));
+  }
+
+  function dailyRadarIndex(length) {
+    if (!length) return 0;
+    var numericDate = Number(dateKey().replace(/-/g, '')) || 0;
+    return numericDate % length;
+  }
+
+  function currentRadarCard() {
+    return radarCards.length ? radarCards[radarIndex % radarCards.length] : null;
+  }
+
+  function sevenDaysAgoKey() {
+    return addDays(dateKey(), -6);
+  }
+
+  function radarStats() {
+    var today = dateKey();
+    var weekStart = sevenDaysAgoKey();
+    var due = state.entries.filter(function (entry) {
+      return entry && entry.status !== 'applied' && entry.status !== 'archived' &&
+        String(entry.revisitOn || addDays(entry.date, 14)) <= today;
+    }).length;
+    var applied = state.entries.filter(function (entry) {
+      if (!entry || entry.status !== 'applied') return false;
+      var key = '';
+      try { key = dateKey(new Date(entry.lastUsedAt || entry.practicedAt || entry.updatedAt)); } catch (error) { key = ''; }
+      return key >= weekStart && key <= today;
+    }).length;
+    return { due: due, applied: applied };
+  }
+
+  function setText(id, value) {
+    var node = document.getElementById(id);
+    if (node) node.textContent = value;
+  }
+
+  function renderRadar() {
+    if (!radarCard) return;
+    var card = currentRadarCard();
+    var stats = radarStats();
+    setText('radarProgress', stats.due ? stats.due + ' 条待复查 · 本周已用 ' + stats.applied + ' 条' : '本周已用 ' + stats.applied + ' 条 · 暂无到期复查');
+    if (!card) {
+      setText('radarTitle', '知识卡暂时无法读取');
+      setText('radarFact', '已保存的个人知识闭环仍可正常使用。请稍后刷新页面。');
+      setText('radarWhy', '当前仅缺少推荐内容，不影响本机数据。');
+      setText('radarBoundary', '不会用预设主题或未核验内容填补空缺。');
+      ['radarUse', 'radarNext'].forEach(function (id) { var button = document.getElementById(id); if (button) button.disabled = true; });
+      return;
+    }
+    setText('radarFocus', clean(card.focus, 40));
+    setText('radarReadTime', '约 ' + Math.max(3, Math.min(5, Number(card.readMinutes) || 4)) + ' 分钟');
+    setText('radarTitle', clean(card.title, 100));
+    setText('radarFact', clean(card.fact, 500));
+    setText('radarWhy', '应用建议：' + clean(card.why, 500));
+    setText('radarBoundary', clean(card.boundary, 500));
+    setText('radarVerified', '核验于 ' + card.verifiedOn + ' · ' + clean(card.sourceLabel, 120));
+    var source = document.getElementById('radarSource');
+    var report = document.getElementById('radarReadReport');
+    if (source) source.href = card.sourceUrl;
+    if (report) report.href = card.report;
+  }
+
+  function beginWithRadarCard() {
+    var card = currentRadarCard();
+    if (!card || !knowledgeCapture) return;
+    knowledgeCapture.open = true;
+    if (!clean(fields.focus.value, 40)) {
+      var optionExists = Array.prototype.some.call(fields.focus.options, function (option) { return option.value === card.focus; });
+      if (optionExists) fields.focus.value = card.focus;
+    }
+    if (!clean(fields.title.value, 80)) fields.title.value = clean(card.title, 80);
+    if (!clean(fields.source.value, 240)) fields.source.value = clean(card.sourceUrl, 240);
+    updateStepState();
+    showFeedback('已预填主题与来源；请用自己的话完成加工。尚未保存。');
+    window.requestAnimationFrame(function () {
+      knowledgeCapture.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      fields.summary.focus({ preventScroll: true });
+    });
   }
 
   function todaysEntries() {
@@ -222,7 +313,7 @@
     reviewNote.value = saved && saved.note ? saved.note : '';
     var now = new Date();
     var lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-    var prompt = '每日 3–10 分钟：记录结果、阻碍或下一次调整。';
+    var prompt = '有使用时再写，不必每天完成。';
     if (now.getDay() === 0) prompt = '今天顺手做周复盘：本周哪条知识被真正调用了？';
     if (now.getDate() >= lastDay - 2) prompt = '月底复盘：保留被调用的，归档不再服务当前目标的。';
     document.getElementById('reviewPrompt').textContent = prompt;
@@ -239,6 +330,7 @@
   }
 
   function render() {
+    renderRadar();
     renderToday();
     renderReviewQueue();
     renderReview();
@@ -264,6 +356,22 @@
 
   form.addEventListener('input', updateStepState);
   form.addEventListener('change', updateStepState);
+  document.getElementById('radarUse').addEventListener('click', beginWithRadarCard);
+  document.getElementById('radarNext').addEventListener('click', function () {
+    if (!radarCards.length) return;
+    radarIndex = (radarIndex + 1) % radarCards.length;
+    renderRadar();
+    radarCard.focus({ preventScroll: true });
+  });
+  document.getElementById('radarSkip').addEventListener('click', function () {
+    radarCard.hidden = true;
+    radarSkipped.hidden = false;
+  });
+  document.getElementById('radarResume').addEventListener('click', function () {
+    radarSkipped.hidden = true;
+    radarCard.hidden = false;
+    document.getElementById('radarTitle').focus({ preventScroll: true });
+  });
   form.addEventListener('submit', function (event) {
     event.preventDefault();
     if (todaysEntries().length >= DAILY_LIMIT) {
@@ -324,6 +432,7 @@
   window.LysieDailyKnowledgeLoop = {
     key: STORAGE_KEY,
     getState: function () { return JSON.parse(JSON.stringify(state)); },
+    getRadarCard: function () { return currentRadarCard() ? JSON.parse(JSON.stringify(currentRadarCard())) : null; },
     render: render
   };
 })();

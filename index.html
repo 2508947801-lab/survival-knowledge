@@ -1,10 +1,38 @@
-<!DOCTYPE html><html lang="zh-CN" data-yara-theme="dawn"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="description" content="Lysie 每日生存知识系统：把碎片信息转化为自己的判断、行动与复盘"><title>每日生存知识系统 · Lysie</title><link rel="stylesheet" href="daily-report.css"></head><body>
-<header class="hero daily-home-hero"><div class="hero-badge">LYSIE · DAILY KNOWLEDGE LOOP</div><h1>每日生存知识系统</h1><div class="hero-sub">每天最多收下 3 条，把其中 1 条真正用起来</div><div class="hero-meta">输入 → 加工 → 输出 → 实践 · 旧日报与月度复盘完整保留</div></header>
+<!DOCTYPE html><html lang="zh-CN" data-yara-theme="dawn"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="description" content="Lysie 知识雷达：从已核验来源中，每次读一条真正能用的知识"><title>Lysie 知识雷达</title><link rel="stylesheet" href="daily-report.css?v=2.0"></head><body>
+<header class="hero daily-home-hero"><div class="hero-badge">LYSIE · KNOWLEDGE RADAR</div><h1>Lysie 知识雷达</h1><div class="hero-sub">不必每天打开，只在有价值时认真读一条</div><div class="hero-meta">每次一条 · 3–5 分钟 · 已核验来源 · 阅读后再决定是否加工</div></header>
 <main class="container">
 <!-- DAILY-KNOWLEDGE-LOOP START -->
 <section class="knowledge-loop" id="knowledgeLoop" aria-labelledby="knowledgeLoopTitle">
+  <section class="knowledge-radar" id="knowledgeRadar" aria-labelledby="radarTitle">
+    <div class="radar-heading">
+      <div><span class="loop-kicker">TODAY'S SIGNAL</span><p class="radar-overline">今天值得知道的一件事</p></div>
+      <div class="radar-progress" id="radarProgress" aria-live="polite">正在读取…</div>
+    </div>
+    <article class="radar-card" id="radarCard" tabindex="-1">
+      <div class="radar-tags"><span id="radarFocus">知识主题</span><span id="radarReadTime">约 3–5 分钟</span></div>
+      <h2 id="radarTitle" tabindex="-1">正在准备今日知识</h2>
+      <div class="radar-grid">
+        <div class="radar-block radar-fact"><span>已核验事实</span><p id="radarFact">只展示已发布、可追溯来源的内容。</p></div>
+        <div class="radar-block"><span>为什么与你有关</span><p id="radarWhy">这里会给出明确的应用建议，而不是假装知道你的结论。</p></div>
+      </div>
+      <div class="radar-boundary"><strong>适用边界</strong><span id="radarBoundary">来源结论与个人建议会分开标注。</span></div>
+      <div class="radar-source-row">
+        <p><span id="radarVerified">核验日期</span><a id="radarSource" href="#" target="_blank" rel="noopener noreferrer">查看原始来源 ↗</a></p>
+        <a class="radar-report" id="radarReadReport" href="#">阅读全文 →</a>
+      </div>
+      <div class="radar-actions">
+        <button class="loop-primary" id="radarUse" type="button">用这条开始思考</button>
+        <button class="loop-secondary" id="radarNext" type="button">换一条</button>
+        <button class="radar-quiet" id="radarSkip" type="button">今天先不看</button>
+      </div>
+    </article>
+    <div class="radar-skipped" id="radarSkipped" hidden><div><strong>今天先留白</strong><p>没有知识焦虑。想看时，它仍在这里。</p></div><button class="loop-secondary" id="radarResume" type="button">重新打开</button></div>
+  </section>
+  <details class="knowledge-capture" id="knowledgeCapture">
+    <summary><span><span class="loop-kicker">MAKE IT YOURS</span><strong>把一条知识变成自己的行动</strong><small>仅在值得加工时展开；不会自动保存</small></span><span class="capture-chevron" aria-hidden="true">⌄</span></summary>
+    <div class="knowledge-capture-body">
   <div class="loop-heading">
-    <div><span class="loop-kicker">今天的学习仪式</span><h2 id="knowledgeLoopTitle">把一条信息变成自己的东西</h2><p>不求看得多，只记录与你当前目标有关、并愿意采取行动的内容。</p></div>
+    <div><span class="loop-kicker">INPUT → PRACTICE</span><h2 id="knowledgeLoopTitle">把一条信息变成自己的东西</h2><p>不求看得多，只记录与你当前目标有关、并愿意采取行动的内容。</p></div>
     <div class="loop-limit" id="dailyLimitStatus" aria-live="polite">今日 0 / 3</div>
   </div>
   <ol class="loop-steps" aria-label="知识闭环四步">
@@ -35,13 +63,16 @@
     <div class="loop-form-actions"><button class="loop-primary" type="submit">存入今日闭环</button><span id="loopFormHint">需要完成“复述、关联、行动”才能保存</span></div>
   </form>
   <div class="loop-feedback" id="loopFeedback" role="status" aria-live="polite"></div>
+    </div>
+  </details>
   <div class="loop-workspace">
-    <section class="loop-panel" aria-labelledby="todayKnowledgeTitle"><div class="loop-panel-head"><div><span class="loop-kicker">TODAY</span><h3 id="todayKnowledgeTitle">今天的闭环</h3></div><span id="todayLoopCount">0 条</span></div><div class="loop-entry-list" id="todayLoopList"></div></section>
-    <section class="loop-panel" aria-labelledby="reviewQueueTitle"><div class="loop-panel-head"><div><span class="loop-kicker">REVISIT</span><h3 id="reviewQueueTitle">14 天调用检查</h3></div><span id="reviewQueueCount">0 待复查</span></div><div class="loop-entry-list" id="reviewQueueList"></div></section>
+    <section class="loop-panel" aria-labelledby="todayKnowledgeTitle"><div class="loop-panel-head"><div><span class="loop-kicker">IN USE</span><h3 id="todayKnowledgeTitle">正在使用</h3></div><span id="todayLoopCount">0 条</span></div><div class="loop-entry-list" id="todayLoopList"></div></section>
+    <section class="loop-panel" aria-labelledby="reviewQueueTitle"><div class="loop-panel-head"><div><span class="loop-kicker">RESURFACE</span><h3 id="reviewQueueTitle">等待再次出现</h3></div><span id="reviewQueueCount">0 待复查</span></div><div class="loop-entry-list" id="reviewQueueList"></div></section>
   </div>
-  <section class="daily-review" aria-labelledby="dailyReviewTitle"><div><span class="loop-kicker">3–10 MIN REVIEW</span><h3 id="dailyReviewTitle">今天哪条知识真的改变了行动？</h3><p id="reviewPrompt">写一句结果、阻碍或下一次调整。</p></div><label class="sr-only" for="dailyReviewNote">每日复盘</label><textarea id="dailyReviewNote" maxlength="500" placeholder="例如：做完后发现真正缺的是验收标准，下次先定义结果再收集资料。"></textarea><button class="loop-secondary" id="saveDailyReview" type="button">保存今日复盘</button></section>
+  <section class="daily-review" aria-labelledby="dailyReviewTitle"><div><span class="loop-kicker">OPTIONAL REVIEW</span><h3 id="dailyReviewTitle">这条知识改变了什么？</h3><p id="reviewPrompt">有使用时再写，不必每天完成。</p></div><label class="sr-only" for="dailyReviewNote">知识使用复盘</label><textarea id="dailyReviewNote" maxlength="500" placeholder="例如：做完后发现真正缺的是验收标准，下次先定义结果再收集资料。"></textarea><button class="loop-secondary" id="saveDailyReview" type="button">保存这次复盘</button></section>
 </section>
 <!-- DAILY-KNOWLEDGE-LOOP END -->
+<details class="knowledge-library" id="knowledgeLibrary"><summary><span><strong>历史知识库</strong><small>已核验日报、月度复盘与明确标注的计划主题</small></span><span aria-hidden="true">⌄</span></summary><div class="knowledge-library-body">
 <div class="section-heading-row knowledge-calendar-heading">
 <div class="section-title">月度复盘报告</div>
 <div class="section-note">案例与新闻复核 · 模块优化审计 · 次月行动实验</div>
@@ -106,5 +137,5 @@
 <a href="生存知识日报_2026-07-04.html" class="date-card"><div class="card-header"><span class="card-date">2026-07-04</span><span class="card-weekday">星期六</span></div><div class="card-body"><div class="card-label">七月知识归档 · 历史日报</div><div class="card-arrow">阅读归档 →</div></div></a>
 <a href="生存知识日报_2026-07-03.html" class="date-card"><div class="card-header"><span class="card-date">2026-07-03</span><span class="card-weekday">星期五</span></div><div class="card-body"><div class="card-label">七月知识归档 · 历史日报</div><div class="card-arrow">阅读归档 →</div></div></a>
 <a href="生存知识日报_2026-07-02.html" class="date-card"><div class="card-header"><span class="card-date">2026-07-02</span><span class="card-weekday">星期四</span></div><div class="card-body"><div class="card-label">七月知识归档 · 历史日报</div><div class="card-arrow">阅读归档 →</div></div></a>
-<a href="生存知识日报_2026-07-01.html" class="date-card"><div class="card-header"><span class="card-date">2026-07-01</span><span class="card-weekday">星期三</span></div><div class="card-body"><div class="card-label">七月知识归档 · 历史日报</div><div class="card-arrow">阅读归档 →</div></div></a></div></details></main>
-<footer class="footer"><p>每日生存知识系统 · 历史知识日历</p><p>输入 · 加工 · 输出 · 实践 · 复盘</p></footer><script src="daily-knowledge-loop.js?v=1.1"></script></body></html>
+<a href="生存知识日报_2026-07-01.html" class="date-card"><div class="card-header"><span class="card-date">2026-07-01</span><span class="card-weekday">星期三</span></div><div class="card-body"><div class="card-label">七月知识归档 · 历史日报</div><div class="card-arrow">阅读归档 →</div></div></a></div></details></div></details></main>
+<footer class="footer"><p>Lysie 知识雷达 · 只保留可追溯的知识</p><p>输入 · 加工 · 输出 · 实践 · 复盘</p></footer><script src="daily-radar-content.js?v=1.0"></script><script src="daily-knowledge-loop.js?v=2.0"></script></body></html>
