@@ -93,7 +93,7 @@
   };
 
   // 独立打开（非外壳 iframe）时自注入悬浮返回钮：
-  // click → 优先 history.back；history 不足时按当前路径深度回退到外壳首页。
+  // 已登记父分类的模块固定回该分类；旧模块继续保留 history.back 兼容路径。
   // shell 内由外壳 injectModuleBackButton 注入同名按钮并隐藏本路径，避免双钮冗余。
   function injectStandaloneBackButton() {
     if (window.top !== window) return; // 仅独立打开
@@ -110,6 +110,11 @@
     btn.setAttribute('aria-label', '返回上一页');
     btn.innerHTML = '<span aria-hidden="true">←</span><span class="yara-back-label">返回</span>';
     btn.addEventListener('click', function () {
+      var parentCluster = String(document.body.dataset.yaraParentCluster || '').trim();
+      if (parentCluster) {
+        window.location.href = shellHref + '?cluster=' + encodeURIComponent(parentCluster);
+        return;
+      }
       if (window.history && window.history.length > 1) {
         window.history.back();
       } else {

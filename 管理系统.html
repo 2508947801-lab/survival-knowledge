@@ -669,7 +669,7 @@ try{
 <script src="yara-pwa.js?v=1.0" defer></script>
 <script>
 // 构建版本号：部署时由「一键部署.command」替换为时间戳，用于强制手机端拉取最新工具（防止缓存导致 web/手机不一致）。本地打开时保持 'DEV'。
-var BUILD_VERSION = '20260911233805';
+var BUILD_VERSION = '20260912121109';
 var shellRouteLevels = {};
 // 分类页是外壳自己的导航上下文；模块内部仍严格沿用 level 2 / 3 协议。
 var activeHubClusterId = '';
@@ -775,6 +775,10 @@ var HUB_FRAME_MAX = 8;
 function hubActiveFrame(){
   return hubActiveKey ? (hubFrames[hubActiveKey] || null) : null;
 }
+function hubModuleClusterId(src){
+  var module = YARA_MODULES.filter(function(item){ return item.src === src; })[0];
+  return module ? module.cluster : '';
+}
 function hubTouchLRU(key){
   var idx = hubFrameOrder.indexOf(key);
   if(idx >= 0) hubFrameOrder.splice(idx, 1);
@@ -848,9 +852,10 @@ function goBackLevel(){
   var current = window.YaraSystem ? YaraSystem.Router.current : {level:2};
   var level = Math.max(1, Number(current.level) || 1);
   if(level <= 2){
-    // 从模块首页返回它的业务分类；从分类页再返回总首页。
-    if(frame && hubReturnClusterId){
-      showHubCluster(hubReturnClusterId);
+    // 模块的“上一级”是注册表里的固定业务分类，不受首页、搜索、缓存恢复或其他模块的导航历史影响。
+    var returnClusterId = frame ? (frame._hubReturnClusterId || hubModuleClusterId(frame._hubKey)) : '';
+    if(frame && returnClusterId){
+      showHubCluster(returnClusterId);
       return;
     }
     goHome();
@@ -911,7 +916,11 @@ function openTool(src, name, group){
   home.classList.add('hidden');
   setShellScrolled(false);
   var hubModule = YARA_MODULES.filter(function(m){ return m.src === src; })[0];
-  if(activeHubClusterId) hubReturnClusterId = activeHubClusterId;
+  // 父级属于模块本身的结构信息，必须跟着 frame 保存；
+  // 不再使用“从哪个入口点进来”推测，避免保活帧返回到首页或错误分类。
+  var structuralClusterId = hubModule ? hubModule.cluster : activeHubClusterId;
+  frame._hubReturnClusterId = structuralClusterId || '';
+  hubReturnClusterId = frame._hubReturnClusterId;
   var parentCluster = hubReturnClusterId ? hubClusterById(hubReturnClusterId) : null;
   var routeGroup = parentCluster ? parentCluster.name : group;
   shellRouteLevels = {2:{label:name,name:name,group:routeGroup,src:src,level:2}};
@@ -2232,6 +2241,17 @@ function loadDashboard(){
 syncSidebarCollapseButton();
 updateRouteBackButton();
 loadDashboard();
+// 供独立模块的“返回上一级”直达其固定业务分类。
+// 参数只在首次打开时消费，避免用户随后回首页再刷新时被强制拉回分类页。
+var requestedClusterId = new URLSearchParams(location.search).get('cluster');
+if(requestedClusterId && hubClusterById(requestedClusterId)){
+  showHubCluster(requestedClusterId);
+  try{
+    var shellUrl = new URL(location.href);
+    shellUrl.searchParams.delete('cluster');
+    history.replaceState(history.state, '', shellUrl.pathname + shellUrl.search + shellUrl.hash);
+  }catch(error){}
+}
 if(window.YaraMasterSchedule){
   window.YaraMasterSchedule.subscribe(function(){
     loadDashboard();
@@ -2239,7 +2259,7 @@ if(window.YaraMasterSchedule){
 }
 if(new URLSearchParams(location.search).get('test') === '1'){
   var testScript = document.createElement('script');
-  testScript.src = 'js/yara-tests.js?v=1.2';
+  testScript.src = 'js/yara-tests.js?v=1.3';
   document.body.appendChild(testScript);
 }
 </script>

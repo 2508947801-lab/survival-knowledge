@@ -226,10 +226,8 @@
       target: payload.target || null
     };
 
-    if (window.YaraDeepModule && typeof window.YaraDeepModule.back === 'function') {
-      if (window.YaraDeepModule.back(detail) !== false) return;
-    }
-
+    // 模块显式声明的返回逻辑必须先于通用详情层。
+    // 否则 career 等模块只会改面包屑，真实活动视图仍停在原标签。
     var navigationEvent;
     try {
       navigationEvent = new CustomEvent('yara:navigate-back', {
@@ -238,6 +236,10 @@
       });
       if (!document.dispatchEvent(navigationEvent)) return;
     } catch (error) {}
+
+    if (window.YaraDeepModule && typeof window.YaraDeepModule.back === 'function') {
+      if (window.YaraDeepModule.back(detail) !== false) return;
+    }
 
     // 优先关闭"最顶层"覆盖物：dialog[open] > modal/drawer/sheet/aria-modal。
     // 一次只关一个，避免把抽屉内的 details 也连带关掉造成状态错乱。

@@ -245,6 +245,23 @@
     updateStepState();
   }
 
+  function injectStandaloneParentBack() {
+    if (window.top !== window || document.getElementById('yaraInjectedBack')) return;
+    var decodedPath = '';
+    try { decodedPath = decodeURIComponent(location.pathname); } catch (error) { decodedPath = location.pathname; }
+    var shellHref = decodedPath.indexOf('/生存知识日报文件/') >= 0 ? '../管理系统.html' : '管理系统.html';
+    var button = element('button', 'yara-module-back daily-standalone-back');
+    button.id = 'yaraInjectedBack';
+    button.type = 'button';
+    button.setAttribute('data-standalone', 'true');
+    button.setAttribute('aria-label', '返回成长与事业');
+    button.innerHTML = '<span aria-hidden="true">←</span><span class="yara-back-label">成长与事业</span>';
+    button.addEventListener('click', function () {
+      window.location.href = shellHref + '?cluster=growth';
+    });
+    document.body.appendChild(button);
+  }
+
   form.addEventListener('input', updateStepState);
   form.addEventListener('change', updateStepState);
   form.addEventListener('submit', function (event) {
@@ -303,6 +320,7 @@
   });
 
   render();
+  injectStandaloneParentBack();
   window.LysieDailyKnowledgeLoop = {
     key: STORAGE_KEY,
     getState: function () { return JSON.parse(JSON.stringify(state)); },
