@@ -64,6 +64,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .bud-bar .fill.over{background:var(--expense);}
 .bud-total{display:flex;justify-content:space-between;font-size:.78rem;font-weight:700;padding-top:8px;margin-top:6px;border-top:1px dashed var(--border);}
 .alert{background:var(--expense-l);color:var(--expense);border-radius:9px;padding:7px 11px;font-size:.76rem;font-weight:600;margin-top:9px;}
+.flow-draft-notice{display:flex;align-items:flex-start;gap:9px;margin-bottom:12px;padding:10px 12px;border:1px solid #c9c1ff;border-radius:11px;background:var(--primary-l);color:var(--ink);font-size:.74rem;line-height:1.55;}
+.flow-draft-notice[hidden]{display:none;}.flow-draft-notice strong{color:var(--primary);white-space:nowrap;}
+.flow-draft-actions{display:flex;gap:6px;margin-left:auto;}.flow-draft-actions[hidden]{display:none;}.flow-draft-actions button{min-height:30px;padding:0 8px;border:1px solid #c9c1ff;border-radius:8px;background:#fff;color:var(--primary);font:inherit;font-size:.68rem;font-weight:700;white-space:nowrap;cursor:pointer;}
 
 /* charts */
 .chart-box{position:relative;height:230px;}
@@ -137,6 +140,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .foot{text-align:center;font-size:.68rem;color:#94a3b8;margin-top:24px;letter-spacing:1px;}
 
 @media(max-width:560px){
+  .flow-draft-notice{flex-wrap:wrap}.flow-draft-notice>span{flex:1;min-width:150px;overflow-wrap:anywhere}.flow-draft-actions{width:100%;justify-content:flex-end}
   .sum-grid{grid-template-columns:repeat(2,1fr);}
   .annual-grid{grid-template-columns:repeat(2,1fr)}
   .plan-row{align-items:stretch;flex-direction:column}.deposit-item{grid-template-columns:minmax(0,1fr) auto}.deposit-actions{grid-column:1/-1;justify-content:flex-end}
@@ -234,6 +238,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
   <!-- 记一笔 -->
   <div class="card">
     <div class="card-title">记一笔</div>
+    <div class="flow-draft-notice" id="flowDraftNotice" hidden><strong>待确认草稿</strong><span id="flowDraftText"></span><div class="flow-draft-actions" id="flowDraftActions" hidden><button type="button" id="applyFlowDraftBtn">应用草稿</button><button type="button" id="discardFlowDraftBtn">放弃</button></div></div>
     <div class="type-toggle">
       <button class="type-btn exp on" id="typeExp" data-type="expense">支出</button>
       <button class="type-btn inc" id="typeInc" data-type="income">收入</button>
@@ -1116,10 +1121,55 @@ function saveGoal(){
   save(); render(); YaraModuleUI.notify('财务目标已保存');
 }
 
+function applyPendingFlowDraft(){
+  var draft;
+  try{draft=JSON.parse(sessionStorage.getItem('lysie_module_handoff_v1')||'null');}catch(error){draft=null;}
+  if(!draft||draft.schemaVersion!==1||draft.kind!=='life-task-to-ledger'||draft.target!=='财务管理/记账本.html')return;
+  var created=Date.parse(draft.createdAt||'');
+  if(!isFinite(created)||Date.now()-created>30*60*1000||created-Date.now()>5*60*1000){
+    try{sessionStorage.removeItem('lysie_module_handoff_v1');}catch(error){}
+    return;
+  }
+  var note=String(draft.payload&&draft.payload.note||'').trim().slice(0,60);
+  if(!note)return;
+  var notice=document.getElementById('flowDraftNotice');
+  var currentNote=document.getElementById('fNote').value.trim();
+  if(currentNote&&currentNote!==note){
+    document.getElementById('flowDraftText').textContent='新草稿“'+note+'”尚未应用；当前备注保留。你可选择应用或放弃。';
+    document.getElementById('flowDraftActions').hidden=false;
+    notice.hidden=false;
+    return;
+  }
+  setType('expense');
+  document.getElementById('fNote').value=note;
+  document.getElementById('flowDraftText').textContent='已从完成的生活待办预填备注“'+note+'”。请填写真实金额、分类和支付方式后再保存。';
+  document.getElementById('flowDraftActions').hidden=true;
+  notice.hidden=false;
+  try{sessionStorage.removeItem('lysie_module_handoff_v1');}catch(error){}
+  notice.closest('.card').scrollIntoView({behavior:'smooth',block:'start'});
+  document.getElementById('fAmount').focus({preventScroll:true});
+  YaraModuleUI.notify('只预填了支出类型和备注；金额仍需你确认');
+}
+document.getElementById('applyFlowDraftBtn').addEventListener('click',function(){
+  document.getElementById('fNote').value='';
+  applyPendingFlowDraft();
+});
+document.getElementById('discardFlowDraftBtn').addEventListener('click',function(){
+  try{sessionStorage.removeItem('lysie_module_handoff_v1');}catch(error){}
+  document.getElementById('flowDraftNotice').hidden=true;
+  YaraModuleUI.notify('临时草稿已放弃，原账目未改变');
+});
+window.addEventListener('message',function(event){
+  if(event.source!==window.parent)return;
+  var message=event.data||{};
+  if(message.source==='yara-shell'&&message.type==='flow-draft-available')applyPendingFlowDraft();
+});
+
 // ===== INIT =====
 document.getElementById('fDate').value=todayStr();
 document.getElementById('dStart').value=todayStr();
 render();
+applyPendingFlowDraft();
 initCloud();
 loadPendingLocalLedgerImport();
 loadPendingLocalYearSummary();

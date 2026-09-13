@@ -1544,3 +1544,45 @@ body.sidebar-collapsed .dock-item{justify-content:center;padding:9px 0;min-heigh
   .dock-item,.hub-tile,.hub-relation-link{transition:none;}
   .hub-tile:hover,.dock-item:hover,.hub-relation-link:hover{transform:none;}
 }
+
+/* ---- 2026-09 首页收束：核心行动、继续上次、周复盘 ---- */
+.recent-module-strip{
+  display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:13px;
+  margin:-14px 0 15px;padding:12px 14px;border:1px solid var(--primary-bd);border-radius:16px;
+  background:linear-gradient(120deg,var(--primary-soft),var(--surface));box-shadow:var(--shadow);
+}
+.recent-module-strip[hidden]{display:none;}
+.recent-module-mark{display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:var(--primary);color:#fff;font-weight:850;}
+.recent-module-copy{min-width:0;}.recent-module-copy>span{display:block;color:var(--primary-strong);font-size:9px;font-weight:820;letter-spacing:.12em;}
+.recent-module-copy h3{margin:2px 0 0;color:var(--ink);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.recent-module-copy p{margin:2px 0 0;color:var(--sub);font-size:10px;}
+.recent-module-strip button{min-height:38px;padding:0 14px;border:1px solid var(--primary-bd);border-radius:11px;background:var(--surface);color:var(--primary-strong);font:inherit;font-size:11px;font-weight:780;cursor:pointer;}
+.recent-module-strip button:hover{background:var(--primary);color:#fff;}
+
+.command-center-grid{grid-template-areas:"action risk" "radar flash";align-items:start;}
+.command-center-grid>.action-center{grid-area:action;}.command-center-grid>.risk-center{grid-area:risk;}.command-center-grid>.knowledge-radar-home{grid-area:radar;}.command-center-grid>.flash-home-card{grid-area:flash;}
+.action-overflow{margin-top:2px;border-top:1px solid var(--border);}
+.action-overflow>summary{display:flex;align-items:center;justify-content:space-between;min-height:40px;padding:8px 4px 0;color:var(--primary-strong);font-size:11px;font-weight:750;cursor:pointer;list-style:none;}
+.action-overflow>summary::-webkit-details-marker{display:none;}.action-overflow>summary span{transition:transform .18s;}.action-overflow[open]>summary span{transform:rotate(180deg);}
+.action-overflow>.action-list{padding-top:7px;}
+.risk-clear{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid rgba(22,163,74,.2);border-radius:13px;background:var(--success-soft);color:var(--success-ink);}
+.risk-clear>span{display:grid;place-items:center;width:27px;height:27px;flex:0 0 27px;border-radius:50%;background:rgba(22,163,74,.13);font-weight:850;}
+.risk-clear strong,.risk-clear small{display:block;}.risk-clear strong{font-size:12px;}.risk-clear small{margin-top:2px;color:var(--sub);font-size:10px;line-height:1.4;}
+.risk-center.is-clear{padding-bottom:16px;}.risk-center.is-clear .center-heading{margin-bottom:10px;}.risk-center.is-clear .operation-legend{display:none;}
+
+.weekly-review-home{margin:-14px 0 28px;border:1px solid var(--glass-bd);border-radius:19px;background:var(--surface);box-shadow:var(--glow);overflow:hidden;}
+.weekly-review-home[hidden]{display:none;}.weekly-review-home>summary{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:12px;min-height:68px;padding:12px 16px;cursor:pointer;list-style:none;}
+.weekly-review-home>summary::-webkit-details-marker{display:none;}.weekly-review-mark{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:var(--success-soft);border:1px solid rgba(22,163,74,.2);color:var(--success-ink);font-weight:850;}
+.weekly-review-summary{min-width:0;}.weekly-review-summary strong,.weekly-review-summary small{display:block;}.weekly-review-summary strong{color:var(--ink);font-size:14px;}.weekly-review-summary small{margin-top:2px;color:var(--sub);font-size:10px;}
+.weekly-review-state{padding:5px 9px;border-radius:99px;background:var(--surface-soft);border:1px solid var(--border);color:var(--sub);font-size:10px;font-weight:730;}.weekly-review-chevron{color:var(--primary);font-size:18px;transition:transform .2s;}.weekly-review-home[open] .weekly-review-chevron{transform:rotate(180deg);}
+.weekly-review-form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:0 16px 16px;border-top:1px solid var(--border);}
+.weekly-review-form label{display:flex;flex-direction:column;gap:6px;padding-top:14px;color:var(--ink);font-size:11px;font-weight:750;}.weekly-review-form textarea{width:100%;min-height:92px;resize:vertical;padding:10px 11px;border:1px solid var(--border);border-radius:12px;background:var(--surface-soft);color:var(--ink);font:inherit;font-size:11px;line-height:1.55;outline:none;}.weekly-review-form textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft);}
+.weekly-review-actions{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;}.weekly-review-actions span{color:var(--muted);font-size:10px;}.weekly-review-actions button{min-height:40px;padding:0 15px;border:0;border-radius:11px;background:var(--primary);color:#fff;font:inherit;font-size:11px;font-weight:780;cursor:pointer;}
+
+@media(max-width:1040px){.command-center-grid{grid-template-areas:"action" "radar" "risk" "flash";}}
+@media(max-width:768px){
+  .hero-panel{min-height:166px;padding:20px 18px;}.dash-greeting h2{font-size:1.62rem;}.hero-welcome-row{margin-top:12px;}
+  .recent-module-strip{margin:-10px 0 11px;padding:11px 12px;}.recent-module-copy p{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .weekly-review-home{margin:-8px 0 24px;}.weekly-review-form{grid-template-columns:1fr;}.weekly-review-actions{align-items:flex-start;flex-direction:column;}.weekly-review-actions button{width:100%;}
+}
+@media(max-width:420px){.recent-module-strip{grid-template-columns:auto minmax(0,1fr);}.recent-module-strip button{grid-column:1/-1;width:100%;}.weekly-review-state{display:none;}}

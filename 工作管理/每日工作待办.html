@@ -72,8 +72,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .t-min{flex:0 0 auto;background:var(--primary-l);color:var(--primary);border-radius:20px;padding:3px 11px;font-size:.74rem;font-weight:700;white-space:nowrap;}
 .task.done .t-min{background:var(--success-l);color:var(--success);}
 .t-actions{display:flex;gap:5px;flex:0 0 auto;align-items:center;}
-.edit,.del{min-width:36px;height:30px;padding:0 8px;border:1px solid var(--border);background:#fff;color:var(--sub);font-size:.85rem;font-weight:700;white-space:nowrap;cursor:pointer;border-radius:8px;transition:all .15s;line-height:1;}
+.edit,.del,.evidence{min-width:36px;height:30px;padding:0 8px;border:1px solid var(--border);background:#fff;color:var(--sub);font-size:.85rem;font-weight:700;white-space:nowrap;cursor:pointer;border-radius:8px;transition:all .15s;line-height:1;}
 .edit:hover{background:var(--primary-l);color:var(--primary);}
+.evidence{font-size:.68rem;border-color:#c9c1ff;background:var(--primary-l);color:var(--primary);}.evidence:hover{background:var(--primary);color:#fff;}
 .del:hover{background:#fee2e2;color:var(--danger);}
 
 /* 编辑态 */
@@ -422,6 +423,28 @@ function delTask(id){
   }
   YaraModuleUI.notify('任务已删除');
 }
+function stageCareerEvidenceDraft(task){
+  if(!task||!task.done)return;
+  const draft={
+    schemaVersion:1,
+    kind:'work-task-to-career-evidence',
+    target:'把把必中/index.html',
+    createdAt:new Date().toISOString(),
+    payload:{title:String(task.title||'').trim().slice(0,80),sourceDate:current}
+  };
+  try{sessionStorage.setItem('lysie_module_handoff_v1',JSON.stringify(draft));}
+  catch(error){YaraModuleUI.notify('当前浏览器无法创建临时草稿，请直接打开把把必中','warning');return;}
+  if(window.parent&&window.parent!==window){
+    window.parent.postMessage({source:'yara-module',version:1,type:'open-module-request',payload:{src:draft.target}},'*');
+  }else{
+    if(location.hostname.endsWith('.github.io')){
+      try{sessionStorage.removeItem('lysie_module_handoff_v1');}catch(error){}
+      location.href='../私密模块说明.html#career';
+    }else{
+      location.href='../'+draft.target;
+    }
+  }
+}
 // 编辑：进入编辑态
 function enterEdit(id){
   const li=document.querySelector('.task[data-id="'+cssAttr(id)+'"]');
@@ -499,6 +522,7 @@ function render(){
       '<div class="t-body"><div class="t-title">'+escHtml(t.title)+'</div></div>'+
       '<span class="t-min">'+fmtMin(t.minutes)+'</span>'+
       '<div class="t-actions">'+
+        (t.done?'<button class="evidence" type="button" data-act="evidence">转为证据</button>':'')+
         '<button class="edit" type="button" data-act="edit" aria-label="编辑任务" title="编辑任务">✎</button>'+
         '<button class="del" type="button" data-act="del" data-yara-confirm="module" aria-label="删除任务" title="删除任务">×</button>'+
       '</div>'+
@@ -541,6 +565,7 @@ document.getElementById('taskList').addEventListener('click', e=>{
   const act=e.target.closest('[data-act]');
   if(!act) return;
   if(act.dataset.act==='toggle') toggleTask(id);
+  else if(act.dataset.act==='evidence') stageCareerEvidenceDraft(getTasks(current).find(x=>x.id===id));
   else if(act.dataset.act==='edit') enterEdit(id);
   else if(act.dataset.act==='save'){
     const title=li.querySelector('.et').value, minutes=li.querySelector('.em').value;

@@ -61,6 +61,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .task.done .t-notes{color:#b6c0cd;}
 .t-target{display:inline-block;margin-top:6px;background:var(--warning-l);color:var(--warning);border-radius:20px;padding:2px 10px;font-size:.72rem;font-weight:700;}
 .task.done .t-target{background:#eef1f4;color:#94a3b8;}
+.task-actions{display:flex;align-items:center;gap:6px;flex:0 0 auto;}
+.flow-btn{min-height:30px;padding:0 9px;border:1px solid #c9c1ff;border-radius:8px;background:var(--primary-l);color:var(--primary);font:inherit;font-size:.7rem;font-weight:700;white-space:nowrap;cursor:pointer;}
+.flow-btn:hover{background:var(--primary);color:#fff;}
 .del{flex:0 0 auto;width:26px;height:26px;border:none;background:transparent;color:#cbd5e1;font-size:1rem;cursor:pointer;border-radius:7px;transition:all .15s;line-height:1;}
 .del:hover{background:#fee2e2;color:var(--danger);}
 
@@ -73,6 +76,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
   #newTitle{flex:1 1 100%;}
   #newTarget{flex:1 1 100%;}
   .sum-chip{min-width:calc(50% - 5px);}
+  .task{flex-wrap:wrap;}
+  .task-actions{width:100%;justify-content:flex-end;}
 }
 </style>
 <link id="yaraSystemTheme" rel="stylesheet" href="../yara-system-theme.css?v=4.2">
@@ -243,6 +248,24 @@ function delTask(id){
   }
 }
 
+function stageLedgerDraft(task){
+  if(!task||!task.done)return;
+  var draft={
+    schemaVersion:1,
+    kind:'life-task-to-ledger',
+    target:'财务管理/记账本.html',
+    createdAt:new Date().toISOString(),
+    payload:{note:String(task.title||'').trim().slice(0,60)}
+  };
+  try{sessionStorage.setItem('lysie_module_handoff_v1',JSON.stringify(draft));}
+  catch(error){YaraModuleUI.notify('当前浏览器无法创建临时草稿，请直接打开记账本','warning');return;}
+  if(window.parent&&window.parent!==window){
+    window.parent.postMessage({source:'yara-module',version:1,type:'open-module-request',payload:{src:draft.target}},'*');
+  }else{
+    location.href='../'+draft.target;
+  }
+}
+
 function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function taskHtml(t){
@@ -252,8 +275,9 @@ function taskHtml(t){
       '<div class="t-title">'+escHtml(t.title)+'</div>'+
       (t.notes?'<div class="t-notes">'+escHtml(t.notes)+'</div>':'')+
       (t.target?'<span class="t-target">⏰ '+escHtml(t.target)+'</span>':'')+
-    '</div>'+
-    '<button class="del" data-act="del" data-yara-confirm="module" title="删除">×</button>'+
+    '</div><div class="task-actions">'+
+    (t.done?'<button class="flow-btn" type="button" data-act="ledger">补记支出</button>':'')+
+    '<button class="del" data-act="del" data-yara-confirm="module" title="删除">×</button></div>'+
   '</li>';
 }
 
@@ -302,6 +326,7 @@ function bindList(el){
     const act=e.target.closest('[data-act]');
     if(!act) return;
     if(act.dataset.act==='toggle') toggleTask(id);
+    else if(act.dataset.act==='ledger') stageLedgerDraft(state.tasks.find(function(task){return task.id===id;}));
     else if(act.dataset.act==='del'){
       YaraModuleUI.requestDelete(act, {
         title:'删除这条生活待办？',

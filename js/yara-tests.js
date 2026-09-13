@@ -86,6 +86,18 @@
     check('首页高频入口为 8 个', function(){ return document.querySelectorAll('#homeQuickTools .hub-tile').length === 8; });
     check('全部工具完整', function(){ return document.querySelectorAll('#hubLaunchpad .hub-tile').length === YARA_MODULES.length; });
     check('首页行动不超过 5 项', function(){ return document.querySelectorAll('#dashActions .action-item').length <= 5; });
+    check('首页默认只展开 2 项行动', function(){ return document.querySelectorAll('#dashActions > .action-item').length <= 2; });
+    check('手机核心区 DOM 顺序为今天到知识雷达', function(){
+      var grid=document.querySelector('.command-center-grid');
+      var children=grid?Array.from(grid.children):[];
+      return children[0]&&children[0].classList.contains('action-center')&&children[1]&&children[1].classList.contains('knowledge-radar-home');
+    });
+    check('最近继续与周复盘已登记', function(){
+      return !!document.getElementById('recentModuleStrip')&&!!document.getElementById('weeklyReviewHome')&&
+        YARA_CONFIG.dashboardRelatedKeys.indexOf('lysie_recent_module_v1')>=0&&
+        YARA_CONFIG.dashboardRelatedKeys.indexOf('lysie_weekly_workspace_review_v1')>=0;
+    });
+    check('跨模块临时草稿协议已接入', function(){ return typeof sanitizeRoutePayload==='function'&&document.documentElement.innerHTML.indexOf('open-module-request')>=0; });
     render();
     console.info('[Lysie Tests]', JSON.parse(JSON.stringify(results)));
     return results;
